@@ -2,6 +2,8 @@ package com.deloitte.smt.controller;
 
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.service.SignalService;
+import com.deloitte.smt.util.SignalUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,5 +32,10 @@ public class SignalController {
 	public String prioritizeTopic(@PathVariable String processInstanceId) throws TaskNotFoundException {
 		signalService.prioritizeTopic(processInstanceId);
 		return "finished";
+	}
+	
+	@GetMapping(value = "/getCounts")
+	public String getCounts() {
+		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(),signalService.getAssesmentCount(),signalService.getRiskCount());
 	}
 }
