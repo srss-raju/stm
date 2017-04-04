@@ -40,6 +40,7 @@ public class Topic implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "topic")
     private List<Attachment> attachments;
+    private String processId;
 
     public Long getId() {
         return id;
@@ -127,5 +128,13 @@ public class Topic implements Serializable {
 
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
     }
 }
