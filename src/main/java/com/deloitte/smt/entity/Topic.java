@@ -1,10 +1,13 @@
 package com.deloitte.smt.entity;
 
-import javax.persistence.ElementCollection;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
@@ -20,15 +23,23 @@ public class Topic implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String implement;
-    private String dmg;
-    private String source;
-    private String query;
-    @ElementCollection
-    private List<String> attachments;
-    @ElementCollection
-    private List<String> comments;
-    private Date dueDate;
+
+    private String name;
+    private String description;
+
+    @Embedded
+    private Drug drug;
+
+    @Embedded
+    private Condition condition;
+    private String sourceName;
+    private String sourceUrl;
+    private Date startDate;
+    private Date endDate;
+    private String remarks;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "topic")
+    private List<Attachment> attachments;
 
     public Long getId() {
         return id;
@@ -38,59 +49,83 @@ public class Topic implements Serializable {
         this.id = id;
     }
 
-    public String getImplement() {
-        return implement;
+    public String getName() {
+        return name;
     }
 
-    public void setImplement(String implement) {
-        this.implement = implement;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDmg() {
-        return dmg;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDmg(String dmg) {
-        this.dmg = dmg;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getSource() {
-        return source;
+    public Drug getDrug() {
+        return drug;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setDrug(Drug drug) {
+        this.drug = drug;
     }
 
-    public String getQuery() {
-        return query;
+    public Condition getCondition() {
+        return condition;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    public void setCondition(Condition condition) {
+        this.condition = condition;
     }
 
-    public List<String> getAttachments() {
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
+    }
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public List<Attachment> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<String> attachments) {
+    public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
-    }
-
-    public List<String> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<String> comments) {
-        this.comments = comments;
-    }
-
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
     }
 }
