@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.7.2">
+  <bpmn:collaboration id="Collaboration_0ug3f9l">
+    <bpmn:participant id="topicWorkFlow" name="Topic Work FLow" processRef="topicProcess" />
+  </bpmn:collaboration>
+  <bpmn:process id="topicProcess" name="Topic Process" isExecutable="true">
+    <bpmn:endEvent id="closeTopic" name="Close Topic">
+      <bpmn:incoming>SequenceFlow_0f8np8w</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="prioritizeAndTopicAssignment" name="Prioritize and Topic Assignment">
+      <bpmn:incoming>SequenceFlow_12obsz0</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0f8np8w</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="newTopic" name="New Topic">
+      <bpmn:outgoing>SequenceFlow_1fd2j4q</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="validateTopic" name="Validate Topic">
+      <bpmn:extensionElements>
+        <camunda:formData />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1fd2j4q</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_12obsz0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0f8np8w" sourceRef="prioritizeAndTopicAssignment" targetRef="closeTopic" />
+    <bpmn:sequenceFlow id="SequenceFlow_12obsz0" name="Valid Topic" sourceRef="validateTopic" targetRef="prioritizeAndTopicAssignment" />
+    <bpmn:sequenceFlow id="SequenceFlow_1fd2j4q" sourceRef="newTopic" targetRef="validateTopic" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ug3f9l">
+      <bpmndi:BPMNShape id="Participant_0vuw5wd_di" bpmnElement="topicWorkFlow">
+        <dc:Bounds x="449" y="-286" width="622" height="183" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="newTopic">
+        <dc:Bounds x="510" y="-212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="505" y="-176" width="51" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1huv9sj_di" bpmnElement="closeTopic">
+        <dc:Bounds x="905" y="-213" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="896" y="-173" width="57" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1tszxfh_di" bpmnElement="prioritizeAndTopicAssignment">
+        <dc:Bounds x="761" y="-235" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fd2j4q_di" bpmnElement="SequenceFlow_1fd2j4q">
+        <di:waypoint xsi:type="dc:Point" x="546" y="-194" />
+        <di:waypoint xsi:type="dc:Point" x="585" y="-195" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="565.5" y="-215.5" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0f8np8w_di" bpmnElement="SequenceFlow_0f8np8w">
+        <di:waypoint xsi:type="dc:Point" x="861" y="-195" />
+        <di:waypoint xsi:type="dc:Point" x="905" y="-195" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="883" y="-216" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_12obsz0_di" bpmnElement="SequenceFlow_12obsz0">
+        <di:waypoint xsi:type="dc:Point" x="685" y="-195" />
+        <di:waypoint xsi:type="dc:Point" x="722" y="-195" />
+        <di:waypoint xsi:type="dc:Point" x="722" y="-195" />
+        <di:waypoint xsi:type="dc:Point" x="761" y="-195" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="700" y="-187" width="51" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0px1poa_di" bpmnElement="validateTopic">
+        <dc:Bounds x="585" y="-235" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
