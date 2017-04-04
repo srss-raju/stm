@@ -49,17 +49,14 @@ public class SignalService {
     }
     
     public int getValidateAndPrioritizeCount(){
-    	
     	return 0;
     }
     
     public int getAssesmentCount(){
-    	
     	return 0;
     }
     
     public int getRiskCount(){
-    	
     	return 0;
     }
 }
