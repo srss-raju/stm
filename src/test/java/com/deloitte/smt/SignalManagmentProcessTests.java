@@ -21,9 +21,9 @@ public class SignalManagmentProcessTests {
 	
 	@Test
 	public void testCounts(){
-		int validateCount = signalService.getValidateAndPrioritizeCount();
-		int assesmentCount = signalService.getAssesmentCount();
-		int riskCount = signalService.getRiskCount();
+		Long validateCount = signalService.getValidateAndPrioritizeCount();
+		Long assesmentCount = signalService.getAssesmentCount();
+		Long riskCount = signalService.getRiskCount();
 		System.out.println("validateCount  -->> "+validateCount);
 		System.out.println("assesmentCount  -->> "+assesmentCount);
 		System.out.println("riskCount  -->> "+riskCount);

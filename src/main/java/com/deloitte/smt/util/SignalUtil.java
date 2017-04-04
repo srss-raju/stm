@@ -2,7 +2,7 @@ package com.deloitte.smt.util;
 
 public class SignalUtil {
 	
-	public static String getCounts(int validateCount, int assesmentCount, int riskCount){
+	public static String getCounts(Long validateCount, Long assesmentCount, Long riskCount){
 		StringBuilder builder = new StringBuilder();
 		builder.append("{").append("\"validateCount\":").append(validateCount)
 		.append(",\"assesmentCount\":").append(assesmentCount)
