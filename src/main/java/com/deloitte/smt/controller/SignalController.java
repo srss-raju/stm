@@ -4,6 +4,8 @@ import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.service.SignalService;
+import com.deloitte.smt.util.SignalUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +44,13 @@ public class SignalController {
 
 	@GetMapping(value = "/all")
 	public List<Topic> getAllByStatus(@RequestParam(name = "status", required = false) String statuses,
-									  @RequestParam(name = "deleteReason", required = false, defaultValue = "completed") String deleteReason){
+									  @RequestParam(name = "deleteReason", required = false, defaultValue = "completed") String deleteReason) {
 		return signalService.findAllByStatus(statuses, deleteReason);
+
+	}
+
+	@GetMapping(value = "/getCounts")
+	public String getCounts() {
+		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(),signalService.getAssesmentCount(),signalService.getRiskCount());
 	}
 }

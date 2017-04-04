@@ -58,10 +58,10 @@ public class SignalService {
         taskService.complete(task.getId());
     }
 
-    public List<Topic> findAllByStatus(String statuses, String deleteReason){
+    public List<Topic> findAllByStatus(String statuses, String deleteReason) {
         List<TaskInst> taskInsts = null;
         //Get all by statuses and delete reason
-        if(!StringUtils.isEmpty(statuses) && !StringUtils.isEmpty(deleteReason)) {
+        if (!StringUtils.isEmpty(statuses) && !StringUtils.isEmpty(deleteReason)) {
             taskInsts = taskInstRepository.findAllByTaskDefKeyInAndDeleteReasonNot(Arrays.asList(statuses.split(",")), deleteReason);
         }
         //Get all by statuses
@@ -78,5 +78,17 @@ public class SignalService {
         }
         List<String> processIds = taskInsts.stream().map(TaskInst::getProcInstId).collect(Collectors.toList());
         return topicRepository.findAllByProcessIdIn(processIds);
+    }
+    
+    public int getValidateAndPrioritizeCount(){
+    	return 0;
+    }
+    
+    public int getAssesmentCount(){
+    	return 0;
+    }
+    
+    public int getRiskCount(){
+    	return 0;
     }
 }
