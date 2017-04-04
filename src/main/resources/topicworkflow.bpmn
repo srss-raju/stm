@@ -28,7 +28,7 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ug3f9l">
       <bpmndi:BPMNShape id="Participant_0vuw5wd_di" bpmnElement="topicWorkFlow">
-        <dc:Bounds x="449" y="-286" width="616" height="406.87066779374476" />
+        <dc:Bounds x="449" y="-286" width="622" height="183" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="newTopic">
         <dc:Bounds x="510" y="-212" width="36" height="36" />
