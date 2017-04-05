@@ -81,15 +81,15 @@ public class SignalService {
         return topicRepository.findAllByProcessIdIn(processIds);
     }
     
-    public int getValidateAndPrioritizeCount(){
-    	return 0;
+    public Long getValidateAndPrioritizeCount(){
+    	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("validateTopic","prioritizeAndTopicAssignment"));
     }
     
-    public int getAssesmentCount(){
-    	return 0;
+    public Long getAssesmentCount(){
+    	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("assesment"));
     }
     
-    public int getRiskCount(){
-    	return 0;
+    public Long getRiskCount(){
+    	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
     }
 }
