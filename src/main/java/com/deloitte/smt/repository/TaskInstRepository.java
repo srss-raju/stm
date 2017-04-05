@@ -17,7 +17,7 @@ public interface TaskInstRepository extends JpaRepository<TaskInst, String> {
      * @param deletedReason
      * @return
      */
-    List<TaskInst> findAllByTaskDefKeyInAndDeleteReasonNot(List<String> taskDefKeys, String deletedReason);
+    List<TaskInst> findAllByTaskDefKeyInAndDeleteReasonNotOrDeleteReasonNull(List<String> taskDefKeys, String deletedReason);
 
     /**
      * taskDefKeys are nothing but statuses

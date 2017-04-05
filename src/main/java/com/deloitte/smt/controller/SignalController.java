@@ -66,12 +66,14 @@ public class SignalController {
 	}
 
 	private void addAttachments(Topic topic, MultipartFile[] attachments) throws IOException {
-        for(MultipartFile attachment : attachments) {
-            Attachment a = new Attachment();
-            a.setTopic(topic);
-            a.setContent(attachment.getBytes());
-            a.setFileName(attachment.getOriginalFilename());
-            topic.getAttachments().add(a);
+        if(attachments != null) {
+            for (MultipartFile attachment : attachments) {
+                Attachment a = new Attachment();
+                a.setTopic(topic);
+                a.setContent(attachment.getBytes());
+                a.setFileName(attachment.getOriginalFilename());
+                topic.getAttachments().add(a);
+            }
         }
     }
 }
