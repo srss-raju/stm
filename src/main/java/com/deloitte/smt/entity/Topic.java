@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +42,11 @@ public class Topic implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "topic")
     private List<Attachment> attachments;
     private String processId;
+
+    public Topic() {
+        this.attachments = new ArrayList<>();
+        this.startDate = new Date();
+    }
 
     public Long getId() {
         return id;

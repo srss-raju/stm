@@ -1,5 +1,6 @@
 package com.deloitte.smt.controller;
 
+import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.repository.TaskInstRepository;
@@ -9,10 +10,14 @@ import com.deloitte.smt.util.SignalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,9 +30,11 @@ public class SignalController {
 	@Autowired
 	TaskInstRepository taskInstRepository;
 
-	@GetMapping(value = "/createTopic")
-	public String createTopic() {
-		return signalService.createTopic();
+	@PostMapping(value = "/createTopic")
+	public String createTopic(@RequestBody Topic topic,
+							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+		addAttachments(topic, attachments);
+        return signalService.createTopic(topic);
 	}
 	
 	@GetMapping(value = "/{processInstanceId}/validate")
@@ -53,4 +60,14 @@ public class SignalController {
 	public String getCounts() {
 		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(),signalService.getAssesmentCount(),signalService.getRiskCount());
 	}
+
+	private void addAttachments(Topic topic, MultipartFile[] attachments) throws IOException {
+        for(MultipartFile attachment : attachments) {
+            Attachment a = new Attachment();
+            a.setTopic(topic);
+            a.setContent(attachment.getBytes());
+            a.setFileName(attachment.getOriginalFilename());
+            topic.getAttachments().add(a);
+        }
+    }
 }

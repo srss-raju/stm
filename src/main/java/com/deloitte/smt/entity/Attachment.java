@@ -21,6 +21,7 @@ public class Attachment implements Serializable {
     private Long id;
 
     private byte[] content;
+    private String fileName;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Topic topic;
@@ -39,6 +40,14 @@ public class Attachment implements Serializable {
 
     public void setContent(byte[] content) {
         this.content = content;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public Topic getTopic() {

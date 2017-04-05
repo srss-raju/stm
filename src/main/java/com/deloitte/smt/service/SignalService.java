@@ -34,11 +34,12 @@ public class SignalService {
     @Autowired
     TaskInstRepository taskInstRepository;
 
-    public String createTopic() {
-        topicRepository.save(new Topic());
+    public String createTopic(Topic topic) {
         String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         taskService.delegateTask(task.getId(), "Demo Demo");
+        topic.setProcessId(processInstanceId);
+        topicRepository.save(topic);
         return processInstanceId;
     }
 
