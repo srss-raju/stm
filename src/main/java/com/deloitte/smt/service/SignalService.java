@@ -38,12 +38,16 @@ public class SignalService {
         String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         taskService.delegateTask(task.getId(), "Demo Demo");
+        if(topic.getId() != null) {
+            topic.setId(null);
+        }
         topic.setProcessId(processInstanceId);
         topicRepository.save(topic);
         return processInstanceId;
     }
 
-    public void validateTopic(String processInstanceId) throws TaskNotFoundException {
+    public void validateTopic(Topic topic, String processInstanceId) throws TaskNotFoundException {
+        topicRepository.save(topic);
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         if(task == null) {
             throw new TaskNotFoundException("Task not found for the process "+processInstanceId);
@@ -51,7 +55,8 @@ public class SignalService {
         taskService.complete(task.getId());
     }
 
-    public void prioritizeTopic(String processInstanceId) throws TaskNotFoundException {
+    public void prioritizeTopic(Topic topic, String processInstanceId) throws TaskNotFoundException {
+        topicRepository.save(topic);
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         if(task == null) {
             throw new TaskNotFoundException("Task not found for the process "+processInstanceId);

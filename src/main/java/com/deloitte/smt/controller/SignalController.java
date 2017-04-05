@@ -37,15 +37,19 @@ public class SignalController {
         return signalService.createTopic(topic);
 	}
 	
-	@GetMapping(value = "/{processInstanceId}/validate")
-	public String validateTopic(@PathVariable String processInstanceId) throws TaskNotFoundException {
-		signalService.validateTopic(processInstanceId);
+	@PostMapping(value = "/{processInstanceId}/validate")
+	public String validateTopic(@PathVariable String processInstanceId,
+                                @RequestBody Topic topic,
+                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws TaskNotFoundException, IOException {
+        addAttachments(topic, attachments);
+        signalService.validateTopic(topic, processInstanceId);
 		return "Validation is finished";
 	}
 	
-	@GetMapping(value = "/{processInstanceId}/prioritize")
-	public String prioritizeTopic(@PathVariable String processInstanceId) throws TaskNotFoundException {
-		signalService.prioritizeTopic(processInstanceId);
+	@PostMapping(value = "/{processInstanceId}/prioritize")
+	public String prioritizeTopic(@PathVariable String processInstanceId,
+                                  @RequestBody Topic topic) throws TaskNotFoundException {
+		signalService.prioritizeTopic(topic, processInstanceId);
 		return "finished";
 	}
 
