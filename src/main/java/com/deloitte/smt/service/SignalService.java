@@ -68,7 +68,7 @@ public class SignalService {
         List<TaskInst> taskInsts = null;
         //Get all by statuses and delete reason
         if (!StringUtils.isEmpty(statuses) && !StringUtils.isEmpty(deleteReason)) {
-            taskInsts = taskInstRepository.findAllByTaskDefKeyInAndDeleteReasonNotOrDeleteReasonNull(Arrays.asList(statuses.split(",")), deleteReason);
+            taskInsts = taskInstRepository.findAllByTaskDefKeyInAndProcInstIdNotNullAndDeleteReasonNotOrDeleteReasonNull(Arrays.asList(statuses.split(",")), deleteReason);
         }
         //Get all by statuses
         else if (!StringUtils.isEmpty(statuses)) {
