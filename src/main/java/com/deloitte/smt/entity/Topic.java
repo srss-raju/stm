@@ -36,11 +36,9 @@ public class Topic implements Serializable {
     private String sourceUrl;
     private Date startDate;
     private Date endDate;
+    private Date createdDate;
     private String remarks;
 
-    /*@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "topic")
-    @JsonIgnore
-    private List<Attachment> attachments;*/
     private String processId;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -121,6 +119,14 @@ public class Topic implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     public String getRemarks() {

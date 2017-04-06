@@ -63,6 +63,7 @@ public class SignalService {
         if(topic.getId() != null) {
             topic.setId(null);
         }
+        topic.setCreatedDate(new Date());
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
         addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
