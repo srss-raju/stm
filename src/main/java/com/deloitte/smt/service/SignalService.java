@@ -1,20 +1,28 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.entity.TaskInst;
-import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.TaskNotFoundException;
-import com.deloitte.smt.repository.TaskInstRepository;
-import com.deloitte.smt.repository.TopicRepository;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.TaskInst;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.TaskNotFoundException;
+import com.deloitte.smt.repository.AssessmentActionRepository;
+import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.repository.TopicRepository;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -33,6 +41,15 @@ public class SignalService {
 
     @Autowired
     TaskInstRepository taskInstRepository;
+    
+    @Autowired
+    CaseService caseService;
+    
+    @Autowired
+    AssessmentActionRepository assessmentActionRepository;
+    
+    @Autowired
+    AssessmentPlanRepository assessmentPlanRepository;
 
     public String createTopic(Topic topic) {
         String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
@@ -55,13 +72,18 @@ public class SignalService {
         taskService.complete(task.getId());
     }
 
-    public void prioritizeTopic(Topic topic, String processInstanceId) throws TaskNotFoundException {
+    public String prioritizeTopic(Topic topic, String processInstanceId) throws TaskNotFoundException {
         topicRepository.save(topic);
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         if(task == null) {
             throw new TaskNotFoundException("Task not found for the process "+processInstanceId);
         }
         taskService.complete(task.getId());
+        
+        CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
+        topic.setProcessId(instance.getCaseInstanceId());
+        topicRepository.save(topic);
+        return instance.getCaseInstanceId();
     }
 
     public List<Topic> findAllByStatus(String statuses, String deleteReason) {
@@ -97,4 +119,31 @@ public class SignalService {
     public Long getRiskCount(){
     	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
     }
+    
+    public void createAssessmentAction(SignalAction signalAction) {
+    	Task task = taskService.newTask();
+		task.setCaseInstanceId(signalAction.getCaseInstanceId());
+		task.setName(signalAction.getActionName());
+		taskService.saveTask(task);
+		List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
+		TaskInst taskInstance = new TaskInst();
+		taskInstance.setId(list.get(list.size()-1).getId());
+		taskInstance.setCaseDefKey("assessment");
+		taskInstance.setTaskDefKey("assessment");
+		taskInstance.setCaseInstId(signalAction.getCaseInstanceId());
+		taskInstance.setStartTime(new Date());
+		taskInstRepository.save(taskInstance);
+		assessmentActionRepository.save(signalAction);
+    }
+
+	public List<SignalAction> findAllByAssessmentId(String assessmentId) {
+		return assessmentActionRepository.findAllByAssessmentId(assessmentId);
+	}
+
+	public void createAssessmentPlan(AssessmentPlan assessmentPlan) {
+		CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
+		assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
+		assessmentPlanRepository.save(assessmentPlan);
+		
+	}
 }

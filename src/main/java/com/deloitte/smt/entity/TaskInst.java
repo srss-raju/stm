@@ -1,5 +1,7 @@
 package com.deloitte.smt.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -46,19 +48,19 @@ public class TaskInst {
     @Column(name = "assignee_")
     private String assignee;
     @Column(name = "start_time_")
-    private String startTime;
+    private Date startTime;
     @Column(name = "end_time_")
-    private String endTime;
+    private Date endTime;
     @Column(name = "duration_")
-    private String duration;
+    private Long duration;
     @Column(name = "delete_reason_")
     private String deleteReason;
     @Column(name = "priority_")
-    private String priority;
+    private int priority;
     @Column(name = "due_date_")
-    private String dueDate;
+    private Date dueDate;
     @Column(name = "follow_up_date_")
-    private String followUpDate;
+    private Date followUpDate;
     @Column(name = "tenant_id_")
     private String tenantId;
 
@@ -190,27 +192,27 @@ public class TaskInst {
         this.assignee = assignee;
     }
 
-    public String getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
-    public String getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 
@@ -222,27 +224,27 @@ public class TaskInst {
         this.deleteReason = deleteReason;
     }
 
-    public String getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
-    public String getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(String dueDate) {
+    public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 
-    public String getFollowUpDate() {
+    public Date getFollowUpDate() {
         return followUpDate;
     }
 
-    public void setFollowUpDate(String followUpDate) {
+    public void setFollowUpDate(Date followUpDate) {
         this.followUpDate = followUpDate;
     }
 

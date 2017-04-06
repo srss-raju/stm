@@ -1,11 +1,14 @@
 package com.deloitte.smt;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.service.SignalService;
 
 @RunWith(SpringRunner.class)
@@ -27,6 +30,12 @@ public class SignalManagmentProcessTests {
 		System.out.println("validateCount  -->> "+validateCount);
 		System.out.println("assesmentCount  -->> "+assesmentCount);
 		System.out.println("riskCount  -->> "+riskCount);
+	}
+	
+	@Test
+	public void testGetAllByStatus(){
+		List<Topic> list = signalService.findAllByStatus("",null);
+		System.out.println("validateCount  -->> "+list);
 	}
 
 }

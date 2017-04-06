@@ -1,11 +1,7 @@
 package com.deloitte.smt.controller;
 
-import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.TaskNotFoundException;
-import com.deloitte.smt.repository.TaskInstRepository;
-import com.deloitte.smt.service.SignalService;
-import com.deloitte.smt.util.SignalUtil;
+import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Attachment;
+import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.TaskNotFoundException;
+import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.service.SignalService;
+import com.deloitte.smt.util.SignalUtil;
 
 @RestController
 @RequestMapping(value = "/api/signal")
@@ -49,8 +51,7 @@ public class SignalController {
 	@PostMapping(value = "/{processInstanceId}/prioritize")
 	public String prioritizeTopic(@PathVariable String processInstanceId,
                                   @RequestBody Topic topic) throws TaskNotFoundException {
-		signalService.prioritizeTopic(topic, processInstanceId);
-		return "finished";
+		return signalService.prioritizeTopic(topic, processInstanceId);
 	}
 
 	@GetMapping(value = "/all")
@@ -76,4 +77,22 @@ public class SignalController {
             }
         }
     }
+	
+	@PostMapping(value = "/createAssessmentPlan")
+	public String createAssessmentPlan(@RequestBody AssessmentPlan assessmentPlan) {
+		signalService.createAssessmentPlan(assessmentPlan);
+		return "Saved Successfully";
+	}
+	
+	@PostMapping(value = "/createAssessmentAction")
+	public String createAssessmentAction(@RequestBody SignalAction signalAction) {
+		signalService.createAssessmentAction(signalAction);
+		return "Saved Successfully";
+	}
+	
+	@PostMapping(value = "/{assessmentId}/allAssessmentActions")
+	public List<SignalAction> getAllByAssessmentId(@PathVariable String assessmentId) {
+		return signalService.findAllByAssessmentId(assessmentId);
+
+	}
 }
