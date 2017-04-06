@@ -1,8 +1,14 @@
 package com.deloitte.smt.controller;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Attachment;
+import com.deloitte.smt.entity.AttachmentType;
+import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.ProcessNotFoundException;
+import com.deloitte.smt.exception.TaskNotFoundException;
+import com.deloitte.smt.service.SignalService;
+import com.deloitte.smt.util.SignalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,14 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.entity.SignalAction;
-import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.TaskNotFoundException;
-import com.deloitte.smt.repository.TaskInstRepository;
-import com.deloitte.smt.service.SignalService;
-import com.deloitte.smt.util.SignalUtil;
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/signal")
@@ -29,29 +29,22 @@ public class SignalController {
 	@Autowired
 	SignalService signalService;
 
-	@Autowired
-	TaskInstRepository taskInstRepository;
-
 	@PostMapping(value = "/createTopic")
 	public String createTopic(@RequestBody Topic topic,
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
-		addAttachments(topic, attachments);
+		addAttachments(topic, attachments, AttachmentType.TOPIC_ATTACHMENT);
         return signalService.createTopic(topic);
 	}
 	
-	@PostMapping(value = "/{processInstanceId}/validate")
-	public String validateTopic(@PathVariable String processInstanceId,
-                                @RequestBody Topic topic,
-                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws TaskNotFoundException, IOException {
-        addAttachments(topic, attachments);
-        signalService.validateTopic(topic, processInstanceId);
+	@PostMapping(value = "/validateAndPrioritize")
+	public String validateAndPrioritizeTopic(@RequestBody Topic topic,
+                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws TaskNotFoundException, IOException, ProcessNotFoundException {
+        if(topic.getProcessId() == null) {
+            throw new ProcessNotFoundException("Process Id not found for the given Topic with Id ["+topic.getId()+"]");
+        }
+        addAttachments(topic, attachments, AttachmentType.VALIDATE_ATTACHMENT);
+        signalService.validateAndPrioritize(topic);
 		return "Validation is finished";
-	}
-	
-	@PostMapping(value = "/{processInstanceId}/prioritize")
-	public String prioritizeTopic(@PathVariable String processInstanceId,
-                                  @RequestBody Topic topic) throws TaskNotFoundException {
-		return signalService.prioritizeTopic(topic, processInstanceId);
 	}
 
 	@GetMapping(value = "/all")
@@ -66,10 +59,11 @@ public class SignalController {
 		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(),signalService.getAssesmentCount(),signalService.getRiskCount());
 	}
 
-	private void addAttachments(Topic topic, MultipartFile[] attachments) throws IOException {
+	private void addAttachments(Topic topic, MultipartFile[] attachments, AttachmentType attachmentType) throws IOException {
         if(attachments != null) {
             for (MultipartFile attachment : attachments) {
                 Attachment a = new Attachment();
+                a.setAttachmentType(attachmentType);
                 a.setTopic(topic);
                 a.setContent(attachment.getBytes());
                 a.setFileName(attachment.getOriginalFilename());
@@ -78,12 +72,17 @@ public class SignalController {
         }
     }
 	
-	@PostMapping(value = "/createAssessmentPlan")
-	public String createAssessmentPlan(@RequestBody AssessmentPlan assessmentPlan) {
-		signalService.createAssessmentPlan(assessmentPlan);
+	@PostMapping(value = "/{topicId}/createAssessmentPlan")
+	public String createAssessmentPlan(@PathVariable Long topicId, @RequestBody AssessmentPlan assessmentPlan) {
+		signalService.createAssessmentPlan(topicId, assessmentPlan);
 		return "Saved Successfully";
 	}
-	
+
+	@GetMapping(value = "/allAssessmentPlans")
+    public List<AssessmentPlan> getAllAssessmentPlans(@RequestParam(value = "status", defaultValue = "completed") String status){
+        return signalService.findAllAssessmentPlansByStatus();
+    }
+
 	@PostMapping(value = "/createAssessmentAction")
 	public String createAssessmentAction(@RequestBody SignalAction signalAction) {
 		signalService.createAssessmentAction(signalAction);
@@ -91,8 +90,8 @@ public class SignalController {
 	}
 	
 	@PostMapping(value = "/{assessmentId}/allAssessmentActions")
-	public List<SignalAction> getAllByAssessmentId(@PathVariable String assessmentId) {
-		return signalService.findAllByAssessmentId(assessmentId);
-
+	public List<SignalAction> getAllByAssessmentId(@PathVariable String assessmentId,
+                                                   @RequestParam(value = "status", defaultValue = "completed") String actionStatus) {
+		return signalService.findAllByAssessmentId(assessmentId, actionStatus);
 	}
 }

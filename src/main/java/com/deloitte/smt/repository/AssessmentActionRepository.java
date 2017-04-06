@@ -1,13 +1,12 @@
 package com.deloitte.smt.repository;
 
-import java.util.List;
-
+import com.deloitte.smt.entity.SignalAction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.deloitte.smt.entity.SignalAction;
+import java.util.List;
 
 public interface AssessmentActionRepository extends JpaRepository<SignalAction, Long> {
 
-	List<SignalAction> findAllByAssessmentId(String assessmentId);
+	List<SignalAction> findAllByAssessmentIdAndActionStatus(String assessmentId, String actionStatus);
 	
 }

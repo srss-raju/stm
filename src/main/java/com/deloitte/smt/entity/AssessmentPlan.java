@@ -1,12 +1,15 @@
 package com.deloitte.smt.entity;
 
-import java.util.Date;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "sm_assessment_plan")
@@ -15,7 +18,8 @@ public class AssessmentPlan {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-	private String topicId;
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "assessmentPlan")
+	private List<Topic> topics;
 	private String assessmentName;
 	private String priority;
 	private int inDays;
@@ -29,12 +33,15 @@ public class AssessmentPlan {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getTopicId() {
-		return topicId;
+
+	public List<Topic> getTopics() {
+		return topics;
 	}
-	public void setTopicId(String topicId) {
-		this.topicId = topicId;
+
+	public void setTopics(List<Topic> topics) {
+		this.topics = topics;
 	}
+
 	public String getAssessmentName() {
 		return assessmentName;
 	}

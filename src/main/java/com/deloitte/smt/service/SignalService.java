@@ -1,19 +1,5 @@
 package com.deloitte.smt.service;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskInst;
@@ -23,6 +9,20 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -63,20 +63,11 @@ public class SignalService {
         return processInstanceId;
     }
 
-    public void validateTopic(Topic topic, String processInstanceId) throws TaskNotFoundException {
+    public String validateAndPrioritize(Topic topic) throws TaskNotFoundException {
         topicRepository.save(topic);
-        Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(topic.getProcessId()).singleResult();
         if(task == null) {
-            throw new TaskNotFoundException("Task not found for the process "+processInstanceId);
-        }
-        taskService.complete(task.getId());
-    }
-
-    public String prioritizeTopic(Topic topic, String processInstanceId) throws TaskNotFoundException {
-        topicRepository.save(topic);
-        Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-        if(task == null) {
-            throw new TaskNotFoundException("Task not found for the process "+processInstanceId);
+            throw new TaskNotFoundException("Task not found for the process "+topic.getProcessId());
         }
         taskService.complete(task.getId());
         
@@ -105,7 +96,7 @@ public class SignalService {
             taskInsts = taskInstRepository.findAll();
         }
         List<String> processIds = taskInsts.stream().map(TaskInst::getProcInstId).collect(Collectors.toList());
-        return topicRepository.findAllByProcessIdIn(processIds);
+        return topicRepository.findAllByProcessIdInOrderByStartDateDesc(processIds);
     }
     
     public Long getValidateAndPrioritizeCount(){
@@ -136,14 +127,20 @@ public class SignalService {
 		assessmentActionRepository.save(signalAction);
     }
 
-	public List<SignalAction> findAllByAssessmentId(String assessmentId) {
-		return assessmentActionRepository.findAllByAssessmentId(assessmentId);
+	public List<SignalAction> findAllByAssessmentId(String assessmentId, String actionStatus) {
+		return assessmentActionRepository.findAllByAssessmentIdAndActionStatus(assessmentId, actionStatus);
 	}
 
-	public void createAssessmentPlan(AssessmentPlan assessmentPlan) {
+	public void createAssessmentPlan(Long topicId, AssessmentPlan assessmentPlan) {
 		CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
 		assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
 		assessmentPlanRepository.save(assessmentPlan);
-		
+        Topic topic = topicRepository.findOne(topicId);
+        topic.setAssessmentPlan(assessmentPlan);
+        topicRepository.save(topic);
 	}
+
+	public List<AssessmentPlan> findAllAssessmentPlansByStatus() {
+        return new ArrayList<>();
+    }
 }

@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
 
-    List<Topic> findAllByProcessIdIn(List<String> processId);
+    List<Topic> findAllByProcessIdInOrderByStartDateDesc(List<String> processId);
     Long countByProcessIdIn(List<String> processId);
 }

@@ -1,9 +1,6 @@
 package com.deloitte.smt.entity;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -12,8 +9,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -41,8 +43,13 @@ public class Topic implements Serializable {
     private String remarks;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "topic")
+    @JsonIgnore
     private List<Attachment> attachments;
     private String processId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    private AssessmentPlan assessmentPlan;
 
     public Topic() {
         this.attachments = new ArrayList<>();
@@ -143,5 +150,13 @@ public class Topic implements Serializable {
 
     public void setProcessId(String processId) {
         this.processId = processId;
+    }
+
+    public AssessmentPlan getAssessmentPlan() {
+        return assessmentPlan;
+    }
+
+    public void setAssessmentPlan(AssessmentPlan assessmentPlan) {
+        this.assessmentPlan = assessmentPlan;
     }
 }
