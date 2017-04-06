@@ -84,13 +84,19 @@ public class SignalController {
 		return "Saved Successfully";
 	}
 	
+	@GetMapping(value = "/allAssessmentPlans")
+	public List<AssessmentPlan> allAssessmentPlans() {
+		return signalService.findAllAssessmentPlans();
+
+	}
+	
 	@PostMapping(value = "/createAssessmentAction")
 	public String createAssessmentAction(@RequestBody SignalAction signalAction) {
 		signalService.createAssessmentAction(signalAction);
 		return "Saved Successfully";
 	}
 	
-	@PostMapping(value = "/{assessmentId}/allAssessmentActions")
+	@GetMapping(value = "/{assessmentId}/allAssessmentActions")
 	public List<SignalAction> getAllByAssessmentId(@PathVariable String assessmentId) {
 		return signalService.findAllByAssessmentId(assessmentId);
 

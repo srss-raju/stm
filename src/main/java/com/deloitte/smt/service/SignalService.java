@@ -146,4 +146,8 @@ public class SignalService {
 		assessmentPlanRepository.save(assessmentPlan);
 		
 	}
+
+	public List<AssessmentPlan> findAllAssessmentPlans() {
+		return assessmentPlanRepository.findAllByCaseInstanceIdIn(Arrays.asList(""));
+	}
 }
