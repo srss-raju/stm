@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,12 @@ public class AssessmentPlan {
     private Date createdDate;
     private String comments;
     private String caseInstanceId;
-    
+	private String assessmentPlanStatus;
+
+	public AssessmentPlan() {
+		this.topics = new ArrayList<>();
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -78,5 +84,12 @@ public class AssessmentPlan {
 	public void setCaseInstanceId(String caseInstanceId) {
 		this.caseInstanceId = caseInstanceId;
 	}
-    
+
+	public String getAssessmentPlanStatus() {
+		return assessmentPlanStatus;
+	}
+
+	public void setAssessmentPlanStatus(String assessmentPlanStatus) {
+		this.assessmentPlanStatus = assessmentPlanStatus;
+	}
 }

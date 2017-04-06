@@ -8,5 +8,5 @@ import java.util.List;
 public interface AssessmentActionRepository extends JpaRepository<SignalAction, Long> {
 
 	List<SignalAction> findAllByAssessmentIdAndActionStatus(String assessmentId, String actionStatus);
-	
+	List<SignalAction> findAllByAssessmentId(String assessmentId);
 }

@@ -1,11 +1,9 @@
 package com.deloitte.smt.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -24,8 +22,7 @@ public class Attachment implements Serializable {
     private String fileName;
     private AttachmentType attachmentType;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Topic topic;
+    private Long attachmentResourceId;
 
     public Long getId() {
         return id;
@@ -59,11 +56,11 @@ public class Attachment implements Serializable {
         this.attachmentType = attachmentType;
     }
 
-    public Topic getTopic() {
-        return topic;
+    public Long getAttachmentResourceId() {
+        return attachmentResourceId;
     }
 
-    public void setTopic(Topic topic) {
-        this.topic = topic;
+    public void setAttachmentResourceId(Long attachmentResourceId) {
+        this.attachmentResourceId = attachmentResourceId;
     }
 }

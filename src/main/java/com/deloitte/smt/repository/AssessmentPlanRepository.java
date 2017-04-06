@@ -1,13 +1,13 @@
 package com.deloitte.smt.repository;
 
-import java.util.List;
-
+import com.deloitte.smt.entity.AssessmentPlan;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.Topic;
+import java.util.List;
 
 public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, Long> {
-	List<Topic> findAllByCaseInstanceIdIn(List<String> caseInstanceId);
+	List<AssessmentPlan> findAllByCaseInstanceIdIn(List<String> caseInstanceId);
 	Long countByCaseInstanceIdIn(List<String> caseInstanceId);
+
+	List<AssessmentPlan> findAllByAssessmentPlanStatus(String assessmentPlanStatus);
 }

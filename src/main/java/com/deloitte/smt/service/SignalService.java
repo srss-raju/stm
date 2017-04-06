@@ -1,10 +1,14 @@
 package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.AssessmentPlanStatus;
+import com.deloitte.smt.entity.Attachment;
+import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.TaskNotFoundException;
+import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
@@ -17,8 +21,9 @@ import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +56,7 @@ public class SignalService {
     @Autowired
     AssessmentPlanRepository assessmentPlanRepository;
 
-    public String createTopic(Topic topic) {
+    public String createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
         String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         taskService.delegateTask(task.getId(), "Demo Demo");
@@ -59,12 +64,16 @@ public class SignalService {
             topic.setId(null);
         }
         topic.setProcessId(processInstanceId);
-        topicRepository.save(topic);
+        topic = topicRepository.save(topic);
+        addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
         return processInstanceId;
     }
 
-    public String validateAndPrioritize(Topic topic) throws TaskNotFoundException {
-        topicRepository.save(topic);
+    public String validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws TaskNotFoundException, IOException, TopicNotFoundException {
+        Topic topic = topicRepository.findOne(topicId);
+        if(topic == null) {
+            throw new TopicNotFoundException("Topic not found with the given Id ["+topicId+"]");
+        }
         Task task = taskService.createTaskQuery().processInstanceId(topic.getProcessId()).singleResult();
         if(task == null) {
             throw new TaskNotFoundException("Task not found for the process "+topic.getProcessId());
@@ -73,7 +82,13 @@ public class SignalService {
         
         CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
         topic.setProcessId(instance.getCaseInstanceId());
+        assessmentPlan.setAssessmentPlanStatus(AssessmentPlanStatus.ACTION_PLAN.getDescription());
+        assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
+        assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
+        addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT);
+        topic.setAssessmentPlan(assessmentPlan);
         topicRepository.save(topic);
+
         return instance.getCaseInstanceId();
     }
 
@@ -128,19 +143,25 @@ public class SignalService {
     }
 
 	public List<SignalAction> findAllByAssessmentId(String assessmentId, String actionStatus) {
-		return assessmentActionRepository.findAllByAssessmentIdAndActionStatus(assessmentId, actionStatus);
+        if(actionStatus != null){
+            return assessmentActionRepository.findAllByAssessmentIdAndActionStatus(assessmentId, actionStatus);
+        }
+		return assessmentActionRepository.findAllByAssessmentId(assessmentId);
 	}
 
-	public void createAssessmentPlan(Long topicId, AssessmentPlan assessmentPlan) {
-		CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
-		assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
-		assessmentPlanRepository.save(assessmentPlan);
-        Topic topic = topicRepository.findOne(topicId);
-        topic.setAssessmentPlan(assessmentPlan);
-        topicRepository.save(topic);
-	}
+	public List<AssessmentPlan> findAllAssessmentPlansByStatus(String assessmentPlanStatus) {
+        return assessmentPlanRepository.findAllByAssessmentPlanStatus(assessmentPlanStatus);
+    }
 
-	public List<AssessmentPlan> findAllAssessmentPlansByStatus() {
-        return new ArrayList<>();
+    private void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType) throws IOException {
+        if(attachments != null) {
+            for (MultipartFile attachment : attachments) {
+                Attachment a = new Attachment();
+                a.setAttachmentType(attachmentType);
+                a.setAttachmentResourceId(attachmentResourceId);
+                a.setContent(attachment.getBytes());
+                a.setFileName(attachment.getOriginalFilename());
+            }
+        }
     }
 }
