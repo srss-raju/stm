@@ -49,7 +49,7 @@ public class SignalController {
 	}
 
 	@GetMapping(value = "/all")
-	public List<Topic> getAllByStatus(@RequestParam(name = "status", required = false, defaultValue = "validateTopic,prioritizeAndTopicAssignment") String statuses,
+	public List<Topic> getAllByStatus(@RequestParam(name = "status", required = false, defaultValue = "validateTopic") String statuses,
 									  @RequestParam(name = "deleteReason", required = false, defaultValue = "completed") String deleteReason) {
 		return signalService.findAllByStatus(statuses, deleteReason);
 
