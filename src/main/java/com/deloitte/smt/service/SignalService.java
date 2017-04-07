@@ -122,7 +122,7 @@ public class SignalService {
     }
     
     public Long getValidateAndPrioritizeCount(){
-    	return taskInstRepository.countByTaskDefKeyInAndDeleteReasonNot(Arrays.asList("validateTopic","prioritizeAndTopicAssignment"), "completed");
+    	return taskInstRepository.countByTaskDefKeyInAndDeleteReasonNot(Arrays.asList("validateTopic"), "completed");
     }
     
     public Long getAssesmentCount(){
