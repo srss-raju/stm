@@ -26,7 +26,7 @@ public interface TaskInstRepository extends JpaRepository<TaskInst, String> {
      * @param deletedReason
      * @return
      */
-    Long countByTaskDefKeyInAndDeleteReasonNot(List<String> taskDefKeys, String deletedReason);
+    Long countByTaskDefKeyInAndDeleteReasonNotOrDeleteReasonIsNull(List<String> taskDefKeys, String deletedReason);
 
     /**
      * taskDefKeys are nothing but statuses
