@@ -58,8 +58,12 @@ public class SignalService {
 
     public Topic findById(Long topicId){
         Topic topic = topicRepository.findOne(topicId);
-        topic.setSignalValidation("In Progress");
-        topic.setSignalConfirmation("Validated Signal");
+        if(null == topic.getSignalConfirmation()) {
+            topic.setSignalConfirmation("Validated Signal");
+        }
+        if(null == topic.getSignalValidation()) {
+            topic.setSignalValidation("In Progress");
+        }
         return topic;
     }
 
