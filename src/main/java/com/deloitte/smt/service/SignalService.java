@@ -127,7 +127,16 @@ public class SignalService {
         List<String> processIds = taskInsts.stream().map(TaskInst::getProcInstId)
                 .filter(s -> !StringUtils.isEmpty(s))
                 .collect(Collectors.toList());
-        return topicRepository.findAllByProcessIdInOrderByStartDateDesc(processIds);
+        List<Topic> topics = topicRepository.findAllByProcessIdInOrderByStartDateDesc(processIds);
+        topics.stream().forEach(topic->{
+            if(null == topic.getSignalConfirmation()) {
+                topic.setSignalConfirmation("Validated Signal");
+            }
+            if(null == topic.getSignalValidation()) {
+                topic.setSignalValidation("In Progress");
+            }
+        });
+        return topics;
     }
     
     public Long getValidateAndPrioritizeCount(){
