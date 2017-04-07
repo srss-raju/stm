@@ -57,7 +57,10 @@ public class SignalService {
     AssessmentPlanRepository assessmentPlanRepository;
 
     public Topic findById(Long topicId){
-        return topicRepository.findOne(topicId);
+        Topic topic = topicRepository.findOne(topicId);
+        topic.setSignalValidation("In Progress");
+        topic.setSignalConfirmation("Validated Signal");
+        return topic;
     }
 
     public String createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
@@ -68,6 +71,8 @@ public class SignalService {
             topic.setId(null);
         }
         topic.setCreatedDate(new Date());
+        topic.setSignalValidation("In Progress");
+        topic.setSignalConfirmation("Validated Signal");
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
         addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);

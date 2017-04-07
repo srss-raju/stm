@@ -38,8 +38,9 @@ public class Topic implements Serializable {
     private Date endDate;
     private Date createdDate;
     private String remarks;
-
     private String processId;
+    private String signalValidation;
+    private String signalConfirmation;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
@@ -143,6 +144,22 @@ public class Topic implements Serializable {
 
     public void setProcessId(String processId) {
         this.processId = processId;
+    }
+
+    public String getSignalValidation() {
+        return signalValidation;
+    }
+
+    public void setSignalValidation(String signalValidation) {
+        this.signalValidation = signalValidation;
+    }
+
+    public String getSignalConfirmation() {
+        return signalConfirmation;
+    }
+
+    public void setSignalConfirmation(String signalConfirmation) {
+        this.signalConfirmation = signalConfirmation;
     }
 
     public AssessmentPlan getAssessmentPlan() {
