@@ -101,7 +101,7 @@ public class SignalService {
         List<TaskInst> taskInsts = null;
         //Get all by statuses and delete reason
         if (!StringUtils.isEmpty(statuses) && !StringUtils.isEmpty(deleteReason)) {
-            taskInsts = taskInstRepository.findAllByTaskDefKeyInAndProcInstIdNotNullAndDeleteReasonNotOrDeleteReasonNull(Arrays.asList(statuses.split(",")), deleteReason);
+            taskInsts = taskInstRepository.findAllByTaskDefKeyInAndDeleteReasonNot(Arrays.asList(statuses.split(",")), deleteReason);
         }
         //Get all by statuses
         else if (!StringUtils.isEmpty(statuses)) {
@@ -134,6 +134,10 @@ public class SignalService {
     }
     
     public void createAssessmentAction(SignalAction signalAction) {
+        if(signalAction.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(signalAction.getActionStatus())){
+            Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
+            taskService.complete(task.getId());
+        }
     	Task task = taskService.newTask();
 		task.setCaseInstanceId(signalAction.getCaseInstanceId());
 		task.setName(signalAction.getActionName());

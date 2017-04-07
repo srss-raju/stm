@@ -16,10 +16,11 @@ public interface TaskInstRepository extends JpaRepository<TaskInst, String> {
      * taskDefKeys are nothing but statuses
      *
      * @param taskDefKeys
-     * @param deletedReason
+     * @param deleteReason
      * @return
      */
-    List<TaskInst> findAllByTaskDefKeyInAndProcInstIdNotNullAndDeleteReasonNotOrDeleteReasonNull(List<String> taskDefKeys, String deletedReason);
+    @Query("SELECT o FROM TaskInst o WHERE o.taskDefKey IN :taskDefKeys AND o.procInstId IS NOT NULL AND (o.deleteReason <> :deleteReason OR o.deleteReason IS NULL)")
+    List<TaskInst> findAllByTaskDefKeyInAndDeleteReasonNot(@Param("taskDefKeys") List<String> taskDefKeys, @Param("deleteReason") String deleteReason);
 
     /**
      * taskDefKeys are nothing but statuses
