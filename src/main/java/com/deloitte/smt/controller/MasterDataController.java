@@ -12,7 +12,7 @@ import java.util.List;
  * Created by myelleswarapu on 06-04-2017.
  */
 @RestController
-@RequestMapping(value = "/api/signal/utils")
+@RequestMapping(value = "/camunda/api/signal/utils")
 public class MasterDataController {
 
     @GetMapping(value = "/actionTypes")

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/signal")
+@RequestMapping(value = "/camunda/api/signal")
 public class SignalController {
 
 	@Autowired
