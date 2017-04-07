@@ -111,7 +111,9 @@ public class SignalService {
         else {
             taskInsts = taskInstRepository.findAll();
         }
-        List<String> processIds = taskInsts.stream().map(TaskInst::getProcInstId).collect(Collectors.toList());
+        List<String> processIds = taskInsts.stream().map(TaskInst::getProcInstId)
+                .filter(s -> !StringUtils.isEmpty(s))
+                .collect(Collectors.toList());
         return topicRepository.findAllByProcessIdInOrderByStartDateDesc(processIds);
     }
     
