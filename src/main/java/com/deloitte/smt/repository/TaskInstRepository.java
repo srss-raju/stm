@@ -2,6 +2,8 @@ package com.deloitte.smt.repository;
 
 import com.deloitte.smt.entity.TaskInst;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -23,10 +25,11 @@ public interface TaskInstRepository extends JpaRepository<TaskInst, String> {
      * taskDefKeys are nothing but statuses
      *
      * @param taskDefKeys
-     * @param deletedReason
+     * @param deleteReason
      * @return
      */
-    Long countByTaskDefKeyInAndDeleteReasonNotOrDeleteReasonIsNull(List<String> taskDefKeys, String deletedReason);
+    @Query("SELECT COUNT(o.id) FROM TaskInst o WHERE o.taskDefKey IN :taskDefKeys AND (o.deleteReason <> :deleteReason OR o.deleteReason IS NULL)")
+    Long countByTaskDefKeyInAndDeleteReasonNot(@Param("taskDefKeys") List<String> taskDefKeys, @Param("deleteReason") String deleteReason);
 
     /**
      * taskDefKeys are nothing but statuses

@@ -56,6 +56,10 @@ public class SignalService {
     @Autowired
     AssessmentPlanRepository assessmentPlanRepository;
 
+    public Topic findById(Long topicId){
+        return topicRepository.findOne(topicId);
+    }
+
     public String createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
         String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
@@ -118,7 +122,7 @@ public class SignalService {
     }
     
     public Long getValidateAndPrioritizeCount(){
-    	return taskInstRepository.countByTaskDefKeyInAndDeleteReasonNotOrDeleteReasonIsNull(Arrays.asList("validateTopic","prioritizeAndTopicAssignment"), "completed");
+    	return taskInstRepository.countByTaskDefKeyInAndDeleteReasonNot(Arrays.asList("validateTopic","prioritizeAndTopicAssignment"), "completed");
     }
     
     public Long getAssesmentCount(){

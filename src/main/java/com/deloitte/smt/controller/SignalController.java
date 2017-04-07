@@ -33,7 +33,12 @@ public class SignalController {
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         return signalService.createTopic(topic, attachments);
 	}
-	
+
+	@GetMapping(value = "/{topicId}")
+    public Topic getTopicById(@PathVariable Long topicId) {
+        return signalService.findById(topicId);
+    }
+
 	@PostMapping(value = "/{topicId}/validateAndPrioritize")
 	public String validateAndPrioritizeTopic(
 	        @PathVariable Long topicId,
