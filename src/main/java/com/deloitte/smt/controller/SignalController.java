@@ -38,7 +38,7 @@ public class SignalController {
 	@PutMapping(value = "/updateTopic")
 	public String updateTopic(@RequestBody Topic topic,
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, UpdateFailedException {
-		return signalService.updateTopic(topic);
+		return signalService.updateTopic(topic, attachments);
 	}
 
 	@GetMapping(value = "/{topicId}")
@@ -56,8 +56,8 @@ public class SignalController {
 	}
 
 	@GetMapping(value = "/all")
-	public List<Topic> getAllByStatus(@RequestParam(name = "status", required = false, defaultValue = "validateTopic") String statuses,
-									  @RequestParam(name = "deleteReason", required = false, defaultValue = "completed") String deleteReason) {
+	public List<Topic> getAllByStatus(@RequestParam(name = "status", required = false) String statuses,
+									  @RequestParam(name = "deleteReason", required = false) String deleteReason) {
 		return signalService.findAllByStatus(statuses, deleteReason);
 
 	}
