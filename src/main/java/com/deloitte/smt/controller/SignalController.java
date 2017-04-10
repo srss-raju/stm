@@ -1,17 +1,18 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ProcessNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
+import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,12 @@ public class SignalController {
 	public String createTopic(@RequestBody Topic topic,
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         return signalService.createTopic(topic, attachments);
+	}
+
+	@PutMapping(value = "/updateTopic")
+	public String updateTopic(@RequestBody Topic topic,
+							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, UpdateFailedException {
+		return signalService.updateTopic(topic);
 	}
 
 	@GetMapping(value = "/{topicId}")
@@ -58,22 +65,5 @@ public class SignalController {
 	@GetMapping(value = "/getCounts")
 	public String getCounts() {
 		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(),signalService.getAssesmentCount(),signalService.getRiskCount());
-	}
-
-	@GetMapping(value = "/allAssessmentPlans")
-    public List<AssessmentPlan> getAllAssessmentPlans(@RequestParam(value = "status", defaultValue = "ActionPlan") String status){
-        return signalService.findAllAssessmentPlansByStatus(status);
-    }
-
-	@PostMapping(value = "/createAssessmentAction")
-	public String createAssessmentAction(@RequestBody SignalAction signalAction) {
-		signalService.createAssessmentAction(signalAction);
-		return "Saved Successfully";
-	}
-	
-	@GetMapping(value = "/{assessmentId}/allAssessmentActions")
-	public List<SignalAction> getAllByAssessmentId(@PathVariable String assessmentId,
-                                                   @RequestParam(value = "status", required = false) String actionStatus) {
-		return signalService.findAllByAssessmentId(assessmentId, actionStatus);
 	}
 }

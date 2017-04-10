@@ -4,12 +4,11 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssessmentPlanStatus;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.AttachmentType;
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
-import com.deloitte.smt.repository.AssessmentActionRepository;
+import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRepository;
@@ -51,9 +50,6 @@ public class SignalService {
     CaseService caseService;
     
     @Autowired
-    AssessmentActionRepository assessmentActionRepository;
-    
-    @Autowired
     AssessmentPlanRepository assessmentPlanRepository;
 
     public Topic findById(Long topicId){
@@ -81,6 +77,14 @@ public class SignalService {
         topic = topicRepository.save(topic);
         addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
         return processInstanceId;
+    }
+
+    public String updateTopic(Topic topic) throws UpdateFailedException {
+        if(topic.getId() == null) {
+            throw new UpdateFailedException("Update failed for Topic, since it does not have any valid Id field.");
+        }
+        topicRepository.save(topic);
+        return "Update Success";
     }
 
     public String validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws TaskNotFoundException, IOException, TopicNotFoundException {
@@ -149,37 +153,6 @@ public class SignalService {
     
     public Long getRiskCount(){
     	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
-    }
-    
-    public void createAssessmentAction(SignalAction signalAction) {
-        if(signalAction.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(signalAction.getActionStatus())){
-            Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
-            taskService.complete(task.getId());
-        }
-    	Task task = taskService.newTask();
-		task.setCaseInstanceId(signalAction.getCaseInstanceId());
-		task.setName(signalAction.getActionName());
-		taskService.saveTask(task);
-		List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
-		TaskInst taskInstance = new TaskInst();
-		taskInstance.setId(list.get(list.size()-1).getId());
-		taskInstance.setCaseDefKey("assessment");
-		taskInstance.setTaskDefKey("assessment");
-		taskInstance.setCaseInstId(signalAction.getCaseInstanceId());
-		taskInstance.setStartTime(new Date());
-		taskInstRepository.save(taskInstance);
-		assessmentActionRepository.save(signalAction);
-    }
-
-	public List<SignalAction> findAllByAssessmentId(String assessmentId, String actionStatus) {
-        if(actionStatus != null){
-            return assessmentActionRepository.findAllByAssessmentIdAndActionStatus(assessmentId, actionStatus);
-        }
-		return assessmentActionRepository.findAllByAssessmentId(assessmentId);
-	}
-
-	public List<AssessmentPlan> findAllAssessmentPlansByStatus(String assessmentPlanStatus) {
-        return assessmentPlanRepository.findAllByAssessmentPlanStatus(assessmentPlanStatus);
     }
 
     private void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType) throws IOException {

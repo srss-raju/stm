@@ -1,5 +1,7 @@
 package com.deloitte.smt.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,6 +22,7 @@ public class AssessmentPlan {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "assessmentPlan")
+	@JsonIgnore
 	private List<Topic> topics;
 	private String assessmentName;
 	private String priority;
