@@ -29,6 +29,27 @@ public interface TaskInstRepository extends JpaRepository<TaskInst, String> {
      * @param deleteReason
      * @return
      */
+    @Query("SELECT o FROM TaskInst o WHERE o.taskDefKey IN :taskDefKeys AND o.procInstId IS NOT NULL AND o.deleteReason = :deleteReason")
+    List<TaskInst> findAllByTaskDefKeyInAndDeleteReason(@Param("taskDefKeys") List<String> taskDefKeys, @Param("deleteReason") String deleteReason);
+
+    /**
+     * taskDefKeys are nothing but statuses
+     *
+     * @param taskDefKeys
+     * @param deleteReason
+     * @return
+     */
+    @Query("SELECT o FROM TaskInst o WHERE o.taskDefKey IN :taskDefKeys AND o.procInstId IS NOT NULL AND o.deleteReason = :deleteReason")
+    List<TaskInst> countByTaskDefKeyInAndDeleteReason(@Param("taskDefKeys") List<String> taskDefKeys, @Param("deleteReason") String deleteReason);
+
+
+    /**
+     * taskDefKeys are nothing but statuses
+     *
+     * @param taskDefKeys
+     * @param deleteReason
+     * @return
+     */
     @Query("SELECT COUNT(o.id) FROM TaskInst o WHERE o.taskDefKey IN :taskDefKeys AND (o.deleteReason <> :deleteReason OR o.deleteReason IS NULL)")
     Long countByTaskDefKeyInAndDeleteReasonNot(@Param("taskDefKeys") List<String> taskDefKeys, @Param("deleteReason") String deleteReason);
 

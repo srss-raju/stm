@@ -41,6 +41,7 @@ public class Topic implements Serializable {
     private String processId;
     private String signalValidation;
     private String signalConfirmation;
+    //ValidationComments
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore

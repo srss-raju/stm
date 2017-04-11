@@ -1,6 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Drug;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ProcessNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -57,13 +59,35 @@ public class SignalController {
 
 	@GetMapping(value = "/all")
 	public List<Topic> getAllByStatus(@RequestParam(name = "status", required = false) String statuses,
-									  @RequestParam(name = "deleteReason", required = false) String deleteReason) {
-		return signalService.findAllByStatus(statuses, deleteReason);
+									  @RequestParam(name = "deleteReason", required = false) String deleteReason,
+									  @RequestParam(name = "createdDate", required = false) Date createdDate,
+									  @RequestParam(name = "ingredient", required = false) String ingredient,
+									  @RequestParam(name = "product", required = false) String product,
+									  @RequestParam(name = "license", required = false) String license) {
+		Topic t = null;
+		if(createdDate != null || ingredient != null || product != null || license != null) {
+			t = new Topic();
+			t.setStartDate(null);
+			t.setDrug(new Drug());
+			if (createdDate != null) {
+				t.setCreatedDate(createdDate);
+			}
+			if (ingredient != null) {
+				t.getDrug().setIngredient(ingredient);
+			}
+			if (product != null) {
+				t.getDrug().setProduct(product);
+			}
+			if (license != null) {
+				t.getDrug().setLicense(license);
+			}
+		}
+		return signalService.findAllByStatus(statuses, deleteReason, t);
 
 	}
 
 	@GetMapping(value = "/getCounts")
 	public String getCounts() {
-		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(),signalService.getAssesmentCount(),signalService.getRiskCount());
+		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(),signalService.getAssessmentCount(),signalService.getRiskCount());
 	}
 }

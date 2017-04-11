@@ -1,6 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.service.AssessmentPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,5 +31,10 @@ public class AssessmentController {
     @GetMapping(value = "/assessmentPlan/{id}")
     public AssessmentPlan getAssessmentPlanById(@PathVariable Long id) {
         return assessmentPlanService.findById(id);
+    }
+
+    @GetMapping(value = "/{assessmentId}/allTopics")
+    public List<Topic> getAllSignalsByAssessmentId(@PathVariable Long assessmentId) {
+        return assessmentPlanService.findById(assessmentId).getTopics();
     }
 }

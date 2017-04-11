@@ -19,9 +19,10 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -76,8 +77,12 @@ public class SignalService {
             topic.setId(null);
         }
         topic.setCreatedDate(new Date());
-        topic.setSignalValidation("In Progress");
-        topic.setSignalConfirmation("Validated Signal");
+        if(null == topic.getSignalConfirmation()) {
+            topic.setSignalConfirmation("Validated Signal");
+        }
+        if(null == topic.getSignalValidation()) {
+            topic.setSignalValidation("In Progress");
+        }
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
         addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
@@ -116,13 +121,14 @@ public class SignalService {
         return instance.getCaseInstanceId();
     }
 
-    public List<Topic> findAllByStatus(String statuses, String deleteReason) {
+    public List<Topic> findAllByStatus(String statuses, String deleteReason, Topic t) {
+        Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
         List<Topic> topics;
         List<TaskInst> taskInsts = null;
         List<String> processIds;
         //Get all by statuses and delete reason
         if (!StringUtils.isEmpty(statuses) && !StringUtils.isEmpty(deleteReason)) {
-            taskInsts = taskInstRepository.findAllByTaskDefKeyInAndDeleteReasonNot(Arrays.asList(statuses.split(",")), deleteReason);
+            taskInsts = taskInstRepository.findAllByTaskDefKeyInAndDeleteReason(Arrays.asList(statuses.split(",")), deleteReason);
         }
         //Get all by statuses
         else if (!StringUtils.isEmpty(statuses)) {
@@ -133,14 +139,18 @@ public class SignalService {
             taskInsts = taskInstRepository.findAllByDeleteReason(deleteReason);
         }
 
-        if(!CollectionUtils.isEmpty(taskInsts)) {
+        if(taskInsts != null) {
             processIds = taskInsts.stream().map(TaskInst::getProcInstId)
                     .filter(s -> !StringUtils.isEmpty(s))
                     .collect(Collectors.toList());
             topics = topicRepository.findAllByProcessIdInOrderByStartDateDesc(processIds);
+        } else if(t != null) {
+            ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase();
+            Example<Topic> topicEx = Example.of(t, matcher);
+            topics = topicRepository.findAll(topicEx, sort);
         } else {
             LOG.info("Running query to get all Signals..");
-            topics = topicRepository.findAll(new Sort(Sort.Direction.ASC, "createdDate"));
+            topics = topicRepository.findAll(sort);
         }
 
         topics.stream().forEach(topic->{
@@ -153,13 +163,14 @@ public class SignalService {
         });
         return topics;
     }
-    
+
     public Long getValidateAndPrioritizeCount(){
-    	return taskInstRepository.countByTaskDefKeyInAndDeleteReasonNot(Arrays.asList("validateTopic"), "completed");
+        return topicRepository.count();
+    	//return taskInstRepository.countByTaskDefKeyInAndDeleteReasonNot(Arrays.asList("validateTopic"), "completed");
     }
     
-    public Long getAssesmentCount(){
-    	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("assesment"));
+    public Long getAssessmentCount(){
+    	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("assessment"));
     }
     
     public Long getRiskCount(){
