@@ -9,12 +9,11 @@ import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,14 +31,16 @@ public class SignalController {
 	SignalService signalService;
 
 	@PostMapping(value = "/createTopic")
-	public String createTopic(@RequestBody Topic topic,
+	public String createTopic(@RequestParam(value = "data") String topicString,
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
-        return signalService.createTopic(topic, attachments);
+        Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
+		return signalService.createTopic(topic, attachments);
 	}
  
-	@PutMapping(value = "/updateTopic")
-	public String updateTopic(@RequestBody Topic topic,
+	@PostMapping(value = "/updateTopic")
+	public String updateTopic(@RequestParam(value = "data") String topicString,
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, UpdateFailedException {
+		Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
 		return signalService.updateTopic(topic, attachments);
 	}
 
@@ -51,9 +52,10 @@ public class SignalController {
 	@PostMapping(value = "/{topicId}/validateAndPrioritize")
 	public String validateAndPrioritizeTopic(
 	        @PathVariable Long topicId,
-	        @RequestBody AssessmentPlan assessmentPlan,
+			@RequestParam(value = "data") String assessmentPlanString,
                                 @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws TaskNotFoundException, IOException, ProcessNotFoundException, TopicNotFoundException {
-        signalService.validateAndPrioritize(topicId, assessmentPlan, attachments);
+		AssessmentPlan assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
+		signalService.validateAndPrioritize(topicId, assessmentPlan, attachments);
 		return "Validation is finished";
 	}
 

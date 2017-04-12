@@ -116,7 +116,7 @@ public class SignalService {
         assessmentPlan.setAssessmentPlanStatus(AssessmentPlanStatus.ACTION_PLAN.getDescription());
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
-        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT);
+        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
         topic.setAssessmentPlan(assessmentPlan);
         topic.setSignalStatus("Complete");
         topic.setSignalValidation("Complete");

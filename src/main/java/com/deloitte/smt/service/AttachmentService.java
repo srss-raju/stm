@@ -37,6 +37,8 @@ public class AttachmentService {
     }
 
     public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType) throws IOException {
+        List<Attachment> attachmentList = attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(attachmentResourceId, attachmentType);
+        attachmentRepository.delete(attachmentList);
         if(attachments != null) {
             for (MultipartFile attachment : attachments) {
                 Attachment a = new Attachment();
@@ -44,6 +46,7 @@ public class AttachmentService {
                 a.setAttachmentResourceId(attachmentResourceId);
                 a.setContent(attachment.getBytes());
                 a.setFileName(attachment.getOriginalFilename());
+                attachmentRepository.save(a);
             }
         }
     }
