@@ -1,9 +1,11 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.AssessmentActionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,5 +48,11 @@ public class AssessmentActionController {
     public List<SignalAction> getAllByAssessmentId(@PathVariable String assessmentId,
                                                    @RequestParam(value = "status", required = false) String actionStatus) {
         return assessmentActionService.findAllByAssessmentId(assessmentId, actionStatus);
+    }
+
+    @DeleteMapping(value = "/assessmentAction/{assessmentActionId}")
+    public String deleteById(@PathVariable Long assessmentActionId) throws DeleteFailedException {
+        assessmentActionService.delete(assessmentActionId);
+        return "Successfully Deleted";
     }
 }

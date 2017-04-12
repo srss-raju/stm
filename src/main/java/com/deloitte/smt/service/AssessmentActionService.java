@@ -2,6 +2,7 @@ package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskInst;
+import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
@@ -64,5 +65,13 @@ public class AssessmentActionService {
             return assessmentActionRepository.findAllByAssessmentIdAndActionStatus(assessmentId, actionStatus);
         }
         return assessmentActionRepository.findAllByAssessmentId(assessmentId);
+    }
+
+    public void delete(Long assessmentActionId) throws DeleteFailedException {
+        SignalAction signalAction = assessmentActionRepository.findOne(assessmentActionId);
+        if(signalAction == null) {
+            throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
+        }
+        assessmentActionRepository.delete(signalAction);
     }
 }
