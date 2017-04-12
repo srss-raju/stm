@@ -36,7 +36,7 @@ public class SignalController {
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         return signalService.createTopic(topic, attachments);
 	}
-
+ 
 	@PutMapping(value = "/updateTopic")
 	public String updateTopic(@RequestBody Topic topic,
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, UpdateFailedException {
