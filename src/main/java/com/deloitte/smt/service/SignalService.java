@@ -2,7 +2,6 @@ package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssessmentPlanStatus;
-import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
@@ -58,6 +57,9 @@ public class SignalService {
     @Autowired
     AssessmentPlanRepository assessmentPlanRepository;
 
+    @Autowired
+    AttachmentService attachmentService;
+
     public Topic findById(Long topicId){
         Topic topic = topicRepository.findOne(topicId);
         if(null == topic.getSignalConfirmation()) {
@@ -85,7 +87,7 @@ public class SignalService {
         }
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
-        addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
+        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
         return processInstanceId;
     }
 
@@ -93,7 +95,7 @@ public class SignalService {
         if(topic.getId() == null) {
             throw new UpdateFailedException("Update failed for Topic, since it does not have any valid Id field.");
         }
-        addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
+        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
         topicRepository.save(topic);
         return "Update Success";
     }
@@ -114,7 +116,7 @@ public class SignalService {
         assessmentPlan.setAssessmentPlanStatus(AssessmentPlanStatus.ACTION_PLAN.getDescription());
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
-        addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT);
+        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT);
         topic.setAssessmentPlan(assessmentPlan);
         topicRepository.save(topic);
 
@@ -170,22 +172,11 @@ public class SignalService {
     }
     
     public Long getAssessmentCount(){
-    	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("assessment"));
+    	///return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("assessment"));
+        return assessmentPlanRepository.count();
     }
     
     public Long getRiskCount(){
     	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
-    }
-
-    private void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType) throws IOException {
-        if(attachments != null) {
-            for (MultipartFile attachment : attachments) {
-                Attachment a = new Attachment();
-                a.setAttachmentType(attachmentType);
-                a.setAttachmentResourceId(attachmentResourceId);
-                a.setContent(attachment.getBytes());
-                a.setFileName(attachment.getOriginalFilename());
-            }
-        }
     }
 }

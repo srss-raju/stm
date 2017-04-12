@@ -7,7 +7,9 @@ public enum AttachmentType {
 
     TOPIC_ATTACHMENT("Topic Attachment"),
     VALIDATE_ATTACHMENT("Validate And Prioritize Attachment"),
-    ASSESSMENT_ATTACHMENT("Assessment Attachment");
+    ASSESSMENT_ATTACHMENT("Assessment Attachment"),
+    MEETING_ATTACHMENT("Meeting Attachment"),
+    FINAL_ASSESSMENT("Final Assessment");
 //Signal, AssessmentPlan-FinalAssessment, AssessmentPlanAction, RiskPlanAction
     private String description;
 

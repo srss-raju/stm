@@ -2,6 +2,7 @@ package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskInst;
+import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import org.camunda.bpm.engine.TaskService;
@@ -45,6 +46,17 @@ public class AssessmentActionService {
         taskInstance.setStartTime(new Date());
         taskInstRepository.save(taskInstance);
         assessmentActionRepository.save(signalAction);
+    }
+
+    public void updateAssessmentAction(SignalAction signalAction) throws UpdateFailedException {
+        if(signalAction.getId() == null) {
+            throw new UpdateFailedException("Failed to update Action. Invalid Id received");
+        }
+        assessmentActionRepository.save(signalAction);
+    }
+
+    public SignalAction findById(Long id) {
+        return assessmentActionRepository.findOne(id);
     }
 
     public List<SignalAction> findAllByAssessmentId(String assessmentId, String actionStatus) {

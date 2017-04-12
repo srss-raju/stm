@@ -17,7 +17,9 @@ public class WebConfiguration {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/camunda/api/**").allowedOrigins("*");
+                registry.addMapping("/camunda/api/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "PUT", "POST", "DELETE", "OPTIONS");
             }
         };
     }
