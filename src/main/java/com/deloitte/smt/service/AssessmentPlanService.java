@@ -6,6 +6,7 @@ import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -28,6 +29,9 @@ public class AssessmentPlanService {
     }
 
     public List<AssessmentPlan> findAllAssessmentPlansByStatus(String assessmentPlanStatus) {
+        if(StringUtils.isEmpty(assessmentPlanStatus)) {
+            return assessmentPlanRepository.findAll();
+        }
         return assessmentPlanRepository.findAllByAssessmentPlanStatus(assessmentPlanStatus);
     }
 

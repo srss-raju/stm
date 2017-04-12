@@ -30,7 +30,7 @@ public class AssessmentController {
     AssessmentPlanService assessmentPlanService;
 
     @GetMapping(value = "/allAssessmentPlans")
-    public List<AssessmentPlan> getAllAssessmentPlans(@RequestParam(value = "status", defaultValue = "ActionPlan") String status){
+    public List<AssessmentPlan> getAllAssessmentPlans(@RequestParam(value = "status", required = false) String status){
         return assessmentPlanService.findAllAssessmentPlansByStatus(status);
     }
 
