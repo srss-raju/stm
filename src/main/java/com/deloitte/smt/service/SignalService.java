@@ -100,7 +100,7 @@ public class SignalService {
         return "Update Success";
     }
 
-    public String validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws TaskNotFoundException, IOException, TopicNotFoundException {
+    public String validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan) throws TaskNotFoundException, TopicNotFoundException {
         Topic topic = topicRepository.findOne(topicId);
         if(topic == null) {
             throw new TopicNotFoundException("Topic not found with the given Id ["+topicId+"]");
@@ -116,7 +116,6 @@ public class SignalService {
         assessmentPlan.setAssessmentPlanStatus(AssessmentPlanStatus.ACTION_PLAN.getDescription());
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
-        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
         topic.setAssessmentPlan(assessmentPlan);
         topic.setSignalStatus("Complete");
         topic.setSignalValidation("Complete");

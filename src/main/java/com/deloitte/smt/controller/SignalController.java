@@ -3,7 +3,6 @@ package com.deloitte.smt.controller;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Drug;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.ProcessNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
@@ -16,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,13 +53,11 @@ public class SignalController {
         return signalService.findById(topicId);
     }
 
-	@PostMapping(value = "/{topicId}/validateAndPrioritize")
+	@PutMapping(value = "/{topicId}/validateAndPrioritize")
 	public String validateAndPrioritizeTopic(
 	        @PathVariable Long topicId,
-			@RequestParam(value = "data") String assessmentPlanString,
-                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws TaskNotFoundException, IOException, ProcessNotFoundException, TopicNotFoundException {
-		AssessmentPlan assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
-		signalService.validateAndPrioritize(topicId, assessmentPlan, attachments);
+			@RequestBody AssessmentPlan assessmentPlan) throws TaskNotFoundException, TopicNotFoundException {
+		signalService.validateAndPrioritize(topicId, assessmentPlan);
 		return "Validation is finished";
 	}
 
