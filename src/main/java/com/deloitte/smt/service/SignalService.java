@@ -44,7 +44,6 @@ public class SignalService {
 
     @Autowired
     private RuntimeService runtimeService;
-
     @Autowired
     private TopicRepository topicRepository;
 
@@ -120,6 +119,7 @@ public class SignalService {
         attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT);
         topic.setAssessmentPlan(assessmentPlan);
         topic.setSignalStatus("Complete");
+        topic.setSignalValidation("Complete");
         topicRepository.save(topic);
 
         return instance.getCaseInstanceId();

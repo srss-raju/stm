@@ -43,6 +43,7 @@ public class Topic implements Serializable {
     private String signalConfirmation;
     private String validationComments;
     private String signalStatus;
+    private String signalStrength;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
@@ -178,6 +179,14 @@ public class Topic implements Serializable {
 
     public void setSignalStatus(String signalStatus) {
         this.signalStatus = signalStatus;
+    }
+
+    public String getSignalStrength() {
+        return signalStrength;
+    }
+
+    public void setSignalStrength(String signalStrength) {
+        this.signalStrength = signalStrength;
     }
 
     public AssessmentPlan getAssessmentPlan() {
