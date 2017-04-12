@@ -1,11 +1,13 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.AssessmentActionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +29,17 @@ public class AssessmentActionController {
     public String createAssessmentAction(@RequestBody SignalAction signalAction) {
         assessmentActionService.createAssessmentAction(signalAction);
         return "Saved Successfully";
+    }
+
+    @PutMapping(value = "/updateAssessmentAction")
+    public String updateAssessmentAction(@RequestBody SignalAction signalAction) throws UpdateFailedException {
+        assessmentActionService.updateAssessmentAction(signalAction);
+        return "Successfully Updated";
+    }
+
+    @GetMapping(value = "/assessmentAction/{assessmentActionId}")
+    public SignalAction getAssessmentActionById(@PathVariable Long assessmentActionId){
+        return assessmentActionService.findById(assessmentActionId);
     }
 
     @GetMapping(value = "/{assessmentId}/allAssessmentActions")

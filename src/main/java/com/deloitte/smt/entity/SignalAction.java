@@ -1,12 +1,11 @@
 package com.deloitte.smt.entity;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name = "sm_assessment_action")
@@ -18,6 +17,8 @@ public class SignalAction {
 	
 	private String actionName;
     private String actionType;
+	private String actionDescription;
+	private String actionNotes;
     private Date dueDate;
     private int daysLeft;
     private Date createdDate;
@@ -49,6 +50,22 @@ public class SignalAction {
 
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
+	}
+
+	public String getActionDescription() {
+		return actionDescription;
+	}
+
+	public void setActionDescription(String actionDescription) {
+		this.actionDescription = actionDescription;
+	}
+
+	public String getActionNotes() {
+		return actionNotes;
+	}
+
+	public void setActionNotes(String actionNotes) {
+		this.actionNotes = actionNotes;
 	}
 
 	public Date getDueDate() {

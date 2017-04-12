@@ -41,7 +41,7 @@ public class Topic implements Serializable {
     private String processId;
     private String signalValidation;
     private String signalConfirmation;
-    //ValidationComments
+    private String validationComments;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
@@ -161,6 +161,14 @@ public class Topic implements Serializable {
 
     public void setSignalConfirmation(String signalConfirmation) {
         this.signalConfirmation = signalConfirmation;
+    }
+
+    public String getValidationComments() {
+        return validationComments;
+    }
+
+    public void setValidationComments(String validationComments) {
+        this.validationComments = validationComments;
     }
 
     public AssessmentPlan getAssessmentPlan() {

@@ -31,6 +31,9 @@ public class AssessmentPlan {
     private String comments;
     private String caseInstanceId;
 	private String assessmentPlanStatus;
+	private String assessmentRiskStatus;
+	private Date assessmentDueDate;
+	private String finalAssessmentSummary;
 
 	public AssessmentPlan() {
 		this.topics = new ArrayList<>();
@@ -94,5 +97,29 @@ public class AssessmentPlan {
 
 	public void setAssessmentPlanStatus(String assessmentPlanStatus) {
 		this.assessmentPlanStatus = assessmentPlanStatus;
+	}
+
+	public String getAssessmentRiskStatus() {
+		return assessmentRiskStatus;
+	}
+
+	public void setAssessmentRiskStatus(String assessmentRiskStatus) {
+		this.assessmentRiskStatus = assessmentRiskStatus;
+	}
+
+	public Date getAssessmentDueDate() {
+		return assessmentDueDate;
+	}
+
+	public void setAssessmentDueDate(Date assessmentDueDate) {
+		this.assessmentDueDate = assessmentDueDate;
+	}
+
+	public String getFinalAssessmentSummary() {
+		return finalAssessmentSummary;
+	}
+
+	public void setFinalAssessmentSummary(String finalAssessmentSummary) {
+		this.finalAssessmentSummary = finalAssessmentSummary;
 	}
 }
