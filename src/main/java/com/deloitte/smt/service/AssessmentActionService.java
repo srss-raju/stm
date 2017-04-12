@@ -6,6 +6,7 @@ import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class AssessmentActionService {
         taskInstance.setTaskDefKey("assessment");
         taskInstance.setCaseInstId(signalAction.getCaseInstanceId());
         taskInstance.setStartTime(new Date());
+        signalAction.setTaskId(taskInstance.getId());
         taskInstRepository.save(taskInstance);
         assessmentActionRepository.save(signalAction);
     }
@@ -67,11 +69,12 @@ public class AssessmentActionService {
         return assessmentActionRepository.findAllByAssessmentId(assessmentId);
     }
 
-    public void delete(Long assessmentActionId) throws DeleteFailedException {
+    public void delete(Long assessmentActionId, String taskId) throws DeleteFailedException {
         SignalAction signalAction = assessmentActionRepository.findOne(assessmentActionId);
         if(signalAction == null) {
             throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
         }
         assessmentActionRepository.delete(signalAction);
+        taskService.deleteTask(taskId);
     }
 }

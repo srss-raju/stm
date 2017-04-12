@@ -50,9 +50,9 @@ public class AssessmentActionController {
         return assessmentActionService.findAllByAssessmentId(assessmentId, actionStatus);
     }
 
-    @DeleteMapping(value = "/assessmentAction/{assessmentActionId}")
-    public String deleteById(@PathVariable Long assessmentActionId) throws DeleteFailedException {
-        assessmentActionService.delete(assessmentActionId);
+    @DeleteMapping(value = "/assessmentAction/{assessmentActionId}//{taskId}")
+    public String deleteById(@PathVariable Long assessmentActionId, @PathVariable String taskId) throws DeleteFailedException {
+        assessmentActionService.delete(assessmentActionId, taskId);
         return "Successfully Deleted";
     }
 }

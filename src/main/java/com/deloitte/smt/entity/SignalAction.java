@@ -27,6 +27,7 @@ public class SignalAction {
     private String assessmentId;
     private String caseInstanceId;
     private String report;
+    private String taskId;
     
 	public Long getId() {
 		return id;
@@ -130,6 +131,14 @@ public class SignalAction {
 
 	public void setReport(String report) {
 		this.report = report;
+	}
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
 
 }
