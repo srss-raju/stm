@@ -1,10 +1,11 @@
 package com.deloitte.smt.controller;
 
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.UpdateFailedException;
-import com.deloitte.smt.service.AssessmentPlanService;
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.service.AssessmentPlanService;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -43,10 +46,10 @@ public class AssessmentController {
     }
 
     @PutMapping(value = "/updateAssessment")
-    public String updateAssessment(@RequestBody AssessmentPlan assessmentPlan,
+    public ResponseEntity<Void> updateAssessment(@RequestBody AssessmentPlan assessmentPlan,
                                    @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
         assessmentPlanService.updateAssessment(assessmentPlan, attachments);
-        return "Successfully Updated";
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PutMapping(value = "/finalAssessment")
