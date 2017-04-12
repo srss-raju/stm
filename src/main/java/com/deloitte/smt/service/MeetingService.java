@@ -44,6 +44,6 @@ public class MeetingService {
     }
 
     public List<Meeting> findAllyByResourceIdAndMeetingType(Long resourceId, MeetingType meetingType) {
-        return meetingRepository.findAllByMeetingResourceIdMeetingType(resourceId, meetingType);
+        return meetingRepository.findAllByMeetingResourceIdAndMeetingType(resourceId, meetingType);
     }
 }

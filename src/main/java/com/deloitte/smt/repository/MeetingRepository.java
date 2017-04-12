@@ -13,5 +13,5 @@ import java.util.List;
 @Repository
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
-    List<Meeting> findAllByMeetingResourceIdMeetingType(Long meetingSourceId, MeetingType meetingType);
+    List<Meeting> findAllByMeetingResourceIdAndMeetingType(Long meetingSourceId, MeetingType meetingType);
 }
