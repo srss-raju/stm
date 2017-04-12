@@ -11,6 +11,8 @@ import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,12 +38,13 @@ public class SignalController {
         Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
 		return signalService.createTopic(topic, attachments);
 	}
- 
+
 	@PostMapping(value = "/updateTopic")
-	public String updateTopic(@RequestParam(value = "data") String topicString,
+	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString,
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, UpdateFailedException {
 		Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
-		return signalService.updateTopic(topic, attachments);
+		signalService.updateTopic(topic, attachments);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/{topicId}")
