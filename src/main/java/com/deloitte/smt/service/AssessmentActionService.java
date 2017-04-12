@@ -53,6 +53,9 @@ public class AssessmentActionService {
         if(signalAction.getId() == null) {
             throw new UpdateFailedException("Failed to update Action. Invalid Id received");
         }
+        if("completed".equalsIgnoreCase(signalAction.getActionStatus())) {
+            taskService.complete(signalAction.getTaskId());
+        }
         assessmentActionRepository.save(signalAction);
     }
 

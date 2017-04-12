@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +35,8 @@ public class AssessmentPlan {
 	private String assessmentRiskStatus;
 	private Date assessmentDueDate;
 	private String finalAssessmentSummary;
+	@OneToOne
+	private RiskPlan riskPlan;
 
 	public AssessmentPlan() {
 		this.topics = new ArrayList<>();
@@ -121,5 +124,13 @@ public class AssessmentPlan {
 
 	public void setFinalAssessmentSummary(String finalAssessmentSummary) {
 		this.finalAssessmentSummary = finalAssessmentSummary;
+	}
+
+	public RiskPlan getRiskPlan() {
+		return riskPlan;
+	}
+
+	public void setRiskPlan(RiskPlan riskPlan) {
+		this.riskPlan = riskPlan;
 	}
 }

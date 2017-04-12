@@ -85,6 +85,7 @@ public class SignalService {
         if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
         }
+        topic.setSignalStatus("In Progress");
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
@@ -118,6 +119,7 @@ public class SignalService {
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
         attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT);
         topic.setAssessmentPlan(assessmentPlan);
+        topic.setSignalStatus("Complete");
         topicRepository.save(topic);
 
         return instance.getCaseInstanceId();
