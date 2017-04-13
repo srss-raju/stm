@@ -105,4 +105,8 @@ public class RiskPlanService {
         riskTask.setLastUpdatedDate(new Date());
         riskTaskRepository.save(riskTask);
     }
+    
+    public RiskPlan findByRiskId(Long riskId){
+        return riskPlanRepository.findOne(riskId);
+    }
 }
