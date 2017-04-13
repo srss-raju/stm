@@ -1,12 +1,15 @@
 package com.deloitte.smt.entity;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -24,6 +27,10 @@ public class Meeting implements Serializable {
     private Date meetingDate;
     private Long meetingResourceId;
     private MeetingType meetingType;
+    @Transient
+    private List<Long> deletedAttachmentIds;
+    @Embedded
+    private Audit audit;
 
     public Long getId() {
         return id;
@@ -71,5 +78,21 @@ public class Meeting implements Serializable {
 
     public void setMeetingType(MeetingType meetingType) {
         this.meetingType = meetingType;
+    }
+
+    public List<Long> getDeletedAttachmentIds() {
+        return deletedAttachmentIds;
+    }
+
+    public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
+        this.deletedAttachmentIds = deletedAttachmentIds;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 }

@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,7 +29,10 @@ public class SignalAction {
     private String caseInstanceId;
     private String report;
     private String taskId;
-    
+
+	@Embedded
+	private Audit audit;
+
 	public Long getId() {
 		return id;
 	}
@@ -141,4 +145,11 @@ public class SignalAction {
 		this.taskId = taskId;
 	}
 
+	public Audit getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Audit audit) {
+		this.audit = audit;
+	}
 }

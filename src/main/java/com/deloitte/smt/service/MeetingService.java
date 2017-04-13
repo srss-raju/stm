@@ -29,13 +29,14 @@ public class MeetingService {
             meeting.setId(null);
         }
         meeting = meetingRepository.save(meeting);
-        attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT);
+        attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null);
     }
 
-    public void update(Meeting meeting, MultipartFile[] attachments) throws UpdateFailedException {
+    public void update(Meeting meeting, MultipartFile[] attachments) throws UpdateFailedException, IOException {
         if(meeting.getId() == null) {
             throw new UpdateFailedException("Failed to update Meeting. Invalid Id received");
         }
+        attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, meeting.getDeletedAttachmentIds());
         meetingRepository.save(meeting);
     }
 

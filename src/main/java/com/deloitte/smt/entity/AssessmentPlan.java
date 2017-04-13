@@ -3,6 +3,7 @@ package com.deloitte.smt.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +39,11 @@ public class AssessmentPlan {
 	private String finalAssessmentSummary;
 	@OneToOne
 	private RiskPlan riskPlan;
+	@Transient
+	private List<Long> deletedAttachmentIds;
+
+	@Embedded
+	private Audit audit;
 
 	public AssessmentPlan() {
 		this.topics = new ArrayList<>();
@@ -132,5 +139,21 @@ public class AssessmentPlan {
 
 	public void setRiskPlan(RiskPlan riskPlan) {
 		this.riskPlan = riskPlan;
+	}
+
+	public List<Long> getDeletedAttachmentIds() {
+		return deletedAttachmentIds;
+	}
+
+	public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
+		this.deletedAttachmentIds = deletedAttachmentIds;
+	}
+
+	public Audit getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Audit audit) {
+		this.audit = audit;
 	}
 }

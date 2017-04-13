@@ -92,7 +92,7 @@ public class SignalService {
         topic.setSignalStatus("In Progress");
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
-        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
+        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null);
         return processInstanceId;
     }
 
@@ -100,7 +100,7 @@ public class SignalService {
         if(topic.getId() == null) {
             throw new UpdateFailedException("Update failed for Topic, since it does not have any valid Id field.");
         }
-        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT);
+        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, topic.getDeletedAttachmentIds());
         topicRepository.save(topic);
         return "Update Success";
     }

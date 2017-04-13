@@ -1,17 +1,19 @@
 package com.deloitte.smt.service;
 
+import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
-
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +32,10 @@ public class AssessmentActionService {
     @Autowired
     AssessmentActionRepository assessmentActionRepository;
 
-    public void createAssessmentAction(SignalAction signalAction) {
+    @Autowired
+    AttachmentService attachmentService;
+
+    public void createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
         if(signalAction.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(signalAction.getActionStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
@@ -48,10 +53,11 @@ public class AssessmentActionService {
         taskInstance.setStartTime(new Date());
         signalAction.setTaskId(taskInstance.getId());
         taskInstRepository.save(taskInstance);
-        assessmentActionRepository.save(signalAction);
+        signalAction = assessmentActionRepository.save(signalAction);
+        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null);
     }
 
-    public void updateAssessmentAction(SignalAction signalAction) throws UpdateFailedException {
+    public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws UpdateFailedException, IOException {
         if(signalAction.getId() == null) {
             throw new UpdateFailedException("Failed to update Action. Invalid Id received");
         }
@@ -59,6 +65,7 @@ public class AssessmentActionService {
             taskService.complete(signalAction.getTaskId());
         }
         assessmentActionRepository.save(signalAction);
+        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null);
     }
 
     public SignalAction findById(Long id) {

@@ -10,15 +10,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
  */
 @Entity
 @Table(name = "sm_topic")
-public class Topic implements Serializable {
+public class Topic implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -48,6 +50,12 @@ public class Topic implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private AssessmentPlan assessmentPlan;
+
+    @Transient
+    private List<Long> deletedAttachmentIds;
+
+    @Embedded
+    private Audit audit;
 
     public Topic() {
         this.startDate = new Date();
@@ -195,5 +203,21 @@ public class Topic implements Serializable {
 
     public void setAssessmentPlan(AssessmentPlan assessmentPlan) {
         this.assessmentPlan = assessmentPlan;
+    }
+
+    public List<Long> getDeletedAttachmentIds() {
+        return deletedAttachmentIds;
+    }
+
+    public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
+        this.deletedAttachmentIds = deletedAttachmentIds;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 }

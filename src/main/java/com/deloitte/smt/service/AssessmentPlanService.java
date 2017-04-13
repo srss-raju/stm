@@ -39,7 +39,7 @@ public class AssessmentPlanService {
         if(assessmentPlan.getId() == null) {
             throw new UpdateFailedException("Failed to update Assessment. Invalid Id received");
         }
-        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT);
+        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds());
         assessmentPlanRepository.save(assessmentPlan);
     }
 
@@ -48,7 +48,7 @@ public class AssessmentPlanService {
             throw new UpdateFailedException("Failed to update Assessment. Invalid Id received");
         }
         assessmentPlan.setAssessmentPlanStatus(AttachmentType.FINAL_ASSESSMENT.getDescription());
-        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT);
+        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, assessmentPlan.getDeletedAttachmentIds());
         assessmentPlanRepository.save(assessmentPlan);
     }
 }
