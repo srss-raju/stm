@@ -9,8 +9,10 @@ import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRepository;
+
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -55,6 +57,9 @@ public class SignalService {
     
     @Autowired
     AssessmentPlanRepository assessmentPlanRepository;
+    
+    @Autowired
+    RiskPlanRepository riskPlanRepository;
 
     @Autowired
     AttachmentService attachmentService;
@@ -178,6 +183,7 @@ public class SignalService {
     }
     
     public Long getRiskCount(){
-    	return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
+    	return riskPlanRepository.count();
+    	//return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
     }
 }
