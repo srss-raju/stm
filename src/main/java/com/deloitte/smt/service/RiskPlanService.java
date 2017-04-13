@@ -13,6 +13,7 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -49,9 +50,10 @@ public class RiskPlanService {
     
     public List<RiskPlan> findAllRiskPlansByStatus(String status) {
         if(StringUtils.isEmpty(status)) {
-            return riskPlanRepository.findAll();
+            Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+            return riskPlanRepository.findAll(sort);
         }
-        return riskPlanRepository.findAllByStatus(status);
+        return riskPlanRepository.findAllByStatusOrderByCreatedDateDesc(status);
     }
 
 	public void createRiskTask(RiskTask riskTask) {

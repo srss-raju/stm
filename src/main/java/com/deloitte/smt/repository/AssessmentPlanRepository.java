@@ -9,5 +9,5 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	List<AssessmentPlan> findAllByCaseInstanceIdIn(List<String> caseInstanceId);
 	Long countByCaseInstanceIdIn(List<String> caseInstanceId);
 
-	List<AssessmentPlan> findAllByAssessmentPlanStatus(String assessmentPlanStatus);
+	List<AssessmentPlan> findAllByAssessmentPlanStatusOrderByCreatedDateDesc(String assessmentPlanStatus);
 }

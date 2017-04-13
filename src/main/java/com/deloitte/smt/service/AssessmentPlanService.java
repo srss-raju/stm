@@ -5,6 +5,7 @@ import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,9 +32,10 @@ public class AssessmentPlanService {
 
     public List<AssessmentPlan> findAllAssessmentPlansByStatus(String assessmentPlanStatus) {
         if(StringUtils.isEmpty(assessmentPlanStatus)) {
-            return assessmentPlanRepository.findAll();
+            Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+            return assessmentPlanRepository.findAll(sort);
         }
-        return assessmentPlanRepository.findAllByAssessmentPlanStatus(assessmentPlanStatus);
+        return assessmentPlanRepository.findAllByAssessmentPlanStatusOrderByCreatedDateDesc(assessmentPlanStatus);
     }
 
     public void updateAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws UpdateFailedException, IOException {
