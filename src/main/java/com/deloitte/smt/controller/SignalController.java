@@ -54,11 +54,11 @@ public class SignalController {
     }
 
 	@PutMapping(value = "/{topicId}/validateAndPrioritize")
-	public String validateAndPrioritizeTopic(
+	public ResponseEntity<Void> validateAndPrioritizeTopic(
 	        @PathVariable Long topicId,
 			@RequestBody AssessmentPlan assessmentPlan) throws TaskNotFoundException, TopicNotFoundException {
 		signalService.validateAndPrioritize(topicId, assessmentPlan);
-		return "Validation is finished";
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/all")

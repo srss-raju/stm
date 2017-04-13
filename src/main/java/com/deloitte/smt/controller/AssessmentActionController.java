@@ -4,7 +4,10 @@ import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.AssessmentActionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,15 +31,15 @@ public class AssessmentActionController {
     AssessmentActionService assessmentActionService;
 
     @PostMapping(value = "/createAssessmentAction")
-    public String createAssessmentAction(@RequestBody SignalAction signalAction) {
+    public ResponseEntity<Void> createAssessmentAction(@RequestBody SignalAction signalAction) {
         assessmentActionService.createAssessmentAction(signalAction);
-        return "Saved Successfully";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(value = "/updateAssessmentAction")
-    public String updateAssessmentAction(@RequestBody SignalAction signalAction) throws UpdateFailedException {
+    public ResponseEntity<Void> updateAssessmentAction(@RequestBody SignalAction signalAction) throws UpdateFailedException {
         assessmentActionService.updateAssessmentAction(signalAction);
-        return "Successfully Updated";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/assessmentAction/{assessmentActionId}")
@@ -51,8 +54,8 @@ public class AssessmentActionController {
     }
 
     @DeleteMapping(value = "/assessmentAction/{assessmentActionId}//{taskId}")
-    public String deleteById(@PathVariable Long assessmentActionId, @PathVariable String taskId) throws DeleteFailedException {
+    public ResponseEntity<Void> deleteById(@PathVariable Long assessmentActionId, @PathVariable String taskId) throws DeleteFailedException {
         assessmentActionService.delete(assessmentActionId, taskId);
-        return "Successfully Deleted";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

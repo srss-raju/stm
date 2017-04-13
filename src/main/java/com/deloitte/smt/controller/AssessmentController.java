@@ -52,9 +52,9 @@ public class AssessmentController {
     }
 
     @PutMapping(value = "/finalAssessment")
-    public String finalAssessment(@RequestBody AssessmentPlan assessmentPlan,
+    public ResponseEntity<Void> finalAssessment(@RequestBody AssessmentPlan assessmentPlan,
                                   @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
         assessmentPlanService.finalAssessment(assessmentPlan, attachments);
-        return "Successfully Updated";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

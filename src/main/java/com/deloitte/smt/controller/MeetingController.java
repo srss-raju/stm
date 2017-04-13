@@ -4,7 +4,10 @@ import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.entity.MeetingType;
 import com.deloitte.smt.service.MeetingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,12 +30,12 @@ public class MeetingController {
     MeetingService meetingService;
 
     @PostMapping(value = "/{signalId}/create")
-    public String createMeeting(@PathVariable Long signalId,
+    public ResponseEntity<Void> createMeeting(@PathVariable Long signalId,
                                 @RequestParam("data") String meetingString,
                                 @RequestParam(value = "attachment", required = false) MultipartFile[] attachments) throws IOException {
         Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
         meetingService.insert(meeting, attachments);
-        return "Saved Successfully";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping( value = "/{signalId}/all")
