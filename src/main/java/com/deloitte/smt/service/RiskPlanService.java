@@ -1,15 +1,24 @@
 package com.deloitte.smt.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.deloitte.smt.entity.RiskPlan;
+import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.TaskInst;
+import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.RiskPlanRepository;
+import com.deloitte.smt.repository.RiskTaskRepository;
+import com.deloitte.smt.repository.TaskInstRepository;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -19,6 +28,15 @@ public class RiskPlanService {
 
     @Autowired
     RiskPlanRepository riskPlanRepository;
+    
+    @Autowired
+    RiskTaskRepository riskTaskRepository;
+    
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    TaskInstRepository taskInstRepository;
 
     @Autowired
     CaseService caseService;
@@ -34,5 +52,56 @@ public class RiskPlanService {
             return riskPlanRepository.findAll();
         }
         return riskPlanRepository.findAllByStatus(status);
+    }
+
+	public void createRiskTask(RiskTask riskTask) {
+		if(riskTask.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(riskTask.getStatus())){
+            Task task = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).singleResult();
+            taskService.complete(task.getId());
+        }
+        Task task = taskService.newTask();
+        task.setCaseInstanceId(riskTask.getCaseInstanceId());
+        task.setName(riskTask.getName());
+        taskService.saveTask(task);
+        List<Task> list = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).list();
+        TaskInst taskInstance = new TaskInst();
+        taskInstance.setId(list.get(list.size()-1).getId());
+        taskInstance.setCaseDefKey("risk");
+        taskInstance.setTaskDefKey("risk");
+        taskInstance.setCaseInstId(riskTask.getCaseInstanceId());
+        taskInstance.setStartTime(new Date());
+        riskTask.setTaskId(taskInstance.getId());
+        taskInstRepository.save(taskInstance);
+        riskTaskRepository.save(riskTask);
+	}
+	
+	public RiskTask findById(Long id) {
+        return riskTaskRepository.findOne(id);
+    }
+	
+	public List<RiskTask> findAllByRiskId(String riskId, String status) {
+        if(status != null){
+            return riskTaskRepository.findAllByRiskIdAndStatus(riskId, status);
+        }
+        return riskTaskRepository.findAllByRiskId(riskId);
+    }
+
+    public void delete(Long riskTaskId, String taskId) throws DeleteFailedException {
+        RiskTask riskTask = riskTaskRepository.findOne(riskTaskId);
+        if(riskTask == null) {
+            throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
+        }
+        riskTaskRepository.delete(riskTask);
+        taskService.deleteTask(taskId);
+    }
+    
+    public void updateRiskTask(RiskTask riskTask) throws UpdateFailedException {
+        if(riskTask.getId() == null) {
+            throw new UpdateFailedException("Failed to update Task. Invalid Id received");
+        }
+        if("completed".equalsIgnoreCase(riskTask.getStatus())) {
+            taskService.complete(riskTask.getTaskId());
+        }
+        riskTaskRepository.save(riskTask);
     }
 }
