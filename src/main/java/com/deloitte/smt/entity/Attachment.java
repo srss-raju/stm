@@ -2,13 +2,13 @@ package com.deloitte.smt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -28,8 +28,8 @@ public class Attachment implements Serializable {
 
     private Long attachmentResourceId;
 
-    @Embedded
-    private Audit audit;
+    private Date createdDate;
+    private Date lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -71,11 +71,19 @@ public class Attachment implements Serializable {
         this.attachmentResourceId = attachmentResourceId;
     }
 
-    public Audit getAudit() {
-        return audit;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setAudit(Audit audit) {
-        this.audit = audit;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

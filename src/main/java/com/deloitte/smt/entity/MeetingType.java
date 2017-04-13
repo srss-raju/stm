@@ -6,7 +6,8 @@ package com.deloitte.smt.entity;
 public enum MeetingType {
 
     SIGNAL_MEETING("Signal Meeting"),
-    ASSESSMENT_MEETING("Assessment Meeting");
+    ASSESSMENT_MEETING("Assessment Meeting"),
+    RISK_MEETING("Risk Meeting");
 
     private String description;
 

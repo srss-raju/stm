@@ -1,16 +1,5 @@
 package com.deloitte.smt.service;
 
-import java.util.Date;
-import java.util.List;
-
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.TaskInst;
@@ -19,6 +8,16 @@ import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -44,6 +43,7 @@ public class RiskPlanService {
     public void insert(RiskPlan riskPlan) {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
+        riskPlan.setCreatedDate(new Date());
         riskPlanRepository.save(riskPlan);
     }
     
@@ -102,6 +102,7 @@ public class RiskPlanService {
         if("completed".equalsIgnoreCase(riskTask.getStatus())) {
             taskService.complete(riskTask.getTaskId());
         }
+        riskTask.setLastUpdatedDate(new Date());
         riskTaskRepository.save(riskTask);
     }
 }

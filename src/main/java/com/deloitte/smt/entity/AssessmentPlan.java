@@ -3,7 +3,6 @@ package com.deloitte.smt.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,7 +29,6 @@ public class AssessmentPlan {
 	private String assessmentName;
 	private String priority;
 	private int inDays;
-    private Date createdDate;
     private String comments;
     private String caseInstanceId;
 	private String assessmentPlanStatus;
@@ -42,8 +40,8 @@ public class AssessmentPlan {
 	@Transient
 	private List<Long> deletedAttachmentIds;
 
-	@Embedded
-	private Audit audit;
+	private Date createdDate;
+	private Date lastModifiedDate;
 
 	public AssessmentPlan() {
 		this.topics = new ArrayList<>();
@@ -82,12 +80,7 @@ public class AssessmentPlan {
 	public void setInDays(int inDays) {
 		this.inDays = inDays;
 	}
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
+
 	public String getComments() {
 		return comments;
 	}
@@ -149,11 +142,19 @@ public class AssessmentPlan {
 		this.deletedAttachmentIds = deletedAttachmentIds;
 	}
 
-	public Audit getAudit() {
-		return audit;
+	public Date getCreatedDate() {
+		return createdDate;
 	}
 
-	public void setAudit(Audit audit) {
-		this.audit = audit;
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
 	}
 }

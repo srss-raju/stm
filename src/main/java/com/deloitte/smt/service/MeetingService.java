@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +29,7 @@ public class MeetingService {
         if(meeting.getId() != null) {
             meeting.setId(null);
         }
+        meeting.setCreatedDate(new Date());
         meeting = meetingRepository.save(meeting);
         attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null);
     }
@@ -36,6 +38,7 @@ public class MeetingService {
         if(meeting.getId() == null) {
             throw new UpdateFailedException("Failed to update Meeting. Invalid Id received");
         }
+        meeting.setLastModifiedDate(new Date());
         attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, meeting.getDeletedAttachmentIds());
         meetingRepository.save(meeting);
     }

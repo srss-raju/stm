@@ -1,7 +1,6 @@
 package com.deloitte.smt.entity;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -25,15 +24,13 @@ public class RiskPlan implements Serializable {
     private String name;
     private int inDays;
     private Date createdDate;
+    private Date lastModifiedDate;
     private String summary;
     private String caseInstanceId;
     private String status;
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
     private AssessmentPlan assessmentPlan;
-
-    @Embedded
-    private Audit audit;
 
     public Long getId() {
         return id;
@@ -99,11 +96,11 @@ public class RiskPlan implements Serializable {
         this.assessmentPlan = assessmentPlan;
     }
 
-    public Audit getAudit() {
-        return audit;
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
-    public void setAudit(Audit audit) {
-        this.audit = audit;
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

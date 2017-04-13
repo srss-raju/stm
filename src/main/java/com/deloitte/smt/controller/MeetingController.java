@@ -26,17 +26,31 @@ public class MeetingController {
     @Autowired
     MeetingService meetingService;
 
-    @PostMapping(value = "/{signalId}/create")
-    public String createMeeting(@PathVariable Long signalId,
-                                @RequestParam("data") String meetingString,
-                                @RequestParam(value = "attachment", required = false) MultipartFile[] attachments) throws IOException {
+    @PostMapping(value = "/create")
+    public String createMeeting(@RequestParam("data") String meetingString,
+                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
+        meeting.setMeetingType(MeetingType.SIGNAL_MEETING);
         meetingService.insert(meeting, attachments);
         return "Saved Successfully";
     }
 
-    @GetMapping( value = "/{signalId}/all")
+    @PostMapping(value = "/risk/create")
+    public String createMeetingForRisk(@RequestParam("data") String meetingString,
+                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+        Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
+        meeting.setMeetingType(MeetingType.RISK_MEETING);
+        meetingService.insert(meeting, attachments);
+        return "Saved Successfully";
+    }
+
+    @GetMapping( value = "/{signalId}")
     public List<Meeting> getAllMeetings(@PathVariable Long signalId) {
         return meetingService.findAllyByResourceIdAndMeetingType(signalId, MeetingType.SIGNAL_MEETING);
+    }
+
+    @GetMapping( value = "/risk/{riskId}/")
+    public List<Meeting> getAllMeetingsForRisk(@PathVariable Long riskId) {
+        return meetingService.findAllyByResourceIdAndMeetingType(riskId, MeetingType.RISK_MEETING);
     }
 }

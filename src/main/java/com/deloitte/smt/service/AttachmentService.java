@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,6 +51,7 @@ public class AttachmentService {
                 a.setAttachmentResourceId(attachmentResourceId);
                 a.setContent(attachment.getBytes());
                 a.setFileName(attachment.getOriginalFilename());
+                a.setCreatedDate(new Date());
                 attachmentRepository.save(a);
             }
         }

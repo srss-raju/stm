@@ -39,6 +39,7 @@ public class Topic implements Serializable{
     private Date startDate;
     private Date endDate;
     private Date createdDate;
+    private Date lastModifiedDate;
     private String remarks;
     private String processId;
     private String signalValidation;
@@ -53,9 +54,6 @@ public class Topic implements Serializable{
 
     @Transient
     private List<Long> deletedAttachmentIds;
-
-    @Embedded
-    private Audit audit;
 
     public Topic() {
         this.startDate = new Date();
@@ -213,11 +211,11 @@ public class Topic implements Serializable{
         this.deletedAttachmentIds = deletedAttachmentIds;
     }
 
-    public Audit getAudit() {
-        return audit;
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
-    public void setAudit(Audit audit) {
-        this.audit = audit;
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

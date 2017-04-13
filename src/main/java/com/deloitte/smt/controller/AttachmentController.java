@@ -28,6 +28,16 @@ public class AttachmentController {
         return attachmentService.findByResourceIdAndAttachmentType(signalId, AttachmentType.TOPIC_ATTACHMENT);
     }
 
+    @GetMapping(value = "/assessment/{assessmentId}")
+    public List<Attachment> findAllByAssessmentId(@PathVariable Long assessmentId) {
+        return attachmentService.findByResourceIdAndAttachmentType(assessmentId, AttachmentType.ASSESSMENT_ATTACHMENT);
+    }
+
+    @GetMapping(value = "/assessment/action/{assessmentActionId}")
+    public List<Attachment> findAllByAssessmentActionId(@PathVariable Long assessmentActionId) {
+        return attachmentService.findByResourceIdAndAttachmentType(assessmentActionId, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT);
+    }
+
     @DeleteMapping(value = "/{attachmentId}")
     public String deleteAttachment(@PathVariable Long attachmentId) throws DeleteFailedException {
         attachmentService.delete(attachmentId);

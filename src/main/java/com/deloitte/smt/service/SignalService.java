@@ -12,7 +12,6 @@ import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRepository;
-
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -82,13 +81,13 @@ public class SignalService {
         if(topic.getId() != null) {
             topic.setId(null);
         }
-        topic.setCreatedDate(new Date());
         if(null == topic.getSignalConfirmation()) {
             topic.setSignalConfirmation("Validated Signal");
         }
         if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
         }
+        topic.setCreatedDate(new Date());
         topic.setSignalStatus("In Progress");
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
@@ -100,6 +99,7 @@ public class SignalService {
         if(topic.getId() == null) {
             throw new UpdateFailedException("Update failed for Topic, since it does not have any valid Id field.");
         }
+        topic.setLastModifiedDate(new Date());
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, topic.getDeletedAttachmentIds());
         topicRepository.save(topic);
         return "Update Success";
@@ -118,6 +118,7 @@ public class SignalService {
         
         CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
         topic.setProcessId(instance.getCaseInstanceId());
+        assessmentPlan.setCreatedDate(new Date());
         assessmentPlan.setAssessmentPlanStatus(AssessmentPlanStatus.ACTION_PLAN.getDescription());
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);

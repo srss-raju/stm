@@ -1,12 +1,11 @@
 package com.deloitte.smt.entity;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name = "sm_risk_task")
@@ -23,11 +22,13 @@ public class RiskTask {
 	private String description;
 	
 	private Date dueDate;
-	
+
+	private Date createdDate;
+
 	private Date lastUpdatedDate;
-	
+
 	private String lastUpdatedBy;
-	
+
 	private String notes;
 	
 	private String caseInstanceId;
@@ -66,6 +67,14 @@ public class RiskTask {
 
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
 	public Date getLastUpdatedDate() {

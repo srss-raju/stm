@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +40,7 @@ public class AssessmentPlanService {
         if(assessmentPlan.getId() == null) {
             throw new UpdateFailedException("Failed to update Assessment. Invalid Id received");
         }
+        assessmentPlan.setLastModifiedDate(new Date());
         attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds());
         assessmentPlanRepository.save(assessmentPlan);
     }
@@ -47,7 +49,8 @@ public class AssessmentPlanService {
         if(assessmentPlan.getId() == null) {
             throw new UpdateFailedException("Failed to update Assessment. Invalid Id received");
         }
-        assessmentPlan.setAssessmentPlanStatus(AttachmentType.FINAL_ASSESSMENT.getDescription());
+        assessmentPlan.setLastModifiedDate(new Date());
+        assessmentPlan.setAssessmentPlanStatus("Completed");
         attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, assessmentPlan.getDeletedAttachmentIds());
         assessmentPlanRepository.save(assessmentPlan);
     }
