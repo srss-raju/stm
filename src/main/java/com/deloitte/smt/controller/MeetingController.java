@@ -35,7 +35,7 @@ public class MeetingController {
             @RequestParam("data") String meetingString,
             @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
-        meeting.setMeetingType(MeetingType.valueOf(meetingType));
+        meeting.setMeetingType(MeetingType.getByDescription(meetingType));
         meetingService.insert(meeting, attachments);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -43,7 +43,7 @@ public class MeetingController {
     @GetMapping( value = "/{meetingResourceId}")
     public List<Meeting> getAllMeetings(
             @RequestParam(value = "meetingType", defaultValue = "Signal Meeting") String meetingType,
-            @PathVariable Long signalId) {
-        return meetingService.findAllyByResourceIdAndMeetingType(signalId, MeetingType.valueOf(meetingType));
+            @PathVariable Long meetingResourceId) {
+        return meetingService.findAllyByResourceIdAndMeetingType(meetingResourceId, MeetingType.getByDescription(meetingType));
     }
 }

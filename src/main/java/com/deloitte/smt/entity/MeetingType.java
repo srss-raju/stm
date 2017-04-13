@@ -19,4 +19,13 @@ public enum MeetingType {
     public String getDescription() {
         return description;
     }
+
+    public static MeetingType getByDescription(String description) {
+        for(MeetingType meetingType :  MeetingType.values()) {
+            if(meetingType.getDescription().equalsIgnoreCase(description)) {
+                return meetingType;
+            }
+        }
+        return MeetingType.SIGNAL_MEETING;
+    }
 }
