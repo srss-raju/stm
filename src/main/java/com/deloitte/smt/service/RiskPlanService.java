@@ -15,6 +15,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
@@ -92,5 +93,15 @@ public class RiskPlanService {
         }
         riskTaskRepository.delete(riskTask);
         taskService.deleteTask(taskId);
+    }
+    
+    public void updateRiskTask(RiskTask riskTask) throws UpdateFailedException {
+        if(riskTask.getId() == null) {
+            throw new UpdateFailedException("Failed to update Task. Invalid Id received");
+        }
+        if("completed".equalsIgnoreCase(riskTask.getStatus())) {
+            taskService.complete(riskTask.getTaskId());
+        }
+        riskTaskRepository.save(riskTask);
     }
 }
