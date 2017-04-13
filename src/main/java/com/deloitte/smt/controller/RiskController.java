@@ -70,4 +70,9 @@ public class RiskController {
     	riskPlanService.updateRiskTask(riskTask);
     	return new ResponseEntity<>(HttpStatus.OK);
     }
+    
+    @GetMapping(value = "/{id}")
+    public RiskPlan findByRiskId(@PathVariable Long id) {
+        return riskPlanService.findByRiskId(id);
+    }
 }
