@@ -4,7 +4,10 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.service.AttachmentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,8 +42,8 @@ public class AttachmentController {
     }
 
     @DeleteMapping(value = "/{attachmentId}")
-    public String deleteAttachment(@PathVariable Long attachmentId) throws DeleteFailedException {
+    public ResponseEntity<Void> deleteAttachment(@PathVariable Long attachmentId) throws DeleteFailedException {
         attachmentService.delete(attachmentId);
-        return "Successfully Deleted";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

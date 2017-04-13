@@ -3,6 +3,8 @@ package com.deloitte.smt.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,9 +32,9 @@ public class RiskController {
     RiskPlanService riskPlanService;
 
     @PostMapping()
-    public String createRiskPlan(@RequestBody RiskPlan riskPlan) {
+    public ResponseEntity<Void> createRiskPlan(@RequestBody RiskPlan riskPlan) {
         riskPlanService.insert(riskPlan);
-        return "Successfully Created";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @GetMapping(value = "/allRiskPlans")
@@ -41,9 +43,9 @@ public class RiskController {
     }
     
     @PostMapping(value = "/task/create")
-    public String createRiskAction(@RequestBody RiskTask riskTask) {
+    public ResponseEntity<Void> createRiskAction(@RequestBody RiskTask riskTask) {
     	riskPlanService.createRiskTask(riskTask);
-        return "Saved Successfully";
+    	return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @GetMapping(value = "/task/{riskTaskId}")
@@ -58,14 +60,14 @@ public class RiskController {
     }
 
     @DeleteMapping(value = "/task/{riskTaskId}/{taskId}")
-    public String deleteById(@PathVariable Long riskTaskId, @PathVariable String taskId) throws DeleteFailedException {
+    public ResponseEntity<Void> deleteById(@PathVariable Long riskTaskId, @PathVariable String taskId) throws DeleteFailedException {
     	riskPlanService.delete(riskTaskId, taskId);
-        return "Successfully Deleted";
+    	return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @PutMapping(value = "/task/updateRiskTask")
-    public String updateRiskTask(@RequestBody RiskTask riskTask) throws UpdateFailedException {
+    public ResponseEntity<Void> updateRiskTask(@RequestBody RiskTask riskTask) throws UpdateFailedException {
     	riskPlanService.updateRiskTask(riskTask);
-        return "Successfully Updated";
+    	return new ResponseEntity<>(HttpStatus.OK);
     }
 }

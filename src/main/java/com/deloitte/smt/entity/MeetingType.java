@@ -7,6 +7,7 @@ public enum MeetingType {
 
     SIGNAL_MEETING("Signal Meeting"),
     ASSESSMENT_MEETING("Assessment Meeting"),
+    FINAL_ASSESSMENT_MEETING("Final Assessment Meeting"),
     RISK_MEETING("Risk Meeting");
 
     private String description;

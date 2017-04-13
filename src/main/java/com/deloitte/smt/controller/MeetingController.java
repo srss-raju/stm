@@ -4,7 +4,10 @@ import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.entity.MeetingType;
 import com.deloitte.smt.service.MeetingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,30 +30,20 @@ public class MeetingController {
     MeetingService meetingService;
 
     @PostMapping(value = "/create")
-    public String createMeeting(@RequestParam("data") String meetingString,
-                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+    public ResponseEntity<Void> createMeeting(
+            @RequestParam(value = "meetingType", defaultValue = "Signal Meeting") String meetingType,
+            @RequestParam("data") String meetingString,
+            @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
-        meeting.setMeetingType(MeetingType.SIGNAL_MEETING);
+        meeting.setMeetingType(MeetingType.valueOf(meetingType));
         meetingService.insert(meeting, attachments);
-        return "Saved Successfully";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/risk/create")
-    public String createMeetingForRisk(@RequestParam("data") String meetingString,
-                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
-        Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
-        meeting.setMeetingType(MeetingType.RISK_MEETING);
-        meetingService.insert(meeting, attachments);
-        return "Saved Successfully";
-    }
-
-    @GetMapping( value = "/{signalId}")
-    public List<Meeting> getAllMeetings(@PathVariable Long signalId) {
-        return meetingService.findAllyByResourceIdAndMeetingType(signalId, MeetingType.SIGNAL_MEETING);
-    }
-
-    @GetMapping( value = "/risk/{riskId}/")
-    public List<Meeting> getAllMeetingsForRisk(@PathVariable Long riskId) {
-        return meetingService.findAllyByResourceIdAndMeetingType(riskId, MeetingType.RISK_MEETING);
+    @GetMapping( value = "/{meetingResourceId}")
+    public List<Meeting> getAllMeetings(
+            @RequestParam(value = "meetingType", defaultValue = "Signal Meeting") String meetingType,
+            @PathVariable Long signalId) {
+        return meetingService.findAllyByResourceIdAndMeetingType(signalId, MeetingType.valueOf(meetingType));
     }
 }

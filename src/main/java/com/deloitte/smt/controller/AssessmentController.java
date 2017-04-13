@@ -54,10 +54,10 @@ public class AssessmentController {
     }
 
     @PostMapping(value = "/finalAssessment")
-    public String finalAssessment(@RequestParam("data") String assessmentPlanString,
+    public ResponseEntity<Void> finalAssessment(@RequestParam("data") String assessmentPlanString,
                                   @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
         AssessmentPlan assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
         assessmentPlanService.finalAssessment(assessmentPlan, attachments);
-        return "Successfully Updated";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
