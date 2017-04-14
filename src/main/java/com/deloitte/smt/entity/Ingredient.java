@@ -23,6 +23,9 @@ public class Ingredient  implements Serializable{
 	@Transient
     private List<Product> products;
 	
+	@Transient
+    private List<License> licenses;
+	
 	public Long getId() {
 		return id;
 	}
@@ -46,6 +49,12 @@ public class Ingredient  implements Serializable{
 	}
 	public void setProducts(List<Product> products) {
 		this.products = products;
+	}
+	public List<License> getLicenses() {
+		return licenses;
+	}
+	public void setLicenses(List<License> licenses) {
+		this.licenses = licenses;
 	}
 	
 }

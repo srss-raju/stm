@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.Ingredient;
+import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
@@ -31,6 +32,7 @@ import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.IngredientRepository;
+import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
@@ -55,6 +57,9 @@ public class SignalService {
     private IngredientRepository ingredientRepository;
     @Autowired
     private ProductRepository productRepository;
+    
+    @Autowired
+    private LicenseRepository licenseRepository;
     @Autowired
     TaskInstRepository taskInstRepository;
     
@@ -88,6 +93,7 @@ public class SignalService {
     public String createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
     	Ingredient ingredient = topic.getIngredient();
     	List<Product> products = ingredient.getProducts();
+    	List<License> licenses = ingredient.getLicenses();
     	String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         taskService.delegateTask(task.getId(), "Demo Demo");
@@ -113,7 +119,14 @@ public class SignalService {
         	singleProduct.setIngredientId(ingredient.getId());
         	singleProduct.setTopicId(topic.getId());
         }
+        
+        for(License singleLicense:licenses){
+        	singleLicense.setIngredientId(ingredient.getId());
+        	singleLicense.setTopicId(topic.getId());
+        }
+        
         productRepository.save(products);
+        licenseRepository.save(licenses);
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null);
         return processInstanceId;
     }
