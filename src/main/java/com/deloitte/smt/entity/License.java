@@ -14,6 +14,8 @@ public class License {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String licenseName;
+	private Long ingredientId;
+	private Long topicId;
 	
 	public Long getId() {
 		return id;
@@ -26,5 +28,17 @@ public class License {
 	}
 	public void setLicenseName(String licenseName) {
 		this.licenseName = licenseName;
+	}
+	public Long getIngredientId() {
+		return ingredientId;
+	}
+	public void setIngredientId(Long ingredientId) {
+		this.ingredientId = ingredientId;
+	}
+	public Long getTopicId() {
+		return topicId;
+	}
+	public void setTopicId(Long topicId) {
+		this.topicId = topicId;
 	}
 }
