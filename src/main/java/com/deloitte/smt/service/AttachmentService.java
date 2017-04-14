@@ -4,6 +4,7 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.repository.AttachmentRepository;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -48,13 +49,15 @@ public class AttachmentService {
     }
         if(attachments != null) {
             for (MultipartFile attachment : attachments) {
-                Attachment a = new Attachment();
-                a.setAttachmentType(attachmentType);
-                a.setAttachmentResourceId(attachmentResourceId);
-                a.setContent(attachment.getBytes());
-                a.setFileName(attachment.getOriginalFilename());
-                a.setCreatedDate(new Date());
-                attachmentRepository.save(a);
+                if(StringUtils.isNotBlank(attachment.getOriginalFilename()) || StringUtils.isNotBlank(attachment.getName())) {
+                    Attachment a = new Attachment();
+                    a.setAttachmentType(attachmentType);
+                    a.setAttachmentResourceId(attachmentResourceId);
+                    a.setContent(attachment.getBytes());
+                    a.setFileName(attachment.getOriginalFilename());
+                    a.setCreatedDate(new Date());
+                    attachmentRepository.save(a);
+                }
             }
         }
     }
