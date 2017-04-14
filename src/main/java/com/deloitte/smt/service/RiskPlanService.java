@@ -9,7 +9,6 @@ import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
-
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
@@ -21,6 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -48,25 +48,32 @@ public class RiskPlanService {
     @Autowired
     AttachmentService attachmentService;
 
-    public void insert(RiskPlan riskPlan) {
+    public void insert(RiskPlan riskPlan, MultipartFile[] attachments) throws IOException {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
         riskPlan.setStatus("New");
         Date d = new Date();
         riskPlan.setCreatedDate(d);
         riskPlan.setLastModifiedDate(d);
-        riskPlanRepository.save(riskPlan);
+        riskPlan = riskPlanRepository.save(riskPlan);
+        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null);
     }
     
-    public List<RiskPlan> findAllRiskPlansByStatus(String status) {
-        if(StringUtils.isEmpty(status)) {
-            Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-            return riskPlanRepository.findAll(sort);
+    public List<RiskPlan> findAllRiskPlansForSearch(String statuses, Date createdDate) {
+        if(!StringUtils.isEmpty(statuses) && null != createdDate) {
+            return riskPlanRepository.findAllByStatusAndCreatedDate(Arrays.asList(statuses.split(",")), createdDate);
         }
-        return riskPlanRepository.findAllByStatusOrderByCreatedDateDesc(status);
+        if(!StringUtils.isEmpty(statuses)) {
+            return riskPlanRepository.findAllByStatusInOrderByCreatedDateDesc(Arrays.asList(statuses.split(",")));
+        }
+        if(null != createdDate) {
+            return riskPlanRepository.findAllByCreatedDateOrderByCreatedDateDesc(createdDate);
+        }
+        Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+        return riskPlanRepository.findAll(sort);
     }
 
-	public void createRiskTask(RiskTask riskTask) {
+	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {
 		if(riskTask.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(riskTask.getStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
@@ -88,7 +95,8 @@ public class RiskPlanService {
         riskTask.setLastUpdatedDate(d);
         riskTask.setStatus("New");
         taskInstRepository.save(taskInstance);
-        riskTaskRepository.save(riskTask);
+        riskTask = riskTaskRepository.save(riskTask);
+        attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null);
 	}
 	
 	public RiskTask findById(Long id) {
@@ -102,9 +110,9 @@ public class RiskPlanService {
 	
 	public List<RiskTask> findAllByRiskId(String riskId, String status) {
         if(status != null){
-            return riskTaskRepository.findAllByRiskIdAndStatus(riskId, status);
+            return riskTaskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc(riskId, status);
         }
-        return riskTaskRepository.findAllByRiskId(riskId);
+        return riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(riskId);
     }
 
     public void delete(Long riskTaskId, String taskId) throws DeleteFailedException {

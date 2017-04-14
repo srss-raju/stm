@@ -2,6 +2,7 @@ package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
+import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +28,11 @@ public class AssessmentPlanService {
     @Autowired
     AttachmentService attachmentService;
 
-    public AssessmentPlan findById(Long assessmentId){
+    public AssessmentPlan findById(Long assessmentId) throws EntityNotFoundException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
+        if(assessmentPlan == null) {
+            throw new EntityNotFoundException("Assessment Plan not found with given Id :"+assessmentId);
+        }
         if("New".equalsIgnoreCase(assessmentPlan.getAssessmentPlanStatus())) {
             assessmentPlan.setAssessmentPlanStatus("In Progress");
             assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
@@ -35,12 +40,18 @@ public class AssessmentPlanService {
         return assessmentPlan;
     }
 
-    public List<AssessmentPlan> findAllAssessmentPlansByStatus(String assessmentPlanStatus) {
-        if(StringUtils.isEmpty(assessmentPlanStatus)) {
-            Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-            return assessmentPlanRepository.findAll(sort);
+    public List<AssessmentPlan> findAllAssessmentPlansForSearch(String assessmentPlanStatuses, Date createdDate) {
+        if(!StringUtils.isEmpty(assessmentPlanStatuses) && null != createdDate) {
+            return assessmentPlanRepository.findAllByAssessmentPlanStatusAndCreatedDate(Arrays.asList(assessmentPlanStatuses.split(",")), createdDate);
         }
-        return assessmentPlanRepository.findAllByAssessmentPlanStatusOrderByCreatedDateDesc(assessmentPlanStatus);
+        if(!StringUtils.isEmpty(assessmentPlanStatuses)) {
+            return assessmentPlanRepository.findAllByAssessmentPlanStatusInOrderByCreatedDateDesc(Arrays.asList(assessmentPlanStatuses.split(",")));
+        }
+        if(null != createdDate) {
+            return assessmentPlanRepository.findAllByCreatedDateOrderByCreatedDateDesc(createdDate);
+        }
+        Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+        return assessmentPlanRepository.findAll(sort);
     }
 
     public void updateAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws UpdateFailedException, IOException {

@@ -87,7 +87,6 @@ public class SignalController {
 			}
 		}
 		return signalService.findAllByStatus(statuses, deleteReason, t);
-
 	}
 
 	@GetMapping(value = "/getCounts")

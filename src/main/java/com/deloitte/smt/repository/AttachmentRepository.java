@@ -2,6 +2,7 @@ package com.deloitte.smt.repository;
 
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.AttachmentType;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +14,5 @@ import java.util.List;
 @Repository
 public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
 
-    List<Attachment> findAllByAttachmentResourceIdAndAttachmentType(Long attachmentResourceId, AttachmentType attachmentType);
+    List<Attachment> findAllByAttachmentResourceIdAndAttachmentType(Long attachmentResourceId, AttachmentType attachmentType, Sort sort);
 }

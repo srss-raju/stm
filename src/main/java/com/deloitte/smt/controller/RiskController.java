@@ -1,8 +1,11 @@
 package com.deloitte.smt.controller;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.deloitte.smt.entity.RiskPlan;
+import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.service.RiskPlanService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskTask;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.UpdateFailedException;
-import com.deloitte.smt.service.RiskPlanService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -35,19 +35,24 @@ public class RiskController {
     RiskPlanService riskPlanService;
 
     @PostMapping()
-    public ResponseEntity<Void> createRiskPlan(@RequestBody RiskPlan riskPlan) {
-        riskPlanService.insert(riskPlan);
+    public ResponseEntity<Void> createRiskPlan(@RequestParam("data") String riskPlanString,
+                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+        RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
+        riskPlanService.insert(riskPlan, attachments);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @GetMapping(value = "/allRiskPlans")
-    public List<RiskPlan> getAllRiskPlans(@RequestParam(value = "status", required = false) String status){
-        return riskPlanService.findAllRiskPlansByStatus(status);
+    public List<RiskPlan> getAllRiskPlans(@RequestParam(value = "status", required = false) String status,
+                                          @RequestParam(value = "createdDate", required = false) Date createdDate){
+        return riskPlanService.findAllRiskPlansForSearch(status, createdDate);
     }
     
     @PostMapping(value = "/task/create")
-    public ResponseEntity<Void> createRiskAction(@RequestBody RiskTask riskTask) {
-    	riskPlanService.createRiskTask(riskTask);
+    public ResponseEntity<Void> createRiskAction(@RequestParam("data") String riskPlanActionString,
+                                                 @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+        RiskTask riskTask = new ObjectMapper().readValue(riskPlanActionString, RiskTask.class);
+    	riskPlanService.createRiskTask(riskTask, attachments);
     	return new ResponseEntity<>(HttpStatus.OK);
     }
     

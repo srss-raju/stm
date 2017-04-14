@@ -2,6 +2,7 @@ package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.AssessmentPlanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,17 +32,18 @@ public class AssessmentController {
     AssessmentPlanService assessmentPlanService;
 
     @GetMapping(value = "/allAssessmentPlans")
-    public List<AssessmentPlan> getAllAssessmentPlans(@RequestParam(value = "status", required = false) String status){
-        return assessmentPlanService.findAllAssessmentPlansByStatus(status);
+    public List<AssessmentPlan> getAllAssessmentPlans(@RequestParam(value = "status", required = false) String status,
+                                                      @RequestParam(value = "createdDate", required = false) Date createdDate){
+        return assessmentPlanService.findAllAssessmentPlansForSearch(status, createdDate);
     }
 
     @GetMapping(value = "/assessmentPlan/{id}")
-    public AssessmentPlan getAssessmentPlanById(@PathVariable Long id) {
+    public AssessmentPlan getAssessmentPlanById(@PathVariable Long id) throws EntityNotFoundException {
         return assessmentPlanService.findById(id);
     }
 
     @GetMapping(value = "/{assessmentId}/allTopics")
-    public List<Topic> getAllSignalsByAssessmentId(@PathVariable Long assessmentId) {
+    public List<Topic> getAllSignalsByAssessmentId(@PathVariable Long assessmentId) throws EntityNotFoundException {
         return assessmentPlanService.findById(assessmentId).getTopics();
     }
 

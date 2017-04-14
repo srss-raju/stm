@@ -1,13 +1,12 @@
 package com.deloitte.smt.repository;
 
-import java.util.List;
-
+import com.deloitte.smt.entity.RiskTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.deloitte.smt.entity.RiskTask;
+import java.util.List;
 
 public interface RiskTaskRepository extends JpaRepository<RiskTask, Long> {
 
-	List<RiskTask> findAllByRiskIdAndStatus(String riskId, String status);
-	List<RiskTask> findAllByRiskId(String riskId);
+	List<RiskTask> findAllByRiskIdAndStatusOrderByCreatedDateDesc(String riskId, String status);
+	List<RiskTask> findAllByRiskIdOrderByCreatedDateDesc(String riskId);
 }

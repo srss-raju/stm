@@ -5,6 +5,7 @@ import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.repository.AttachmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +36,8 @@ public class AttachmentService {
     }
 
     public List<Attachment> findByResourceIdAndAttachmentType(Long resourceId, AttachmentType attachmentType) {
-        return attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(resourceId, attachmentType);
+        Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+        return attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(resourceId, attachmentType, sort);
     }
 
     public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds) throws IOException {
