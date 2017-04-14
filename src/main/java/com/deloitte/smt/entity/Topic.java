@@ -1,6 +1,8 @@
 package com.deloitte.smt.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,9 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -47,14 +48,17 @@ public class Topic implements Serializable{
     private String validationComments;
     private String signalStatus;
     private String signalStrength;
-
+    
+    @Transient
+    private Ingredient ingredient;
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private AssessmentPlan assessmentPlan;
 
     @Transient
     private List<Long> deletedAttachmentIds;
-
+    
     public Topic() {
         this.startDate = new Date();
     }
@@ -218,4 +222,13 @@ public class Topic implements Serializable{
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
+
+	public Ingredient getIngredient() {
+		return ingredient;
+	}
+
+	public void setIngredient(Ingredient ingredient) {
+		this.ingredient = ingredient;
+	}
+
 }

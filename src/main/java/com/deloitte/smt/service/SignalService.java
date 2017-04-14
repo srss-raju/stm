@@ -1,16 +1,11 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.AttachmentType;
-import com.deloitte.smt.entity.TaskInst;
-import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.TaskNotFoundException;
-import com.deloitte.smt.exception.TopicNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
-import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.RiskPlanRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
-import com.deloitte.smt.repository.TopicRepository;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -25,11 +20,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.AttachmentType;
+import com.deloitte.smt.entity.Ingredient;
+import com.deloitte.smt.entity.Product;
+import com.deloitte.smt.entity.TaskInst;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.TaskNotFoundException;
+import com.deloitte.smt.exception.TopicNotFoundException;
+import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.IngredientRepository;
+import com.deloitte.smt.repository.ProductRepository;
+import com.deloitte.smt.repository.RiskPlanRepository;
+import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.repository.TopicRepository;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -46,7 +51,10 @@ public class SignalService {
     private RuntimeService runtimeService;
     @Autowired
     private TopicRepository topicRepository;
-
+    @Autowired
+    private IngredientRepository ingredientRepository;
+    @Autowired
+    private ProductRepository productRepository;
     @Autowired
     TaskInstRepository taskInstRepository;
     
@@ -78,7 +86,9 @@ public class SignalService {
     }
 
     public String createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
-        String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
+    	Ingredient ingredient = topic.getIngredient();
+    	List<Product> products = ingredient.getProducts();
+    	String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         taskService.delegateTask(task.getId(), "Demo Demo");
         if(topic.getId() != null) {
@@ -96,6 +106,14 @@ public class SignalService {
         topic.setSignalStatus("New");
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
+        ingredient.setTopicId(topic.getId());
+        ingredient = ingredientRepository.save(ingredient);
+        
+        for(Product singleProduct:products){
+        	singleProduct.setIngredientId(ingredient.getId());
+        	singleProduct.setTopicId(topic.getId());
+        }
+        productRepository.save(products);
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null);
         return processInstanceId;
     }
