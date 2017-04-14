@@ -1,31 +1,11 @@
 package com.deloitte.smt.service;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
-import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
@@ -37,6 +17,25 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import org.apache.log4j.Logger;
+import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -169,38 +168,54 @@ public class SignalService {
         return instance.getCaseInstanceId();
     }
 
-    public List<Topic> findAllByStatus(String statuses, String deleteReason, Topic t) {
-        Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public List<Topic> findAllForSearch(SearchDto searchDto) {
         List<Topic> topics;
-        List<TaskInst> taskInsts = null;
-        List<String> processIds;
-        //Get all by statuses and delete reason
-        if (!StringUtils.isEmpty(statuses) && !StringUtils.isEmpty(deleteReason)) {
-            taskInsts = taskInstRepository.findAllByTaskDefKeyInAndDeleteReason(Arrays.asList(statuses.split(",")), deleteReason);
+        Set<Long> topicIds = new HashSet<>();
+        if(!CollectionUtils.isEmpty(searchDto.getProducts())) {
+            List<Product> products = productRepository.findAllByProductNameIn(searchDto.getProducts());
+            products.parallelStream().forEach(product -> topicIds.add(product.getTopicId()));
         }
-        //Get all by statuses
-        else if (!StringUtils.isEmpty(statuses)) {
-            taskInsts = taskInstRepository.findAllByTaskDefKeyIn(Arrays.asList(statuses.split(",")));
+        if(!CollectionUtils.isEmpty(searchDto.getLicenses())) {
+            List<License> licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
+            licenses.parallelStream().forEach(product -> topicIds.add(product.getTopicId()));
         }
-        //Get all by delete reason
-        else if (!StringUtils.isEmpty(deleteReason)) {
-            taskInsts = taskInstRepository.findAllByDeleteReason(deleteReason);
-        }
-
-        if(taskInsts != null) {
-            processIds = taskInsts.stream().map(TaskInst::getProcInstId)
-                    .filter(s -> !StringUtils.isEmpty(s))
-                    .collect(Collectors.toList());
-            topics = topicRepository.findAllByProcessIdInOrderByStartDateDesc(processIds);
-        } else if(t != null) {
-            ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase();
-            Example<Topic> topicEx = Example.of(t, matcher);
-            topics = topicRepository.findAll(topicEx, sort);
-        } else {
-            LOG.info("Running query to get all Signals..");
-            topics = topicRepository.findAll(sort);
+        if(!CollectionUtils.isEmpty(searchDto.getIngredients())) {
+            List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
+            ingredients.parallelStream().forEach(product -> topicIds.add(product.getTopicId()));
         }
 
+        StringBuilder queryString = new StringBuilder("SELECT o FROM Topic o WHERE 1=1 ");
+        if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses())
+                || !CollectionUtils.isEmpty(searchDto.getIngredients())){
+            queryString.append(" AND id IN :ids ");
+        }
+        if(null != searchDto.getCreatedDate()){
+            queryString.append(" AND createdDate = :createdDate ");
+        }
+        if(!CollectionUtils.isEmpty(searchDto.getStatuses())){
+            queryString.append(" AND signalStatus IN :signalStatus ");
+        }
+        queryString.append(" ORDER BY createdDate DESC");
+        Query q = entityManager.createQuery(queryString.toString(), Topic.class);
+
+        if(queryString.toString().contains(":ids")){
+            if(CollectionUtils.isEmpty(topicIds)) {
+                q.setParameter("ids", null);
+            } else {
+                q.setParameter("ids", topicIds);
+            }
+        }
+        if(queryString.toString().contains(":createdDate")){
+            q.setParameter("createdDate", searchDto.getCreatedDate());
+        }
+        if(queryString.toString().contains(":signalStatus")){
+            q.setParameter("signalStatus", searchDto.getStatuses());
+        }
+
+        topics = q.getResultList();
         topics.stream().forEach(topic->{
             if(null == topic.getSignalConfirmation()) {
                 topic.setSignalConfirmation("Validated Signal");

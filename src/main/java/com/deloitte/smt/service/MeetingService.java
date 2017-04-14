@@ -3,6 +3,7 @@ package com.deloitte.smt.service;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.entity.MeetingType;
+import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.MeetingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,13 @@ public class MeetingService {
 
     public List<Meeting> findAllyByResourceIdAndMeetingType(Long resourceId, MeetingType meetingType) {
         return meetingRepository.findAllByMeetingResourceIdAndMeetingType(resourceId, meetingType);
+    }
+
+    public void delete(Long meetingId) throws DeleteFailedException {
+        Meeting m = meetingRepository.findOne(meetingId);
+        if(m == null) {
+            throw new DeleteFailedException("Meeting not found with the given Id : "+meetingId);
+        }
+        meetingRepository.delete(m);
     }
 }

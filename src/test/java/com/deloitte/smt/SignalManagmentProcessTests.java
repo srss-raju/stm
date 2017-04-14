@@ -1,5 +1,6 @@
 package com.deloitte.smt;
 
+import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.service.SignalService;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class SignalManagmentProcessTests {
 	
 	@Test
 	public void testGetAllByStatus(){
-		List<Topic> list = signalService.findAllByStatus("",null, null);
+		List<Topic> list = signalService.findAllForSearch(new SearchDto());
 		System.out.println("validateCount  -->> "+list);
 	}
 
