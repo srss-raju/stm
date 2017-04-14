@@ -46,4 +46,14 @@ public class AttachmentController {
         attachmentService.delete(attachmentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    
+    @GetMapping(value = "/risk/{riskId}")
+    public List<Attachment> findAllByRiskId(@PathVariable Long riskId) {
+        return attachmentService.findByResourceIdAndAttachmentType(riskId, AttachmentType.RISK_ASSESSMENT);
+    }
+    
+    @GetMapping(value = "/risk/task/{riskTaskId}")
+    public List<Attachment> findAllByRiskTaskId(@PathVariable Long riskTaskId) {
+        return attachmentService.findByResourceIdAndAttachmentType(riskTaskId, AttachmentType.RISK_TASK_ASSESSMENT);
+    }
 }

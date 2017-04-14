@@ -8,8 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -31,6 +34,9 @@ public class RiskPlan implements Serializable {
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
     private AssessmentPlan assessmentPlan;
+    
+    @Transient
+	private List<Long> deletedAttachmentIds;
 
     public Long getId() {
         return id;
@@ -103,4 +109,12 @@ public class RiskPlan implements Serializable {
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
+
+	public List<Long> getDeletedAttachmentIds() {
+		return deletedAttachmentIds;
+	}
+
+	public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
+		this.deletedAttachmentIds = deletedAttachmentIds;
+	}
 }
