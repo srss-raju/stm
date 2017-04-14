@@ -44,7 +44,10 @@ public class RiskPlanService {
     public void insert(RiskPlan riskPlan) {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
-        riskPlan.setCreatedDate(new Date());
+        riskPlan.setStatus("In Progress");
+        Date d = new Date();
+        riskPlan.setCreatedDate(d);
+        riskPlan.setLastModifiedDate(d);
         riskPlanRepository.save(riskPlan);
     }
     
@@ -73,6 +76,9 @@ public class RiskPlanService {
         taskInstance.setCaseInstId(riskTask.getCaseInstanceId());
         taskInstance.setStartTime(new Date());
         riskTask.setTaskId(taskInstance.getId());
+        Date d = new Date();
+        riskTask.setCreatedDate(d);
+        riskTask.setLastUpdatedDate(d);
         taskInstRepository.save(taskInstance);
         riskTaskRepository.save(riskTask);
 	}

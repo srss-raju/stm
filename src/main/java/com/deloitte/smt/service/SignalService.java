@@ -1,7 +1,6 @@
 package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.AssessmentPlanStatus;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
@@ -87,7 +86,9 @@ public class SignalService {
         if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
         }
-        topic.setCreatedDate(new Date());
+        Date d = new Date();
+        topic.setCreatedDate(d);
+        topic.setLastModifiedDate(d);
         topic.setSignalStatus("In Progress");
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
@@ -118,13 +119,16 @@ public class SignalService {
         
         CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
         topic.setProcessId(instance.getCaseInstanceId());
-        assessmentPlan.setCreatedDate(new Date());
-        assessmentPlan.setAssessmentPlanStatus(AssessmentPlanStatus.ACTION_PLAN.getDescription());
+        Date d = new Date();
+        assessmentPlan.setCreatedDate(d);
+        assessmentPlan.setLastModifiedDate(d);
+        assessmentPlan.setAssessmentPlanStatus("In Progress");
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
         topic.setAssessmentPlan(assessmentPlan);
         topic.setSignalStatus("Complete");
         topic.setSignalValidation("Complete");
+        topic.setLastModifiedDate(new Date());
         topicRepository.save(topic);
 
         return instance.getCaseInstanceId();

@@ -29,7 +29,9 @@ public class MeetingService {
         if(meeting.getId() != null) {
             meeting.setId(null);
         }
-        meeting.setCreatedDate(new Date());
+        Date d = new Date();
+        meeting.setCreatedDate(d);
+        meeting.setLastModifiedDate(d);
         meeting = meetingRepository.save(meeting);
         attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null);
     }
