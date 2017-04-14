@@ -1,5 +1,6 @@
 package com.deloitte.smt.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.RiskPlanService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -74,5 +77,13 @@ public class RiskController {
     @GetMapping(value = "/{id}")
     public RiskPlan findByRiskId(@PathVariable Long id) {
         return riskPlanService.findByRiskId(id);
+    }
+    
+    @PostMapping(value = "/riskPlanSummary")
+    public ResponseEntity<Void> riskPlanSummary(@RequestParam("data") String riskPlanString,
+                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
+        RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
+        riskPlanService.riskPlanSummary(riskPlan, attachments);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package com.deloitte.smt.service;
 
+import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.TaskInst;
@@ -8,6 +9,7 @@ import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
@@ -16,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +44,9 @@ public class RiskPlanService {
 
     @Autowired
     CaseService caseService;
+    
+    @Autowired
+    AttachmentService attachmentService;
 
     public void insert(RiskPlan riskPlan) {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
@@ -128,4 +135,14 @@ public class RiskPlanService {
         }
         return riskPlan;
     }
+
+	public void riskPlanSummary(RiskPlan riskPlan, MultipartFile[] attachments)  throws UpdateFailedException, IOException {
+		if(riskPlan.getId() == null) {
+            throw new UpdateFailedException("Failed to update Risk. Invalid Id received");
+        }
+		riskPlan.setLastModifiedDate(new Date());
+		riskPlan.setStatus("Completed");
+        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, riskPlan.getDeletedAttachmentIds());
+        riskPlanRepository.save(riskPlan);
+	}
 }
