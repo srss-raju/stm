@@ -27,7 +27,12 @@ public class AssessmentPlanService {
     AttachmentService attachmentService;
 
     public AssessmentPlan findById(Long assessmentId){
-        return assessmentPlanRepository.findOne(assessmentId);
+        AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
+        if("New".equalsIgnoreCase(assessmentPlan.getAssessmentPlanStatus())) {
+            assessmentPlan.setAssessmentPlanStatus("In Progress");
+            assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
+        }
+        return assessmentPlan;
     }
 
     public List<AssessmentPlan> findAllAssessmentPlansByStatus(String assessmentPlanStatus) {

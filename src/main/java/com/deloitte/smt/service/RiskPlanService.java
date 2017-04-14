@@ -44,7 +44,7 @@ public class RiskPlanService {
     public void insert(RiskPlan riskPlan) {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
-        riskPlan.setStatus("In Progress");
+        riskPlan.setStatus("New");
         Date d = new Date();
         riskPlan.setCreatedDate(d);
         riskPlan.setLastModifiedDate(d);
@@ -79,12 +79,18 @@ public class RiskPlanService {
         Date d = new Date();
         riskTask.setCreatedDate(d);
         riskTask.setLastUpdatedDate(d);
+        riskTask.setStatus("New");
         taskInstRepository.save(taskInstance);
         riskTaskRepository.save(riskTask);
 	}
 	
 	public RiskTask findById(Long id) {
-        return riskTaskRepository.findOne(id);
+        RiskTask riskTask = riskTaskRepository.findOne(id);
+        if("New".equalsIgnoreCase(riskTask.getStatus())) {
+            riskTask.setStatus("In Progress");
+            riskTask = riskTaskRepository.save(riskTask);
+        }
+        return riskTask;
     }
 	
 	public List<RiskTask> findAllByRiskId(String riskId, String status) {
@@ -115,6 +121,11 @@ public class RiskPlanService {
     }
     
     public RiskPlan findByRiskId(Long riskId){
-        return riskPlanRepository.findOne(riskId);
+        RiskPlan riskPlan = riskPlanRepository.findOne(riskId);
+        if("New".equalsIgnoreCase(riskPlan.getStatus())) {
+            riskPlan.setStatus("In Progress");
+            riskPlan = riskPlanRepository.save(riskPlan);
+        }
+        return riskPlan;
     }
 }

@@ -70,6 +70,10 @@ public class SignalService {
         if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
         }
+        if("New".equalsIgnoreCase(topic.getSignalStatus())) {
+            topic.setSignalStatus("In Progress");
+            topic = topicRepository.save(topic);
+        }
         return topic;
     }
 
@@ -89,7 +93,7 @@ public class SignalService {
         Date d = new Date();
         topic.setCreatedDate(d);
         topic.setLastModifiedDate(d);
-        topic.setSignalStatus("In Progress");
+        topic.setSignalStatus("New");
         topic.setProcessId(processInstanceId);
         topic = topicRepository.save(topic);
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null);
@@ -122,7 +126,7 @@ public class SignalService {
         Date d = new Date();
         assessmentPlan.setCreatedDate(d);
         assessmentPlan.setLastModifiedDate(d);
-        assessmentPlan.setAssessmentPlanStatus("In Progress");
+        assessmentPlan.setAssessmentPlanStatus("New");
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
         topic.setAssessmentPlan(assessmentPlan);

@@ -53,7 +53,10 @@ public class AssessmentActionService {
         taskInstance.setStartTime(new Date());
         signalAction.setTaskId(taskInstance.getId());
         taskInstRepository.save(taskInstance);
-        signalAction.setCreatedDate(new Date());
+        Date d = new Date();
+        signalAction.setCreatedDate(d);
+        signalAction.setLastModifiedDate(d);
+        signalAction.setActionStatus("New");
         signalAction = assessmentActionRepository.save(signalAction);
         attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null);
     }
@@ -71,7 +74,12 @@ public class AssessmentActionService {
     }
 
     public SignalAction findById(Long id) {
-        return assessmentActionRepository.findOne(id);
+        SignalAction signalAction = assessmentActionRepository.findOne(id);
+        if("New".equalsIgnoreCase(signalAction.getActionStatus())){
+            signalAction.setActionStatus("In Progress");
+            signalAction = assessmentActionRepository.save(signalAction);
+        }
+        return signalAction;
     }
 
     public List<SignalAction> findAllByAssessmentId(String assessmentId, String actionStatus) {
