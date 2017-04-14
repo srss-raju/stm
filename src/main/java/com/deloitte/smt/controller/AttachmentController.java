@@ -56,4 +56,10 @@ public class AttachmentController {
     public List<Attachment> findAllByRiskTaskId(@PathVariable Long riskTaskId) {
         return attachmentService.findByResourceIdAndAttachmentType(riskTaskId, AttachmentType.RISK_TASK_ASSESSMENT);
     }
+
+    @GetMapping(value = "/meeting/{meetingId}")
+    public List<Attachment> findAllByMeetingId(@PathVariable Long meetingId) {
+        return attachmentService.findByResourceIdAndAttachmentType(meetingId, AttachmentType.MEETING_ATTACHMENT);
+    }
+
 }
