@@ -153,4 +153,13 @@ public class RiskPlanService {
         attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, riskPlan.getDeletedAttachmentIds());
         riskPlanRepository.save(riskPlan);
 	}
+	
+	public void updateRiskPlan(RiskPlan riskPlan, MultipartFile[] attachments)  throws UpdateFailedException, IOException {
+		if(riskPlan.getId() == null) {
+            throw new UpdateFailedException("Failed to update Risk. Invalid Id received");
+        }
+		riskPlan.setLastModifiedDate(new Date());
+        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, riskPlan.getDeletedAttachmentIds());
+        riskPlanRepository.save(riskPlan);
+	}
 }

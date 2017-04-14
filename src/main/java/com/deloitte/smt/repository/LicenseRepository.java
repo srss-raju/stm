@@ -9,4 +9,7 @@ import java.util.List;
 public interface LicenseRepository extends JpaRepository<License, Long> {
 
     List<License> findAllByLicenseNameIn(List<String> licenses);
+    
+    List<License> findByTopicId(Long topicId);
+    
 }

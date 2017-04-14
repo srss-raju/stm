@@ -84,6 +84,14 @@ public class RiskController {
         return riskPlanService.findByRiskId(id);
     }
     
+    @PostMapping(value = "/updateRiskPlan")
+    public ResponseEntity<Void> updateRiskPlan(@RequestParam("data") String riskPlanString,
+                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
+        RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
+        riskPlanService.updateRiskPlan(riskPlan, attachments);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
     @PostMapping(value = "/riskPlanSummary")
     public ResponseEntity<Void> riskPlanSummary(@RequestParam("data") String riskPlanString,
                                   @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {

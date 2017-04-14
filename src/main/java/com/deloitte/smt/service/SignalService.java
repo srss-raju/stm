@@ -86,6 +86,12 @@ public class SignalService {
             topic.setSignalStatus("In Progress");
             topic = topicRepository.save(topic);
         }
+        Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
+        List<Product> products = productRepository.findByTopicId(topic.getId());
+        List<License> licenses = licenseRepository.findByTopicId(topic.getId());
+        ingredient.setProducts(products);
+        ingredient.setLicenses(licenses);
+        topic.setIngredient(ingredient);
         return topic;
     }
 
