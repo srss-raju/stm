@@ -3,12 +3,14 @@ package com.deloitte.smt.service;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
@@ -124,7 +126,7 @@ public class RiskPlanService {
         taskService.deleteTask(taskId);
     }
     
-    public void updateRiskTask(RiskTask riskTask) throws UpdateFailedException {
+   /* public void updateRiskTask(RiskTask riskTask) throws UpdateFailedException {
         if(riskTask.getId() == null) {
             throw new UpdateFailedException("Failed to update Task. Invalid Id received");
         }
@@ -133,7 +135,20 @@ public class RiskPlanService {
         }
         riskTask.setLastUpdatedDate(new Date());
         riskTaskRepository.save(riskTask);
+    }*/
+    
+    public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws UpdateFailedException, IOException {
+        if(riskTask.getId() == null) {
+            throw new UpdateFailedException("Failed to update Action. Invalid Id received");
+        }
+        if("completed".equalsIgnoreCase(riskTask.getStatus())) {
+            taskService.complete(riskTask.getTaskId());
+        }
+        riskTask.setLastUpdatedDate(new Date());
+        riskTaskRepository.save(riskTask);
+        attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null);
     }
+    
     
     public RiskPlan findByRiskId(Long riskId){
         RiskPlan riskPlan = riskPlanRepository.findOne(riskId);

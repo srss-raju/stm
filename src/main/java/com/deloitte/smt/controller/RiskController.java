@@ -2,10 +2,12 @@ package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.RiskPlanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,11 +75,20 @@ public class RiskController {
     	return new ResponseEntity<>(HttpStatus.OK);
     }
     
-    @PutMapping(value = "/task/updateRiskTask")
+    /*@PutMapping(value = "/task/updateRiskTask")
     public ResponseEntity<Void> updateRiskTask(@RequestBody RiskTask riskTask) throws UpdateFailedException {
     	riskPlanService.updateRiskTask(riskTask);
     	return new ResponseEntity<>(HttpStatus.OK);
+    }*/
+    
+    @PostMapping(value = "/task/updateRiskTask")
+    public ResponseEntity<Void> updateRiskTask(@RequestParam("data") String riskTaskString,
+                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
+    	RiskTask riskTask = new ObjectMapper().readValue(riskTaskString, RiskTask.class);
+        riskPlanService.updateRiskTask(riskTask, attachments);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+    
     
     @GetMapping(value = "/{id}")
     public RiskPlan findByRiskId(@PathVariable Long id) {
