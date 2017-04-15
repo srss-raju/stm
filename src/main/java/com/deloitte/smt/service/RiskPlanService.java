@@ -174,7 +174,7 @@ public class RiskPlanService {
             throw new UpdateFailedException("Failed to update Risk. Invalid Id received");
         }
 		riskPlan.setLastModifiedDate(new Date());
-        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, riskPlan.getDeletedAttachmentIds());
+        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, riskPlan.getDeletedAttachmentIds());
         riskPlanRepository.save(riskPlan);
 	}
 }
