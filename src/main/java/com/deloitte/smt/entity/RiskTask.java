@@ -37,6 +37,8 @@ public class RiskTask {
     
     private String status;
 
+	private String actionType;
+
 	public Long getId() {
 		return id;
 	}
@@ -131,5 +133,13 @@ public class RiskTask {
 
 	public void setRiskId(String riskId) {
 		this.riskId = riskId;
+	}
+
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
 	}
 }

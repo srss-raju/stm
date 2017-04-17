@@ -149,4 +149,6 @@ public class SignalAction {
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
+
+
 }

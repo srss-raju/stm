@@ -33,7 +33,6 @@ public class RiskPlan implements Serializable {
     private String summary;
     private String caseInstanceId;
     private String status;
-    private String actionType;
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
     @JsonIgnore
@@ -96,14 +95,6 @@ public class RiskPlan implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getActionType() {
-        return actionType;
-    }
-
-    public void setActionType(String actionType) {
-        this.actionType = actionType;
     }
 
     public AssessmentPlan getAssessmentPlan() {
