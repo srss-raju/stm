@@ -14,8 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * Created by myelleswarapu on 04-04-2017.
  */
@@ -53,7 +51,6 @@ public class Topic implements Serializable{
     private Ingredient ingredient;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
     private AssessmentPlan assessmentPlan;
 
     @Transient
