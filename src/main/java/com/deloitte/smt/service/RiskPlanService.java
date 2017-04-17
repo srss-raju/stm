@@ -1,16 +1,17 @@
 package com.deloitte.smt.service;
 
+import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
-
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
@@ -33,6 +34,9 @@ import java.util.List;
 public class RiskPlanService {
 
     @Autowired
+    AssessmentPlanRepository assessmentPlanRepository;
+
+    @Autowired
     RiskPlanRepository riskPlanRepository;
     
     @Autowired
@@ -50,14 +54,21 @@ public class RiskPlanService {
     @Autowired
     AttachmentService attachmentService;
 
-    public void insert(RiskPlan riskPlan, MultipartFile[] attachments) throws IOException {
+    public void insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, EntityNotFoundException {
+        AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
+        if(assessmentPlan == null) {
+            throw new EntityNotFoundException("Assessment Plan not found with the given Id : "+assessmentId);
+        }
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
         riskPlan.setStatus("New");
         Date d = new Date();
         riskPlan.setCreatedDate(d);
         riskPlan.setLastModifiedDate(d);
+        riskPlan.setAssessmentPlan(assessmentPlan);
         riskPlan = riskPlanRepository.save(riskPlan);
+        assessmentPlan.setRiskPlan(riskPlan);
+        assessmentPlanRepository.save(assessmentPlan);
         attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null);
     }
     

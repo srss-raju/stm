@@ -1,5 +1,7 @@
 package com.deloitte.smt.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,6 +35,7 @@ public class RiskPlan implements Serializable {
     private String status;
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
+    @JsonIgnore
     private AssessmentPlan assessmentPlan;
     
     @Transient

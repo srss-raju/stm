@@ -2,12 +2,11 @@ package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.RiskPlanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,9 +35,10 @@ public class RiskController {
 
     @PostMapping()
     public ResponseEntity<Void> createRiskPlan(@RequestParam("data") String riskPlanString,
-                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+                                               @RequestParam("assessmentId") Long assessmentId,
+                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, EntityNotFoundException {
         RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
-        riskPlanService.insert(riskPlan, attachments);
+        riskPlanService.insert(riskPlan, attachments, assessmentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     

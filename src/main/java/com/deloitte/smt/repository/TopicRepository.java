@@ -14,5 +14,5 @@ import java.util.List;
 public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     List<Topic> findAllByIdInAndCreatedDateAndSignalStatusInOrderByCreatedDateDesc(List<Long> ids, Date createdDate, List<String> status);
-    Long countByProcessIdIn(List<String> processId);
+    Long countBySignalStatusNotLikeIgnoreCase(String signalStatus);
 }

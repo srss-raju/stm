@@ -162,12 +162,14 @@ public class SignalService {
         Date d = new Date();
         assessmentPlan.setCreatedDate(d);
         assessmentPlan.setLastModifiedDate(d);
-        assessmentPlan.setAssessmentPlanStatus("New");
+        if(assessmentPlan.getId() == null) {
+            assessmentPlan.setAssessmentPlanStatus("New");
+        }
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
         topic.setAssessmentPlan(assessmentPlan);
-        topic.setSignalStatus("Complete");
-        topic.setSignalValidation("Complete");
+        topic.setSignalStatus("Completed");
+        topic.setSignalValidation("Completed");
         topic.setLastModifiedDate(new Date());
         topicRepository.save(topic);
 
@@ -234,17 +236,17 @@ public class SignalService {
     }
 
     public Long getValidateAndPrioritizeCount(){
-        return topicRepository.count();
+        return topicRepository.countBySignalStatusNotLikeIgnoreCase("Completed");
     	//return taskInstRepository.countByTaskDefKeyInAndDeleteReasonNot(Arrays.asList("validateTopic"), "completed");
     }
     
     public Long getAssessmentCount(){
     	///return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("assessment"));
-        return assessmentPlanRepository.count();
+        return assessmentPlanRepository.countByAssessmentPlanStatusNotLikeIgnoreCase("Completed");
     }
     
     public Long getRiskCount(){
-    	return riskPlanRepository.count();
+    	return riskPlanRepository.countByStatusNotLikeIgnoreCase("Completed");
     	//return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
     }
 }
