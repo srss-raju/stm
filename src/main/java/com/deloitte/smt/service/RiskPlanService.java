@@ -161,8 +161,11 @@ public class RiskPlanService {
     }
     
     
-    public RiskPlan findByRiskId(Long riskId){
+    public RiskPlan findByRiskId(Long riskId) throws EntityNotFoundException {
         RiskPlan riskPlan = riskPlanRepository.findOne(riskId);
+        if(riskPlan == null) {
+            throw new EntityNotFoundException("Risk Plan not found with the given Id : "+riskId);
+        }
         if("New".equalsIgnoreCase(riskPlan.getStatus())) {
             riskPlan.setStatus("In Progress");
             riskPlan = riskPlanRepository.save(riskPlan);

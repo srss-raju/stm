@@ -1,5 +1,6 @@
 package com.deloitte.smt.controller;
 
+import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.exception.DeleteFailedException;
@@ -89,7 +90,7 @@ public class RiskController {
     
     
     @GetMapping(value = "/{id}")
-    public RiskPlan findByRiskId(@PathVariable Long id) {
+    public RiskPlan findByRiskId(@PathVariable Long id) throws EntityNotFoundException {
         return riskPlanService.findByRiskId(id);
     }
     
@@ -107,5 +108,10 @@ public class RiskController {
         RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
         riskPlanService.riskPlanSummary(riskPlan, attachments);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{riskId}/assessmentPlan")
+    public AssessmentPlan getAssessmentPlanByRiskId(@PathVariable Long riskId) throws EntityNotFoundException {
+        return riskPlanService.findByRiskId(riskId).getAssessmentPlan();
     }
 }
