@@ -76,9 +76,6 @@ public class SignalService {
 
     public Topic findById(Long topicId){
         Topic topic = topicRepository.findOne(topicId);
-        /*if(null == topic.getSignalConfirmation()) {
-            topic.setSignalConfirmation("Validated Signal");
-        }*/
         if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
         }
@@ -104,9 +101,6 @@ public class SignalService {
         taskService.delegateTask(task.getId(), "Demo Demo");
         if(topic.getId() != null) {
             topic.setId(null);
-        }
-        if(null == topic.getSignalConfirmation()) {
-            topic.setSignalConfirmation("Validated Signal");
         }
         if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
@@ -225,9 +219,6 @@ public class SignalService {
 
         topics = q.getResultList();
         topics.stream().forEach(topic->{
-            if(null == topic.getSignalConfirmation()) {
-                topic.setSignalConfirmation("Validated Signal");
-            }
             if(null == topic.getSignalValidation()) {
                 topic.setSignalValidation("In Progress");
             }
