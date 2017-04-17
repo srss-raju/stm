@@ -42,6 +42,7 @@ public class AssessmentPlan {
 
 	private Date createdDate;
 	private Date lastModifiedDate;
+	private String actionType;
 
 	public AssessmentPlan() {
 		this.topics = new ArrayList<>();
@@ -156,5 +157,13 @@ public class AssessmentPlan {
 
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
+	}
+
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
 	}
 }
