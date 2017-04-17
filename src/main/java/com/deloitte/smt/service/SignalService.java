@@ -79,9 +79,9 @@ public class SignalService {
         if(null == topic.getSignalConfirmation()) {
             topic.setSignalConfirmation("Validated Signal");
         }
-        if(null == topic.getSignalValidation()) {
+        /*if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
-        }
+        }*/
         if("New".equalsIgnoreCase(topic.getSignalStatus())) {
             topic.setSignalStatus("In Progress");
             topic = topicRepository.save(topic);
