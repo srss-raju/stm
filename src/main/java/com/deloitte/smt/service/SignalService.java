@@ -146,7 +146,7 @@ public class SignalService {
         return "Update Success";
     }
 
-    public String validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan) throws TaskNotFoundException, TopicNotFoundException {
+    public AssessmentPlan validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan) throws TaskNotFoundException, TopicNotFoundException {
         Topic topic = topicRepository.findOne(topicId);
         if(topic == null) {
             throw new TopicNotFoundException("Topic not found with the given Id ["+topicId+"]");
@@ -171,7 +171,7 @@ public class SignalService {
         topic.setLastModifiedDate(new Date());
         topicRepository.save(topic);
 
-        return instance.getCaseInstanceId();
+        return assessmentPlan;
     }
 
     @PersistenceContext
