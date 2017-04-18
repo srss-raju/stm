@@ -49,7 +49,7 @@ public class AttachmentService {
     }
         if(attachments != null) {
             for (MultipartFile attachment : attachments) {
-                if(StringUtils.isNotBlank(attachment.getOriginalFilename()) || StringUtils.isNotBlank(attachment.getName())) {
+                if(!attachment.isEmpty() || StringUtils.isNotBlank(attachment.getOriginalFilename())) {
                     Attachment a = new Attachment();
                     a.setAttachmentType(attachmentType);
                     a.setAttachmentResourceId(attachmentResourceId);

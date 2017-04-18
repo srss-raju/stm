@@ -29,6 +29,7 @@ public class SignalAction {
     private String caseInstanceId;
     private String report;
     private String taskId;
+	private String recipients;
 
 	public Long getId() {
 		return id;
@@ -150,5 +151,11 @@ public class SignalAction {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
+	public String getRecipients() {
+		return recipients;
+	}
 
+	public void setRecipients(String recipients) {
+		this.recipients = recipients;
+	}
 }

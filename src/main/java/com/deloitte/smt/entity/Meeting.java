@@ -31,7 +31,6 @@ public class Meeting implements Serializable {
 
     private Date createdDate;
     private Date lastModifiedDate;
-    private String recipients;
 
     public Long getId() {
         return id;
@@ -103,13 +102,5 @@ public class Meeting implements Serializable {
 
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getRecipients() {
-        return recipients;
-    }
-
-    public void setRecipients(String recipients) {
-        this.recipients = recipients;
     }
 }
