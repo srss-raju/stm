@@ -39,6 +39,8 @@ public class RiskTask {
 
 	private String actionType;
 
+	private String createdBy;
+
 	public Long getId() {
 		return id;
 	}
@@ -141,5 +143,13 @@ public class RiskTask {
 
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }

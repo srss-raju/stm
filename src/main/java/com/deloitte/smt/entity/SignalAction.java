@@ -30,6 +30,7 @@ public class SignalAction {
     private String report;
     private String taskId;
 	private String recipients;
+	private String createdBy;
 
 	public Long getId() {
 		return id;
@@ -157,5 +158,13 @@ public class SignalAction {
 
 	public void setRecipients(String recipients) {
 		this.recipients = recipients;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }
