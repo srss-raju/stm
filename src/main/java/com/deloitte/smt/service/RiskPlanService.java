@@ -54,7 +54,7 @@ public class RiskPlanService {
     @Autowired
     AttachmentService attachmentService;
 
-    public void insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, EntityNotFoundException {
+    public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, EntityNotFoundException {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
         riskPlan.setStatus("New");
@@ -74,6 +74,7 @@ public class RiskPlanService {
             riskPlan = riskPlanRepository.save(riskPlan);
         }
         attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null);
+        return riskPlan;
     }
     
     public List<RiskPlan> findAllRiskPlansForSearch(String statuses, Date createdDate) {

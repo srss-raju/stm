@@ -35,12 +35,12 @@ public class RiskController {
     RiskPlanService riskPlanService;
 
     @PostMapping()
-    public ResponseEntity<Void> createRiskPlan(@RequestParam("data") String riskPlanString,
+    public RiskPlan createRiskPlan(@RequestParam("data") String riskPlanString,
                                                @RequestParam(value = "assessmentId", required = false) Long assessmentId,
                                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, EntityNotFoundException {
         RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
-        riskPlanService.insert(riskPlan, attachments, assessmentId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        riskPlan = riskPlanService.insert(riskPlan, attachments, assessmentId);
+        return riskPlan;
     }
     
     @GetMapping(value = "/allRiskPlans")

@@ -27,6 +27,7 @@ public class RiskPlan implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    private String description;
     private int inDays;
     private Date createdDate;
     private Date lastModifiedDate;
@@ -55,6 +56,14 @@ public class RiskPlan implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getInDays() {
