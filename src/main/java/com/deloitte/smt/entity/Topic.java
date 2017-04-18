@@ -1,9 +1,5 @@
 package com.deloitte.smt.entity;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -46,6 +45,7 @@ public class Topic implements Serializable{
     private String validationComments;
     private String signalStatus;
     private String signalStrength;
+    private Date dueDate;
     
     @Transient
     private Ingredient ingredient;
@@ -194,6 +194,14 @@ public class Topic implements Serializable{
 
     public void setSignalStrength(String signalStrength) {
         this.signalStrength = signalStrength;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 
     public AssessmentPlan getAssessmentPlan() {

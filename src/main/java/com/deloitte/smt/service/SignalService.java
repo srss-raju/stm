@@ -32,6 +32,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -74,6 +75,9 @@ public class SignalService {
     @Autowired
     AttachmentService attachmentService;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public Topic findById(Long topicId){
         Topic topic = topicRepository.findOne(topicId);
         if(null == topic.getSignalValidation()) {
@@ -105,11 +109,13 @@ public class SignalService {
         if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
         }
-        Date d = new Date();
-        topic.setCreatedDate(d);
-        topic.setLastModifiedDate(d);
+        Calendar c = Calendar.getInstance();
+        topic.setCreatedDate(c.getTime());
+        topic.setLastModifiedDate(c.getTime());
         topic.setSignalStatus("New");
         topic.setProcessId(processInstanceId);
+        c.add(Calendar.DAY_OF_YEAR, 5);
+        topic.setDueDate(c.getTime());
         topic = topicRepository.save(topic);
         ingredient.setTopicId(topic.getId());
         ingredient = ingredientRepository.save(ingredient);
@@ -169,9 +175,6 @@ public class SignalService {
 
         return assessmentPlan;
     }
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     public List<Topic> findAllForSearch(SearchDto searchDto) {
         List<Topic> topics;
