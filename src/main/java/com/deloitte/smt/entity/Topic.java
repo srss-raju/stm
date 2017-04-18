@@ -7,11 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -46,7 +48,13 @@ public class Topic implements Serializable{
     private String signalStatus;
     private String signalStrength;
     private Date dueDate;
+
+    @Transient
+    private int casesCount;
     
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="topic")
+    private Set<SignalStatistics> signalStatistics;
+
     @Transient
     private Ingredient ingredient;
     
@@ -236,4 +244,19 @@ public class Topic implements Serializable{
 		this.ingredient = ingredient;
 	}
 
+	public int getCasesCount() {
+		return casesCount;
+	}
+
+	public void setCasesCount(int casesCount) {
+		this.casesCount = casesCount;
+	}
+
+	public Set<SignalStatistics> getSignalStatistics() {
+		return signalStatistics;
+	}
+
+	public void setSignalStatistics(Set<SignalStatistics> signalStatistics) {
+		this.signalStatistics = signalStatistics;
+	}
 }
