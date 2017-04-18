@@ -46,6 +46,8 @@ public class Topic implements Serializable{
     private String validationComments;
     private String signalStatus;
     private String signalStrength;
+    @Transient
+    private int casesCount;
     
     @Transient
     private Ingredient ingredient;
@@ -226,6 +228,14 @@ public class Topic implements Serializable{
 
 	public void setIngredient(Ingredient ingredient) {
 		this.ingredient = ingredient;
+	}
+
+	public int getCasesCount() {
+		return casesCount;
+	}
+
+	public void setCasesCount(int casesCount) {
+		this.casesCount = casesCount;
 	}
 
 }
