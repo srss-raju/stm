@@ -3,6 +3,7 @@ package com.deloitte.smt.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -48,6 +50,9 @@ public class Topic implements Serializable{
     private String signalStrength;
     @Transient
     private int casesCount;
+    
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="topic")
+    private Set<SignalStatistics> signalStatistics;
     
     @Transient
     private Ingredient ingredient;
@@ -236,6 +241,14 @@ public class Topic implements Serializable{
 
 	public void setCasesCount(int casesCount) {
 		this.casesCount = casesCount;
+	}
+
+	public Set<SignalStatistics> getSignalStatistics() {
+		return signalStatistics;
+	}
+
+	public void setSignalStatistics(Set<SignalStatistics> signalStatistics) {
+		this.signalStatistics = signalStatistics;
 	}
 
 }
