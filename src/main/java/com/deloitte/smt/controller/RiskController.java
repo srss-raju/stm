@@ -36,7 +36,7 @@ public class RiskController {
 
     @PostMapping()
     public ResponseEntity<Void> createRiskPlan(@RequestParam("data") String riskPlanString,
-                                               @RequestParam("assessmentId") Long assessmentId,
+                                               @RequestParam(value = "assessmentId", required = false) Long assessmentId,
                                                @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, EntityNotFoundException {
         RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
         riskPlanService.insert(riskPlan, attachments, assessmentId);

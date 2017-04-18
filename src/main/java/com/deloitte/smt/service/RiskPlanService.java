@@ -55,20 +55,24 @@ public class RiskPlanService {
     AttachmentService attachmentService;
 
     public void insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, EntityNotFoundException {
-        AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
-        if(assessmentPlan == null) {
-            throw new EntityNotFoundException("Assessment Plan not found with the given Id : "+assessmentId);
-        }
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
         riskPlan.setStatus("New");
         Date d = new Date();
         riskPlan.setCreatedDate(d);
         riskPlan.setLastModifiedDate(d);
-        riskPlan.setAssessmentPlan(assessmentPlan);
-        riskPlan = riskPlanRepository.save(riskPlan);
-        assessmentPlan.setRiskPlan(riskPlan);
-        assessmentPlanRepository.save(assessmentPlan);
+        if(assessmentId != null){
+            AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
+            if(assessmentPlan == null) {
+                throw new EntityNotFoundException("Assessment Plan not found with the given Id : "+assessmentId);
+            }
+            assessmentPlan.setRiskPlan(riskPlan);
+            riskPlan.setAssessmentPlan(assessmentPlan);
+            riskPlan = riskPlanRepository.save(riskPlan);
+            assessmentPlanRepository.save(assessmentPlan);
+        } else {
+            riskPlan = riskPlanRepository.save(riskPlan);
+        }
         attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null);
     }
     
