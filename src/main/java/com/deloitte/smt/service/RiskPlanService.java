@@ -73,7 +73,7 @@ public class RiskPlanService {
         } else {
             riskPlan = riskPlanRepository.save(riskPlan);
         }
-        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null, null);
+        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null, riskPlan.getFileMetadata());
         return riskPlan;
     }
     
@@ -114,7 +114,7 @@ public class RiskPlanService {
         riskTask.setStatus("New");
         taskInstRepository.save(taskInstance);
         riskTask = riskTaskRepository.save(riskTask);
-        attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, null);
+        attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, riskTask.getFileMetadata());
 	}
 	
 	public RiskTask findById(Long id) {
@@ -162,7 +162,8 @@ public class RiskPlanService {
         }
         riskTask.setLastUpdatedDate(new Date());
         riskTaskRepository.save(riskTask);
-        attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, null);
+        attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, riskTask.getFileMetadata()
+        );
     }
     
     
@@ -184,7 +185,7 @@ public class RiskPlanService {
         }
 		riskPlan.setLastModifiedDate(new Date());
 		riskPlan.setStatus("Completed");
-        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, riskPlan.getDeletedAttachmentIds(), null);
+        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata());
         riskPlanRepository.save(riskPlan);
 	}
 	
@@ -193,7 +194,7 @@ public class RiskPlanService {
             throw new UpdateFailedException("Failed to update Risk. Invalid Id received");
         }
 		riskPlan.setLastModifiedDate(new Date());
-        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, riskPlan.getDeletedAttachmentIds(), null);
+        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata());
         riskPlanRepository.save(riskPlan);
 	}
 }

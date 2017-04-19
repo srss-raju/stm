@@ -5,8 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import java.util.Date;
+import java.util.Map;
 
 @Entity
 @Table(name = "sm_risk_task")
@@ -43,6 +45,8 @@ public class RiskTask {
 	private String createdBy;
 	
 	private String recipients;
+	@Transient
+	private Map<String, String> fileMetadata;
 
 	public Long getId() {
 		return id;
@@ -162,5 +166,13 @@ public class RiskTask {
 
 	public void setRecipients(String recipients) {
 		this.recipients = recipients;
+	}
+
+	public Map<String, String> getFileMetadata() {
+		return fileMetadata;
+	}
+
+	public void setFileMetadata(Map<String, String> fileMetadata) {
+		this.fileMetadata = fileMetadata;
 	}
 }

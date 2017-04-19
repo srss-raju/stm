@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "sm_assessment_plan")
@@ -42,6 +43,8 @@ public class AssessmentPlan {
 
 	private Date createdDate;
 	private Date lastModifiedDate;
+	@Transient
+	private Map<String, String> fileMetadata;
 
 	public AssessmentPlan() {
 		this.topics = new ArrayList<>();
@@ -156,5 +159,13 @@ public class AssessmentPlan {
 
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
+	}
+
+	public Map<String, String> getFileMetadata() {
+		return fileMetadata;
+	}
+
+	public void setFileMetadata(Map<String, String> fileMetadata) {
+		this.fileMetadata = fileMetadata;
 	}
 }

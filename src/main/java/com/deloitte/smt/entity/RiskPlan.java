@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -41,6 +42,8 @@ public class RiskPlan implements Serializable {
     
     @Transient
 	private List<Long> deletedAttachmentIds;
+    @Transient
+    private Map<String, String> fileMetadata;
 
     public Long getId() {
         return id;
@@ -129,4 +132,12 @@ public class RiskPlan implements Serializable {
 	public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
 		this.deletedAttachmentIds = deletedAttachmentIds;
 	}
+
+    public Map<String, String> getFileMetadata() {
+        return fileMetadata;
+    }
+
+    public void setFileMetadata(Map<String, String> fileMetadata) {
+        this.fileMetadata = fileMetadata;
+    }
 }

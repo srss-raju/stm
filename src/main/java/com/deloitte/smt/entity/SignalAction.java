@@ -5,7 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.Map;
 
 @Entity
 @Table(name = "sm_assessment_action")
@@ -31,6 +33,8 @@ public class SignalAction {
     private String taskId;
 	private String recipients;
 	private String createdBy;
+	@Transient
+	private Map<String, String> fileMetadata;
 
 	public Long getId() {
 		return id;
@@ -166,5 +170,13 @@ public class SignalAction {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public Map<String, String> getFileMetadata() {
+		return fileMetadata;
+	}
+
+	public void setFileMetadata(Map<String, String> fileMetadata) {
+		this.fileMetadata = fileMetadata;
 	}
 }

@@ -84,7 +84,7 @@ public class AssessmentPlanService {
             throw new UpdateFailedException("Failed to update Assessment. Invalid Id received");
         }
         assessmentPlan.setLastModifiedDate(new Date());
-        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), null);
+        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata());
         assessmentPlanRepository.save(assessmentPlan);
     }
 
@@ -94,7 +94,7 @@ public class AssessmentPlanService {
         }
         assessmentPlan.setLastModifiedDate(new Date());
         assessmentPlan.setAssessmentPlanStatus("Completed");
-        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, assessmentPlan.getDeletedAttachmentIds(), null);
+        attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata());
         assessmentPlanRepository.save(assessmentPlan);
     }
 }

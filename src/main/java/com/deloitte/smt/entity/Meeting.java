@@ -9,6 +9,7 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -28,6 +29,8 @@ public class Meeting implements Serializable {
     private MeetingType meetingType;
     @Transient
     private List<Long> deletedAttachmentIds;
+    @Transient
+    private Map<String, String> fileMetadata;
 
     private Date createdDate;
     private Date lastModifiedDate;
@@ -86,6 +89,14 @@ public class Meeting implements Serializable {
 
     public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
         this.deletedAttachmentIds = deletedAttachmentIds;
+    }
+
+    public Map<String, String> getFileMetadata() {
+        return fileMetadata;
+    }
+
+    public void setFileMetadata(Map<String, String> fileMetadata) {
+        this.fileMetadata = fileMetadata;
     }
 
     public Date getCreatedDate() {
