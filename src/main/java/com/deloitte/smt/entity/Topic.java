@@ -44,7 +44,7 @@ public class Topic implements Serializable{
     private String processId;
     private String signalValidation;
     private String signalConfirmation;
-    private String[] validationComments;
+    private String validationComments;
     private String signalStatus;
     private String signalStrength;
     private Date dueDate;
@@ -180,11 +180,11 @@ public class Topic implements Serializable{
         this.signalConfirmation = signalConfirmation;
     }
 
-    public String[] getValidationComments() {
+    public String getValidationComments() {
         return validationComments;
     }
 
-    public void setValidationComments(String[] validationComments) {
+    public void setValidationComments(String validationComments) {
         this.validationComments = validationComments;
     }
 
