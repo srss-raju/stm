@@ -90,16 +90,15 @@ public class SignalService {
         Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
         List<Product> products = productRepository.findByTopicId(topic.getId());
         List<License> licenses = licenseRepository.findByTopicId(topic.getId());
-        ingredient.setProducts(products);
-        ingredient.setLicenses(licenses);
-        topic.setIngredient(ingredient);
+        if(ingredient != null) {
+            ingredient.setProducts(products);
+            ingredient.setLicenses(licenses);
+            topic.setIngredient(ingredient);
+        }
         return topic;
     }
 
     public String createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
-    	Ingredient ingredient = topic.getIngredient();
-    	List<Product> products = ingredient.getProducts();
-    	List<License> licenses = ingredient.getLicenses();
     	String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         taskService.delegateTask(task.getId(), "Demo Demo");
@@ -117,22 +116,30 @@ public class SignalService {
         c.add(Calendar.DAY_OF_YEAR, 5);
         topic.setDueDate(c.getTime());
         topic = topicRepository.save(topic);
-        ingredient.setTopicId(topic.getId());
-        ingredient = ingredientRepository.save(ingredient);
-        
-        for(Product singleProduct:products){
-        	singleProduct.setIngredientId(ingredient.getId());
-        	singleProduct.setTopicId(topic.getId());
+
+        Ingredient ingredient = topic.getIngredient();
+        if(ingredient != null) {
+            List<Product> products = ingredient.getProducts();
+            List<License> licenses = ingredient.getLicenses();
+            ingredient.setTopicId(topic.getId());
+            ingredient = ingredientRepository.save(ingredient);
+
+            if(!CollectionUtils.isEmpty(products)){
+                for (Product singleProduct : products) {
+                    singleProduct.setIngredientId(ingredient.getId());
+                    singleProduct.setTopicId(topic.getId());
+                }
+                productRepository.save(products);
+            }
+            if(!CollectionUtils.isEmpty(licenses)) {
+                for (License singleLicense : licenses) {
+                    singleLicense.setIngredientId(ingredient.getId());
+                    singleLicense.setTopicId(topic.getId());
+                }
+                licenseRepository.save(licenses);
+            }
         }
-        
-        for(License singleLicense:licenses){
-        	singleLicense.setIngredientId(ingredient.getId());
-        	singleLicense.setTopicId(topic.getId());
-        }
-        
-        productRepository.save(products);
-        licenseRepository.save(licenses);
-        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null);
+        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topic.getFileMetadata());
         return processInstanceId;
     }
 
@@ -141,7 +148,7 @@ public class SignalService {
             throw new UpdateFailedException("Update failed for Topic, since it does not have any valid Id field.");
         }
         topic.setLastModifiedDate(new Date());
-        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, topic.getDeletedAttachmentIds());
+        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, topic.getDeletedAttachmentIds(), topic.getFileMetadata());
         topicRepository.save(topic);
         return "Update Success";
     }

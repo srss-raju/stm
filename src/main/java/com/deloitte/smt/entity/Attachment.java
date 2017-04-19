@@ -24,6 +24,8 @@ public class Attachment implements Serializable {
     @JsonIgnore
     private byte[] content;
     private String fileName;
+    private String contentType;
+    private String description;
     private AttachmentType attachmentType;
 
     private Long attachmentResourceId;
@@ -53,6 +55,22 @@ public class Attachment implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public AttachmentType getAttachmentType() {

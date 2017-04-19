@@ -58,7 +58,7 @@ public class AssessmentActionService {
         signalAction.setLastModifiedDate(d);
         signalAction.setActionStatus("New");
         signalAction = assessmentActionRepository.save(signalAction);
-        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null);
+        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, null);
     }
 
     public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws UpdateFailedException, IOException {
@@ -70,7 +70,7 @@ public class AssessmentActionService {
         }
         signalAction.setLastModifiedDate(new Date());
         assessmentActionRepository.save(signalAction);
-        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null);
+        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, null);
     }
 
     public SignalAction findById(Long id) {

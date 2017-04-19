@@ -34,7 +34,7 @@ public class MeetingService {
         meeting.setCreatedDate(d);
         meeting.setLastModifiedDate(d);
         meeting = meetingRepository.save(meeting);
-        attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null);
+        attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null, null);
     }
 
     public void update(Meeting meeting, MultipartFile[] attachments) throws UpdateFailedException, IOException {
@@ -42,7 +42,7 @@ public class MeetingService {
             throw new UpdateFailedException("Failed to update Meeting. Invalid Id received");
         }
         meeting.setLastModifiedDate(new Date());
-        attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, meeting.getDeletedAttachmentIds());
+        attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, meeting.getDeletedAttachmentIds(), null);
         meetingRepository.save(meeting);
     }
 

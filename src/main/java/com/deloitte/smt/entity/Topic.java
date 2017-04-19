@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -63,6 +64,9 @@ public class Topic implements Serializable{
 
     @Transient
     private List<Long> deletedAttachmentIds;
+
+    @Transient
+    private Map<String, String> fileMetadata;
     
     public Topic() {
         this.startDate = new Date();
@@ -259,4 +263,12 @@ public class Topic implements Serializable{
 	public void setSignalStatistics(Set<SignalStatistics> signalStatistics) {
 		this.signalStatistics = signalStatistics;
 	}
+
+    public Map<String, String> getFileMetadata() {
+        return fileMetadata;
+    }
+
+    public void setFileMetadata(Map<String, String> fileMetadata) {
+        this.fileMetadata = fileMetadata;
+    }
 }

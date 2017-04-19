@@ -3,8 +3,10 @@ package com.deloitte.smt.controller;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.service.AttachmentService;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -62,4 +67,13 @@ public class AttachmentController {
         return attachmentService.findByResourceIdAndAttachmentType(meetingId, AttachmentType.MEETING_ATTACHMENT);
     }
 
+
+    @GetMapping(value = "/content/{attachmentId}")
+    public void downloadContent(@PathVariable Long attachmentId,
+                                HttpServletResponse response) throws EntityNotFoundException, IOException {
+        Attachment a = attachmentService.findById(attachmentId);
+        response.setContentType(a.getContentType());
+        response.setHeader("Content-Disposition", "attachment;filename=" + a.getFileName());
+        IOUtils.copyLarge(new ByteArrayInputStream(a.getContent()), response.getOutputStream());
+    }
 }
