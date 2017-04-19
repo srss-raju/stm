@@ -59,6 +59,9 @@ public class Topic implements Serializable{
     @Transient
     private Ingredient ingredient;
     
+    @Transient
+    private List<Soc> socs;
+    
     @ManyToOne(fetch = FetchType.EAGER)
     private AssessmentPlan assessmentPlan;
 
@@ -271,4 +274,12 @@ public class Topic implements Serializable{
     public void setFileMetadata(Map<String, String> fileMetadata) {
         this.fileMetadata = fileMetadata;
     }
+
+	public List<Soc> getSocs() {
+		return socs;
+	}
+
+	public void setSocs(List<Soc> socs) {
+		this.socs = socs;
+	}
 }

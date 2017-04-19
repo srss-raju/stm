@@ -14,6 +14,8 @@ public class Hlgt {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String hlgtName;
+	private Long topicId;
+	private Long socId;
 	
 	public Long getId() {
 		return id;
@@ -26,5 +28,17 @@ public class Hlgt {
 	}
 	public void setHlgtName(String hlgtName) {
 		this.hlgtName = hlgtName;
+	}
+	public Long getTopicId() {
+		return topicId;
+	}
+	public void setTopicId(Long topicId) {
+		this.topicId = topicId;
+	}
+	public Long getSocId() {
+		return socId;
+	}
+	public void setSocId(Long socId) {
+		this.socId = socId;
 	}
 }

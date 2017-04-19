@@ -1,22 +1,16 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.AttachmentType;
-import com.deloitte.smt.entity.Ingredient;
-import com.deloitte.smt.entity.License;
-import com.deloitte.smt.entity.Product;
-import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.TaskNotFoundException;
-import com.deloitte.smt.exception.TopicNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
-import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
-import com.deloitte.smt.repository.ProductRepository;
-import com.deloitte.smt.repository.RiskPlanRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
-import com.deloitte.smt.repository.TopicRepository;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -28,15 +22,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.AttachmentType;
+import com.deloitte.smt.entity.Hlgt;
+import com.deloitte.smt.entity.Hlt;
+import com.deloitte.smt.entity.Ingredient;
+import com.deloitte.smt.entity.License;
+import com.deloitte.smt.entity.Product;
+import com.deloitte.smt.entity.Pt;
+import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.TaskNotFoundException;
+import com.deloitte.smt.exception.TopicNotFoundException;
+import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.HlgtRepository;
+import com.deloitte.smt.repository.HltRepository;
+import com.deloitte.smt.repository.IngredientRepository;
+import com.deloitte.smt.repository.LicenseRepository;
+import com.deloitte.smt.repository.ProductRepository;
+import com.deloitte.smt.repository.PtRepository;
+import com.deloitte.smt.repository.RiskPlanRepository;
+import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.repository.TopicRepository;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -77,6 +87,18 @@ public class SignalService {
 
     @PersistenceContext
     private EntityManager entityManager;
+    
+	@Autowired
+	private SocRepository socRepository;
+
+	@Autowired
+	private HlgtRepository hlgtRepository;
+
+	@Autowired
+	private HltRepository hltRepository;
+
+	@Autowired
+	private PtRepository ptRepository;
 
     public Topic findById(Long topicId){
         Topic topic = topicRepository.findOne(topicId);
@@ -95,6 +117,15 @@ public class SignalService {
             ingredient.setLicenses(licenses);
             topic.setIngredient(ingredient);
         }
+        List<Soc> socs  = socRepository.findByTopicId(topic.getId());
+        if(!CollectionUtils.isEmpty(socs)) {
+        	for(Soc soc:socs){
+        		soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
+        		soc.setHlts(hltRepository.findBySocId(soc.getId()));
+        		soc.setPts(ptRepository.findBySocId(soc.getId()));
+        	}
+        }
+        topic.setSocs(socs);
         return topic;
     }
 
@@ -139,6 +170,43 @@ public class SignalService {
                 licenseRepository.save(licenses);
             }
         }
+        
+        List<Soc> socs  = topic.getSocs();
+    	for(Soc soc:socs){
+    		soc.setTopicId(topic.getId());
+    	}
+    	socs = socRepository.save(socs);
+    	List<Hlgt> hlgts;
+    	List<Hlt> hlts;
+    	List<Pt> pts;
+    	
+    	for(Soc soc:socs){
+    		hlgts = soc.getHlgts();
+    		hlts = soc.getHlts();
+    		pts = soc.getPts();
+    		if(!CollectionUtils.isEmpty(hlgts)){
+    			for(Hlgt hlgt:hlgts){
+    				hlgt.setSocId(soc.getId());
+    				hlgt.setTopicId(topic.getId());
+    			}
+    			hlgtRepository.save(hlgts);
+    		}
+    		if(!CollectionUtils.isEmpty(hlts)){
+    			for(Hlt hlt:hlts){
+    				hlt.setSocId(soc.getId());
+    				hlt.setTopicId(topic.getId());
+    			}
+    			hltRepository.save(hlts);
+    		}
+    		if(!CollectionUtils.isEmpty(pts)){
+    			for(Pt pt:pts){
+    				pt.setSocId(soc.getId());
+    				pt.setTopicId(topic.getId());
+    			}
+    			ptRepository.save(pts);
+    		}
+    	}
+    	
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topic.getFileMetadata());
         return processInstanceId;
     }
