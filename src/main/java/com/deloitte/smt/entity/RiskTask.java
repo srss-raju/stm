@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import java.util.Date;
 
 @Entity
@@ -40,6 +41,8 @@ public class RiskTask {
 	private String actionType;
 
 	private String createdBy;
+	
+	private String recipients;
 
 	public Long getId() {
 		return id;
@@ -151,5 +154,13 @@ public class RiskTask {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getRecipients() {
+		return recipients;
+	}
+
+	public void setRecipients(String recipients) {
+		this.recipients = recipients;
 	}
 }
