@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +43,7 @@ public class AssessmentPlan {
 	private List<Long> deletedAttachmentIds;
 
 	private Date createdDate;
+	private String createdBy;
 	private Date lastModifiedDate;
 	@Transient
 	private Map<String, String> fileMetadata;
@@ -167,5 +169,13 @@ public class AssessmentPlan {
 
 	public void setFileMetadata(Map<String, String> fileMetadata) {
 		this.fileMetadata = fileMetadata;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }

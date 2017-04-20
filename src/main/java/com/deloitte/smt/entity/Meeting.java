@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +34,7 @@ public class Meeting implements Serializable {
     private Map<String, String> fileMetadata;
 
     private Date createdDate;
+    private String createdBy;
     private Date lastModifiedDate;
 
     public Long getId() {
@@ -114,4 +116,12 @@ public class Meeting implements Serializable {
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 }

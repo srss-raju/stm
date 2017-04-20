@@ -31,6 +31,7 @@ public class RiskPlan implements Serializable {
     private String description;
     private int inDays;
     private Date createdDate;
+    private String createdBy;
     private Date lastModifiedDate;
     private String summary;
     private String caseInstanceId;
@@ -140,4 +141,12 @@ public class RiskPlan implements Serializable {
     public void setFileMetadata(Map<String, String> fileMetadata) {
         this.fileMetadata = fileMetadata;
     }
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 }

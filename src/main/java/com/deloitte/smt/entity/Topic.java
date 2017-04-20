@@ -1,5 +1,11 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,11 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -40,6 +41,7 @@ public class Topic implements Serializable{
     private Date startDate;
     private Date endDate;
     private Date createdDate;
+    private String createdBy;
     private Date lastModifiedDate;
     private String remarks;
     private String processId;
@@ -281,5 +283,13 @@ public class Topic implements Serializable{
 
 	public void setSocs(List<Soc> socs) {
 		this.socs = socs;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }
