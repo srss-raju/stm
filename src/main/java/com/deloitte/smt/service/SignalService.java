@@ -1,6 +1,7 @@
 package com.deloitte.smt.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
@@ -248,7 +250,7 @@ public class SignalService {
         }
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
-        List<SignalAction> list = SignalUtil.createAssessmentActions(assessmentPlan);
+        List<SignalAction> list = createAssessmentActions(assessmentPlan);
         assessmentActionRepository.save(list);
         topic.setAssessmentPlan(assessmentPlan);
         topic.setSignalStatus("Completed");
@@ -325,4 +327,40 @@ public class SignalService {
     	return riskPlanRepository.countByStatusNotLikeIgnoreCase("Completed");
     	//return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
     }
+    
+    public List<SignalAction> createAssessmentActions(AssessmentPlan assessmentPlan){
+		List<SignalAction> signalActionList = new ArrayList<>();
+		for(int i=0; i<5; i++){
+			
+			SignalAction signalAction = new SignalAction();
+			signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
+			Date date = new Date();
+			signalAction.setActionName(String.valueOf(i+1));
+	        signalAction.setCreatedDate(date);
+	        signalAction.setLastModifiedDate(date);
+	        signalAction.setActionStatus("New");
+	        final Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			calendar.add(Calendar.DAY_OF_YEAR, i);
+			signalAction.setDueDate(calendar.getTime());
+			signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
+	        
+			Task task = taskService.newTask();
+	        task.setCaseInstanceId(signalAction.getCaseInstanceId());
+	        task.setName(signalAction.getActionName());
+	        taskService.saveTask(task);
+	        List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
+	        TaskInst taskInstance = new TaskInst();
+	        taskInstance.setId(list.get(list.size()-1).getId());
+	        taskInstance.setCaseDefKey("assessment");
+	        taskInstance.setTaskDefKey("assessment");
+	        taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
+	        taskInstance.setStartTime(new Date());
+	        signalAction.setTaskId(taskInstance.getId());
+	        
+			signalActionList.add(signalAction);
+		}
+        return signalActionList;
+	}
+    
 }
