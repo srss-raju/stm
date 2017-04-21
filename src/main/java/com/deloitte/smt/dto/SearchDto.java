@@ -13,6 +13,10 @@ public class SearchDto {
     private List<String> ingredients;
     private List<String> products;
     private List<String> licenses;
+    private List<String> socs;
+    private List<String> hlgts;
+    private List<String> hlts;
+    private List<String> pts;
 
     public List<String> getStatuses() {
         return statuses;
@@ -53,4 +57,36 @@ public class SearchDto {
     public void setLicenses(List<String> licenses) {
         this.licenses = licenses;
     }
+
+	public List<String> getSocs() {
+		return socs;
+	}
+
+	public void setSocs(List<String> socs) {
+		this.socs = socs;
+	}
+
+	public List<String> getHlgts() {
+		return hlgts;
+	}
+
+	public void setHlgts(List<String> hlgts) {
+		this.hlgts = hlgts;
+	}
+
+	public List<String> getHlts() {
+		return hlts;
+	}
+
+	public void setHlts(List<String> hlts) {
+		this.hlts = hlts;
+	}
+
+	public List<String> getPts() {
+		return pts;
+	}
+
+	public void setPts(List<String> pts) {
+		this.pts = pts;
+	}
 }

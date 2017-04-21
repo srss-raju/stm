@@ -268,8 +268,7 @@ public class SignalService {
         }
 
         StringBuilder queryString = new StringBuilder("SELECT o FROM Topic o WHERE 1=1 ");
-        if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses())
-                || !CollectionUtils.isEmpty(searchDto.getIngredients())){
+        if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())){
             queryString.append(" AND id IN :ids ");
         }
         if(null != searchDto.getCreatedDate()){
