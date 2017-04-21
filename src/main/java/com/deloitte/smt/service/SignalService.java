@@ -31,11 +31,13 @@ import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
+import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
@@ -47,6 +49,7 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import com.deloitte.smt.util.SignalUtil;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -99,6 +102,9 @@ public class SignalService {
 
 	@Autowired
 	private PtRepository ptRepository;
+	
+	@Autowired
+	private AssessmentActionRepository assessmentActionRepository;
 
     public Topic findById(Long topicId){
         Topic topic = topicRepository.findOne(topicId);
@@ -242,6 +248,8 @@ public class SignalService {
         }
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
+        List<SignalAction> list = SignalUtil.createAssessmentActions(assessmentPlan);
+        assessmentActionRepository.save(list);
         topic.setAssessmentPlan(assessmentPlan);
         topic.setSignalStatus("Completed");
         topic.setSignalValidation("Completed");
