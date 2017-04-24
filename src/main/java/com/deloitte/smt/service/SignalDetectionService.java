@@ -263,6 +263,14 @@ public class SignalDetectionService {
 	            }
 	        }
 	        signalDetections = q.getResultList();
+	        
+	        if(!CollectionUtils.isEmpty(signalDetections)) {
+	        	for(SignalDetection detection:signalDetections){
+	        		detection.setDenominatorForPoisson(denominatorForPoissonRepository.findByDetectionId(detection.getId()));
+	        		detection.setIncludeAEs(includeAERepository.findByDetectionId(detection.getId()));
+	        		
+	        	}
+	        }
 	        return signalDetections;
 	    }
 }
