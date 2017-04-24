@@ -70,7 +70,7 @@ public class AssessmentActionService {
         }
         signalAction.setLastModifiedDate(new Date());
         assessmentActionRepository.save(signalAction);
-        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
+        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, signalAction.getDeletedAttachmentIds(), signalAction.getFileMetadata());
     }
 
     public SignalAction findById(Long id) {

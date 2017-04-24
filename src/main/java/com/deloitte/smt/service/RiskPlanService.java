@@ -162,8 +162,7 @@ public class RiskPlanService {
         }
         riskTask.setLastUpdatedDate(new Date());
         riskTaskRepository.save(riskTask);
-        attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, riskTask.getFileMetadata()
-        );
+        attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, riskTask.getDeletedAttachmentIds(), riskTask.getFileMetadata());
     }
     
     
