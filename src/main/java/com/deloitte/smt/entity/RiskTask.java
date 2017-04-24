@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -47,6 +48,8 @@ public class RiskTask {
 	private String recipients;
 	@Transient
 	private Map<String, String> fileMetadata;
+	@Transient
+	private List<Long> deletedAttachmentIds;
 
 	public Long getId() {
 		return id;
@@ -174,5 +177,13 @@ public class RiskTask {
 
 	public void setFileMetadata(Map<String, String> fileMetadata) {
 		this.fileMetadata = fileMetadata;
+	}
+
+	public List<Long> getDeletedAttachmentIds() {
+		return deletedAttachmentIds;
+	}
+
+	public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
+		this.deletedAttachmentIds = deletedAttachmentIds;
 	}
 }

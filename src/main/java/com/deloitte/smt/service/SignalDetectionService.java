@@ -1,21 +1,5 @@
 package com.deloitte.smt.service;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.entity.Hlgt;
@@ -27,7 +11,6 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
-import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
@@ -41,6 +24,20 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -250,13 +247,13 @@ public class SignalDetectionService {
 	            pts.parallelStream().forEach(pt -> signalDetectionIds.add(pt.getTopicId()));
 	        }
 
-	        StringBuilder queryString = new StringBuilder("SELECT o FROM Topic o WHERE 1=1 ");
+	        StringBuilder queryString = new StringBuilder("SELECT o FROM SignalDetection o WHERE 1=1 ");
 	        if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())){
 	            queryString.append(" AND id IN :ids ");
 	        }
 	        
 	        queryString.append(" ORDER BY createdDate DESC");
-	        Query q = entityManager.createQuery(queryString.toString(), Topic.class);
+	        Query q = entityManager.createQuery(queryString.toString(), SignalDetection.class);
 
 	        if(queryString.toString().contains(":ids")){
 	            if(CollectionUtils.isEmpty(signalDetectionIds)) {
@@ -268,6 +265,4 @@ public class SignalDetectionService {
 	        signalDetections = q.getResultList();
 	        return signalDetections;
 	    }
-
-
 }

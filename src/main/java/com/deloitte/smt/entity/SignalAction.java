@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -35,6 +36,8 @@ public class SignalAction {
 	private String createdBy;
 	@Transient
 	private Map<String, String> fileMetadata;
+	@Transient
+	private List<Long> deletedAttachmentIds;
 
 	public Long getId() {
 		return id;
@@ -178,5 +181,13 @@ public class SignalAction {
 
 	public void setFileMetadata(Map<String, String> fileMetadata) {
 		this.fileMetadata = fileMetadata;
+	}
+
+	public List<Long> getDeletedAttachmentIds() {
+		return deletedAttachmentIds;
+	}
+
+	public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
+		this.deletedAttachmentIds = deletedAttachmentIds;
 	}
 }
