@@ -3,6 +3,7 @@ package com.deloitte.smt.controller;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
@@ -51,7 +52,7 @@ public class SignalController {
 	}
 
 	@GetMapping(value = "/{topicId}")
-    public Topic getTopicById(@PathVariable Long topicId) {
+    public Topic getTopicById(@PathVariable Long topicId) throws EntityNotFoundException {
         return signalService.findById(topicId);
     }
 

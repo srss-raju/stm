@@ -13,6 +13,7 @@ import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
@@ -105,8 +106,11 @@ public class SignalService {
 	@Autowired
 	private AssessmentActionRepository assessmentActionRepository;
 
-    public Topic findById(Long topicId){
+    public Topic findById(Long topicId) throws EntityNotFoundException {
         Topic topic = topicRepository.findOne(topicId);
+        if(topic == null) {
+            throw new EntityNotFoundException("Signal not found with the given Id :"+topicId);
+        }
         if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
         }
