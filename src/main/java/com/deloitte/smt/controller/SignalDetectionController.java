@@ -1,9 +1,12 @@
 package com.deloitte.smt.controller;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
+import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.SignalDetection;
+import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.service.SignalDetectionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,13 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.SignalDetection;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
-import com.deloitte.smt.service.SignalDetectionService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/camunda/api/signal/detect")
@@ -32,10 +31,9 @@ public class SignalDetectionController {
 	SignalDetectionService signalDetectionService;
 
 	@PostMapping(value = "/createSignalDetection")
-	public ResponseEntity<Void>  createSignalDetection(@RequestParam(value = "data") String topicString) throws IOException {
+	public SignalDetection  createSignalDetection(@RequestParam(value = "data") String topicString) throws IOException {
 		SignalDetection signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
-		signalDetectionService.createSignalDetection(signalDetection);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return signalDetectionService.createSignalDetection(signalDetection);
 	}
 	
 	@GetMapping(value = "/{signalDetectionId}")

@@ -80,7 +80,7 @@ public class SignalDetectionService {
 	@PersistenceContext
     private EntityManager entityManager;
 
-	public String createSignalDetection(SignalDetection signalDetection) {
+	public SignalDetection createSignalDetection(SignalDetection signalDetection) {
 		
 		Calendar c = Calendar.getInstance();
 		signalDetection.setCreatedDate(c.getTime());
@@ -161,7 +161,7 @@ public class SignalDetectionService {
     		}
     		denominatorForPoissonRepository.save(denominatorForPoissons);
     	}
-		return "Saved Successfully";
+		return signalDetection;
 	}
 	
 	public String updateSignalDetection(SignalDetection signalDetection) throws UpdateFailedException, IOException {

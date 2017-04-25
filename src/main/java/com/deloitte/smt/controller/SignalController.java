@@ -36,7 +36,7 @@ public class SignalController {
 	SignalService signalService;
 
 	@PostMapping(value = "/createTopic")
-	public String createTopic(@RequestParam(value = "data") String topicString,
+	public Topic createTopic(@RequestParam(value = "data") String topicString,
 							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
 		return signalService.createTopic(topic, attachments);
