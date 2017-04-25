@@ -33,6 +33,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -186,30 +187,8 @@ public class SignalDetectionService {
 		if(null == signalDetection) {
             throw new EntityNotFoundException("Signal Detection not found with given Id :"+id);
         }
-		Ingredient ingredient = ingredientRepository.findByTopicId(signalDetection.getId());
-        List<Product> products = productRepository.findByTopicId(signalDetection.getId());
-        List<License> licenses = licenseRepository.findByTopicId(signalDetection.getId());
-        if(ingredient != null) {
-            ingredient.setProducts(products);
-            ingredient.setLicenses(licenses);
-            signalDetection.setIngredient(ingredient);
-        }
-        List<Soc> socs  = socRepository.findByTopicId(signalDetection.getId());
-        if(!CollectionUtils.isEmpty(socs)) {
-        	for(Soc soc:socs){
-        		soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
-        		soc.setHlts(hltRepository.findBySocId(soc.getId()));
-        		soc.setPts(ptRepository.findBySocId(soc.getId()));
-        	}
-        }
-        signalDetection.setSocs(socs);
-        
-        List<DenominatorForPoisson> denominatorForPoissonList =  denominatorForPoissonRepository.findByDetectionId(signalDetection.getId());
-        List<IncludeAE> includeAEList = includeAERepository.findByDetectionId(signalDetection.getId());
-        signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
-        signalDetection.setIncludeAEs(includeAEList);
-        
-        return signalDetection;
+        addOtherInfoToSignalDetection(Arrays.asList(signalDetection));
+		return signalDetection;
     }
 	
 	 public List<SignalDetection> findAllForSearch(SearchDto searchDto) {
@@ -265,12 +244,35 @@ public class SignalDetectionService {
 	        signalDetections = q.getResultList();
 	        
 	        if(!CollectionUtils.isEmpty(signalDetections)) {
-	        	for(SignalDetection detection:signalDetections){
-	        		detection.setDenominatorForPoisson(denominatorForPoissonRepository.findByDetectionId(detection.getId()));
-	        		detection.setIncludeAEs(includeAERepository.findByDetectionId(detection.getId()));
-	        		
-	        	}
+				addOtherInfoToSignalDetection(signalDetections);
 	        }
 	        return signalDetections;
 	    }
+
+	private void addOtherInfoToSignalDetection(List<SignalDetection> signalDetections) {
+		signalDetections.parallelStream().forEach((signalDetection) -> {
+			Ingredient ingredient = ingredientRepository.findByTopicId(signalDetection.getId());
+			List<Product> products = productRepository.findByTopicId(signalDetection.getId());
+			List<License> licenses = licenseRepository.findByTopicId(signalDetection.getId());
+			if (ingredient != null) {
+				ingredient.setProducts(products);
+				ingredient.setLicenses(licenses);
+				signalDetection.setIngredient(ingredient);
+			}
+			List<Soc> socs = socRepository.findByTopicId(signalDetection.getId());
+			if (!CollectionUtils.isEmpty(socs)) {
+				for (Soc soc : socs) {
+					soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
+					soc.setHlts(hltRepository.findBySocId(soc.getId()));
+					soc.setPts(ptRepository.findBySocId(soc.getId()));
+				}
+			}
+			signalDetection.setSocs(socs);
+
+			List<DenominatorForPoisson> denominatorForPoissonList = denominatorForPoissonRepository.findByDetectionId(signalDetection.getId());
+			List<IncludeAE> includeAEList = includeAERepository.findByDetectionId(signalDetection.getId());
+			signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
+			signalDetection.setIncludeAEs(includeAEList);
+		});
+	}
 }
