@@ -91,7 +91,10 @@ public class SignalController {
 	}
 
 	@GetMapping(value = "/getCounts")
-	public String getCounts() {
+	public String getCounts(@RequestParam(value = "ingredient", required = false) String ingredient) {
+		if(StringUtils.isNotBlank(ingredient)){
+			return signalService.getCountsByFilter(ingredient);
+		}
 		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(),signalService.getAssessmentCount(),signalService.getRiskCount());
 	}
 }

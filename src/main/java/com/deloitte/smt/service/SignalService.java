@@ -9,6 +9,7 @@ import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
+import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
@@ -29,6 +30,7 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import com.deloitte.smt.util.SignalUtil;
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -45,11 +47,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -181,41 +185,42 @@ public class SignalService {
         }
         
         List<Soc> socs  = topic.getSocs();
-    	for(Soc soc:socs){
-    		soc.setTopicId(topic.getId());
-    	}
-    	socs = socRepository.save(socs);
-    	List<Hlgt> hlgts;
-    	List<Hlt> hlts;
-    	List<Pt> pts;
-    	
-    	for(Soc soc:socs){
-    		hlgts = soc.getHlgts();
-    		hlts = soc.getHlts();
-    		pts = soc.getPts();
-    		if(!CollectionUtils.isEmpty(hlgts)){
-    			for(Hlgt hlgt:hlgts){
-    				hlgt.setSocId(soc.getId());
-    				hlgt.setTopicId(topic.getId());
-    			}
-    			hlgtRepository.save(hlgts);
-    		}
-    		if(!CollectionUtils.isEmpty(hlts)){
-    			for(Hlt hlt:hlts){
-    				hlt.setSocId(soc.getId());
-    				hlt.setTopicId(topic.getId());
-    			}
-    			hltRepository.save(hlts);
-    		}
-    		if(!CollectionUtils.isEmpty(pts)){
-    			for(Pt pt:pts){
-    				pt.setSocId(soc.getId());
-    				pt.setTopicId(topic.getId());
-    			}
-    			ptRepository.save(pts);
-    		}
-    	}
-    	
+        if(!CollectionUtils.isEmpty(socs)) {
+            for (Soc soc : socs) {
+                soc.setTopicId(topic.getId());
+            }
+            socs = socRepository.save(socs);
+            List<Hlgt> hlgts;
+            List<Hlt> hlts;
+            List<Pt> pts;
+
+            for (Soc soc : socs) {
+                hlgts = soc.getHlgts();
+                hlts = soc.getHlts();
+                pts = soc.getPts();
+                if (!CollectionUtils.isEmpty(hlgts)) {
+                    for (Hlgt hlgt : hlgts) {
+                        hlgt.setSocId(soc.getId());
+                        hlgt.setTopicId(topic.getId());
+                    }
+                    hlgtRepository.save(hlgts);
+                }
+                if (!CollectionUtils.isEmpty(hlts)) {
+                    for (Hlt hlt : hlts) {
+                        hlt.setSocId(soc.getId());
+                        hlt.setTopicId(topic.getId());
+                    }
+                    hltRepository.save(hlts);
+                }
+                if (!CollectionUtils.isEmpty(pts)) {
+                    for (Pt pt : pts) {
+                        pt.setSocId(soc.getId());
+                        pt.setTopicId(topic.getId());
+                    }
+                    ptRepository.save(pts);
+                }
+            }
+        }
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topic.getFileMetadata());
         return topic;
     }
@@ -328,11 +333,26 @@ public class SignalService {
     	return riskPlanRepository.countByStatusNotLikeIgnoreCase("Completed");
     	//return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
     }
-    
+
+    public String getCountsByFilter(String ingredientName) {
+        List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(Arrays.asList(ingredientName));
+        List<Long> topicIds = new ArrayList<>();
+        ingredients.parallelStream().forEach(ingredient -> topicIds.add(ingredient.getTopicId()));
+        List<Topic> signals = topicRepository.findAllByIdInAndSignalStatusNotLikeOrderByCreatedDateDesc(topicIds, "Completed");
+        List<AssessmentPlan> assessmentPlanList = signals.stream()
+                .map(signal -> signal.getAssessmentPlan())
+                .filter(e -> e != null && !"Completed".equalsIgnoreCase(e.getAssessmentPlanStatus()))
+                .collect(Collectors.toList());
+        List<RiskPlan> riskPlanList = assessmentPlanList.stream()
+                .map(assessmentPlan -> assessmentPlan.getRiskPlan())
+                .filter(e -> e != null && !"Completed".equalsIgnoreCase(e.getStatus()))
+                .collect(Collectors.toList());
+        return SignalUtil.getCounts(Long.valueOf(ingredients.size()), Long.valueOf(assessmentPlanList.size()), Long.valueOf(riskPlanList.size()));
+    }
+
     public List<SignalAction> createAssessmentActions(AssessmentPlan assessmentPlan){
 		List<SignalAction> signalActionList = new ArrayList<>();
 		for(int i=0; i<5; i++){
-			
 			SignalAction signalAction = new SignalAction();
 			signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
 			Date date = new Date();

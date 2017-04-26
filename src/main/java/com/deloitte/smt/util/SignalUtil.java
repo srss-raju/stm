@@ -1,22 +1,24 @@
 package com.deloitte.smt.util;
 
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.SignalAction;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.SignalAction;
-
 public class SignalUtil {
 	
 	public static String getCounts(Long validateCount, Long assesmentCount, Long riskCount){
-		StringBuilder builder = new StringBuilder();
-		builder.append("{").append("\"validateCount\":").append(validateCount)
-		.append(",\"assesmentCount\":").append(assesmentCount)
-		.append(",\"riskCount\":").append(riskCount)
-		.append("}");
-		return builder.toString();
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectNode node = mapper.createObjectNode();
+		node.put("validateCount", validateCount);
+		node.put("assesmentCount", assesmentCount);
+		node.put("riskCount", riskCount);
+		return node.toString();
 	}
 	
 	public static List<SignalAction> createAssessmentActions(AssessmentPlan assessmentPlan){

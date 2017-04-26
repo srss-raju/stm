@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, Long> {
-	List<AssessmentPlan> findAllByCaseInstanceIdIn(List<String> caseInstanceId);
+
 	Long countByAssessmentPlanStatusNotLikeIgnoreCase(String assessmentPlanStatus);
 
 	List<AssessmentPlan> findAllByAssessmentPlanStatusInOrderByCreatedDateDesc(List<String> assessmentPlanStatus);
