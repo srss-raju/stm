@@ -34,7 +34,12 @@ public class AssessmentActionController {
     public String createAssessmentAction(@RequestParam("data") String signalActionString,
                                          @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         SignalAction signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
-        assessmentActionService.createAssessmentAction(signalAction, attachments);
+        
+        if("Y".equalsIgnoreCase(signalAction.getIsOrphan())){
+        	assessmentActionService.createOrphanAssessmentAction(signalAction, attachments);
+        }else{
+        	assessmentActionService.createAssessmentAction(signalAction, attachments);
+        }
         return "Saved Successfully";
     }
 
@@ -61,5 +66,10 @@ public class AssessmentActionController {
     public ResponseEntity<Void> deleteById(@PathVariable Long assessmentActionId, @PathVariable String taskId) throws DeleteFailedException {
         assessmentActionService.delete(assessmentActionId, taskId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @GetMapping(value = "/orphan/allAssessmentActions")
+    public List<SignalAction> findAllByIsOrphan() {
+        return assessmentActionService.findAllByIsOrphan();
     }
 }

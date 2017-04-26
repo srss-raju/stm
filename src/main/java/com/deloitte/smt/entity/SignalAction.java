@@ -34,6 +34,8 @@ public class SignalAction {
     private String taskId;
 	private String recipients;
 	private String createdBy;
+	private String isOrphan;
+	
 	@Transient
 	private Map<String, String> fileMetadata;
 	@Transient
@@ -189,5 +191,13 @@ public class SignalAction {
 
 	public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
 		this.deletedAttachmentIds = deletedAttachmentIds;
+	}
+
+	public String getIsOrphan() {
+		return isOrphan;
+	}
+
+	public void setIsOrphan(String isOrphan) {
+		this.isOrphan = isOrphan;
 	}
 }

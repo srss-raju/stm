@@ -256,7 +256,7 @@ public class SignalService {
         }
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
-        List<SignalAction> list = createAssessmentActions(assessmentPlan);
+        List<SignalAction> list = attachOrphanActions(assessmentPlan);
         assessmentActionRepository.save(list);
         topic.setAssessmentPlan(assessmentPlan);
         topic.setSignalStatus("Completed");
@@ -350,23 +350,20 @@ public class SignalService {
         return SignalUtil.getCounts(Long.valueOf(ingredients.size()), Long.valueOf(assessmentPlanList.size()), Long.valueOf(riskPlanList.size()));
     }
 
-    public List<SignalAction> createAssessmentActions(AssessmentPlan assessmentPlan){
-		List<SignalAction> signalActionList = new ArrayList<>();
-		for(int i=0; i<5; i++){
-			SignalAction signalAction = new SignalAction();
-			signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
-			Date date = new Date();
-			signalAction.setActionName(String.valueOf(i+1));
-	        signalAction.setCreatedDate(date);
-	        signalAction.setLastModifiedDate(date);
-	        signalAction.setActionStatus("New");
-	        final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(date);
-			calendar.add(Calendar.DAY_OF_YEAR, i);
-			signalAction.setDueDate(calendar.getTime());
-			signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
-	        
-			Task task = taskService.newTask();
+    public List<SignalAction> attachOrphanActions(AssessmentPlan assessmentPlan){
+    	List<SignalAction> signalActionList = new ArrayList<>();
+    	List<SignalAction> orphans = assessmentActionRepository.findAllByIsOrphan("Y");
+    	for(SignalAction orphan : orphans){
+    		SignalAction signalAction = new SignalAction();
+    		signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
+    		signalAction.setActionName(orphan.getActionName());
+    		signalAction.setCreatedDate(orphan.getCreatedDate());
+    		signalAction.setLastModifiedDate(orphan.getLastModifiedDate());
+    		signalAction.setActionStatus(orphan.getActionStatus());
+    		signalAction.setDueDate(orphan.getDueDate());
+    		signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
+    		
+    		Task task = taskService.newTask();
 	        task.setCaseInstanceId(signalAction.getCaseInstanceId());
 	        task.setName(signalAction.getActionName());
 	        taskService.saveTask(task);
@@ -378,10 +375,12 @@ public class SignalService {
 	        taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
 	        taskInstance.setStartTime(new Date());
 	        signalAction.setTaskId(taskInstance.getId());
-	        
-			signalActionList.add(signalAction);
-		}
-        return signalActionList;
-	}
+    		
+    		signalActionList.add(signalAction);
+    	}
+    	return signalActionList;
+    }
+    
+    
     
 }

@@ -9,4 +9,5 @@ public interface AssessmentActionRepository extends JpaRepository<SignalAction, 
 
 	List<SignalAction> findAllByAssessmentIdAndActionStatus(String assessmentId, String actionStatus);
 	List<SignalAction> findAllByAssessmentId(String assessmentId);
+	List<SignalAction> findAllByIsOrphan(String isOrphan);
 }
