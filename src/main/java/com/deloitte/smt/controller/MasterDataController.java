@@ -1,7 +1,10 @@
 package com.deloitte.smt.controller;
 
+import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.ActionStatus;
 import com.deloitte.smt.entity.ActionType;
+import com.deloitte.smt.service.SearchService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +18,9 @@ import java.util.List;
 @RequestMapping(value = "/camunda/api/signal/utils")
 public class MasterDataController {
 
+   @Autowired
+   SearchService searchService;
+
     @GetMapping(value = "/actionTypes")
     public List<String> getAllActionTypes(){
         return ActionType.getAll();
@@ -23,5 +29,10 @@ public class MasterDataController {
     @GetMapping(value = "/actionStatus")
     public List<String> getAllActionStatuses(){
         return ActionStatus.getAll();
+    }
+
+    @GetMapping(value = "/filters")
+    public SearchDto getFilters() {
+        return searchService.getFilters();
     }
 }

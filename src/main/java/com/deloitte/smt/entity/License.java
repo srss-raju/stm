@@ -16,6 +16,7 @@ public class License {
 	private String licenseName;
 	private Long ingredientId;
 	private Long topicId;
+	private Long detectionId;
 	
 	public Long getId() {
 		return id;
@@ -40,5 +41,13 @@ public class License {
 	}
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
+	}
+
+	public Long getDetectionId() {
+		return detectionId;
+	}
+
+	public void setDetectionId(Long detectionId) {
+		this.detectionId = detectionId;
 	}
 }

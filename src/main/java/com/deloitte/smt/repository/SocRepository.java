@@ -1,16 +1,21 @@
 package com.deloitte.smt.repository;
 
-import java.util.List;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.Soc;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface SocRepository  extends JpaRepository<Soc, Long> {
 
-	List<Ingredient> findAllBySocNameIn(List<String> socs);
-    
+	List<Soc> findAllBySocNameIn(List<String> socs);
+
 	List<Soc> findByTopicId(Long topicId);
-	
+
+	List<Soc> findByDetectionId(Long detectionId);
+
+	@Query(value = "SELECT distinct (o.socName) FROM Soc o WHERE o.socName is not null")
+	List<String> findDistinctSocName();
+
+	void deleteAllByDetectionId(Long detectionId);
 }

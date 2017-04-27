@@ -33,7 +33,7 @@ public class SignalDetectionController {
 	@PostMapping(value = "/createSignalDetection")
 	public SignalDetection  createSignalDetection(@RequestParam(value = "data") String topicString) throws IOException {
 		SignalDetection signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
-		return signalDetectionService.createSignalDetection(signalDetection);
+		return signalDetectionService.createOrUpdateSignalDetection(signalDetection);
 	}
 	
 	@GetMapping(value = "/{signalDetectionId}")
@@ -44,7 +44,7 @@ public class SignalDetectionController {
 	@PostMapping(value = "/updateSignalDetection")
 	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString) throws IOException, UpdateFailedException {
 		SignalDetection signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
-		signalDetectionService.updateSignalDetection(signalDetection);
+		signalDetectionService.createOrUpdateSignalDetection(signalDetection);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
@@ -61,11 +61,12 @@ public class SignalDetectionController {
 									  @RequestParam(name = "license", required = false) String licenses,
 									  @RequestParam(name = "hlgts", required = false) String hlgts,
 									  @RequestParam(name = "hlts", required = false) String hlts,
-									  @RequestParam(name = "pts", required = false) String pts) {
+									  @RequestParam(name = "pts", required = false) String pts,
+												@RequestParam(name = "description", required = false) String description) {
 
 		SearchDto dto = new SearchDto();
 		if(StringUtils.isNotBlank(socs)) {
-			dto.setStatuses(Arrays.asList(socs.split(",")));
+			dto.setSocs(Arrays.asList(socs.split(",")));
 		}
 		if(StringUtils.isNotBlank(ingredients)) {
 			dto.setIngredients(Arrays.asList(ingredients.split(",")));
@@ -84,6 +85,9 @@ public class SignalDetectionController {
 		}
 		if(StringUtils.isNotBlank(pts)) {
 			dto.setPts(Arrays.asList(pts.split(",")));
+		}
+		if(StringUtils.isNotBlank(description)) {
+			dto.setDescription(description);
 		}
 		return signalDetectionService.findAllForSearch(dto);
 	}

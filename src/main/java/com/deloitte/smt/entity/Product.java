@@ -1,12 +1,11 @@
 package com.deloitte.smt.entity;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "sm_product")
@@ -18,6 +17,7 @@ public class Product  implements Serializable{
 	private String productName;
 	private Long ingredientId;
 	private Long topicId;
+	private Long detectionId;
 	
 	public Long getId() {
 		return id;
@@ -43,5 +43,12 @@ public class Product  implements Serializable{
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
 	}
-	
+
+	public Long getDetectionId() {
+		return detectionId;
+	}
+
+	public void setDetectionId(Long detectionId) {
+		this.detectionId = detectionId;
+	}
 }

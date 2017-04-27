@@ -16,7 +16,8 @@ public class Hlt {
 	private String hltName;
 	private Long topicId;
 	private Long socId;
-	
+	private Long detectionId;
+
 	public Long getId() {
 		return id;
 	}
@@ -40,5 +41,13 @@ public class Hlt {
 	}
 	public void setSocId(Long socId) {
 		this.socId = socId;
+	}
+
+	public Long getDetectionId() {
+		return detectionId;
+	}
+
+	public void setDetectionId(Long detectionId) {
+		this.detectionId = detectionId;
 	}
 }

@@ -16,6 +16,7 @@ public class Pt {
 	private String ptName;
 	private Long topicId;
 	private Long socId;
+	private Long detectionId;
 	
 	public Long getId() {
 		return id;
@@ -41,5 +42,13 @@ public class Pt {
 	}
 	public void setPtName(String ptName) {
 		this.ptName = ptName;
+	}
+
+	public Long getDetectionId() {
+		return detectionId;
+	}
+
+	public void setDetectionId(Long detectionId) {
+		this.detectionId = detectionId;
 	}
 }

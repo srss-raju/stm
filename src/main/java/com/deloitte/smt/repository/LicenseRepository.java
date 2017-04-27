@@ -1,8 +1,8 @@
 package com.deloitte.smt.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.deloitte.smt.entity.License;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -11,5 +11,10 @@ public interface LicenseRepository extends JpaRepository<License, Long> {
     List<License> findAllByLicenseNameIn(List<String> licenses);
     
     List<License> findByTopicId(Long topicId);
-    
+    List<License> findByDetectionId(Long detectionId);
+
+    @Query(value = "SELECT DISTINCT (o.licenseName) FROM License o WHERE o.licenseName IS NOT NULL")
+    List<String> findDistinctLicenseName();
+
+    void deleteAllByDetectionId(Long detectionId);
 }

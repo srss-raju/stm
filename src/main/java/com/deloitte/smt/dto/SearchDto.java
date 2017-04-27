@@ -17,6 +17,7 @@ public class SearchDto {
     private List<String> hlgts;
     private List<String> hlts;
     private List<String> pts;
+    private String description;
 
     public List<String> getStatuses() {
         return statuses;
@@ -89,4 +90,12 @@ public class SearchDto {
 	public void setPts(List<String> pts) {
 		this.pts = pts;
 	}
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

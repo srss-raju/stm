@@ -1,11 +1,11 @@
 package com.deloitte.smt.repository;
 
-import java.util.List;
-
+import com.deloitte.smt.entity.DenominatorForPoisson;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.deloitte.smt.entity.DenominatorForPoisson;
+import java.util.List;
 
 public interface DenominatorForPoissonRepository extends JpaRepository<DenominatorForPoisson, Long> {
 	List<DenominatorForPoisson> findByDetectionId(Long detectionId);
+	void deleteAllByDetectionId(Long detectionId);
 }

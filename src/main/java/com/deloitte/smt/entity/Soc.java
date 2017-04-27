@@ -1,13 +1,12 @@
 package com.deloitte.smt.entity;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.List;
 
 @Entity
 @Table(name = "sm_soc")
@@ -18,6 +17,7 @@ public class Soc {
     private Long id;
 	private String socName;
 	private Long topicId;
+	private Long detectionId;
 	
 	@Transient
     private List<Hlgt> hlgts;
@@ -47,6 +47,15 @@ public class Soc {
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
 	}
+
+	public Long getDetectionId() {
+		return detectionId;
+	}
+
+	public void setDetectionId(Long detectionId) {
+		this.detectionId = detectionId;
+	}
+
 	public List<Hlgt> getHlgts() {
 		return hlgts;
 	}

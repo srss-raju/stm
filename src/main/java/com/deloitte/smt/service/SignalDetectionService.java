@@ -13,7 +13,6 @@ import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
@@ -24,6 +23,7 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,10 +32,8 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,40 +79,48 @@ public class SignalDetectionService {
 	@PersistenceContext
     private EntityManager entityManager;
 
-	public SignalDetection createSignalDetection(SignalDetection signalDetection) {
+	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) {
 		
 		Calendar c = Calendar.getInstance();
-		signalDetection.setCreatedDate(c.getTime());
-		signalDetection.setLastModifiedDate(c.getTime());
+		if(signalDetection.getId() == null) {
+			signalDetection.setCreatedDate(c.getTime());
+			signalDetection.setLastModifiedDate(c.getTime());
+		} else {
+			signalDetection.setLastModifiedDate(c.getTime());
+		}
 		signalDetection = signalDetectionRepository.save(signalDetection);
         
 		Ingredient ingredient = signalDetection.getIngredient();
         if(ingredient != null) {
             List<Product> products = ingredient.getProducts();
             List<License> licenses = ingredient.getLicenses();
-            ingredient.setTopicId(signalDetection.getId()); // Topic ID is same as Signal Detection Id
+            ingredient.setDetectionId(signalDetection.getId());
+			ingredientRepository.deleteAllByDetectionId(signalDetection.getId());
             ingredient = ingredientRepository.save(ingredient);
 
             if(!CollectionUtils.isEmpty(products)){
                 for (Product singleProduct : products) {
                     singleProduct.setIngredientId(ingredient.getId());
-                    singleProduct.setTopicId(signalDetection.getId());
+                    singleProduct.setDetectionId(signalDetection.getId());
                 }
+				productRepository.deleteAllByDetectionId(signalDetection.getId());
                 productRepository.save(products);
             }
             if(!CollectionUtils.isEmpty(licenses)) {
                 for (License singleLicense : licenses) {
                     singleLicense.setIngredientId(ingredient.getId());
-                    singleLicense.setTopicId(signalDetection.getId());
+                    singleLicense.setDetectionId(signalDetection.getId());
                 }
+				licenseRepository.deleteAllByDetectionId(signalDetection.getId());
                 licenseRepository.save(licenses);
             }
         }
         
         List<Soc> socs  = signalDetection.getSocs();
     	for(Soc soc:socs){
-    		soc.setTopicId(signalDetection.getId());
+    		soc.setDetectionId(signalDetection.getId());
     	}
+		socRepository.deleteAllByDetectionId(signalDetection.getId());
     	socs = socRepository.save(socs);
     	List<Hlgt> hlgts;
     	List<Hlt> hlts;
@@ -127,22 +133,25 @@ public class SignalDetectionService {
     		if(!CollectionUtils.isEmpty(hlgts)){
     			for(Hlgt hlgt:hlgts){
     				hlgt.setSocId(soc.getId());
-    				hlgt.setTopicId(signalDetection.getId());
+    				hlgt.setDetectionId(signalDetection.getId());
     			}
+				hlgtRepository.deleteAllByDetectionId(signalDetection.getId());
     			hlgtRepository.save(hlgts);
     		}
     		if(!CollectionUtils.isEmpty(hlts)){
     			for(Hlt hlt:hlts){
     				hlt.setSocId(soc.getId());
-    				hlt.setTopicId(signalDetection.getId());
+    				hlt.setDetectionId(signalDetection.getId());
     			}
+				hltRepository.deleteAllByDetectionId(signalDetection.getId());
     			hltRepository.save(hlts);
     		}
     		if(!CollectionUtils.isEmpty(pts)){
     			for(Pt pt:pts){
     				pt.setSocId(soc.getId());
-    				pt.setTopicId(signalDetection.getId());
+    				pt.setDetectionId(signalDetection.getId());
     			}
+				ptRepository.deleteAllByDetectionId(signalDetection.getId());
     			ptRepository.save(pts);
     		}
     	}
@@ -154,25 +163,27 @@ public class SignalDetectionService {
     		for(IncludeAE ae:includeAEs){
     			ae.setDetectionId(signalDetection.getId());
     		}
+			includeAERepository.deleteAllByDetectionId(signalDetection.getId());
     		includeAERepository.save(includeAEs);
     	}
     	if(!CollectionUtils.isEmpty(denominatorForPoissons)){
     		for(DenominatorForPoisson dfp:denominatorForPoissons){
     			dfp.setDetectionId(signalDetection.getId());
     		}
+			denominatorForPoissonRepository.deleteAllByDetectionId(signalDetection.getId());
     		denominatorForPoissonRepository.save(denominatorForPoissons);
     	}
 		return signalDetection;
 	}
 	
-	public String updateSignalDetection(SignalDetection signalDetection) throws UpdateFailedException, IOException {
+	/*public String updateSignalDetection(SignalDetection signalDetection) throws UpdateFailedException, IOException {
         if(signalDetection.getId() == null) {
             throw new UpdateFailedException("Update failed for Topic, since it does not have any valid Id field.");
         }
         signalDetection.setLastModifiedDate(new Date());
         signalDetectionRepository.save(signalDetection);
         return "Update Success";
-    }
+    }*/
 	
 	public void delete(Long signalDetectionId) throws DeleteFailedException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(signalDetectionId);
@@ -194,43 +205,53 @@ public class SignalDetectionService {
 	 public List<SignalDetection> findAllForSearch(SearchDto searchDto) {
 	        List<SignalDetection> signalDetections;
 	        Set<Long> signalDetectionIds = new HashSet<>();
+		 List<Ingredient> ingredients;
+		 List<Product> products;
+		 List<License> licenses;
+		 List<Soc> socs;
+		 List<Hlgt> hlgts;
+		 List<Hlt> hlts;
+		 List<Pt> pts;
+		 if(!CollectionUtils.isEmpty(searchDto.getIngredients())) {
+			 ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
+			 ingredients.parallelStream().forEach(ingredient -> signalDetectionIds.add(ingredient.getDetectionId()));
+		 }
 	        if(!CollectionUtils.isEmpty(searchDto.getProducts())) {
-	            List<Product> products = productRepository.findAllByProductNameIn(searchDto.getProducts());
-	            products.parallelStream().forEach(product -> signalDetectionIds.add(product.getTopicId()));
+	            products = productRepository.findAllByProductNameIn(searchDto.getProducts());
+	            products.parallelStream().forEach(product -> signalDetectionIds.add(product.getDetectionId()));
 	        }
 	        if(!CollectionUtils.isEmpty(searchDto.getLicenses())) {
-	            List<License> licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
-	            licenses.parallelStream().forEach(product -> signalDetectionIds.add(product.getTopicId()));
+	            licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
+	            licenses.parallelStream().forEach(product -> signalDetectionIds.add(product.getDetectionId()));
 	        }
 	        if(!CollectionUtils.isEmpty(searchDto.getSocs())) {
-	            List<Ingredient> socs = socRepository.findAllBySocNameIn(searchDto.getSocs());
-	            socs.parallelStream().forEach(product -> signalDetectionIds.add(product.getTopicId()));
-	        }
-	        if(!CollectionUtils.isEmpty(searchDto.getSocs())) {
-	            List<Ingredient> socs = socRepository.findAllBySocNameIn(searchDto.getSocs());
-	            socs.parallelStream().forEach(soc -> signalDetectionIds.add(soc.getTopicId()));
-	        }
-	        
+				socs = socRepository.findAllBySocNameIn(searchDto.getSocs());
+				socs.parallelStream().forEach(product -> signalDetectionIds.add(product.getDetectionId()));
+			}
 	        if(!CollectionUtils.isEmpty(searchDto.getHlgts())) {
-	            List<Hlgt> hlgts = hlgtRepository.findAllByhlgtNameIn(searchDto.getHlgts());
-	            hlgts.parallelStream().forEach(hlgt -> signalDetectionIds.add(hlgt.getTopicId()));
+	            hlgts = hlgtRepository.findAllByHlgtNameIn(searchDto.getHlgts());
+	            hlgts.parallelStream().forEach(hlgt -> signalDetectionIds.add(hlgt.getDetectionId()));
 	        }
 	        
 	        if(!CollectionUtils.isEmpty(searchDto.getHlts())) {
-	            List<Hlt> hlts = hltRepository.findAllByhltNameIn(searchDto.getHlts());
-	            hlts.parallelStream().forEach(hlt -> signalDetectionIds.add(hlt.getTopicId()));
+	            hlts = hltRepository.findAllByHltNameIn(searchDto.getHlts());
+	            hlts.parallelStream().forEach(hlt -> signalDetectionIds.add(hlt.getDetectionId()));
 	        }
 	        
 	        if(!CollectionUtils.isEmpty(searchDto.getPts())) {
-	            List<Pt> pts = ptRepository.findAllByPtNameIn(searchDto.getPts());
-	            pts.parallelStream().forEach(pt -> signalDetectionIds.add(pt.getTopicId()));
+	            pts = ptRepository.findAllByPtNameIn(searchDto.getPts());
+	            pts.parallelStream().forEach(pt -> signalDetectionIds.add(pt.getDetectionId()));
 	        }
 
 	        StringBuilder queryString = new StringBuilder("SELECT o FROM SignalDetection o WHERE 1=1 ");
 	        if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())){
 	            queryString.append(" AND id IN :ids ");
 	        }
-	        
+
+	        if(StringUtils.isNotBlank(searchDto.getDescription())){
+				queryString.append(" AND description IN :description ");
+			}
+
 	        queryString.append(" ORDER BY createdDate DESC");
 	        Query q = entityManager.createQuery(queryString.toString(), SignalDetection.class);
 
@@ -241,6 +262,9 @@ public class SignalDetectionService {
 	                q.setParameter("ids", signalDetectionIds);
 	            }
 	        }
+		 if(queryString.toString().contains(":description")){
+			q.setParameter("description", searchDto.getDescription());
+		 }
 	        signalDetections = q.getResultList();
 	        
 	        if(!CollectionUtils.isEmpty(signalDetections)) {
@@ -251,20 +275,28 @@ public class SignalDetectionService {
 
 	private void addOtherInfoToSignalDetection(List<SignalDetection> signalDetections) {
 		signalDetections.parallelStream().forEach((signalDetection) -> {
-			Ingredient ingredient = ingredientRepository.findByTopicId(signalDetection.getId());
-			List<Product> products = productRepository.findByTopicId(signalDetection.getId());
-			List<License> licenses = licenseRepository.findByTopicId(signalDetection.getId());
-			if (ingredient != null) {
+			Ingredient ingredient;
+			ingredient = ingredientRepository.findByDetectionId(signalDetection.getId());
+			List<Product> products;
+				products = productRepository.findByDetectionId(signalDetection.getId());
+
+			List<License> licenses;
+				licenses = licenseRepository.findByDetectionId(signalDetection.getId());
+
+			if(ingredient != null) {
 				ingredient.setProducts(products);
 				ingredient.setLicenses(licenses);
 				signalDetection.setIngredient(ingredient);
 			}
-			List<Soc> socs = socRepository.findByTopicId(signalDetection.getId());
+
+			List<Soc> socs;
+				socs = socRepository.findByDetectionId(signalDetection.getId());
 			if (!CollectionUtils.isEmpty(socs)) {
 				for (Soc soc : socs) {
-					soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
-					soc.setHlts(hltRepository.findBySocId(soc.getId()));
-					soc.setPts(ptRepository.findBySocId(soc.getId()));
+					soc.setHlgts(hlgtRepository.findByDetectionId(signalDetection.getId()));
+
+					soc.setHlts(hltRepository.findByDetectionId(signalDetection.getId()));
+					soc.setPts(ptRepository.findByDetectionId(signalDetection.getId()));
 				}
 			}
 			signalDetection.setSocs(socs);
