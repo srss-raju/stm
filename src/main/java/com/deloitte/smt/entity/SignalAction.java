@@ -34,7 +34,7 @@ public class SignalAction {
     private String taskId;
 	private String recipients;
 	private String createdBy;
-	private String isOrphan;
+	private Long templateId;
 	
 	@Transient
 	private Map<String, String> fileMetadata;
@@ -193,11 +193,12 @@ public class SignalAction {
 		this.deletedAttachmentIds = deletedAttachmentIds;
 	}
 
-	public String getIsOrphan() {
-		return isOrphan;
+	public Long getTemplateId() {
+		return templateId;
 	}
 
-	public void setIsOrphan(String isOrphan) {
-		this.isOrphan = isOrphan;
+	public void setTemplateId(Long templateId) {
+		this.templateId = templateId;
 	}
+
 }

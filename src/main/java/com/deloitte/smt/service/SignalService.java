@@ -352,7 +352,7 @@ public class SignalService {
 
     public List<SignalAction> attachOrphanActions(AssessmentPlan assessmentPlan){
     	List<SignalAction> signalActionList = new ArrayList<>();
-    	List<SignalAction> orphans = assessmentActionRepository.findAllByIsOrphan("Y");
+    	List<SignalAction> orphans = assessmentActionRepository.findAllByTemplateId(assessmentPlan.getIngrediantName());
     	for(SignalAction orphan : orphans){
     		SignalAction signalAction = new SignalAction();
     		signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());

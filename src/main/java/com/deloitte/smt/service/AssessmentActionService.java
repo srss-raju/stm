@@ -100,12 +100,4 @@ public class AssessmentActionService {
         }
     }
     
-    public void createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
-    	assessmentActionRepository.save(signalAction);
-    	attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
-    }
-    
-    public List<SignalAction> findAllByIsOrphan() {
-        return assessmentActionRepository.findAllByIsOrphan("Y");
-    }
 }
