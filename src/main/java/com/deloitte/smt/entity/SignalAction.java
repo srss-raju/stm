@@ -34,6 +34,8 @@ public class SignalAction {
     private String taskId;
 	private String recipients;
 	private String createdBy;
+	private Long templateId;
+	
 	@Transient
 	private Map<String, String> fileMetadata;
 	@Transient
@@ -190,4 +192,13 @@ public class SignalAction {
 	public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
 		this.deletedAttachmentIds = deletedAttachmentIds;
 	}
+
+	public Long getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(Long templateId) {
+		this.templateId = templateId;
+	}
+
 }

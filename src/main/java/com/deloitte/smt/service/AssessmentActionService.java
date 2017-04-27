@@ -95,6 +95,14 @@ public class AssessmentActionService {
             throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
         }
         assessmentActionRepository.delete(signalAction);
-        taskService.deleteTask(taskId);
+        if(taskId != null){
+        	taskService.deleteTask(taskId);
+        }
     }
+    
+    public void createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
+    	assessmentActionRepository.save(signalAction);
+    	attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
+    }
+    
 }

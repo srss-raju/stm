@@ -32,6 +32,7 @@ public class AssessmentPlan {
 	private String priority;
 	private int inDays;
     private String comments;
+    private String ingrediantName;
     private String caseInstanceId;
 	private String assessmentPlanStatus;
 	private String assessmentRiskStatus;
@@ -177,5 +178,13 @@ public class AssessmentPlan {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getIngrediantName() {
+		return ingrediantName;
+	}
+
+	public void setIngrediantName(String ingrediantName) {
+		this.ingrediantName = ingrediantName;
 	}
 }
