@@ -360,6 +360,9 @@ public class SignalService {
     public List<SignalAction> attachTasksToAssessment(AssessmentPlan assessmentPlan) throws TaskNotFoundException{
     	List<SignalAction> signalActionList = new ArrayList<>();
     	TaskTemplate taskTemplate = taskTemplateRepository.findByIngrediantName(assessmentPlan.getIngrediantName());
+    	if(taskTemplate == null){
+    		throw new TaskNotFoundException("No Template Found for the Ingrediant");
+    	}
         List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(taskTemplate.getId());
         if(CollectionUtils.isEmpty(actions)){
         	throw new TaskNotFoundException("No Task Found for the Ingrediant");
