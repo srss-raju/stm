@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 
 @Service
@@ -16,6 +17,9 @@ public class TaskTemplateService {
 	
 	@Autowired
 	private TaskTemplateRepository taskTemplateRepository;
+	
+	@Autowired
+	private AssessmentActionRepository assessmentActionRepository;
 
 	public TaskTemplate createTaskTemplate(TaskTemplate taskTemplate, MultipartFile[] attachments) {
 		return taskTemplateRepository.save(taskTemplate);
@@ -34,7 +38,7 @@ public class TaskTemplateService {
 	}
 	
 	public List<SignalAction> findAllByTemplateId(Long templateId) {
-        return taskTemplateRepository.findAllByTemplateId(templateId);
+        return assessmentActionRepository.findAllByTemplateId(templateId);
     }
 
 	public List<TaskTemplate> findAll() {

@@ -1,5 +1,30 @@
 package com.deloitte.smt.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.log4j.Logger;
+import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
@@ -13,7 +38,9 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
+import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;
@@ -29,31 +56,9 @@ import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.util.SignalUtil;
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -109,6 +114,9 @@ public class SignalService {
 	
 	@Autowired
 	private AssessmentActionRepository assessmentActionRepository;
+	
+	@Autowired
+	private TaskTemplateRepository taskTemplateRepository;
 
     public Topic findById(Long topicId) throws EntityNotFoundException {
         Topic topic = topicRepository.findOne(topicId);
@@ -256,7 +264,7 @@ public class SignalService {
         }
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
-        List<SignalAction> list = attachOrphanActions(assessmentPlan);
+        List<SignalAction> list = attachTasksToAssessment(assessmentPlan);
         assessmentActionRepository.save(list);
         topic.setAssessmentPlan(assessmentPlan);
         topic.setSignalStatus("Completed");
@@ -350,17 +358,21 @@ public class SignalService {
         return SignalUtil.getCounts(Long.valueOf(ingredients.size()), Long.valueOf(assessmentPlanList.size()), Long.valueOf(riskPlanList.size()));
     }
 
-    public List<SignalAction> attachOrphanActions(AssessmentPlan assessmentPlan){
+    public List<SignalAction> attachTasksToAssessment(AssessmentPlan assessmentPlan) throws TaskNotFoundException{
     	List<SignalAction> signalActionList = new ArrayList<>();
-    	List<SignalAction> orphans = assessmentActionRepository.findAllByTemplateId(assessmentPlan.getIngrediantName());
-    	for(SignalAction orphan : orphans){
+    	TaskTemplate taskTemplate = taskTemplateRepository.findByIngrediantName(assessmentPlan.getIngrediantName());
+        List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(taskTemplate.getId());
+        if(CollectionUtils.isEmpty(actions)){
+        	throw new TaskNotFoundException("No Task Found for the Ingrediant");
+        }
+    	for(SignalAction action : actions){
     		SignalAction signalAction = new SignalAction();
     		signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
-    		signalAction.setActionName(orphan.getActionName());
-    		signalAction.setCreatedDate(orphan.getCreatedDate());
-    		signalAction.setLastModifiedDate(orphan.getLastModifiedDate());
-    		signalAction.setActionStatus(orphan.getActionStatus());
-    		signalAction.setDueDate(orphan.getDueDate());
+    		signalAction.setActionName(action.getActionName());
+    		signalAction.setCreatedDate(action.getCreatedDate());
+    		signalAction.setLastModifiedDate(action.getLastModifiedDate());
+    		signalAction.setActionStatus(action.getActionStatus());
+    		signalAction.setDueDate(action.getDueDate());
     		signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
     		
     		Task task = taskService.newTask();

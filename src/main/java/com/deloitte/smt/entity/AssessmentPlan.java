@@ -32,7 +32,7 @@ public class AssessmentPlan {
 	private String priority;
 	private int inDays;
     private String comments;
-    private Long ingrediantName;
+    private String ingrediantName;
     private String caseInstanceId;
 	private String assessmentPlanStatus;
 	private String assessmentRiskStatus;
@@ -180,11 +180,11 @@ public class AssessmentPlan {
 		this.createdBy = createdBy;
 	}
 
-	public Long getIngrediantName() {
+	public String getIngrediantName() {
 		return ingrediantName;
 	}
 
-	public void setIngrediantName(Long ingrediantName) {
+	public void setIngrediantName(String ingrediantName) {
 		this.ingrediantName = ingrediantName;
 	}
 }
