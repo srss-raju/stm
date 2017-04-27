@@ -264,7 +264,10 @@ public class SignalService {
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
         List<SignalAction> list = attachTasksToAssessment(assessmentPlan);
-        assessmentActionRepository.save(list);
+        if (!CollectionUtils.isEmpty(list)) {
+        	assessmentActionRepository.save(list);
+        }
+        
         topic.setAssessmentPlan(assessmentPlan);
         topic.setSignalStatus("Completed");
         topic.setSignalValidation("Completed");
@@ -360,38 +363,35 @@ public class SignalService {
     public List<SignalAction> attachTasksToAssessment(AssessmentPlan assessmentPlan) throws TaskNotFoundException{
     	List<SignalAction> signalActionList = new ArrayList<>();
     	TaskTemplate taskTemplate = taskTemplateRepository.findByIngrediantName(assessmentPlan.getIngrediantName());
-    	if(taskTemplate == null){
-    		throw new TaskNotFoundException("No Template Found for the Ingrediant");
-    	}
-        List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(taskTemplate.getId());
-        if(CollectionUtils.isEmpty(actions)){
-        	throw new TaskNotFoundException("No Task Found for the Ingrediant");
-        }
-    	for(SignalAction action : actions){
-    		SignalAction signalAction = new SignalAction();
-    		signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
-    		signalAction.setActionName(action.getActionName());
-    		signalAction.setCreatedDate(action.getCreatedDate());
-    		signalAction.setLastModifiedDate(action.getLastModifiedDate());
-    		signalAction.setActionStatus(action.getActionStatus());
-    		signalAction.setDueDate(action.getDueDate());
-    		signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
-    		
-    		Task task = taskService.newTask();
-	        task.setCaseInstanceId(signalAction.getCaseInstanceId());
-	        task.setName(signalAction.getActionName());
-	        taskService.saveTask(task);
-	        List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
-	        TaskInst taskInstance = new TaskInst();
-	        taskInstance.setId(list.get(list.size()-1).getId());
-	        taskInstance.setCaseDefKey("assessment");
-	        taskInstance.setTaskDefKey("assessment");
-	        taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
-	        taskInstance.setStartTime(new Date());
-	        signalAction.setTaskId(taskInstance.getId());
-    		
-    		signalActionList.add(signalAction);
-    	}
+		if (taskTemplate != null) {
+			List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(taskTemplate.getId());
+			if (!CollectionUtils.isEmpty(actions)) {
+				for (SignalAction action : actions) {
+					SignalAction signalAction = new SignalAction();
+					signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
+					signalAction.setActionName(action.getActionName());
+					signalAction.setCreatedDate(action.getCreatedDate());
+					signalAction.setLastModifiedDate(action.getLastModifiedDate());
+					signalAction.setActionStatus(action.getActionStatus());
+					signalAction.setDueDate(action.getDueDate());
+					signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
+
+					Task task = taskService.newTask();
+					task.setCaseInstanceId(signalAction.getCaseInstanceId());
+					task.setName(signalAction.getActionName());
+					taskService.saveTask(task);
+					List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
+					TaskInst taskInstance = new TaskInst();
+					taskInstance.setId(list.get(list.size() - 1).getId());
+					taskInstance.setCaseDefKey("assessment");
+					taskInstance.setTaskDefKey("assessment");
+					taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
+					taskInstance.setStartTime(new Date());
+					signalAction.setTaskId(taskInstance.getId());
+					signalActionList.add(signalAction);
+				}
+			}
+		}
     	return signalActionList;
     }
     
