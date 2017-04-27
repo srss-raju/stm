@@ -1,8 +1,11 @@
 package com.deloitte.smt.controller;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.TaskTemplate;
+import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.service.TaskTemplateService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.entity.SignalAction;
-import com.deloitte.smt.entity.TaskTemplate;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.service.TaskTemplateService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/camunda/api/signal/template")
@@ -51,14 +51,13 @@ public class TaskTemplateController {
         return taskTemplateService.findAll();
     }
 	
-	@GetMapping(value = "/{templateId}")
+	@GetMapping(value = "/signalAction/{templateId}")
     public List<SignalAction> findAllByTemplateId(@PathVariable Long templateId) {
         return taskTemplateService.findAllByTemplateId(templateId);
     }
 	
-	/*@GetMapping(value = "/{taskId}")
-    public List<SignalAction> findTaskById(@PathVariable Long taskId) {
-        return taskTemplateService.findTaskById(taskId);
-    }*/
-	
+	@GetMapping(value = "/{templateId}")
+    public TaskTemplate findByTemplateId(@PathVariable Long templateId) throws EntityNotFoundException {
+        return taskTemplateService.findById(templateId);
+    }
 }

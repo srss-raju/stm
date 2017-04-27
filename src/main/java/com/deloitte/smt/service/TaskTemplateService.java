@@ -1,16 +1,16 @@
 package com.deloitte.smt.service;
 
-import java.util.List;
-
+import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.TaskTemplate;
+import com.deloitte.smt.exception.DeleteFailedException;
+import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.repository.AssessmentActionRepository;
+import com.deloitte.smt.repository.TaskTemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.entity.SignalAction;
-import com.deloitte.smt.entity.TaskTemplate;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.repository.AssessmentActionRepository;
-import com.deloitte.smt.repository.TaskTemplateRepository;
+import java.util.List;
 
 @Service
 public class TaskTemplateService {
@@ -45,8 +45,11 @@ public class TaskTemplateService {
 		return taskTemplateRepository.findAll();
 	}
 
-	public List<SignalAction> findTaskById(Long taskId) {
-		return null;
+	public TaskTemplate findById(Long templateId) throws EntityNotFoundException {
+		TaskTemplate taskTemplate = taskTemplateRepository.findOne(templateId);
+		if(taskTemplate == null) {
+			throw new EntityNotFoundException("Template not found with given Id : "+templateId);
+		}
+		return taskTemplate;
 	}
-
 }
