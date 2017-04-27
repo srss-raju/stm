@@ -40,7 +40,6 @@ import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
 import com.deloitte.smt.exception.TopicNotFoundException;

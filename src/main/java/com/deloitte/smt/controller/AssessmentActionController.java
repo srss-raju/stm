@@ -34,7 +34,11 @@ public class AssessmentActionController {
     public String createAssessmentAction(@RequestParam("data") String signalActionString,
                                          @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         SignalAction signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
-       	assessmentActionService.createAssessmentAction(signalAction, attachments);
+        if(signalAction.getTemplateId() != 0){
+        	assessmentActionService.createOrphanAssessmentAction(signalAction, attachments);
+        }else{
+        	assessmentActionService.createAssessmentAction(signalAction, attachments);
+        }
         return "Saved Successfully";
     }
 

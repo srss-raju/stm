@@ -56,9 +56,9 @@ public class TaskTemplateController {
         return taskTemplateService.findAllByTemplateId(templateId);
     }
 	
-	@GetMapping(value = "/{taskId}")
+	/*@GetMapping(value = "/{taskId}")
     public List<SignalAction> findTaskById(@PathVariable Long taskId) {
         return taskTemplateService.findTaskById(taskId);
-    }
+    }*/
 	
 }
