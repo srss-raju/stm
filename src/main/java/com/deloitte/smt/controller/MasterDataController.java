@@ -31,8 +31,13 @@ public class MasterDataController {
         return ActionStatus.getAll();
     }
 
-    @GetMapping(value = "/filters")
-    public SearchDto getFilters() {
-        return searchService.getFilters();
+    @GetMapping(value = "/filters/signal")
+    public SearchDto getFiltersForSignal() {
+        return searchService.getFiltersForSignal();
+    }
+
+    @GetMapping(value = "/filters/signalDetection")
+    public SearchDto getFiltersForSignalDetection() {
+        return searchService.getFiltersForSignalDetection();
     }
 }

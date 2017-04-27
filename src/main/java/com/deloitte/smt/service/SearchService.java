@@ -32,15 +32,27 @@ public class SearchService {
     @Autowired
     PtRepository ptRepository;
 
-    public SearchDto getFilters(){
+    public SearchDto getFiltersForSignal(){
         SearchDto dto = new SearchDto();
-        dto.setIngredients(ingredientRepository.findDistinctIngredientNames());
-        dto.setProducts(productRepository.findDistinctProductName());
-        dto.setLicenses(licenseRepository.findDistinctLicenseName());
-        dto.setSocs(socRepository.findDistinctSocName());
-        dto.setHlgts(hlgtRepository.findDistinctHlgtName());
-        dto.setHlts(hltRepository.findDistinctHltName());
-        dto.setPts(ptRepository.findDistinctPtName());
+        dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignal());
+        dto.setProducts(productRepository.findDistinctProductNameForSignal());
+        dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignal());
+        dto.setSocs(socRepository.findDistinctSocNameForSignal());
+        dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignal());
+        dto.setHlts(hltRepository.findDistinctHltNameForSignal());
+        dto.setPts(ptRepository.findDistinctPtNameForSignal());
+        return dto;
+    }
+
+    public SearchDto getFiltersForSignalDetection(){
+        SearchDto dto = new SearchDto();
+        dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignalDetection());
+        dto.setProducts(productRepository.findDistinctProductNameForSignalDetection());
+        dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignalDetection());
+        dto.setSocs(socRepository.findDistinctSocNameForSignalDetection());
+        dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignalDetection());
+        dto.setHlts(hltRepository.findDistinctHltNameForSignalDetection());
+        dto.setPts(ptRepository.findDistinctPtNameForSignalDetection());
         return dto;
     }
 }

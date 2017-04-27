@@ -88,14 +88,15 @@ public class SignalDetectionService {
 		} else {
 			signalDetection.setLastModifiedDate(c.getTime());
 		}
-		signalDetection = signalDetectionRepository.save(signalDetection);
-        
+		SignalDetection clone = signalDetection;
+		clone = signalDetectionRepository.save(clone);
+		signalDetection.setId(clone.getId());
 		Ingredient ingredient = signalDetection.getIngredient();
         if(ingredient != null) {
             List<Product> products = ingredient.getProducts();
             List<License> licenses = ingredient.getLicenses();
             ingredient.setDetectionId(signalDetection.getId());
-			ingredientRepository.deleteAllByDetectionId(signalDetection.getId());
+			ingredientRepository.deleteByDetectionId(signalDetection.getId());
             ingredient = ingredientRepository.save(ingredient);
 
             if(!CollectionUtils.isEmpty(products)){
@@ -103,7 +104,7 @@ public class SignalDetectionService {
                     singleProduct.setIngredientId(ingredient.getId());
                     singleProduct.setDetectionId(signalDetection.getId());
                 }
-				productRepository.deleteAllByDetectionId(signalDetection.getId());
+				productRepository.deleteByDetectionId(signalDetection.getId());
                 productRepository.save(products);
             }
             if(!CollectionUtils.isEmpty(licenses)) {
@@ -111,50 +112,52 @@ public class SignalDetectionService {
                     singleLicense.setIngredientId(ingredient.getId());
                     singleLicense.setDetectionId(signalDetection.getId());
                 }
-				licenseRepository.deleteAllByDetectionId(signalDetection.getId());
+				licenseRepository.deleteByDetectionId(signalDetection.getId());
                 licenseRepository.save(licenses);
             }
         }
         
         List<Soc> socs  = signalDetection.getSocs();
-    	for(Soc soc:socs){
-    		soc.setDetectionId(signalDetection.getId());
-    	}
-		socRepository.deleteAllByDetectionId(signalDetection.getId());
-    	socs = socRepository.save(socs);
-    	List<Hlgt> hlgts;
-    	List<Hlt> hlts;
-    	List<Pt> pts;
-    	
-    	for(Soc soc:socs){
-    		hlgts = soc.getHlgts();
-    		hlts = soc.getHlts();
-    		pts = soc.getPts();
-    		if(!CollectionUtils.isEmpty(hlgts)){
-    			for(Hlgt hlgt:hlgts){
-    				hlgt.setSocId(soc.getId());
-    				hlgt.setDetectionId(signalDetection.getId());
-    			}
-				hlgtRepository.deleteAllByDetectionId(signalDetection.getId());
-    			hlgtRepository.save(hlgts);
-    		}
-    		if(!CollectionUtils.isEmpty(hlts)){
-    			for(Hlt hlt:hlts){
-    				hlt.setSocId(soc.getId());
-    				hlt.setDetectionId(signalDetection.getId());
-    			}
-				hltRepository.deleteAllByDetectionId(signalDetection.getId());
-    			hltRepository.save(hlts);
-    		}
-    		if(!CollectionUtils.isEmpty(pts)){
-    			for(Pt pt:pts){
-    				pt.setSocId(soc.getId());
-    				pt.setDetectionId(signalDetection.getId());
-    			}
-				ptRepository.deleteAllByDetectionId(signalDetection.getId());
-    			ptRepository.save(pts);
-    		}
-    	}
+		if(!CollectionUtils.isEmpty(socs)) {
+			for (Soc soc : socs) {
+				soc.setDetectionId(signalDetection.getId());
+			}
+			socRepository.deleteByDetectionId(signalDetection.getId());
+			socs = socRepository.save(socs);
+			List<Hlgt> hlgts;
+			List<Hlt> hlts;
+			List<Pt> pts;
+
+			for (Soc soc : socs) {
+				hlgts = soc.getHlgts();
+				hlts = soc.getHlts();
+				pts = soc.getPts();
+				if (!CollectionUtils.isEmpty(hlgts)) {
+					for (Hlgt hlgt : hlgts) {
+						hlgt.setSocId(soc.getId());
+						hlgt.setDetectionId(signalDetection.getId());
+					}
+					hlgtRepository.deleteByDetectionId(signalDetection.getId());
+					hlgtRepository.save(hlgts);
+				}
+				if (!CollectionUtils.isEmpty(hlts)) {
+					for (Hlt hlt : hlts) {
+						hlt.setSocId(soc.getId());
+						hlt.setDetectionId(signalDetection.getId());
+					}
+					hltRepository.deleteByDetectionId(signalDetection.getId());
+					hltRepository.save(hlts);
+				}
+				if (!CollectionUtils.isEmpty(pts)) {
+					for (Pt pt : pts) {
+						pt.setSocId(soc.getId());
+						pt.setDetectionId(signalDetection.getId());
+					}
+					ptRepository.deleteByDetectionId(signalDetection.getId());
+					ptRepository.save(pts);
+				}
+			}
+		}
     	
     	List<IncludeAE> includeAEs  = signalDetection.getIncludeAEs();
     	List<DenominatorForPoisson> denominatorForPoissons  = signalDetection.getDenominatorForPoisson();
@@ -163,14 +166,14 @@ public class SignalDetectionService {
     		for(IncludeAE ae:includeAEs){
     			ae.setDetectionId(signalDetection.getId());
     		}
-			includeAERepository.deleteAllByDetectionId(signalDetection.getId());
+			includeAERepository.deleteByDetectionId(signalDetection.getId());
     		includeAERepository.save(includeAEs);
     	}
     	if(!CollectionUtils.isEmpty(denominatorForPoissons)){
     		for(DenominatorForPoisson dfp:denominatorForPoissons){
     			dfp.setDetectionId(signalDetection.getId());
     		}
-			denominatorForPoissonRepository.deleteAllByDetectionId(signalDetection.getId());
+			denominatorForPoissonRepository.deleteByDetectionId(signalDetection.getId());
     		denominatorForPoissonRepository.save(denominatorForPoissons);
     	}
 		return signalDetection;
