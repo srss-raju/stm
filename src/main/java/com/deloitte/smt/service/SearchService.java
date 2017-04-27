@@ -11,6 +11,8 @@ import com.deloitte.smt.repository.SocRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 /**
  * Created by myelleswarapu on 27-04-2017.
  */
@@ -34,6 +36,7 @@ public class SearchService {
 
     public SearchDto getFiltersForSignal(){
         SearchDto dto = new SearchDto();
+        dto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));
         dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignal());
         dto.setProducts(productRepository.findDistinctProductNameForSignal());
         dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignal());
@@ -46,6 +49,7 @@ public class SearchService {
 
     public SearchDto getFiltersForSignalDetection(){
         SearchDto dto = new SearchDto();
+        dto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));
         dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignalDetection());
         dto.setProducts(productRepository.findDistinctProductNameForSignalDetection());
         dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignalDetection());
