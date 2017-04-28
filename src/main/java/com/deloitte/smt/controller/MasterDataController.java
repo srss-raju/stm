@@ -40,4 +40,14 @@ public class MasterDataController {
     public SearchDto getFiltersForSignalDetection() {
         return searchService.getFiltersForSignalDetection();
     }
+
+    @GetMapping(value = "/filters/assessmentPlan")
+    public SearchDto getFiltersForAssessmentPlan() {
+        return searchService.getAllFiltersForAssessmentPlan();
+    }
+
+    @GetMapping(value = "/filters/riskPlan")
+    public SearchDto getFiltersForRiskPlan() {
+        return searchService.getAllFiltersForRiskPlan();
+    }
 }

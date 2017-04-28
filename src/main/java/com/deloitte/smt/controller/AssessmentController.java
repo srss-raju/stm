@@ -1,11 +1,13 @@
 package com.deloitte.smt.controller;
 
+import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.AssessmentPlanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -34,8 +37,24 @@ public class AssessmentController {
 
     @GetMapping(value = "/allAssessmentPlans")
     public List<AssessmentPlan> getAllAssessmentPlans(@RequestParam(value = "status", required = false) String status,
+                                                      @RequestParam(value = "product", required = false) String product,
+                                                      @RequestParam(value = "license", required = false) String license,
+                                                      @RequestParam(value = "ingredient", required = false) String ingredient,
                                                       @RequestParam(value = "createdDate", required = false) Date createdDate){
-        return assessmentPlanService.findAllAssessmentPlansForSearch(status, createdDate);
+        SearchDto searchDto = new SearchDto();
+        if(StringUtils.isNotBlank(status)) {
+            searchDto.setStatuses(Arrays.asList(status.split(",")));
+        }
+        if(StringUtils.isNotBlank(product)) {
+            searchDto.setProducts(Arrays.asList(product.split(",")));
+        }
+        if(StringUtils.isNotBlank(license)) {
+            searchDto.setLicenses(Arrays.asList(license.split(",")));
+        }
+        if(StringUtils.isNotBlank(ingredient)) {
+            searchDto.setIngredients(Arrays.asList(ingredient.split(",")));
+        }
+        return assessmentPlanService.findAllAssessmentPlansForSearch(searchDto);
     }
 
     @GetMapping(value = "/assessmentPlan/{id}")

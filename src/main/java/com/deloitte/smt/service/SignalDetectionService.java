@@ -217,15 +217,27 @@ public class SignalDetectionService {
 		 List<Pt> pts;
 		 if(!CollectionUtils.isEmpty(searchDto.getIngredients())) {
 			 ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
-			 ingredients.parallelStream().forEach(ingredient -> signalDetectionIds.add(ingredient.getDetectionId()));
+			 ingredients.parallelStream().forEach(ingredient -> {
+				 if(ingredient.getDetectionId() != null){
+					 signalDetectionIds.add(ingredient.getDetectionId());
+				 }
+			 });
 		 }
 	        if(!CollectionUtils.isEmpty(searchDto.getProducts())) {
 	            products = productRepository.findAllByProductNameIn(searchDto.getProducts());
-	            products.parallelStream().forEach(product -> signalDetectionIds.add(product.getDetectionId()));
+				products.parallelStream().forEach(product -> {
+					if(product.getDetectionId() != null){
+						signalDetectionIds.add(product.getDetectionId());
+					}
+				});
 	        }
 	        if(!CollectionUtils.isEmpty(searchDto.getLicenses())) {
 	            licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
-	            licenses.parallelStream().forEach(product -> signalDetectionIds.add(product.getDetectionId()));
+				licenses.parallelStream().forEach(license -> {
+					if(license.getDetectionId() != null){
+						signalDetectionIds.add(license.getDetectionId());
+					}
+				});
 	        }
 	        if(!CollectionUtils.isEmpty(searchDto.getSocs())) {
 				socs = socRepository.findAllBySocNameIn(searchDto.getSocs());

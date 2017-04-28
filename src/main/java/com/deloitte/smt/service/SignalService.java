@@ -1,30 +1,5 @@
 package com.deloitte.smt.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
@@ -58,6 +33,29 @@ import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.util.SignalUtil;
+import org.apache.log4j.Logger;
+import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -116,6 +114,9 @@ public class SignalService {
 	
 	@Autowired
 	private TaskTemplateRepository taskTemplateRepository;
+
+    @Autowired
+    SearchService searchService;
 
     public Topic findById(Long topicId) throws EntityNotFoundException {
         Topic topic = topicRepository.findOne(topicId);
@@ -280,19 +281,7 @@ public class SignalService {
     public List<Topic> findAllForSearch(SearchDto searchDto) {
         List<Topic> topics;
         Set<Long> topicIds = new HashSet<>();
-        if(!CollectionUtils.isEmpty(searchDto.getProducts())) {
-            List<Product> products = productRepository.findAllByProductNameIn(searchDto.getProducts());
-            products.parallelStream().forEach(product -> topicIds.add(product.getTopicId()));
-        }
-        if(!CollectionUtils.isEmpty(searchDto.getLicenses())) {
-            List<License> licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
-            licenses.parallelStream().forEach(product -> topicIds.add(product.getTopicId()));
-        }
-        if(!CollectionUtils.isEmpty(searchDto.getIngredients())) {
-            List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
-            ingredients.parallelStream().forEach(product -> topicIds.add(product.getTopicId()));
-        }
-
+        searchService.getSignalIdsForSearch(searchDto, topicIds, true);
         StringBuilder queryString = new StringBuilder("SELECT o FROM Topic o WHERE 1=1 ");
         if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())){
             queryString.append(" AND id IN :ids ");
@@ -394,7 +383,4 @@ public class SignalService {
 		}
     	return signalActionList;
     }
-    
-    
-    
 }

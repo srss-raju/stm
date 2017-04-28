@@ -3,9 +3,11 @@ package com.deloitte.smt.repository;
 import com.deloitte.smt.entity.Pt;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 
 public interface PtRepository  extends JpaRepository<Pt, Long> {
 
@@ -17,6 +19,9 @@ public interface PtRepository  extends JpaRepository<Pt, Long> {
 
     @Query(value = "SELECT distinct (o.ptName) from Pt o where o.ptName is not null AND o.detectionId IS not null")
     List<String> findDistinctPtNameForSignalDetection();
+
+    @Query(value = "SELECT DISTINCT(o.ptName) FROM Pt o WHERE o.ptName IS NOT NULL and o.topicId is not null and o.topicId in :topicIds")
+    List<String> findDistinctPtNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);
 
 	List<Pt> findBySocId(Long socId);
     @Transactional

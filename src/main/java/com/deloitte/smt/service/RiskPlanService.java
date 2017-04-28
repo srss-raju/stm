@@ -1,5 +1,6 @@
 package com.deloitte.smt.service;
 
+import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.RiskPlan;
@@ -9,6 +10,9 @@ import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.IngredientRepository;
+import com.deloitte.smt.repository.LicenseRepository;
+import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
@@ -19,13 +23,18 @@ import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -54,6 +63,21 @@ public class RiskPlanService {
     @Autowired
     AttachmentService attachmentService;
 
+    @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
+    LicenseRepository licenseRepository;
+
+    @Autowired
+    IngredientRepository ingredientRepository;
+
+    @Autowired
+    SearchService searchService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, EntityNotFoundException {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
@@ -76,19 +100,53 @@ public class RiskPlanService {
         attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null, riskPlan.getFileMetadata());
         return riskPlan;
     }
-    
-    public List<RiskPlan> findAllRiskPlansForSearch(String statuses, Date createdDate) {
-        if(!StringUtils.isEmpty(statuses) && null != createdDate) {
-            return riskPlanRepository.findAllByStatusAndCreatedDate(Arrays.asList(statuses.split(",")), createdDate);
+
+    public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
+        Set<Long> riskTopicIds = new HashSet<>();
+        boolean searchAll = true;
+        if(!CollectionUtils.isEmpty(searchDto.getStatuses())) {
+            searchAll = false;
         }
-        if(!StringUtils.isEmpty(statuses)) {
-            return riskPlanRepository.findAllByStatusInOrderByCreatedDateDesc(Arrays.asList(statuses.split(",")));
+        searchAll = searchService.getSignalIdsForSearch(searchDto, riskTopicIds, searchAll);
+        if(searchAll) {
+            Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+            return riskPlanRepository.findAll(sort);
         }
-        if(null != createdDate) {
-            return riskPlanRepository.findAllByCreatedDateOrderByCreatedDateDesc(createdDate);
+        List<RiskPlan> riskPlanList = new ArrayList<>();
+        StringBuilder queryString = new StringBuilder("SELECT o FROM RiskPlan o ");
+        boolean executeQuery = false;
+        if(!CollectionUtils.isEmpty(riskTopicIds)) {
+            if (!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())) {
+                executeQuery = true;
+                queryString.append("INNER JOIN o.assessmentPlan a ");
+                queryString.append("INNER JOIN a.topics t WHERE t.id IN :topicIds ");
+            }
         }
-        Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-        return riskPlanRepository.findAll(sort);
+            if(!CollectionUtils.isEmpty(searchDto.getStatuses())){
+                executeQuery = true;
+                if(queryString.toString().contains(":topicIds")){
+                    queryString.append(" AND o.status IN :riskPlanStatus ");
+                } else {
+                    queryString.append(" WHERE o.status IN :riskPlanStatus ");
+                }
+            }
+            queryString.append(" ORDER BY o.createdDate DESC");
+            Query q = entityManager.createQuery(queryString.toString(), RiskPlan.class);
+
+            if(queryString.toString().contains(":topicIds")){
+                if(CollectionUtils.isEmpty(riskTopicIds)) {
+                    q.setParameter("topicIds", null);
+                } else {
+                    q.setParameter("topicIds", riskTopicIds);
+                }
+            }
+            if(queryString.toString().contains(":riskPlanStatus")){
+                q.setParameter("riskPlanStatus", searchDto.getStatuses());
+            }
+        if(executeQuery) {
+            riskPlanList = q.getResultList();
+        }
+        return riskPlanList;
     }
 
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {

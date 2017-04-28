@@ -1,5 +1,6 @@
 package com.deloitte.smt.controller;
 
+import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
@@ -8,6 +9,7 @@ import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.RiskPlanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -45,8 +48,24 @@ public class RiskController {
     
     @GetMapping(value = "/allRiskPlans")
     public List<RiskPlan> getAllRiskPlans(@RequestParam(value = "status", required = false) String status,
+                                          @RequestParam(value = "product", required = false) String product,
+                                          @RequestParam(value = "license", required = false) String license,
+                                          @RequestParam(value = "ingredient", required = false) String ingredient,
                                           @RequestParam(value = "createdDate", required = false) Date createdDate){
-        return riskPlanService.findAllRiskPlansForSearch(status, createdDate);
+        SearchDto searchDto = new SearchDto();
+        if(StringUtils.isNotBlank(status)) {
+            searchDto.setStatuses(Arrays.asList(status.split(",")));
+        }
+        if(StringUtils.isNotBlank(product)) {
+            searchDto.setProducts(Arrays.asList(product.split(",")));
+        }
+        if(StringUtils.isNotBlank(license)) {
+            searchDto.setLicenses(Arrays.asList(license.split(",")));
+        }
+        if(StringUtils.isNotBlank(ingredient)) {
+            searchDto.setIngredients(Arrays.asList(ingredient.split(",")));
+        }
+        return riskPlanService.findAllRiskPlansForSearch(searchDto);
     }
     
     @PostMapping(value = "/task/create")

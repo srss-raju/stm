@@ -7,12 +7,14 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, Long> {
 
 	Long countByAssessmentPlanStatusNotLikeIgnoreCase(String assessmentPlanStatus);
 
-	List<AssessmentPlan> findAllByAssessmentPlanStatusInOrderByCreatedDateDesc(List<String> assessmentPlanStatus);
+	@Query(value = "SELECT t.id FROM AssessmentPlan o inner join o.topics t")
+	Set<Long> findAllSignalIds();
 
 	List<AssessmentPlan> findAllByCreatedDateOrderByCreatedDateDesc(Date createdDate);
 

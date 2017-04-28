@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -23,4 +24,7 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	List<RiskPlan> findAllByStatusAndCreatedDate(@Param("status") List<String> status, @Param("createdDate") Date createdDate);
 
 	Long countByStatusNotLikeIgnoreCase(String status);
+
+	@Query(value = "SELECT t.id FROM RiskPlan o inner join o.assessmentPlan a inner join a.topics t")
+	Set<Long> findAllSignalIds();
 }

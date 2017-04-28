@@ -1,12 +1,13 @@
 package com.deloitte.smt.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.deloitte.smt.entity.Ingredient;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 
 public interface IngredientRepository  extends JpaRepository<Ingredient, Long> {
 
@@ -26,4 +27,7 @@ public interface IngredientRepository  extends JpaRepository<Ingredient, Long> {
 
     @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL and o.detectionId is not null")
     List<String> findDistinctIngredientNamesForSignalDetection();
+
+    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL and o.topicId is not null and o.topicId in :topicIds")
+    List<String> findDistinctIngredientNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);
 }
