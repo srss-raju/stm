@@ -35,7 +35,7 @@ public class SignalAction {
 	private String recipients;
 	private String createdBy;
 	private Long templateId;
-	private int inDays;
+	private Integer inDays;
 	
 	@Transient
 	private Map<String, String> fileMetadata;

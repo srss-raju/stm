@@ -105,7 +105,7 @@ public class AssessmentActionService {
     public void createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
     	Date d = new Date();
         signalAction.setCreatedDate(d);
-    	SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate());
+        signalAction.setDueDate(SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate()));
     	assessmentActionRepository.save(signalAction);
     	attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
     }

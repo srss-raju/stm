@@ -359,12 +359,14 @@ public class SignalService {
 					SignalAction signalAction = new SignalAction();
 					signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
 					signalAction.setActionName(action.getActionName());
-					signalAction.setCreatedDate(action.getCreatedDate());
+					signalAction.setCreatedDate(new Date());
 					signalAction.setLastModifiedDate(action.getLastModifiedDate());
 					signalAction.setActionStatus(action.getActionStatus());
 					signalAction.setDueDate(action.getDueDate());
 					signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
 					signalAction.setActionType(action.getActionType());
+					signalAction.setDueDate(SignalUtil.getDueDate(action.getInDays(), signalAction.getCreatedDate()));
+					signalAction.setInDays(action.getInDays());
 
 					Task task = taskService.newTask();
 					task.setCaseInstanceId(signalAction.getCaseInstanceId());
