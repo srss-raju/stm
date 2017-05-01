@@ -84,14 +84,16 @@ public class SearchService {
 
     private SearchDto getFilters(Set<Long> topicIds) {
         SearchDto searchDto = new SearchDto();
-        searchDto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));
-        searchDto.setProducts(productRepository.findDistinctProductNamesTopicIdsIn(topicIds));
-        searchDto.setIngredients(ingredientRepository.findDistinctIngredientNamesTopicIdsIn(topicIds));
-        searchDto.setLicenses(licenseRepository.findDistinctLicenseNamesTopicIdsIn(topicIds));
-        searchDto.setSocs(socRepository.findDistinctSocNamesTopicIdsIn(topicIds));
-        searchDto.setHlgts(hlgtRepository.findDistinctHlgtNamesTopicIdsIn(topicIds));
-        searchDto.setHlts(hltRepository.findDistinctHltNamesTopicIdsIn(topicIds));
-        searchDto.setPts(ptRepository.findDistinctPtNamesTopicIdsIn(topicIds));
+        if(!CollectionUtils.isEmpty(topicIds)) {
+            searchDto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));
+            searchDto.setProducts(productRepository.findDistinctProductNamesTopicIdsIn(topicIds));
+            searchDto.setIngredients(ingredientRepository.findDistinctIngredientNamesTopicIdsIn(topicIds));
+            searchDto.setLicenses(licenseRepository.findDistinctLicenseNamesTopicIdsIn(topicIds));
+            searchDto.setSocs(socRepository.findDistinctSocNamesTopicIdsIn(topicIds));
+            searchDto.setHlgts(hlgtRepository.findDistinctHlgtNamesTopicIdsIn(topicIds));
+            searchDto.setHlts(hltRepository.findDistinctHltNamesTopicIdsIn(topicIds));
+            searchDto.setPts(ptRepository.findDistinctPtNamesTopicIdsIn(topicIds));
+        }
         return searchDto;
     }
 
