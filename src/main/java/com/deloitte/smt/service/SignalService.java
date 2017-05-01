@@ -364,6 +364,7 @@ public class SignalService {
 					signalAction.setActionStatus(action.getActionStatus());
 					signalAction.setDueDate(action.getDueDate());
 					signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
+					signalAction.setActionType(action.getActionType());
 
 					Task task = taskService.newTask();
 					task.setCaseInstanceId(signalAction.getCaseInstanceId());
