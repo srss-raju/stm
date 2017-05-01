@@ -84,8 +84,8 @@ public class SearchService {
 
     private SearchDto getFilters(Set<Long> topicIds) {
         SearchDto searchDto = new SearchDto();
+        searchDto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));
         if(!CollectionUtils.isEmpty(topicIds)) {
-            searchDto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));
             searchDto.setProducts(productRepository.findDistinctProductNamesTopicIdsIn(topicIds));
             searchDto.setIngredients(ingredientRepository.findDistinctIngredientNamesTopicIdsIn(topicIds));
             searchDto.setLicenses(licenseRepository.findDistinctLicenseNamesTopicIdsIn(topicIds));
