@@ -7,6 +7,8 @@ import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.util.SignalUtil;
+
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +103,9 @@ public class AssessmentActionService {
     }
     
     public void createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
+    	Date d = new Date();
+        signalAction.setCreatedDate(d);
+    	SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate());
     	assessmentActionRepository.save(signalAction);
     	attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
     }

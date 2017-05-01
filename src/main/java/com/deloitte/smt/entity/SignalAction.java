@@ -35,6 +35,7 @@ public class SignalAction {
 	private String recipients;
 	private String createdBy;
 	private Long templateId;
+	private int inDays;
 	
 	@Transient
 	private Map<String, String> fileMetadata;
@@ -199,6 +200,14 @@ public class SignalAction {
 
 	public void setTemplateId(Long templateId) {
 		this.templateId = templateId;
+	}
+
+	public int getInDays() {
+		return inDays;
+	}
+
+	public void setInDays(int inDays) {
+		this.inDays = inDays;
 	}
 
 }

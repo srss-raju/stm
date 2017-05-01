@@ -34,4 +34,10 @@ public class SignalUtil {
 		return calendar.getTime();
 	}
 	
+	public static Date getDueDate(int inDays, Date createdDate){
+		final Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, inDays);
+		return calendar.getTime();
+	}
+	
 }
