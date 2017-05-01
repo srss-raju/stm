@@ -6,6 +6,7 @@ import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.AssessmentPlanService;
+import com.deloitte.smt.util.StringConverterUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -43,16 +43,16 @@ public class AssessmentController {
                                                       @RequestParam(value = "createdDate", required = false) Date createdDate){
         SearchDto searchDto = new SearchDto();
         if(StringUtils.isNotBlank(status)) {
-            searchDto.setStatuses(Arrays.asList(status.split(",")));
+            searchDto.setStatuses(StringConverterUtil.convertStringToList(status));
         }
         if(StringUtils.isNotBlank(product)) {
-            searchDto.setProducts(Arrays.asList(product.split(",")));
+            searchDto.setProducts(StringConverterUtil.convertStringToList(product));
         }
         if(StringUtils.isNotBlank(license)) {
-            searchDto.setLicenses(Arrays.asList(license.split(",")));
+            searchDto.setLicenses(StringConverterUtil.convertStringToList(license));
         }
         if(StringUtils.isNotBlank(ingredient)) {
-            searchDto.setIngredients(Arrays.asList(ingredient.split(",")));
+            searchDto.setIngredients(StringConverterUtil.convertStringToList(ingredient));
         }
         return assessmentPlanService.findAllAssessmentPlansForSearch(searchDto);
     }

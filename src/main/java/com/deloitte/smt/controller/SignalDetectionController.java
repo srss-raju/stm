@@ -6,6 +6,7 @@ import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.SignalDetectionService;
+import com.deloitte.smt.util.StringConverterUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -66,30 +66,29 @@ public class SignalDetectionController {
 
 		SearchDto dto = new SearchDto();
 		if(StringUtils.isNotBlank(socs)) {
-			dto.setSocs(Arrays.asList(socs.split(",")));
+			dto.setSocs(StringConverterUtil.convertStringToList(socs));
 		}
 		if(StringUtils.isNotBlank(ingredients)) {
-			dto.setIngredients(Arrays.asList(ingredients.split(",")));
+			dto.setIngredients(StringConverterUtil.convertStringToList(ingredients));
 		}
 		if(StringUtils.isNotBlank(products)) {
-			dto.setProducts(Arrays.asList(products.split(",")));
+			dto.setProducts(StringConverterUtil.convertStringToList(products));
 		}
 		if(StringUtils.isNotBlank(licenses)) {
-			dto.setLicenses(Arrays.asList(licenses.split(",")));
+			dto.setLicenses(StringConverterUtil.convertStringToList(licenses));
 		}
 		if(StringUtils.isNotBlank(hlgts)) {
-			dto.setHlgts(Arrays.asList(hlgts.split(",")));
+			dto.setHlgts(StringConverterUtil.convertStringToList(hlgts));
 		}
 		if(StringUtils.isNotBlank(hlts)) {
-			dto.setHlts(Arrays.asList(hlts.split(",")));
+			dto.setHlts(StringConverterUtil.convertStringToList(hlts));
 		}
 		if(StringUtils.isNotBlank(pts)) {
-			dto.setPts(Arrays.asList(pts.split(",")));
+			dto.setPts(StringConverterUtil.convertStringToList(pts));
 		}
 		if(StringUtils.isNotBlank(description)) {
 			dto.setDescription(description);
 		}
 		return signalDetectionService.findAllForSearch(dto);
 	}
-
 }

@@ -9,6 +9,7 @@ import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
+import com.deloitte.smt.util.StringConverterUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -73,16 +73,16 @@ public class SignalController {
 
 		SearchDto dto = new SearchDto();
 		if(StringUtils.isNotBlank(statuses)) {
-			dto.setStatuses(Arrays.asList(statuses.split(",")));
+			dto.setStatuses(StringConverterUtil.convertStringToList(statuses));
 		}
 		if(StringUtils.isNotBlank(ingredients)) {
-			dto.setIngredients(Arrays.asList(ingredients.split(",")));
+			dto.setIngredients(StringConverterUtil.convertStringToList(ingredients));
 		}
 		if(StringUtils.isNotBlank(products)) {
-			dto.setProducts(Arrays.asList(products.split(",")));
+			dto.setProducts(StringConverterUtil.convertStringToList(products));
 		}
 		if(StringUtils.isNotBlank(licenses)) {
-			dto.setLicenses(Arrays.asList(licenses.split(",")));
+			dto.setLicenses(StringConverterUtil.convertStringToList(licenses));
 		}
 		if(null != createdDate){
 			dto.setCreatedDate(createdDate);
