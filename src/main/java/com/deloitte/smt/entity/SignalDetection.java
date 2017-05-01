@@ -34,6 +34,7 @@ public class SignalDetection implements Serializable{
     private String query;
     private String runFrequency;
     private String windowType;
+    private Date nextRunDate;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy="signalDetection")
     private Set<SignalDetectionStatistics> signalDetectionStatistics;
@@ -170,6 +171,14 @@ public class SignalDetection implements Serializable{
 
 	public void setWindowType(String windowType) {
 		this.windowType = windowType;
+	}
+
+	public Date getNextRunDate() {
+		return nextRunDate;
+	}
+
+	public void setNextRunDate(Date nextRunDate) {
+		this.nextRunDate = nextRunDate;
 	}
     
     }

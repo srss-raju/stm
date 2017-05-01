@@ -23,6 +23,8 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.util.SignalUtil;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -88,6 +91,8 @@ public class SignalDetectionService {
 		} else {
 			signalDetection.setLastModifiedDate(c.getTime());
 		}
+		
+		signalDetection.setNextRunDate(SignalUtil.getNextRunDate(signalDetection.getWindowType(), signalDetection.getCreatedDate()));
 		SignalDetection clone = signalDetection;
 		clone = signalDetectionRepository.save(clone);
 		signalDetection.setId(clone.getId());
