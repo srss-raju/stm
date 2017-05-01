@@ -22,6 +22,9 @@ public interface IngredientRepository  extends JpaRepository<Ingredient, Long> {
     @Transactional
     Long deleteByDetectionId(Long detectionId);
 
+    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL")
+    List<String> findDistinctIngredientNames();
+
     @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL AND o.topicId IS not null")
     List<String> findDistinctIngredientNamesForSignal();
 

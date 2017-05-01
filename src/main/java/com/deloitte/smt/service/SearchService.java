@@ -82,6 +82,10 @@ public class SearchService {
         return getFilters(topicIds);
     }
 
+    public List<String> getIngredients() {
+        return ingredientRepository.findDistinctIngredientNames();
+    }
+
     private SearchDto getFilters(Set<Long> topicIds) {
         SearchDto searchDto = new SearchDto();
         searchDto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));

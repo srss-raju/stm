@@ -50,4 +50,9 @@ public class MasterDataController {
     public SearchDto getFiltersForRiskPlan() {
         return searchService.getAllFiltersForRiskPlan();
     }
+
+    @GetMapping(value = "/filters/ingredients")
+    public List<String> getIngredientFilters() {
+        return searchService.getIngredients();
+    }
 }
