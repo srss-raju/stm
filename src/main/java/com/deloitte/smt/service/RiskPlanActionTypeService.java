@@ -39,7 +39,7 @@ public class RiskPlanActionTypeService {
     public void delete(Long riskPlanActionTypeId) throws EntityNotFoundException {
         RiskPlanActionTaskType riskPlanActionTaskType = riskPlanActionTaskTypeRepository.findOne(riskPlanActionTypeId);
         if(riskPlanActionTaskType == null) {
-            throw new EntityNotFoundException("Risk Plan Action Type not found with the given Id : "+riskPlanActionTaskType);
+            throw new EntityNotFoundException("Risk Plan Action Type not found with the given Id : "+riskPlanActionTypeId);
         }
         riskPlanActionTaskTypeRepository.delete(riskPlanActionTaskType);
     }
