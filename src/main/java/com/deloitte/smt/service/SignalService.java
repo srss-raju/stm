@@ -292,6 +292,13 @@ public class SignalService {
         if(!CollectionUtils.isEmpty(searchDto.getStatuses())){
             queryString.append(" AND signalStatus IN :signalStatus ");
         }
+
+        if(!CollectionUtils.isEmpty(searchDto.getSignalNames())){
+            queryString.append(" AND name IN :signalName ");
+        }
+        if(!CollectionUtils.isEmpty(searchDto.getSignalConfirmations())){
+            queryString.append(" AND signalConfirmation IN :signalConfirmation ");
+        }
         queryString.append(" ORDER BY createdDate DESC");
         Query q = entityManager.createQuery(queryString.toString(), Topic.class);
 
@@ -307,6 +314,13 @@ public class SignalService {
         }
         if(queryString.toString().contains(":signalStatus")){
             q.setParameter("signalStatus", searchDto.getStatuses());
+        }
+
+        if(queryString.toString().contains(":signalName")){
+            q.setParameter("signalName", searchDto.getSignalNames());
+        }
+        if(queryString.toString().contains(":signalConfirmation")){
+            q.setParameter("signalConfirmation", searchDto.getSignalConfirmations());
         }
 
         topics = q.getResultList();

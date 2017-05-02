@@ -13,6 +13,7 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -45,6 +46,8 @@ public class SearchService {
     AssessmentPlanRepository assessmentPlanRepository;
     @Autowired
     RiskPlanRepository riskPlanRepository;
+    @Autowired
+    TopicRepository topicRepository;
 
     public SearchDto getFiltersForSignal(){
         SearchDto dto = new SearchDto();
@@ -56,6 +59,8 @@ public class SearchService {
         dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignal());
         dto.setHlts(hltRepository.findDistinctHltNameForSignal());
         dto.setPts(ptRepository.findDistinctPtNameForSignal());
+        dto.setSignalNames(topicRepository.findDistinctSignalName());
+        dto.setSignalConfirmations(topicRepository.findDistinctSignalConfirmationNames());
         return dto;
     }
 

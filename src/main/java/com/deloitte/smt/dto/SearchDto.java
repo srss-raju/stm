@@ -18,6 +18,8 @@ public class SearchDto {
     private List<String> hlts;
     private List<String> pts;
     private String description;
+    private List<String> signalConfirmations;
+    private List<String> signalNames;
 
     public List<String> getStatuses() {
         return statuses;
@@ -97,5 +99,21 @@ public class SearchDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<String> getSignalConfirmations() {
+        return signalConfirmations;
+    }
+
+    public void setSignalConfirmations(List<String> signalConfirmations) {
+        this.signalConfirmations = signalConfirmations;
+    }
+
+    public List<String> getSignalNames() {
+        return signalNames;
+    }
+
+    public void setSignalNames(List<String> signalNames) {
+        this.signalNames = signalNames;
     }
 }
