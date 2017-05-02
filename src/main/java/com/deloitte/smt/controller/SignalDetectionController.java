@@ -62,6 +62,7 @@ public class SignalDetectionController {
 									  @RequestParam(name = "hlgts", required = false) String hlgts,
 									  @RequestParam(name = "hlts", required = false) String hlts,
 									  @RequestParam(name = "pts", required = false) String pts,
+												@RequestParam(name = "frequency", required = false) String frequency,
 												@RequestParam(name = "description", required = false) String description) {
 
 		SearchDto dto = new SearchDto();
@@ -85,6 +86,9 @@ public class SignalDetectionController {
 		}
 		if(StringUtils.isNotBlank(pts)) {
 			dto.setPts(StringConverterUtil.convertStringToList(pts));
+		}
+		if(StringUtils.isNotBlank(frequency)) {
+			dto.setFrequency(frequency);
 		}
 		if(StringUtils.isNotBlank(description)) {
 			dto.setDescription(description);

@@ -20,6 +20,7 @@ public class SearchDto {
     private String description;
     private List<String> signalConfirmations;
     private List<String> signalNames;
+    private String frequency;
 
     public List<String> getStatuses() {
         return statuses;
@@ -115,5 +116,13 @@ public class SearchDto {
 
     public void setSignalNames(List<String> signalNames) {
         this.signalNames = signalNames;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
     }
 }

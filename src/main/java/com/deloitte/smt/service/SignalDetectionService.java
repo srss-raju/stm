@@ -246,21 +246,37 @@ public class SignalDetectionService {
 	        }
 	        if(!CollectionUtils.isEmpty(searchDto.getSocs())) {
 				socs = socRepository.findAllBySocNameIn(searchDto.getSocs());
-				socs.parallelStream().forEach(product -> signalDetectionIds.add(product.getDetectionId()));
+				socs.parallelStream().forEach(soc -> {
+					if(soc.getDetectionId() != null) {
+						signalDetectionIds.add(soc.getDetectionId());
+					}
+				});
 			}
 	        if(!CollectionUtils.isEmpty(searchDto.getHlgts())) {
 	            hlgts = hlgtRepository.findAllByHlgtNameIn(searchDto.getHlgts());
-	            hlgts.parallelStream().forEach(hlgt -> signalDetectionIds.add(hlgt.getDetectionId()));
+	            hlgts.parallelStream().forEach(hlgt -> {
+					if(hlgt.getDetectionId() != null) {
+						signalDetectionIds.add(hlgt.getDetectionId());
+					}
+	            });
 	        }
 	        
 	        if(!CollectionUtils.isEmpty(searchDto.getHlts())) {
 	            hlts = hltRepository.findAllByHltNameIn(searchDto.getHlts());
-	            hlts.parallelStream().forEach(hlt -> signalDetectionIds.add(hlt.getDetectionId()));
+	            hlts.parallelStream().forEach(hlt -> {
+					if(hlt.getDetectionId() != null) {
+						signalDetectionIds.add(hlt.getDetectionId());
+					}
+	            });
 	        }
 	        
 	        if(!CollectionUtils.isEmpty(searchDto.getPts())) {
 	            pts = ptRepository.findAllByPtNameIn(searchDto.getPts());
-	            pts.parallelStream().forEach(pt -> signalDetectionIds.add(pt.getDetectionId()));
+	            pts.parallelStream().forEach(pt -> {
+					if(pt.getDetectionId() != null) {
+						signalDetectionIds.add(pt.getDetectionId());
+					}
+	            });
 	        }
 
 	        StringBuilder queryString = new StringBuilder("SELECT o FROM SignalDetection o WHERE 1=1 ");
@@ -270,6 +286,10 @@ public class SignalDetectionService {
 
 	        if(StringUtils.isNotBlank(searchDto.getDescription())){
 				queryString.append(" AND description IN :description ");
+			}
+
+			if(StringUtils.isNotBlank(searchDto.getFrequency())) {
+				queryString.append(" AND runFrequency IN :runFrequency");
 			}
 
 	        queryString.append(" ORDER BY createdDate DESC");
@@ -284,6 +304,9 @@ public class SignalDetectionService {
 	        }
 		 if(queryString.toString().contains(":description")){
 			q.setParameter("description", searchDto.getDescription());
+		 }
+		 if(queryString.toString().contains(":runFrequency")){
+			 q.setParameter("runFrequency", searchDto.getFrequency());
 		 }
 	        signalDetections = q.getResultList();
 	        
