@@ -11,5 +11,7 @@ import com.deloitte.smt.entity.TaskTemplate;
 public interface TaskTemplateRepository  extends JpaRepository<TaskTemplate, Long> {
 	
 	List<TaskTemplate> findAllByOrderByCreatedDateDesc();
+	
+	List<TaskTemplate> findByIdIn(List<Long> ids);
 
 }

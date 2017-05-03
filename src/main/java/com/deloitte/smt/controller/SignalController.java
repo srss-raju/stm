@@ -2,6 +2,7 @@ package com.deloitte.smt.controller;
 
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
@@ -11,6 +12,7 @@ import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
 import com.deloitte.smt.util.StringConverterUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -104,5 +106,10 @@ public class SignalController {
 			return signalService.getCountsByFilter(ingredient);
 		}
 		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(),signalService.getAssessmentCount(),signalService.getRiskCount());
+	}
+	
+	@GetMapping(value = "/getTemplates/{ingrediantName}")
+	public List<TaskTemplate> getTaskTamplatesOfIngrediant(@PathVariable String ingrediantName){
+		return signalService.getTaskTamplatesOfIngrediant(ingrediantName);
 	}
 }

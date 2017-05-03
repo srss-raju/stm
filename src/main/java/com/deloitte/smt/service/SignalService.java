@@ -38,6 +38,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
+import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateIngrediant;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.EntityNotFoundException;
@@ -399,5 +400,10 @@ public class SignalService {
 			}
 		}
     	return signalActionList;
+    }
+    
+    public List<TaskTemplate> getTaskTamplatesOfIngrediant(String ingrediantName){
+    	List<Long> templateIds = taskTemplateIngrediantRepository.findByIngrediantName(ingrediantName);
+    	return taskTemplateRepository.findByIdIn(templateIds);
     }
 }
