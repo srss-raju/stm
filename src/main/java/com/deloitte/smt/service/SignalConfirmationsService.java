@@ -20,11 +20,13 @@ public class SignalConfirmationsService {
     @Autowired
     SignalConfirmationRespository signalConfirmationRespository;
 
-    public SignalConfirmations insert(SignalConfirmations signalConfirmation) {
-        signalConfirmation.setCreatedDate(new Date());
-        signalConfirmation.setLastModifiedDate(new Date());
-        signalConfirmation = signalConfirmationRespository.save(signalConfirmation);
-        return signalConfirmation;
+    public List<SignalConfirmations> insert(List<SignalConfirmations> signalConfirmations) {
+    	signalConfirmationRespository.deleteAll();
+    	for(SignalConfirmations signalConfirmation:signalConfirmations){
+    		signalConfirmation.setCreatedDate(new Date());
+            signalConfirmation.setLastModifiedDate(new Date());
+    	}
+        return signalConfirmationRespository.save(signalConfirmations);
     }
 
     public SignalConfirmations update(SignalConfirmations signalConfirmation) throws UpdateFailedException {

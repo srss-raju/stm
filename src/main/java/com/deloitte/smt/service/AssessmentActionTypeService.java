@@ -20,11 +20,13 @@ public class AssessmentActionTypeService {
     @Autowired
     AssessmentActionTypeRepository assessmentActionTypeRepository;
 
-    public AssessmentActionType insert(AssessmentActionType assessmentActionType) {
-        assessmentActionType.setCreatedDate(new Date());
-        assessmentActionType.setLastModifiedDate(new Date());
-        assessmentActionType = assessmentActionTypeRepository.save(assessmentActionType);
-        return assessmentActionType;
+    public List<AssessmentActionType> insert(List<AssessmentActionType> assessmentActionTypes) {
+    	assessmentActionTypeRepository.deleteAll();
+    	for(AssessmentActionType assessmentActionType:assessmentActionTypes){
+    		assessmentActionType.setCreatedDate(new Date());
+            assessmentActionType.setLastModifiedDate(new Date());
+    	}
+        return assessmentActionTypeRepository.save(assessmentActionTypes);
     }
 
     public AssessmentActionType update(AssessmentActionType assessmentActionType) throws UpdateFailedException {

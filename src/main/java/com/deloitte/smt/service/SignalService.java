@@ -1,5 +1,30 @@
 package com.deloitte.smt.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.log4j.Logger;
+import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
@@ -13,7 +38,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
-import com.deloitte.smt.entity.TaskTemplate;
+import com.deloitte.smt.entity.TaskTemplateIngrediant;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
@@ -30,32 +55,10 @@ import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.util.SignalUtil;
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -114,6 +117,9 @@ public class SignalService {
 	
 	@Autowired
 	private TaskTemplateRepository taskTemplateRepository;
+	
+	@Autowired
+	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
 
     @Autowired
     SearchService searchService;
@@ -365,9 +371,9 @@ public class SignalService {
 
     public List<SignalAction> attachTasksToAssessment(AssessmentPlan assessmentPlan) throws TaskNotFoundException{
     	List<SignalAction> signalActionList = new ArrayList<>();
-    	TaskTemplate taskTemplate = taskTemplateRepository.findByIngrediantName(assessmentPlan.getIngrediantName());
-		if (taskTemplate != null) {
-			List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(taskTemplate.getId());
+    	TaskTemplateIngrediant taskTemplateIngrediant = taskTemplateIngrediantRepository.findByName(assessmentPlan.getIngrediantName());
+		if (taskTemplateIngrediant != null) {
+			List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(taskTemplateIngrediant.getId());
 			if (!CollectionUtils.isEmpty(actions)) {
 				for (SignalAction action : actions) {
 					SignalAction signalAction = new SignalAction();

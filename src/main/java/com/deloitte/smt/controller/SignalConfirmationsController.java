@@ -29,9 +29,9 @@ public class SignalConfirmationsController {
     SignalConfirmationsService signalConfirmationsService;
 
     @PostMapping
-    public SignalConfirmations createNewAssessmentActionType(@RequestBody SignalConfirmations signalConfirmation) {
-        signalConfirmation = signalConfirmationsService.insert(signalConfirmation);
-        return signalConfirmation;
+    public List<SignalConfirmations> createNewAssessmentActionType(@RequestBody List<SignalConfirmations> signalConfirmations) {
+    	signalConfirmations = signalConfirmationsService.insert(signalConfirmations);
+        return signalConfirmations;
     }
 
     @PutMapping

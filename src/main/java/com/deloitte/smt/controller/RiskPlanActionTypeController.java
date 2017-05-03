@@ -29,9 +29,9 @@ public class RiskPlanActionTypeController {
     RiskPlanActionTypeService riskPlanActionTypeService;
 
     @PostMapping
-    public RiskPlanActionTaskType createNewAssessmentActionType(@RequestBody RiskPlanActionTaskType riskPlanActionTaskType) {
-        riskPlanActionTaskType = riskPlanActionTypeService.insert(riskPlanActionTaskType);
-        return riskPlanActionTaskType;
+    public List<RiskPlanActionTaskType> createNewAssessmentActionType(@RequestBody List<RiskPlanActionTaskType> riskPlanActionTaskTypes) {
+    	riskPlanActionTaskTypes = riskPlanActionTypeService.insert(riskPlanActionTaskTypes);
+        return riskPlanActionTaskTypes;
     }
 
     @PutMapping

@@ -29,9 +29,8 @@ public class AssessmentActionTypeController {
     AssessmentActionTypeService assessmentActionTypeService;
 
     @PostMapping
-    public AssessmentActionType createNewAssessmentActionType(@RequestBody AssessmentActionType assessmentActionType) {
-        assessmentActionType = assessmentActionTypeService.insert(assessmentActionType);
-        return assessmentActionType;
+    public List<AssessmentActionType> createNewAssessmentActionType(@RequestBody List<AssessmentActionType> assessmentActionTypes) {
+        return assessmentActionTypeService.insert(assessmentActionTypes);
     }
 
     @PutMapping

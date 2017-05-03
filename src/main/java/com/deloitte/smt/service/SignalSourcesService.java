@@ -20,11 +20,13 @@ public class SignalSourcesService {
     @Autowired
     SignalSourcesRepository signalSourcesRepository;
 
-    public SignalSources insert(SignalSources signalSources) {
-        signalSources.setCreatedDate(new Date());
-        signalSources.setLastModifiedDate(new Date());
-        signalSources = signalSourcesRepository.save(signalSources);
-        return signalSources;
+    public List<SignalSources> insert(List<SignalSources> signalSources) {
+    	signalSourcesRepository.deleteAll();
+    	for(SignalSources signalSource:signalSources){
+    		signalSource.setCreatedDate(new Date());
+            signalSource.setLastModifiedDate(new Date());
+    	}
+        return signalSourcesRepository.save(signalSources);
     }
 
     public SignalSources update(SignalSources signalSources) throws UpdateFailedException {

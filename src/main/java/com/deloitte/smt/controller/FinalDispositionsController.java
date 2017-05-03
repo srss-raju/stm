@@ -29,9 +29,9 @@ public class FinalDispositionsController {
     FinalDispositionService finalDispositionService;
 
     @PostMapping
-    public FinalDispositions createNewAssessmentActionType(@RequestBody FinalDispositions finalDisposition) {
-        finalDisposition = finalDispositionService.insert(finalDisposition);
-        return finalDisposition;
+    public List<FinalDispositions> createNewAssessmentActionType(@RequestBody List<FinalDispositions> finalDispositions) {
+        finalDispositions = finalDispositionService.insert(finalDispositions);
+        return finalDispositions;
     }
 
     @PutMapping

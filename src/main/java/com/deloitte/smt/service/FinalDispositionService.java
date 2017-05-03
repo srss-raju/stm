@@ -20,11 +20,13 @@ public class FinalDispositionService {
     @Autowired
     FinalDispositionRepository finalDispositionRepository;
 
-    public FinalDispositions insert(FinalDispositions finalDisposition) {
-        finalDisposition.setCreatedDate(new Date());
-        finalDisposition.setLastModifiedDate(new Date());
-        finalDisposition = finalDispositionRepository.save(finalDisposition);
-        return finalDisposition;
+    public List<FinalDispositions> insert(List<FinalDispositions> finalDispositions) {
+    	finalDispositionRepository.deleteAll();
+    	for(FinalDispositions finalDisposition:finalDispositions){
+    		finalDisposition.setCreatedDate(new Date());
+            finalDisposition.setLastModifiedDate(new Date());
+    	}
+        return finalDispositionRepository.save(finalDispositions);
     }
 
     public FinalDispositions update(FinalDispositions finalDisposition) throws UpdateFailedException {

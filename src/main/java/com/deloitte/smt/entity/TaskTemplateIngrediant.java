@@ -1,25 +1,20 @@
 package com.deloitte.smt.entity;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
-@Table(name = "sm_task_template")
-public class TaskTemplate {
+@Table(name = "sm_task_template_ingrediant")
+public class TaskTemplateIngrediant {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String name;
-	
-	@Transient
-	private List<TaskTemplateIngrediant> taskTemplateIngrediant;
+	private Long taskTemplateId;
 
 	public Long getId() {
 		return id;
@@ -33,11 +28,10 @@ public class TaskTemplate {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public List<TaskTemplateIngrediant> getTaskTemplateIngrediant() {
-		return taskTemplateIngrediant;
+	public Long getTaskTemplateId() {
+		return taskTemplateId;
 	}
-	public void setTaskTemplateIngrediant(
-			List<TaskTemplateIngrediant> taskTemplateIngrediant) {
-		this.taskTemplateIngrediant = taskTemplateIngrediant;
+	public void setTaskTemplateId(Long taskTemplateId) {
+		this.taskTemplateId = taskTemplateId;
 	}
 }

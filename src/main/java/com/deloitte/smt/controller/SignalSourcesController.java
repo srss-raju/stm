@@ -29,9 +29,8 @@ public class SignalSourcesController {
     SignalSourcesService signalSourcesService;
 
     @PostMapping
-    public SignalSources createNewAssessmentActionType(@RequestBody SignalSources signalSource) {
-        signalSource = signalSourcesService.insert(signalSource);
-        return signalSource;
+    public List<SignalSources> createNewAssessmentActionType(@RequestBody List<SignalSources> signalSources) {
+        return signalSourcesService.insert(signalSources);
     }
 
     @PutMapping

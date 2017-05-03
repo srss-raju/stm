@@ -20,11 +20,13 @@ public class RiskPlanActionTypeService {
     @Autowired
     RiskPlanActionTaskTypeRepository riskPlanActionTaskTypeRepository;
 
-    public RiskPlanActionTaskType insert(RiskPlanActionTaskType riskPlanActionTaskType) {
-        riskPlanActionTaskType.setCreatedDate(new Date());
-        riskPlanActionTaskType.setLastModifiedDate(new Date());
-        riskPlanActionTaskType = riskPlanActionTaskTypeRepository.save(riskPlanActionTaskType);
-        return riskPlanActionTaskType;
+    public List<RiskPlanActionTaskType> insert(List<RiskPlanActionTaskType> riskPlanActionTaskTypes) {
+    	riskPlanActionTaskTypeRepository.deleteAll();
+    	for(RiskPlanActionTaskType riskPlanActionTaskType:riskPlanActionTaskTypes){
+    		riskPlanActionTaskType.setCreatedDate(new Date());
+            riskPlanActionTaskType.setLastModifiedDate(new Date());
+    	}
+        return riskPlanActionTaskTypeRepository.save(riskPlanActionTaskTypes);
     }
 
     public RiskPlanActionTaskType update(RiskPlanActionTaskType riskPlanActionTaskType) throws UpdateFailedException {
