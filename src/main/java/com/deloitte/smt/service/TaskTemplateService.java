@@ -57,7 +57,11 @@ public class TaskTemplateService {
     }
 
 	public List<TaskTemplate> findAll() {
-		return taskTemplateRepository.findAll();
+		List<TaskTemplate> templates = taskTemplateRepository.findAll();
+		for(TaskTemplate template : templates) {
+			template.setTaskTemplateIngrediant(taskTemplateIngrediantRepository.findByTaskTemplateId(template.getId()));
+		}
+		return templates;
 	}
 
 	public TaskTemplate findById(Long templateId) throws EntityNotFoundException {
