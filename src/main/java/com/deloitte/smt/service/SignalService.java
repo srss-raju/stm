@@ -406,4 +406,48 @@ public class SignalService {
     	List<Long> templateIds = taskTemplateIngrediantRepository.findByIngrediantName(ingrediantName);
     	return taskTemplateRepository.findByIdIn(templateIds);
     }
+
+	public List<SignalAction> associateTemplateTasks(AssessmentPlan assessmentPlan) {
+		List<SignalAction> signalActionListCreated = new ArrayList<>();
+		List<SignalAction> signalActionList;
+		if (!CollectionUtils.isEmpty(assessmentPlan.getTemplateIds())) {
+			for (Long id : assessmentPlan.getTemplateIds()) {
+				List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(id);
+				signalActionList = new ArrayList<>();
+				if (!CollectionUtils.isEmpty(actions)) {
+					for (SignalAction action : actions) {
+						SignalAction signalAction = new SignalAction();
+						signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
+						signalAction.setActionName(action.getActionName());
+						signalAction.setCreatedDate(new Date());
+						signalAction.setLastModifiedDate(action.getLastModifiedDate());
+						signalAction.setActionStatus(action.getActionStatus());
+						signalAction.setDueDate(action.getDueDate());
+						signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
+						signalAction.setActionType(action.getActionType());
+						signalAction.setDueDate(SignalUtil.getDueDate(action.getInDays(),signalAction.getCreatedDate()));
+						signalAction.setInDays(action.getInDays());
+
+						Task task = taskService.newTask();
+						task.setCaseInstanceId(signalAction.getCaseInstanceId());
+						task.setName(signalAction.getActionName());
+						taskService.saveTask(task);
+						List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
+						TaskInst taskInstance = new TaskInst();
+						taskInstance.setId(list.get(list.size() - 1).getId());
+						taskInstance.setCaseDefKey("assessment");
+						taskInstance.setTaskDefKey("assessment");
+						taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
+						taskInstance.setStartTime(new Date());
+						signalAction.setTaskId(taskInstance.getId());
+						signalActionList.add(signalAction);
+					}
+				}
+				if (!CollectionUtils.isEmpty(signalActionList)) {
+					signalActionListCreated.addAll(assessmentActionRepository.save(signalActionList));
+				}
+			}
+		}
+		return signalActionListCreated;
+	}
 }

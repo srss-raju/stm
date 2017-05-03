@@ -48,6 +48,9 @@ public class AssessmentPlan {
 	private Date lastModifiedDate;
 	@Transient
 	private Map<String, String> fileMetadata;
+	
+	@Transient
+	private List<Long> templateIds;
 
 	public AssessmentPlan() {
 		this.topics = new ArrayList<>();
@@ -186,5 +189,13 @@ public class AssessmentPlan {
 
 	public void setIngrediantName(String ingrediantName) {
 		this.ingrediantName = ingrediantName;
+	}
+
+	public List<Long> getTemplateIds() {
+		return templateIds;
+	}
+
+	public void setTemplateIds(List<Long> templateIds) {
+		this.templateIds = templateIds;
 	}
 }
