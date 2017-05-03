@@ -1,16 +1,19 @@
 package com.deloitte.smt.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Service
 public class TaskTemplateService {
@@ -21,20 +24,39 @@ public class TaskTemplateService {
 	@Autowired
 	private AssessmentActionRepository assessmentActionRepository;
 
-	public TaskTemplate createTaskTemplate(TaskTemplate taskTemplate, MultipartFile[] attachments) {
-		return taskTemplateRepository.save(taskTemplate);
+	public List<TaskTemplate> createTaskTemplate(TaskTemplate taskTemplate, MultipartFile[] attachments) {
+		if(!CollectionUtils.isEmpty(taskTemplate.getIngrediantNames())) {
+			List<TaskTemplate> taskTemplates = new ArrayList<>();
+			for(String ingrediant:taskTemplate.getIngrediantNames()){
+				TaskTemplate ingrediantTaskTemplate = new TaskTemplate();
+				ingrediantTaskTemplate.setIngrediantName(ingrediant);
+				ingrediantTaskTemplate.setName(taskTemplate.getName());
+				taskTemplates.add(ingrediantTaskTemplate);
+			}
+			return taskTemplateRepository.save(taskTemplates);
+		}
+		return null;
 	}
 
-	public TaskTemplate updateTaskTemplate(TaskTemplate taskTemplate, MultipartFile[] attachments) {
-		return taskTemplateRepository.save(taskTemplate);
+	public List<TaskTemplate> updateTaskTemplate(TaskTemplate taskTemplate, MultipartFile[] attachments) {
+		if(!CollectionUtils.isEmpty(taskTemplate.getIngrediantNames())) {
+			List<TaskTemplate> taskTemplates = new ArrayList<>();
+			for(String ingrediant:taskTemplate.getIngrediantNames()){
+				TaskTemplate ingrediantTaskTemplate = new TaskTemplate();
+				ingrediantTaskTemplate.setIngrediantName(ingrediant);
+				ingrediantTaskTemplate.setName(taskTemplate.getName());
+				taskTemplates.add(ingrediantTaskTemplate);
+			}
+			return taskTemplateRepository.save(taskTemplates);
+		}
+		return null;
 	}
 
-	public void delete(Long taskId) throws DeleteFailedException {
-		TaskTemplate taskTemplate = taskTemplateRepository.findOne(taskId);
-		if(taskTemplate == null) {
+	public void delete(String name) throws DeleteFailedException {
+		if(name == null) {
             throw new DeleteFailedException("Failed to delete Task. Invalid Id received");
         }
-		taskTemplateRepository.delete(taskTemplate);
+		taskTemplateRepository.deleteByName(name);
 	}
 	
 	public List<SignalAction> findAllByTemplateId(Long templateId) {
