@@ -29,20 +29,20 @@ public class TaskTemplateController {
 	private TaskTemplateService taskTemplateService;
 	
 	@PostMapping(value = "/createTaskTemplate")
-	public TaskTemplate createTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+	public List<TaskTemplate> createTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
 		TaskTemplate taskTemplate = new ObjectMapper().readValue(taskTemplateString, TaskTemplate.class);
 		return taskTemplateService.createTaskTemplate(taskTemplate, attachments);
 	}
 	
 	@PostMapping(value = "/updateTaskTemplate")
-	public TaskTemplate updateTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+	public List<TaskTemplate> updateTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
 		TaskTemplate taskTemplate = new ObjectMapper().readValue(taskTemplateString, TaskTemplate.class);
 		return taskTemplateService.updateTaskTemplate(taskTemplate, attachments);
 	}
 	
-	@DeleteMapping(value = "/{taskId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long taskId) throws DeleteFailedException {
-		taskTemplateService.delete(taskId);
+	@DeleteMapping(value = "/{templateName}")
+    public ResponseEntity<Void> deleteById(@PathVariable String templateName) throws DeleteFailedException {
+		taskTemplateService.delete(templateName);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 	
