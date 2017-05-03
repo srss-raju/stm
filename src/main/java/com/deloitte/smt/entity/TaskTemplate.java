@@ -20,7 +20,8 @@ public class TaskTemplate {
 	private String name;
 	private Date createdDate;
 	private String createdBy;
-	
+	@Transient
+	private List<Long> deletedIngrediantIds;
 	@Transient
 	private List<TaskTemplateIngrediant> taskTemplateIngrediant;
 
@@ -54,5 +55,11 @@ public class TaskTemplate {
 	}
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+	public List<Long> getDeletedIngrediantIds() {
+		return deletedIngrediantIds;
+	}
+	public void setDeletedIngrediantIds(List<Long> deletedIngrediantIds) {
+		this.deletedIngrediantIds = deletedIngrediantIds;
 	}
 }

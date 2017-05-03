@@ -269,13 +269,7 @@ public class SignalService {
             assessmentPlan.setAssessmentPlanStatus("New");
         }
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
-        assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
-        List<SignalAction> list = attachTasksToAssessment(assessmentPlan);
-        if (!CollectionUtils.isEmpty(list)) {
-        	assessmentActionRepository.save(list);
-        }
-        
-        topic.setAssessmentPlan(assessmentPlan);
+        topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
         topic.setSignalStatus("Completed");
         topic.setSignalValidation("Completed");
         topic.setLastModifiedDate(new Date());

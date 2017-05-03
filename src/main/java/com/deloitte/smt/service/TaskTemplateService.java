@@ -42,8 +42,19 @@ public class TaskTemplateService {
 		return template;
 	}
 
-	public TaskTemplate updateTaskTemplate(TaskTemplate taskTemplate, MultipartFile[] attachments) {
-		return taskTemplateRepository.save(taskTemplate);
+	public TaskTemplate updateTaskTemplate(TaskTemplate template, MultipartFile[] attachments) {
+		if(template.getDeletedIngrediantIds() != null){
+			deleteIngrediants(template.getDeletedIngrediantIds());
+		}
+		if(!CollectionUtils.isEmpty(template.getTaskTemplateIngrediant())){
+			for(TaskTemplateIngrediant ingrediant : template.getTaskTemplateIngrediant()){
+				ingrediant.setTaskTemplateId(template.getId());
+			}
+			List<TaskTemplateIngrediant> list = taskTemplateIngrediantRepository.save(template.getTaskTemplateIngrediant());
+			template.setTaskTemplateIngrediant(list);
+		}
+		
+		return taskTemplateRepository.save(template);
 	}
 
 	public void delete(Long taskId) throws DeleteFailedException {
@@ -52,6 +63,12 @@ public class TaskTemplateService {
             throw new DeleteFailedException("Failed to delete Task. Invalid Id received");
         }
 		taskTemplateRepository.delete(taskTemplate);
+	}
+	
+	void deleteIngrediants(List<Long> ids){
+		for(Long id:ids){
+			taskTemplateIngrediantRepository.deleteById(id);
+		}
 	}
 	
 	public List<SignalAction> findAllByTemplateId(Long templateId) {
