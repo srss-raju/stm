@@ -31,15 +31,15 @@ public class AssessmentActionController {
     AssessmentActionService assessmentActionService;
 
     @PostMapping(value = "/createAssessmentAction")
-    public String createAssessmentAction(@RequestParam("data") String signalActionString,
+    public SignalAction createAssessmentAction(@RequestParam("data") String signalActionString,
                                          @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         SignalAction signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
         if(signalAction.getTemplateId() != 0){
-        	assessmentActionService.createOrphanAssessmentAction(signalAction, attachments);
+        	signalAction = assessmentActionService.createOrphanAssessmentAction(signalAction, attachments);
         }else{
-        	assessmentActionService.createAssessmentAction(signalAction, attachments);
+        	signalAction = assessmentActionService.createAssessmentAction(signalAction, attachments);
         }
-        return "Saved Successfully";
+        return signalAction;
     }
 
     @PostMapping(value = "/updateAssessmentAction")

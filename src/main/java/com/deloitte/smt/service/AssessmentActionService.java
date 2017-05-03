@@ -37,7 +37,7 @@ public class AssessmentActionService {
     @Autowired
     AttachmentService attachmentService;
 
-    public void createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
+    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
         if(signalAction.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(signalAction.getActionStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
@@ -61,6 +61,7 @@ public class AssessmentActionService {
         signalAction.setActionStatus("New");
         signalAction = assessmentActionRepository.save(signalAction);
         attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
+        return signalAction;
     }
 
     public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws UpdateFailedException, IOException {
@@ -102,12 +103,13 @@ public class AssessmentActionService {
         }
     }
     
-    public void createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
+    public SignalAction createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
     	Date d = new Date();
         signalAction.setCreatedDate(d);
         signalAction.setDueDate(SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate()));
-    	assessmentActionRepository.save(signalAction);
+        signalAction = assessmentActionRepository.save(signalAction);
     	attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
+    	return signalAction;
     }
     
 }
