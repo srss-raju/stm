@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -17,6 +18,8 @@ public class TaskTemplate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String name;
+	private Date createdDate;
+	private String createdBy;
 	
 	@Transient
 	private List<TaskTemplateIngrediant> taskTemplateIngrediant;
@@ -39,5 +42,17 @@ public class TaskTemplate {
 	public void setTaskTemplateIngrediant(
 			List<TaskTemplateIngrediant> taskTemplateIngrediant) {
 		this.taskTemplateIngrediant = taskTemplateIngrediant;
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	public String getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }

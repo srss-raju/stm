@@ -1,5 +1,6 @@
 package com.deloitte.smt.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class TaskTemplateService {
 	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
 
 	public TaskTemplate createTaskTemplate(TaskTemplate taskTemplate, MultipartFile[] attachments) {
+		taskTemplate.setCreatedDate(new Date());
 		TaskTemplate template = taskTemplateRepository.save(taskTemplate);
 		if(!CollectionUtils.isEmpty(template.getTaskTemplateIngrediant())){
 			for(TaskTemplateIngrediant ingrediant : template.getTaskTemplateIngrediant()){
@@ -57,7 +59,7 @@ public class TaskTemplateService {
     }
 
 	public List<TaskTemplate> findAll() {
-		List<TaskTemplate> templates = taskTemplateRepository.findAll();
+		List<TaskTemplate> templates = taskTemplateRepository.findAllByOrderByCreatedDateDesc();
 		for(TaskTemplate template : templates) {
 			template.setTaskTemplateIngrediant(taskTemplateIngrediantRepository.findByTaskTemplateId(template.getId()));
 		}
