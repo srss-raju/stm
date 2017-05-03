@@ -70,6 +70,8 @@ public class TaskTemplateService {
 		TaskTemplate taskTemplate = taskTemplateRepository.findOne(templateId);
 		if(taskTemplate == null) {
 			throw new EntityNotFoundException("Template not found with given Id : "+templateId);
+		}else{
+			taskTemplate.setTaskTemplateIngrediant(taskTemplateIngrediantRepository.findByTaskTemplateId(taskTemplate.getId()));
 		}
 		return taskTemplate;
 	}
