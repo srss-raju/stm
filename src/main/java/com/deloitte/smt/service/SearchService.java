@@ -51,7 +51,7 @@ public class SearchService {
 
     public SearchDto getFiltersForSignal(){
         SearchDto dto = new SearchDto();
-        dto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));
+        dto.setStatuses(Arrays.asList("New", "In Progress", "Completed", "Overdue"));
         dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignal());
         dto.setProducts(productRepository.findDistinctProductNameForSignal());
         dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignal());

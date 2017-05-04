@@ -1,12 +1,15 @@
 package com.deloitte.smt.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by myelleswarapu on 04-05-2017.
@@ -23,9 +26,12 @@ public class AssignmentConfiguration implements Serializable {
     private Date lastModifiedDate;
     private String ingredient;
     private String signalSource;
-    private String signalValidationAssignmentUsers;
-    private String assessmentAssignmentUsers;
-    private String riskPlanAssignmentUsers;
+    @ManyToMany(cascade = CascadeType.MERGE)
+    private List<SMUser> signalValidationAssignmentUsers;
+    @ManyToMany(cascade = CascadeType.MERGE)
+    private List<SMUser> assessmentAssignmentUsers;
+    @ManyToMany(cascade = CascadeType.MERGE)
+    private List<SMUser> riskPlanAssignmentUsers;
 
     public Long getId() {
         return id;
@@ -75,27 +81,27 @@ public class AssignmentConfiguration implements Serializable {
         this.signalSource = signalSource;
     }
 
-    public String getSignalValidationAssignmentUsers() {
+    public List<SMUser> getSignalValidationAssignmentUsers() {
         return signalValidationAssignmentUsers;
     }
 
-    public void setSignalValidationAssignmentUsers(String signalValidationAssignmentUsers) {
+    public void setSignalValidationAssignmentUsers(List<SMUser> signalValidationAssignmentUsers) {
         this.signalValidationAssignmentUsers = signalValidationAssignmentUsers;
     }
 
-    public String getAssessmentAssignmentUsers() {
+    public List<SMUser> getAssessmentAssignmentUsers() {
         return assessmentAssignmentUsers;
     }
 
-    public void setAssessmentAssignmentUsers(String assessmentAssignmentUsers) {
+    public void setAssessmentAssignmentUsers(List<SMUser> assessmentAssignmentUsers) {
         this.assessmentAssignmentUsers = assessmentAssignmentUsers;
     }
 
-    public String getRiskPlanAssignmentUsers() {
+    public List<SMUser> getRiskPlanAssignmentUsers() {
         return riskPlanAssignmentUsers;
     }
 
-    public void setRiskPlanAssignmentUsers(String riskPlanAssignmentUsers) {
+    public void setRiskPlanAssignmentUsers(List<SMUser> riskPlanAssignmentUsers) {
         this.riskPlanAssignmentUsers = riskPlanAssignmentUsers;
     }
 }
