@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,5 +55,10 @@ public class MasterDataController {
     @GetMapping(value = "/filters/ingredients")
     public List<String> getIngredientFilters() {
         return searchService.getIngredients();
+    }
+
+    @GetMapping(value = "/filters/severity")
+    public List<String> getSeverityFilters() {
+        return Arrays.asList("Low", "Medium", "High");
     }
 }
