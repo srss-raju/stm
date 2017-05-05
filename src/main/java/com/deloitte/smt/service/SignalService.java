@@ -45,6 +45,7 @@ import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
@@ -178,7 +179,12 @@ public class SignalService {
 
         Ingredient ingredient = topic.getIngredient();
         if(ingredient != null) {
-            AssignmentConfiguration assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(ingredient.getIngredientName(), topic.getSourceName());
+            AssignmentConfiguration assignmentConfiguration;
+            if(!StringUtils.isEmpty(topic.getSourceName())) {
+                assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(ingredient.getIngredientName(), topic.getSourceName());
+            } else {
+                assignmentConfiguration = assignmentConfigurationRepository.findByIngredient(ingredient.getIngredientName());
+            }
             if(assignmentConfiguration != null) {
                 topic.setAssignTo(assignmentConfiguration.getSignalValidationAssignmentUser());
                 topic = topicRepository.save(topic);
@@ -274,7 +280,12 @@ public class SignalService {
         if(assessmentPlan.getId() == null) {
             assessmentPlan.setAssessmentPlanStatus("New");
         }
-        AssignmentConfiguration assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());
+        AssignmentConfiguration assignmentConfiguration;
+        if(!StringUtils.isEmpty(assessmentPlan.getSource())) {
+            assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());
+        } else {
+            assignmentConfiguration = assignmentConfigurationRepository.findByIngredient(assessmentPlan.getIngrediantName());
+        }
         if(assignmentConfiguration != null){
             assessmentPlan.setAssignTo(assignmentConfiguration.getAssessmentAssignmentUser());
         }

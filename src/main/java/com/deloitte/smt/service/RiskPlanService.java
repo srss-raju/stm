@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
@@ -88,7 +89,12 @@ public class RiskPlanService {
         Date d = new Date();
         riskPlan.setCreatedDate(d);
         riskPlan.setLastModifiedDate(d);
-        AssignmentConfiguration assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource());
+        AssignmentConfiguration assignmentConfiguration;
+        if(!StringUtils.isEmpty(riskPlan.getSource())) {
+            assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource());
+        } else {
+            assignmentConfiguration = assignmentConfigurationRepository.findByIngredient(riskPlan.getIngredient());
+        }
         if(assignmentConfiguration != null) {
             riskPlan.setAssignTo(assignmentConfiguration.getRiskPlanAssignmentUser());
         }

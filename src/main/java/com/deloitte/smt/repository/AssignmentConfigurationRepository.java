@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface AssignmentConfigurationRepository extends JpaRepository<AssignmentConfiguration, Long> {
 
     AssignmentConfiguration findByIngredientAndSignalSource(String ingredient, String signalSource);
+    AssignmentConfiguration findByIngredient(String ingredient);
 }
