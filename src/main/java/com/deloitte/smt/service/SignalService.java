@@ -436,9 +436,12 @@ public class SignalService {
 						signalAction.setActionType(action.getActionType());
 						signalAction.setDueDate(SignalUtil.getDueDate(action.getInDays(),signalAction.getCreatedDate()));
 						signalAction.setInDays(action.getInDays());
-                        if(signalAction.getAssignTo() == null) {
+                        if(action.getAssignTo() == null) {
                             signalAction.setAssignTo(assessmentPlan.getAssignTo());
+                        }else{
+                        	signalAction.setAssignTo(action.getAssignTo());
                         }
+                        signalAction.setOwner(assessmentPlan.getAssignTo());
 						Task task = taskService.newTask();
 						task.setCaseInstanceId(signalAction.getCaseInstanceId());
 						task.setName(signalAction.getActionName());
