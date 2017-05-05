@@ -1,15 +1,14 @@
 package com.deloitte.smt.service;
 
-import java.util.Date;
-import java.util.List;
-
+import com.deloitte.smt.entity.DetectionRun;
+import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.repository.DetectionRunRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.deloitte.smt.entity.DetectionRun;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.repository.DetectionRunRepository;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by rajesh on 05-05-2017.
@@ -37,5 +36,9 @@ public class DetectionRunService {
 
     public List<DetectionRun> findAll() {
         return detectionRunRepository.findAll(new Sort(Sort.Direction.DESC, "createdDate"));
+    }
+
+    public List<DetectionRun> findByDetectionId(Long detectionId) {
+        return detectionRunRepository.findByDetectionId(detectionId, new Sort(Sort.Direction.DESC, "createdDate"));
     }
 }

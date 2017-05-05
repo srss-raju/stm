@@ -1,7 +1,8 @@
 package com.deloitte.smt.controller;
 
-import java.util.List;
-
+import com.deloitte.smt.entity.DetectionRun;
+import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.service.DetectionRunService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deloitte.smt.entity.DetectionRun;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.service.DetectionRunService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/camunda/api/signal/detectionrun")
@@ -33,5 +32,10 @@ public class DetectionRunController {
     @GetMapping
     public List<DetectionRun> findAll() {
         return detectionRunService.findAll();
+    }
+
+    @GetMapping(value = "/detection/{detectionId}")
+    public List<DetectionRun> findByDetectionId(Long detectionId) {
+        return detectionRunService.findByDetectionId(detectionId);
     }
 }
