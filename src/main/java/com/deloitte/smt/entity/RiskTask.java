@@ -51,6 +51,9 @@ public class RiskTask {
 	@Transient
 	private List<Long> deletedAttachmentIds;
 
+	private String assignTo;
+	private String owner;
+
 	public Long getId() {
 		return id;
 	}
@@ -185,5 +188,21 @@ public class RiskTask {
 
 	public void setDeletedAttachmentIds(List<Long> deletedAttachmentIds) {
 		this.deletedAttachmentIds = deletedAttachmentIds;
+	}
+
+	public String getAssignTo() {
+		return assignTo;
+	}
+
+	public void setAssignTo(String assignTo) {
+		this.assignTo = assignTo;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 }

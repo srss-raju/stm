@@ -36,6 +36,9 @@ public class RiskPlan implements Serializable {
     private String summary;
     private String caseInstanceId;
     private String status;
+    private String ingredient;
+    private String source;
+    private String assignTo;
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
     @JsonIgnore
@@ -108,6 +111,30 @@ public class RiskPlan implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(String ingredient) {
+        this.ingredient = ingredient;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getAssignTo() {
+        return assignTo;
+    }
+
+    public void setAssignTo(String assignTo) {
+        this.assignTo = assignTo;
     }
 
     public AssessmentPlan getAssessmentPlan() {

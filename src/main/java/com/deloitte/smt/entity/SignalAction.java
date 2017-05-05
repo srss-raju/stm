@@ -27,6 +27,7 @@ public class SignalAction {
     private Date createdDate;
 	private Date lastModifiedDate;
     private String assignTo;
+	private String owner;
     private String actionStatus;
     private String assessmentId;
     private String caseInstanceId;
@@ -36,7 +37,7 @@ public class SignalAction {
 	private String createdBy;
 	private Long templateId;
 	private Integer inDays;
-	
+
 	@Transient
 	private Map<String, String> fileMetadata;
 	@Transient
@@ -210,4 +211,11 @@ public class SignalAction {
 		this.inDays = inDays;
 	}
 
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
 }
