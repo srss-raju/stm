@@ -2,6 +2,7 @@ package com.deloitte.smt.service;
 
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
@@ -14,7 +15,6 @@ import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
-import com.deloitte.smt.entity.TaskTemplateIngrediant;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.TaskNotFoundException;
@@ -22,6 +22,7 @@ import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
 import com.deloitte.smt.repository.IngredientRepository;
@@ -123,6 +124,9 @@ public class SignalService {
     @Autowired
     SearchService searchService;
 
+    @Autowired
+    private AssignmentConfigurationRepository assignmentConfigurationRepository;
+
     public Topic findById(Long topicId) throws EntityNotFoundException {
         Topic topic = topicRepository.findOne(topicId);
         if(topic == null) {
@@ -176,6 +180,11 @@ public class SignalService {
 
         Ingredient ingredient = topic.getIngredient();
         if(ingredient != null) {
+            AssignmentConfiguration assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(ingredient.getIngredientName(), topic.getSourceName());
+            if(assignmentConfiguration != null) {
+                topic.setAssignTo(assignmentConfiguration.getSignalValidationAssignmentUser());
+                topic = topicRepository.save(topic);
+            }
             List<Product> products = ingredient.getProducts();
             List<License> licenses = ingredient.getLicenses();
             ingredient.setTopicId(topic.getId());
@@ -266,6 +275,10 @@ public class SignalService {
         assessmentPlan.setLastModifiedDate(d);
         if(assessmentPlan.getId() == null) {
             assessmentPlan.setAssessmentPlanStatus("New");
+        }
+        AssignmentConfiguration assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());
+        if(assignmentConfiguration != null){
+            assessmentPlan.setAssignTo(assignmentConfiguration.getAssessmentAssignmentUser());
         }
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
@@ -362,7 +375,7 @@ public class SignalService {
         return SignalUtil.getCounts(Long.valueOf(ingredients.size()), Long.valueOf(assessmentPlanList.size()), Long.valueOf(riskPlanList.size()));
     }
 
-    public List<SignalAction> attachTasksToAssessment(AssessmentPlan assessmentPlan) throws TaskNotFoundException{
+    /*public List<SignalAction> attachTasksToAssessment(AssessmentPlan assessmentPlan) throws TaskNotFoundException{
     	List<SignalAction> signalActionList = new ArrayList<>();
     	TaskTemplateIngrediant taskTemplateIngrediant = taskTemplateIngrediantRepository.findByName(assessmentPlan.getIngrediantName());
 		if (taskTemplateIngrediant != null) {
@@ -398,7 +411,7 @@ public class SignalService {
 			}
 		}
     	return signalActionList;
-    }
+    }*/
     
     public List<TaskTemplate> getTaskTamplatesOfIngrediant(String ingrediantName){
     	List<Long> templateIds = taskTemplateIngrediantRepository.findByIngrediantName(ingrediantName);
@@ -425,6 +438,7 @@ public class SignalService {
 						signalAction.setActionType(action.getActionType());
 						signalAction.setDueDate(SignalUtil.getDueDate(action.getInDays(),signalAction.getCreatedDate()));
 						signalAction.setInDays(action.getInDays());
+                        signalAction.setAssignTo(assessmentPlan.getAssignTo());
 
 						Task task = taskService.newTask();
 						task.setCaseInstanceId(signalAction.getCaseInstanceId());

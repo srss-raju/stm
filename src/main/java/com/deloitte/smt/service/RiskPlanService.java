@@ -2,6 +2,7 @@ package com.deloitte.smt.service;
 
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
@@ -10,6 +11,7 @@ import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
@@ -78,6 +80,9 @@ public class RiskPlanService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private AssignmentConfigurationRepository assignmentConfigurationRepository;
+
     public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, EntityNotFoundException {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
@@ -85,6 +90,10 @@ public class RiskPlanService {
         Date d = new Date();
         riskPlan.setCreatedDate(d);
         riskPlan.setLastModifiedDate(d);
+        AssignmentConfiguration assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource());
+        if(assignmentConfiguration != null) {
+            riskPlan.setAssignTo(assignmentConfiguration.getRiskPlanAssignmentUser());
+        }
         if(assessmentId != null){
             AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
             if(assessmentPlan == null) {
@@ -170,6 +179,10 @@ public class RiskPlanService {
         riskTask.setCreatedDate(d);
         riskTask.setLastUpdatedDate(d);
         riskTask.setStatus("New");
+        RiskPlan riskPlan = riskPlanRepository.findOne(Long.valueOf(riskTask.getRiskId()));
+        riskTask.setAssignTo(riskPlan.getAssignTo());
+        riskTask.setOwner(riskPlan.getAssignTo());
+
         taskInstRepository.save(taskInstance);
         riskTask = riskTaskRepository.save(riskTask);
         attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, riskTask.getFileMetadata());
@@ -199,18 +212,7 @@ public class RiskPlanService {
         riskTaskRepository.delete(riskTask);
         taskService.deleteTask(taskId);
     }
-    
-   /* public void updateRiskTask(RiskTask riskTask) throws UpdateFailedException {
-        if(riskTask.getId() == null) {
-            throw new UpdateFailedException("Failed to update Task. Invalid Id received");
-        }
-        if("completed".equalsIgnoreCase(riskTask.getStatus())) {
-            taskService.complete(riskTask.getTaskId());
-        }
-        riskTask.setLastUpdatedDate(new Date());
-        riskTaskRepository.save(riskTask);
-    }*/
-    
+
     public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws UpdateFailedException, IOException {
         if(riskTask.getId() == null) {
             throw new UpdateFailedException("Failed to update Action. Invalid Id received");
@@ -222,8 +224,7 @@ public class RiskPlanService {
         riskTaskRepository.save(riskTask);
         attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, riskTask.getDeletedAttachmentIds(), riskTask.getFileMetadata());
     }
-    
-    
+
     public RiskPlan findByRiskId(Long riskId) throws EntityNotFoundException {
         RiskPlan riskPlan = riskPlanRepository.findOne(riskId);
         if(riskPlan == null) {

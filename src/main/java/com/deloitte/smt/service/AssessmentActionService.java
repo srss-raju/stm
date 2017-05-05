@@ -86,7 +86,7 @@ public class AssessmentActionService {
     }
 
     public List<SignalAction> findAllByAssessmentId(String assessmentId, String actionStatus) {
-        if(actionStatus != null){
+        if(actionStatus != null) {
             return assessmentActionRepository.findAllByAssessmentIdAndActionStatus(assessmentId, actionStatus);
         }
         return assessmentActionRepository.findAllByAssessmentId(assessmentId);

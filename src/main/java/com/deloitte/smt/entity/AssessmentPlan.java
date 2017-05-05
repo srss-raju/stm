@@ -33,6 +33,7 @@ public class AssessmentPlan {
 	private int inDays;
     private String comments;
     private String ingrediantName;
+	private String source;
     private String caseInstanceId;
 	private String assessmentPlanStatus;
 	private String assessmentRiskStatus;
@@ -51,6 +52,8 @@ public class AssessmentPlan {
 	
 	@Transient
 	private List<Long> templateIds;
+
+	private String assignTo;
 
 	public AssessmentPlan() {
 		this.topics = new ArrayList<>();
@@ -191,11 +194,27 @@ public class AssessmentPlan {
 		this.ingrediantName = ingrediantName;
 	}
 
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
 	public List<Long> getTemplateIds() {
 		return templateIds;
 	}
 
 	public void setTemplateIds(List<Long> templateIds) {
 		this.templateIds = templateIds;
+	}
+
+	public String getAssignTo() {
+		return assignTo;
+	}
+
+	public void setAssignTo(String assignTo) {
+		this.assignTo = assignTo;
 	}
 }
