@@ -19,8 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by myelleswarapu on 27-04-2017.
@@ -106,7 +108,7 @@ public class SearchService {
         return searchDto;
     }
 
-    public boolean getSignalIdsForSearch(SearchDto searchDto, Set<Long> topicIds, boolean searchAll) {
+    public boolean getSignalIdsForSearch(SearchDto searchDto, List<Long> topicIds, boolean searchAll) {
         if(!CollectionUtils.isEmpty(searchDto.getLicenses())) {
             searchAll = false;
             List<License> licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
@@ -134,6 +136,12 @@ public class SearchService {
                 }
             });
         }
+        Set<Long> allItems = new HashSet<>();
+        Set<Long> duplicates = topicIds.parallelStream()
+                .filter(n -> !allItems.add(n))
+                .collect(Collectors.toSet());
+        topicIds.clear();
+        topicIds.addAll(duplicates);
         return searchAll;
     }
 }

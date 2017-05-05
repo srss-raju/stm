@@ -34,9 +34,7 @@ import javax.persistence.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -111,7 +109,7 @@ public class RiskPlanService {
     }
 
     public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
-        Set<Long> riskTopicIds = new HashSet<>();
+        List<Long> riskTopicIds = new ArrayList<>();
         boolean searchAll = true;
         if(!CollectionUtils.isEmpty(searchDto.getStatuses())) {
             searchAll = false;

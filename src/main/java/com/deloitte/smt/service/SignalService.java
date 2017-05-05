@@ -55,9 +55,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -292,7 +290,7 @@ public class SignalService {
 
     public List<Topic> findAllForSearch(SearchDto searchDto) {
         List<Topic> topics;
-        Set<Long> topicIds = new HashSet<>();
+        List<Long> topicIds = new ArrayList<>();
         searchService.getSignalIdsForSearch(searchDto, topicIds, true);
         StringBuilder queryString = new StringBuilder("SELECT o FROM Topic o WHERE 1=1 ");
         if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())){
