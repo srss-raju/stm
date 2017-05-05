@@ -176,8 +176,10 @@ public class SignalService {
         topic.setProcessId(processInstanceId);
         c.add(Calendar.DAY_OF_YEAR, 5);
         topic.setDueDate(c.getTime());
-        for(SignalStatistics signalStatistic : topic.getSignalStatistics()) {
-            signalStatistic.setTopic(topic);
+        if(!CollectionUtils.isEmpty(topic.getSignalStatistics())) {
+            for (SignalStatistics signalStatistic : topic.getSignalStatistics()) {
+                signalStatistic.setTopic(topic);
+            }
         }
         topic = topicRepository.save(topic);
 
