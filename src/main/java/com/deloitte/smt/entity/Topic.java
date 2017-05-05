@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -55,7 +56,7 @@ public class Topic implements Serializable{
     @Transient
     private int casesCount;
     
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="topic")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="topic", cascade = CascadeType.ALL)
     private Set<SignalStatistics> signalStatistics;
 
     @Transient

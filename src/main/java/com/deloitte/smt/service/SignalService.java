@@ -12,6 +12,7 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
@@ -175,6 +176,9 @@ public class SignalService {
         topic.setProcessId(processInstanceId);
         c.add(Calendar.DAY_OF_YEAR, 5);
         topic.setDueDate(c.getTime());
+        for(SignalStatistics signalStatistic : topic.getSignalStatistics()) {
+            signalStatistic.setTopic(topic);
+        }
         topic = topicRepository.save(topic);
 
         Ingredient ingredient = topic.getIngredient();

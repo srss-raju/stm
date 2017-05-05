@@ -35,7 +35,7 @@ public class DetectionRunController {
     }
 
     @GetMapping(value = "/detection/{detectionId}")
-    public List<DetectionRun> findByDetectionId(Long detectionId) {
+    public List<DetectionRun> findByDetectionId(@PathVariable Long detectionId) {
         return detectionRunService.findByDetectionId(detectionId);
     }
 }
