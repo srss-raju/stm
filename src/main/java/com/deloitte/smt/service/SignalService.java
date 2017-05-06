@@ -37,6 +37,7 @@ import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.util.SignalUtil;
+
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -52,6 +53,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -185,12 +187,16 @@ public class SignalService {
 
         Ingredient ingredient = topic.getIngredient();
         if(ingredient != null) {
-            AssignmentConfiguration assignmentConfiguration;
+            AssignmentConfiguration assignmentConfiguration = null;
             if(!StringUtils.isEmpty(topic.getSourceName())) {
                 assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(ingredient.getIngredientName(), topic.getSourceName());
-            } else {
-                assignmentConfiguration = assignmentConfigurationRepository.findByIngredient(ingredient.getIngredientName());
+            } 
+            // If Source is not null and combination not available we have to fetch with Ingredient
+            if(assignmentConfiguration == null){
+            	assignmentConfiguration = assignmentConfigurationRepository.findByIngredient(ingredient.getIngredientName());
             }
+            
+            
             if(assignmentConfiguration != null) {
                 topic.setAssignTo(assignmentConfiguration.getSignalValidationAssignmentUser());
                 topic = topicRepository.save(topic);
@@ -480,5 +486,31 @@ public class SignalService {
 			}
 		}
 		return signalActionListCreated;
+	}
+
+	public List<Topic> findTopicsByRunInstanceId(Long runInstanceId) {
+		List<Topic> topics = topicRepository.findTopicByRunInstanceId(runInstanceId);
+		if (!CollectionUtils.isEmpty(topics)) {
+			for(Topic topic:topics){
+				Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
+		        List<Product> products = productRepository.findByTopicId(topic.getId());
+		        List<License> licenses = licenseRepository.findByTopicId(topic.getId());
+		        if(ingredient != null) {
+		            ingredient.setProducts(products);
+		            ingredient.setLicenses(licenses);
+		            topic.setIngredient(ingredient);
+		        }
+		        List<Soc> socs  = socRepository.findByTopicId(topic.getId());
+		        if(!CollectionUtils.isEmpty(socs)) {
+		        	for(Soc soc:socs){
+		        		soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
+		        		soc.setHlts(hltRepository.findBySocId(soc.getId()));
+		        		soc.setPts(ptRepository.findBySocId(soc.getId()));
+		        	}
+		        }
+		        topic.setSocs(socs);
+			}
+		}
+		return topics;
 	}
 }

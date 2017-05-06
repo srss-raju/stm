@@ -1,6 +1,7 @@
 package com.deloitte.smt.repository;
 
 import com.deloitte.smt.entity.Topic;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,5 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     @Query(value = "SELECT DISTINCT (o.signalConfirmation) FROM Topic o WHERE o.signalConfirmation IS NOT NULL ")
     List<String> findDistinctSignalConfirmationNames();
+	List<Topic> findTopicByRunInstanceId(Long runInstanceId);
 }

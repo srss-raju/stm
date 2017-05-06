@@ -119,4 +119,9 @@ public class SignalController {
         return signalService.associateTemplateTasks(assessmentPlan);
     }
 	
+	@GetMapping(value = "/run/{runInstanceId}")
+    public List<Topic> findTopicsByRunInstanceId(@PathVariable Long runInstanceId) {
+        return signalService.findTopicsByRunInstanceId(runInstanceId);
+    }
+	
 }

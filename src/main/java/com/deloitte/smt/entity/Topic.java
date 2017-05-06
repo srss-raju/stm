@@ -52,6 +52,7 @@ public class Topic implements Serializable{
     private String signalStrength;
     private Date dueDate;
     private String assignTo;
+    private Long runInstanceId;
 
     @Transient
     private int casesCount;
@@ -300,5 +301,13 @@ public class Topic implements Serializable{
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public Long getRunInstanceId() {
+		return runInstanceId;
+	}
+
+	public void setRunInstanceId(Long runInstanceId) {
+		this.runInstanceId = runInstanceId;
 	}
 }
