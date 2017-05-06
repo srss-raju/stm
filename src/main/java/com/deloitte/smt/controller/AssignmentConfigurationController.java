@@ -1,9 +1,11 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.exception.EntityAlreadyExistsException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.AssignmentConfigurationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,7 @@ public class AssignmentConfigurationController {
     AssignmentConfigurationService assignmentConfigurationService;
 
     @PostMapping
-    public AssignmentConfiguration createNewAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) {
+    public AssignmentConfiguration createNewAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws EntityAlreadyExistsException {
         return assignmentConfigurationService.insert(assignmentConfiguration);
     }
 

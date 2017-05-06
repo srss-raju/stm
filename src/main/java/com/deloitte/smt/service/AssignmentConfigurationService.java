@@ -1,15 +1,17 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
-import com.deloitte.smt.repository.AssignmentConfigurationRepository;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.exception.EntityAlreadyExistsException;
+import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 
 /**
  * Created by myelleswarapu on 04-05-2017.
@@ -20,9 +22,13 @@ public class AssignmentConfigurationService {
     @Autowired
     AssignmentConfigurationRepository assignmentConfigurationRepository;
 
-    public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) {
+    public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws EntityAlreadyExistsException {
         assignmentConfiguration.setCreatedDate(new Date());
         assignmentConfiguration.setLastModifiedDate(new Date());
+        AssignmentConfiguration assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIngredientAndSignalSource(assignmentConfiguration.getIngredient(), assignmentConfiguration.getSignalSource());
+        if(assignmentConfigurationFromDB != null){
+        	throw new EntityAlreadyExistsException("Duplicate record");
+        }
         return assignmentConfigurationRepository.save(assignmentConfiguration);
     }
 
