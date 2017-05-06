@@ -193,7 +193,7 @@ public class SignalService {
             } 
             // If Source is not null and combination not available we have to fetch with Ingredient
             if(assignmentConfiguration == null){
-            	assignmentConfiguration = assignmentConfigurationRepository.findByIngredient(ingredient.getIngredientName());
+            	assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSourceIsNull(ingredient.getIngredientName());
             }
             
             
