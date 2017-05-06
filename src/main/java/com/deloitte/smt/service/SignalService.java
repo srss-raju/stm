@@ -292,12 +292,16 @@ public class SignalService {
         if(assessmentPlan.getId() == null) {
             assessmentPlan.setAssessmentPlanStatus("New");
         }
-        AssignmentConfiguration assignmentConfiguration;
-        if(!StringUtils.isEmpty(assessmentPlan.getSource())) {
+        AssignmentConfiguration assignmentConfiguration = null;
+        
+        if(!StringUtils.isEmpty(topic.getSourceName())) {
             assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());
-        } else {
-            assignmentConfiguration = assignmentConfigurationRepository.findByIngredient(assessmentPlan.getIngrediantName());
+        } 
+        // If Source is not null and combination not available we have to fetch with Ingredient
+        if(assignmentConfiguration == null){
+        	assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSourceIsNull(assessmentPlan.getIngrediantName());
         }
+        
         if(assignmentConfiguration != null){
             assessmentPlan.setAssignTo(assignmentConfiguration.getAssessmentAssignmentUser());
         }

@@ -89,12 +89,17 @@ public class RiskPlanService {
         Date d = new Date();
         riskPlan.setCreatedDate(d);
         riskPlan.setLastModifiedDate(d);
-        AssignmentConfiguration assignmentConfiguration;
+        AssignmentConfiguration assignmentConfiguration = null;
+        
         if(!StringUtils.isEmpty(riskPlan.getSource())) {
             assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource());
-        } else {
-            assignmentConfiguration = assignmentConfigurationRepository.findByIngredient(riskPlan.getIngredient());
+        } 
+        // If Source is not null and combination not available we have to fetch with Ingredient
+        if(assignmentConfiguration == null){
+        	assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSourceIsNull(riskPlan.getIngredient());
         }
+        
+        
         if(assignmentConfiguration != null) {
             riskPlan.setAssignTo(assignmentConfiguration.getRiskPlanAssignmentUser());
         }
