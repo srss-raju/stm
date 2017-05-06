@@ -188,9 +188,9 @@ public class RiskPlanService {
         riskTask.setCreatedDate(d);
         riskTask.setLastUpdatedDate(d);
         riskTask.setStatus("New");
-        RiskPlan riskPlan = riskPlanRepository.findOne(Long.valueOf(riskTask.getRiskId()));
+        /*RiskPlan riskPlan = riskPlanRepository.findOne(Long.valueOf(riskTask.getRiskId()));
         riskTask.setAssignTo(riskPlan.getAssignTo());
-        riskTask.setOwner(riskPlan.getAssignTo());
+        riskTask.setOwner(riskPlan.getAssignTo());*/
 
         taskInstRepository.save(taskInstance);
         riskTask = riskTaskRepository.save(riskTask);
