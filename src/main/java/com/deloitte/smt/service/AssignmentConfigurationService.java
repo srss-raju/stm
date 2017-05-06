@@ -27,7 +27,7 @@ public class AssignmentConfigurationService {
         assignmentConfiguration.setLastModifiedDate(new Date());
         AssignmentConfiguration assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIngredientAndSignalSource(assignmentConfiguration.getIngredient(), assignmentConfiguration.getSignalSource());
         if(assignmentConfigurationFromDB != null){
-        	throw new EntityAlreadyExistsException("Duplicate record");
+        	throw new EntityAlreadyExistsException("Configuration already exists");
         }
         return assignmentConfigurationRepository.save(assignmentConfiguration);
     }
