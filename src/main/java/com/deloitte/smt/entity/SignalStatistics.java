@@ -27,6 +27,10 @@ public class SignalStatistics {
 	
 	private double ub;
 	
+	private String socName;
+	
+	private String ptName;
+	
 	@JsonIgnore
 	@ManyToOne
 	private Topic topic;
@@ -85,5 +89,21 @@ public class SignalStatistics {
 
 	public void setTopic(Topic topic) {
 		this.topic = topic;
+	}
+
+	public String getSocName() {
+		return socName;
+	}
+
+	public void setSocName(String socName) {
+		this.socName = socName;
+	}
+
+	public String getPtName() {
+		return ptName;
+	}
+
+	public void setPtName(String ptName) {
+		this.ptName = ptName;
 	}
 }
