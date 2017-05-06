@@ -31,6 +31,8 @@ public class SignalStatistics {
 	
 	private String ptName;
 	
+	private Long runInstanceId;
+	
 	@JsonIgnore
 	@ManyToOne
 	private Topic topic;
@@ -105,5 +107,13 @@ public class SignalStatistics {
 
 	public void setPtName(String ptName) {
 		this.ptName = ptName;
+	}
+
+	public Long getRunInstanceId() {
+		return runInstanceId;
+	}
+
+	public void setRunInstanceId(Long runInstanceId) {
+		this.runInstanceId = runInstanceId;
 	}
 }
