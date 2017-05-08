@@ -22,5 +22,5 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     @Query(value = "SELECT DISTINCT (o.signalConfirmation) FROM Topic o WHERE o.signalConfirmation IS NOT NULL ")
     List<String> findDistinctSignalConfirmationNames();
-	List<Topic> findTopicByRunInstanceId(Long runInstanceId);
+	List<Topic> findTopicByRunInstanceIdOrderByCreatedDateDesc(Long runInstanceId);
 }
