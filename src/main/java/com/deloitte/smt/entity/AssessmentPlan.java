@@ -12,11 +12,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Entity
 @Table(name = "sm_assessment_plan")
@@ -27,7 +27,7 @@ public class AssessmentPlan {
     private Long id;
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "assessmentPlan")
 	@JsonIgnore
-	private List<Topic> topics;
+	private Set<Topic> topics;
 	private String assessmentName;
 	private String priority;
 	private int inDays;
@@ -56,7 +56,7 @@ public class AssessmentPlan {
 	private String assignTo;
 
 	public AssessmentPlan() {
-		this.topics = new ArrayList<>();
+		this.topics = new HashSet<>();
 	}
 
 	public Long getId() {
@@ -66,11 +66,11 @@ public class AssessmentPlan {
 		this.id = id;
 	}
 
-	public List<Topic> getTopics() {
+	public Set<Topic> getTopics() {
 		return topics;
 	}
 
-	public void setTopics(List<Topic> topics) {
+	public void setTopics(Set<Topic> topics) {
 		this.topics = topics;
 	}
 

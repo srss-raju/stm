@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -63,7 +64,7 @@ public class AssessmentController {
     }
 
     @GetMapping(value = "/{assessmentId}/allTopics")
-    public List<Topic> getAllSignalsByAssessmentId(@PathVariable Long assessmentId) throws EntityNotFoundException {
+    public Set<Topic> getAllSignalsByAssessmentId(@PathVariable Long assessmentId) throws EntityNotFoundException {
         return assessmentPlanService.findById(assessmentId).getTopics();
     }
 
