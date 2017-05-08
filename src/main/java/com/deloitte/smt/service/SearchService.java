@@ -140,8 +140,10 @@ public class SearchService {
         Set<Long> duplicates = topicIds.parallelStream()
                 .filter(n -> !allItems.add(n))
                 .collect(Collectors.toSet());
-        topicIds.clear();
-        topicIds.addAll(duplicates);
+        if(!CollectionUtils.isEmpty(duplicates)) {
+            topicIds.clear();
+            topicIds.addAll(duplicates);
+        }
         return searchAll;
     }
 }
