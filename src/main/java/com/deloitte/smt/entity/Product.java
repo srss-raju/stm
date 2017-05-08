@@ -15,6 +15,7 @@ public class Product  implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String productName;
+	private String productKey;
 	private Long ingredientId;
 	private Long topicId;
 	private Long detectionId;
@@ -50,5 +51,11 @@ public class Product  implements Serializable{
 
 	public void setDetectionId(Long detectionId) {
 		this.detectionId = detectionId;
+	}
+	public String getProductKey() {
+		return productKey;
+	}
+	public void setProductKey(String productKey) {
+		this.productKey = productKey;
 	}
 }
