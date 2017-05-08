@@ -493,7 +493,7 @@ public class SignalService {
 	}
 
 	public List<Topic> findTopicsByRunInstanceId(Long runInstanceId) {
-		List<Topic> topics = topicRepository.findTopicByRunInstanceIdOrderByCreatedDateDesc(runInstanceId);
+		List<Topic> topics = topicRepository.findTopicByRunInstanceIdOrderByCreatedDateAsc(runInstanceId);
 		if (!CollectionUtils.isEmpty(topics)) {
 			for(Topic topic:topics){
 				Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
