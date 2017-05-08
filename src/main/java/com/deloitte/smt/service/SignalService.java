@@ -268,6 +268,11 @@ public class SignalService {
             throw new UpdateFailedException("Update failed for Topic, since it does not have any valid Id field.");
         }
         topic.setLastModifiedDate(new Date());
+        if(!CollectionUtils.isEmpty(topic.getSignalStatistics())) {
+            for (SignalStatistics signalStatistic : topic.getSignalStatistics()) {
+                signalStatistic.setTopic(topic);
+            }
+        }
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, topic.getDeletedAttachmentIds(), topic.getFileMetadata());
         topicRepository.save(topic);
         return "Update Success";
