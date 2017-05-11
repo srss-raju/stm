@@ -1,5 +1,29 @@
 package com.deloitte.smt.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.log4j.Logger;
+import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
@@ -37,30 +61,6 @@ import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.util.SignalUtil;
-
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -374,35 +374,29 @@ public class SignalService {
         return topics;
     }
 
-    public Long getValidateAndPrioritizeCount(){
-        return topicRepository.countBySignalStatusNotLikeIgnoreCase("Completed");
+    public Long getValidateAndPrioritizeCount(String assignTo){
+        return topicRepository.countByAssignToAndSignalStatusNotLikeIgnoreCase(assignTo, "Completed");
     	//return taskInstRepository.countByTaskDefKeyInAndDeleteReasonNot(Arrays.asList("validateTopic"), "completed");
     }
     
-    public Long getAssessmentCount(){
+    public Long getAssessmentCount(String assignTo){
     	///return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("assessment"));
-        return assessmentPlanRepository.countByAssessmentPlanStatusNotLikeIgnoreCase("Completed");
+        return assessmentPlanRepository.countByAssignToAndAssessmentPlanStatusNotLikeIgnoreCase(assignTo, "Completed");
     }
     
-    public Long getRiskCount(){
-    	return riskPlanRepository.countByStatusNotLikeIgnoreCase("Completed");
+    public Long getRiskCount(String assignTo){
+    	return riskPlanRepository.countByAssignToAndStatusNotLikeIgnoreCase(assignTo, "Completed");
     	//return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
     }
 
-    public String getCountsByFilter(String ingredientName) {
+    public String getCountsByFilter(String ingredientName, String assignTo) {
         List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(Arrays.asList(ingredientName));
         List<Long> topicIds = new ArrayList<>();
         ingredients.parallelStream().forEach(ingredient -> topicIds.add(ingredient.getTopicId()));
-        List<Topic> signals = topicRepository.findAllByIdInAndSignalStatusNotLikeOrderByCreatedDateDesc(topicIds, "Completed");
-        List<AssessmentPlan> assessmentPlanList = signals.stream()
-                .map(signal -> signal.getAssessmentPlan())
-                .filter(e -> e != null && !"Completed".equalsIgnoreCase(e.getAssessmentPlanStatus()))
-                .collect(Collectors.toList());
-        List<RiskPlan> riskPlanList = assessmentPlanList.stream()
-                .map(assessmentPlan -> assessmentPlan.getRiskPlan())
-                .filter(e -> e != null && !"Completed".equalsIgnoreCase(e.getStatus()))
-                .collect(Collectors.toList());
-        return SignalUtil.getCounts(Long.valueOf(ingredients.size()), Long.valueOf(assessmentPlanList.size()), Long.valueOf(riskPlanList.size()));
+        List<Topic> signals = topicRepository.findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(topicIds, assignTo, "Completed");
+        List<AssessmentPlan> assessmentPlanList = signals.stream().map(signal -> signal.getAssessmentPlan()).filter(e -> e != null && !"Completed".equalsIgnoreCase(e.getAssessmentPlanStatus())).collect(Collectors.toList());
+        List<RiskPlan> riskPlanList = assessmentPlanList.stream().map(assessmentPlan -> assessmentPlan.getRiskPlan()).filter(e -> e != null && !"Completed".equalsIgnoreCase(e.getStatus())).collect(Collectors.toList());
+        return SignalUtil.getCounts(Long.valueOf(signals.size()), Long.valueOf(assessmentPlanList.size()), Long.valueOf(riskPlanList.size()));
     }
 
     /*public List<SignalAction> attachTasksToAssessment(AssessmentPlan assessmentPlan) throws TaskNotFoundException{

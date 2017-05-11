@@ -1,6 +1,7 @@
 package com.deloitte.smt.repository;
 
 import com.deloitte.smt.entity.AssessmentPlan;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +12,7 @@ import java.util.Set;
 
 public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, Long> {
 
-	Long countByAssessmentPlanStatusNotLikeIgnoreCase(String assessmentPlanStatus);
+	Long countByAssignToAndAssessmentPlanStatusNotLikeIgnoreCase(String assignTo, String assessmentPlanStatus);
 
 	@Query(value = "SELECT t.id FROM AssessmentPlan o inner join o.topics t")
 	Set<Long> findAllSignalIds();

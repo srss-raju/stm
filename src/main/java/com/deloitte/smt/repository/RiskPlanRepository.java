@@ -1,6 +1,7 @@
 package com.deloitte.smt.repository;
 
 import com.deloitte.smt.entity.RiskPlan;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,7 +24,7 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	@Query("SELECT o FROM RiskPlan o WHERE o.status IN (:status) AND o.createdDate = :createdDate ORDER BY o.createdDate DESC")
 	List<RiskPlan> findAllByStatusAndCreatedDate(@Param("status") List<String> status, @Param("createdDate") Date createdDate);
 
-	Long countByStatusNotLikeIgnoreCase(String status);
+	Long countByAssignToAndStatusNotLikeIgnoreCase(String assignTo, String status);
 
 	@Query(value = "SELECT t.id FROM RiskPlan o inner join o.assessmentPlan a inner join a.topics t")
 	Set<Long> findAllSignalIds();
