@@ -74,6 +74,7 @@ public class SignalController {
 									  @RequestParam(name = "product", required = false) String products,
 									  @RequestParam(name = "license", required = false) String licenses,
 									  @RequestParam(name = "signalName", required = false) String signalNames,
+									  @RequestParam(name = "assignees", required = false) String assignees,
 									  @RequestParam(name = "signalConfirmation", required = false) String signalConfirmation) {
 
 		SearchDto dto = new SearchDto();
@@ -94,6 +95,10 @@ public class SignalController {
 		}
 		if(StringUtils.isNotBlank(signalNames)) {
 			dto.setSignalNames(StringConverterUtil.convertStringToList(signalNames));
+		}
+		
+		if(StringUtils.isNotBlank(assignees)) {
+			dto.setAssignees(StringConverterUtil.convertStringToList(assignees));
 		}
 		if(null != createdDate){
 			dto.setCreatedDate(createdDate);

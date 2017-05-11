@@ -18,6 +18,9 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	Set<Long> findAllSignalIds();
 
 	List<AssessmentPlan> findAllByCreatedDateOrderByCreatedDateDesc(Date createdDate);
+	
+	@Query(value = "SELECT o FROM AssessmentPlan o WHERE o.assignTo IN (:assignes)  ORDER BY o.createdDate DESC")
+	List<AssessmentPlan> findAllByAssignToInOrderByCreatedDateDesc(@Param("assignes") List<String> assignes);
 
 	@Query("SELECT o FROM AssessmentPlan o WHERE o.assessmentPlanStatus IN (:assessmentPlanStatus) AND o.createdDate = :createdDate ORDER BY o.createdDate DESC")
 	List<AssessmentPlan> findAllByAssessmentPlanStatusAndCreatedDate(@Param("assessmentPlanStatus") List<String> assessmentPlanStatus, @Param("createdDate") Date createdDate);

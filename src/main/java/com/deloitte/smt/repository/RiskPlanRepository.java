@@ -1,5 +1,6 @@
 package com.deloitte.smt.repository;
 
+import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.RiskPlan;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,6 +21,9 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	List<RiskPlan> findAllByStatusInOrderByCreatedDateDesc(List<String> status);
 
 	List<RiskPlan> findAllByCreatedDateOrderByCreatedDateDesc(Date createdDate);
+	
+	@Query(value = "SELECT o FROM RiskPlan o WHERE o.assignTo IN (:assignes)  ORDER BY o.createdDate DESC")
+	List<RiskPlan> findAllByAssignToInOrderByCreatedDateDesc(@Param("assignes") List<String> assignes);
 
 	@Query("SELECT o FROM RiskPlan o WHERE o.status IN (:status) AND o.createdDate = :createdDate ORDER BY o.createdDate DESC")
 	List<RiskPlan> findAllByStatusAndCreatedDate(@Param("status") List<String> status, @Param("createdDate") Date createdDate);

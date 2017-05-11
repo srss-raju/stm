@@ -128,7 +128,7 @@ public class RiskPlanService {
         searchAll = searchService.getSignalIdsForSearch(searchDto, riskTopicIds, searchAll);
         if(searchAll) {
             Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-            return riskPlanRepository.findAll(sort);
+            return riskPlanRepository.findAllByAssignToInOrderByCreatedDateDesc(searchDto.getAssignees());
         }
         List<RiskPlan> riskPlanList = new ArrayList<>();
         StringBuilder queryString = new StringBuilder("SELECT o FROM RiskPlan o ");
@@ -148,6 +148,12 @@ public class RiskPlanService {
                     queryString.append(" WHERE o.status IN :riskPlanStatus ");
                 }
             }
+            
+            if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+                executeQuery = true;
+                queryString.append(" AND o.assignTo IN :assignees ");
+            }
+            
             queryString.append(" ORDER BY o.createdDate DESC");
             Query q = entityManager.createQuery(queryString.toString(), RiskPlan.class);
 

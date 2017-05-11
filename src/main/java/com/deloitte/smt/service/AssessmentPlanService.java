@@ -95,7 +95,7 @@ public class AssessmentPlanService {
         searchAll = searchService.getSignalIdsForSearch(searchDto, topicIds, searchAll);
         if(searchAll) {
             Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-            return assessmentPlanRepository.findAll(sort);
+            return assessmentPlanRepository.findAllByAssignToInOrderByCreatedDateDesc(searchDto.getAssignees());
         }
         List<AssessmentPlan> assessmentPlanList = new ArrayList<>();
         boolean executeQuery = false;
@@ -113,6 +113,11 @@ public class AssessmentPlanService {
                 } else {
                     queryString.append(" WHERE o.assessmentPlanStatus IN :assessmentPlanStatus ");
                 }
+            }
+            
+            if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+                executeQuery = true;
+                queryString.append(" AND o.assignTo IN :assignees ");
             }
             queryString.append(" ORDER BY o.createdDate DESC");
             Query q = entityManager.createQuery(queryString.toString(), AssessmentPlan.class);

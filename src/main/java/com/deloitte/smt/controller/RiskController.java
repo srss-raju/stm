@@ -10,6 +10,7 @@ import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.RiskPlanService;
 import com.deloitte.smt.util.StringConverterUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,7 @@ public class RiskController {
                                           @RequestParam(value = "product", required = false) String product,
                                           @RequestParam(value = "license", required = false) String license,
                                           @RequestParam(value = "ingredient", required = false) String ingredient,
+                                          @RequestParam(name = "assignees", required = false) String assignees,
                                           @RequestParam(value = "createdDate", required = false) Date createdDate){
         SearchDto searchDto = new SearchDto();
         if(StringUtils.isNotBlank(status)) {
@@ -65,6 +67,9 @@ public class RiskController {
         if(StringUtils.isNotBlank(ingredient)) {
             searchDto.setIngredients(StringConverterUtil.convertStringToList(ingredient));
         }
+        if(StringUtils.isNotBlank(assignees)) {
+        	searchDto.setAssignees(StringConverterUtil.convertStringToList(assignees));
+		}
         return riskPlanService.findAllRiskPlansForSearch(searchDto);
     }
     

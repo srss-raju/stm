@@ -338,6 +338,9 @@ public class SignalService {
         if(!CollectionUtils.isEmpty(searchDto.getSignalNames())){
             queryString.append(" AND name IN :signalName ");
         }
+        if(!CollectionUtils.isEmpty(searchDto.getAssignees())){
+            queryString.append(" AND assignTo IN :assignees ");
+        }
         if(!CollectionUtils.isEmpty(searchDto.getSignalConfirmations())){
             queryString.append(" AND signalConfirmation IN :signalConfirmation ");
         }
@@ -361,6 +364,11 @@ public class SignalService {
         if(queryString.toString().contains(":signalName")){
             q.setParameter("signalName", searchDto.getSignalNames());
         }
+        
+        if(queryString.toString().contains(":assignees")){
+            q.setParameter("assignees", searchDto.getAssignees());
+        }
+        
         if(queryString.toString().contains(":signalConfirmation")){
             q.setParameter("signalConfirmation", searchDto.getSignalConfirmations());
         }
