@@ -15,7 +15,7 @@ public class ExternalDatasets {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-	private String aeName;
+	private String name;
 	
 	private Date createdDate;
     private String createdBy;
@@ -27,12 +27,7 @@ public class ExternalDatasets {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getAeName() {
-		return aeName;
-	}
-	public void setAeName(String aeName) {
-		this.aeName = aeName;
-	}
+	
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -50,5 +45,11 @@ public class ExternalDatasets {
 	}
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 }
