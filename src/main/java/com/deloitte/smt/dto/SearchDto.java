@@ -22,6 +22,10 @@ public class SearchDto {
     private List<String> signalNames;
     private List<String> assignees;
     private String frequency;
+    private Date startDate;
+    private Date endDate;
+    private boolean isDueDate;
+    
 
     public List<String> getStatuses() {
         return statuses;
@@ -134,4 +138,29 @@ public class SearchDto {
 	public void setAssignees(List<String> assignees) {
 		this.assignees = assignees;
 	}
+
+	public boolean isDueDate() {
+		return isDueDate;
+	}
+
+	public void setDueDate(boolean isDueDate) {
+		this.isDueDate = isDueDate;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
 }

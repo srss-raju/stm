@@ -1,5 +1,24 @@
 package com.deloitte.smt.controller;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.SignalAction;
@@ -13,24 +32,6 @@ import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
 import com.deloitte.smt.util.StringConverterUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/camunda/api/signal")
@@ -75,7 +76,10 @@ public class SignalController {
 									  @RequestParam(name = "license", required = false) String licenses,
 									  @RequestParam(name = "signalName", required = false) String signalNames,
 									  @RequestParam(name = "assignees", required = false) String assignees,
-									  @RequestParam(name = "signalConfirmation", required = false) String signalConfirmation) {
+									  @RequestParam(name = "signalConfirmation", required = false) String signalConfirmation,
+									  @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date startDate,
+									  @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date endDate,
+									  @RequestParam(name = "isDueDate", required = false) boolean isDueDate) {
 
 		SearchDto dto = new SearchDto();
 		if(StringUtils.isNotBlank(statuses)) {
@@ -103,6 +107,12 @@ public class SignalController {
 		if(null != createdDate){
 			dto.setCreatedDate(createdDate);
 		}
+		if(null != startDate){
+			dto.setStartDate(startDate);
+			dto.setEndDate(endDate);
+			dto.setDueDate(isDueDate);
+		}
+		
 		return signalService.findAllForSearch(dto);
 	}
 

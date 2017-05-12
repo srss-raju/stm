@@ -341,6 +341,13 @@ public class SignalService {
         if(!CollectionUtils.isEmpty(searchDto.getAssignees())){
             queryString.append(" AND assignTo IN :assignees ");
         }
+       	if(null != searchDto.getStartDate()){
+       		if(searchDto.isDueDate()){
+        		queryString.append(" AND dueDate BETWEEN :startDate and :endDate ");
+        	}else{
+        		queryString.append(" AND createdDate BETWEEN :startDate and :endDate ");
+        	}
+        }
         if(!CollectionUtils.isEmpty(searchDto.getSignalConfirmations())){
             queryString.append(" AND signalConfirmation IN :signalConfirmation ");
         }
@@ -364,6 +371,12 @@ public class SignalService {
         if(queryString.toString().contains(":signalName")){
             q.setParameter("signalName", searchDto.getSignalNames());
         }
+        
+        if(queryString.toString().contains(":startDate")){
+       			q.setParameter("startDate", searchDto.getStartDate());
+       			q.setParameter("endDate", searchDto.getEndDate());
+        }
+        
         
         if(queryString.toString().contains(":assignees")){
             q.setParameter("assignees", searchDto.getAssignees());
