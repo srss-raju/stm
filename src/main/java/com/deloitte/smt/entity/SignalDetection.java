@@ -50,6 +50,9 @@ public class SignalDetection implements Serializable{
     
     @Transient
     private List<IncludeAE> includeAEs;
+    
+    @Transient
+    private List<Date> nextRunDates;
 
 	public Long getId() {
 		return id;
@@ -180,5 +183,13 @@ public class SignalDetection implements Serializable{
 	public void setNextRunDate(Date nextRunDate) {
 		this.nextRunDate = nextRunDate;
 	}
-    
+
+	public List<Date> getNextRunDates() {
+		return nextRunDates;
+	}
+
+	public void setNextRunDates(List<Date> nextRunDates) {
+		this.nextRunDates = nextRunDates;
+	}
+
     }

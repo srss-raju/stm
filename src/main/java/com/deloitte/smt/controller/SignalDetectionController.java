@@ -62,9 +62,11 @@ public class SignalDetectionController {
 									  @RequestParam(name = "hlgts", required = false) String hlgts,
 									  @RequestParam(name = "hlts", required = false) String hlts,
 									  @RequestParam(name = "pts", required = false) String pts,
-												@RequestParam(name = "frequency", required = false) String frequency,
-												@RequestParam(name = "description", required = false) String description) {
+									  @RequestParam(name = "frequency", required = false) String frequency,
+									  @RequestParam(name = "description", required = false) String description,
+									  @RequestParam(name = "isGantt", required = false) boolean isGantt) {
 
+		List<SignalDetection> detectionList;
 		SearchDto dto = new SearchDto();
 		if(StringUtils.isNotBlank(socs)) {
 			dto.setSocs(StringConverterUtil.convertStringToList(socs));
@@ -93,12 +95,12 @@ public class SignalDetectionController {
 		if(StringUtils.isNotBlank(description)) {
 			dto.setDescription(description);
 		}
-		return signalDetectionService.findAllForSearch(dto);
+		if(isGantt) {
+			detectionList = signalDetectionService.ganttDetections(signalDetectionService.findAllForSearch(dto));
+		}else{
+			detectionList = signalDetectionService.findAllForSearch(dto);
+		}
+		return detectionList;
 	}
-	
-	@GetMapping(value = "/gantt/{signalDetectionId}")
-    public List<SignalDetection> getSignalDetectionsById(@PathVariable Long signalDetectionId) throws EntityNotFoundException {
-        return signalDetectionService.findByDetectionId(signalDetectionId);
-    }
 	
 }

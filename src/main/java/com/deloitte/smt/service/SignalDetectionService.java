@@ -12,7 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -354,26 +353,23 @@ public class SignalDetectionService {
 		});
 	}
 	
-	public List<SignalDetection> findByDetectionId(Long id) throws EntityNotFoundException {
-		List<SignalDetection> ganttDetections = new ArrayList<SignalDetection>();
-		SignalDetection signalDetection = signalDetectionRepository.findOne(id);
-		if(null == signalDetection) {
-            throw new EntityNotFoundException("Signal Detection not found with given Id :"+id);
-        }
-        addOtherInfoToSignalDetection(Arrays.asList(signalDetection));
-        createGanttSignalDetections(signalDetection, ganttDetections);
-		return ganttDetections;
+	public List<SignalDetection> ganttDetections(List<SignalDetection> detections) {
+		if (!CollectionUtils.isEmpty(detections)) {
+			for(SignalDetection signalDetection:detections){
+				createGanttSignalDetections(signalDetection);
+			}
+		}
+		return detections;
     }
 
-	private void createGanttSignalDetections(SignalDetection signalDetection, List<SignalDetection> ganttDetections) {
+	private void createGanttSignalDetections(SignalDetection signalDetection) {
+		List<Date> nextRunDates = new ArrayList<>();
 		Date createdDate = signalDetection.getCreatedDate();
-		SignalDetection signalDetectionGantt;
 		for(int i=0; i<Integer.parseInt(signalDetection.getRunFrequency()); i++){
 			createdDate = SignalUtil.getNextRunDate(signalDetection.getWindowType(), createdDate);
-			signalDetectionGantt = (SignalDetection) SerializationUtils.clone(signalDetection);
+			nextRunDates.add(createdDate);
 			LOG.info("Next Run Date  -->> "+createdDate);
-			signalDetectionGantt.setNextRunDate(createdDate);
-			ganttDetections.add(signalDetectionGantt);
 		}
+		signalDetection.setNextRunDates(nextRunDates);
 	}
 }
