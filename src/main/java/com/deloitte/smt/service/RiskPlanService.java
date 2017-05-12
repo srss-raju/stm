@@ -128,7 +128,7 @@ public class RiskPlanService {
         searchAll = searchService.getSignalIdsForSearch(searchDto, riskTopicIds, searchAll);
         if(searchAll) {
             Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-            return riskPlanRepository.findAllByAssignToInOrderByCreatedDateDesc(searchDto.getAssignees());
+            //return riskPlanRepository.findAllByAssignToInOrderByCreatedDateDesc(searchDto.getAssignees());
         }
         List<RiskPlan> riskPlanList = new ArrayList<>();
         StringBuilder queryString = new StringBuilder("SELECT o FROM RiskPlan o ");
@@ -150,8 +150,30 @@ public class RiskPlanService {
             }
             
             if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-                executeQuery = true;
-                queryString.append(" AND o.assignTo IN :assignees ");
+            	executeQuery = true;
+            	if (queryString.toString().contains("WHERE")){
+            		queryString.append(" AND o.assignTo IN :assignees ");
+            	}else{
+            		queryString.append(" WHERE o.assignTo IN :assignees ");
+            	}
+            }
+            
+            if(null != searchDto.getStartDate()){
+            	executeQuery = true;
+            	if (queryString.toString().contains("WHERE")){
+            		if(searchDto.isDueDate()){
+                		queryString.append(" AND riskDueDate BETWEEN :startDate and :endDate ");
+                	}else{
+                		queryString.append(" AND createdDate BETWEEN :startDate and :endDate ");
+                	}
+            	}else{
+            		if(searchDto.isDueDate()){
+                		queryString.append(" WHERE riskDueDate BETWEEN :startDate and :endDate ");
+                	}else{
+                		queryString.append(" WHERE createdDate BETWEEN :startDate and :endDate ");
+                	}
+            	}
+           		
             }
             
             queryString.append(" ORDER BY o.createdDate DESC");
@@ -167,6 +189,23 @@ public class RiskPlanService {
             if(queryString.toString().contains(":riskPlanStatus")){
                 q.setParameter("riskPlanStatus", searchDto.getStatuses());
             }
+            
+            if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+	            if (queryString.toString().contains(":assignees")) {
+	                q.setParameter("assignees", searchDto.getAssignees());
+	            }
+            }
+            
+            if(null != searchDto.getStartDate()){
+	            if (queryString.toString().contains(":startDate")) {
+	                q.setParameter("startDate", searchDto.getStartDate());
+	            }
+	            
+	            if (queryString.toString().contains(":endDate")) {
+	                q.setParameter("endDate", searchDto.getEndDate());
+	            }
+            }
+            
         if(executeQuery) {
             riskPlanList = q.getResultList();
         }

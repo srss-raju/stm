@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +44,10 @@ public class AssessmentController {
                                                       @RequestParam(value = "license", required = false) String license,
                                                       @RequestParam(value = "ingredient", required = false) String ingredient,
                                                       @RequestParam(name = "assignees", required = false) String assignees,
-                                                      @RequestParam(value = "createdDate", required = false) Date createdDate){
+                                                      @RequestParam(value = "createdDate", required = false) Date createdDate,
+                									  @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date startDate,
+                									  @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date endDate,
+                									  @RequestParam(name = "isDueDate", required = false) boolean isDueDate){
         SearchDto searchDto = new SearchDto();
         if(StringUtils.isNotBlank(status)) {
             searchDto.setStatuses(StringConverterUtil.convertStringToList(status));
@@ -59,6 +63,11 @@ public class AssessmentController {
         }
         if(StringUtils.isNotBlank(assignees)) {
         	searchDto.setAssignees(StringConverterUtil.convertStringToList(assignees));
+		}
+        if(null != startDate){
+        	searchDto.setStartDate(startDate);
+        	searchDto.setEndDate(endDate);
+        	searchDto.setDueDate(isDueDate);
 		}
         return assessmentPlanService.findAllAssessmentPlansForSearch(searchDto);
     }

@@ -95,7 +95,7 @@ public class AssessmentPlanService {
         searchAll = searchService.getSignalIdsForSearch(searchDto, topicIds, searchAll);
         if(searchAll) {
             Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-            return assessmentPlanRepository.findAllByAssignToInOrderByCreatedDateDesc(searchDto.getAssignees());
+           // return assessmentPlanRepository.findAllByAssignToInOrderByCreatedDateDesc(searchDto.getAssignees());
         }
         List<AssessmentPlan> assessmentPlanList = new ArrayList<>();
         boolean executeQuery = false;
@@ -116,9 +116,33 @@ public class AssessmentPlanService {
             }
             
             if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-                executeQuery = true;
-                queryString.append(" AND o.assignTo IN :assignees ");
+            	executeQuery = true;
+            	if (queryString.toString().contains("WHERE")){
+            		queryString.append(" AND o.assignTo IN :assignees ");
+            	}else{
+            		queryString.append(" WHERE o.assignTo IN :assignees ");
+            	}
             }
+            
+            if(null != searchDto.getStartDate()){
+            	executeQuery = true;
+            	if (queryString.toString().contains("WHERE")){
+            		if(searchDto.isDueDate()){
+                		queryString.append(" AND assessmentDueDate BETWEEN :startDate and :endDate ");
+                	}else{
+                		queryString.append(" AND createdDate BETWEEN :startDate and :endDate ");
+                	}
+            	}else{
+            		if(searchDto.isDueDate()){
+                		queryString.append(" WHERE assessmentDueDate BETWEEN :startDate and :endDate ");
+                	}else{
+                		queryString.append(" WHERE createdDate BETWEEN :startDate and :endDate ");
+                	}
+            	}
+           		
+            }
+            
+            
             queryString.append(" ORDER BY o.createdDate DESC");
             Query q = entityManager.createQuery(queryString.toString(), AssessmentPlan.class);
 
@@ -131,6 +155,22 @@ public class AssessmentPlanService {
             }
             if (queryString.toString().contains(":assessmentPlanStatus")) {
                 q.setParameter("assessmentPlanStatus", searchDto.getStatuses());
+            }
+            
+            if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+	            if (queryString.toString().contains(":assignees")) {
+	                q.setParameter("assignees", searchDto.getAssignees());
+	            }
+            }
+            
+            if(null != searchDto.getStartDate()){
+	            if (queryString.toString().contains(":startDate")) {
+	                q.setParameter("startDate", searchDto.getStartDate());
+	            }
+	            
+	            if (queryString.toString().contains(":endDate")) {
+	                q.setParameter("endDate", searchDto.getEndDate());
+	            }
             }
             if(executeQuery) {
                 assessmentPlanList = q.getResultList();
