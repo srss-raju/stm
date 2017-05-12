@@ -77,8 +77,8 @@ public class SignalController {
 									  @RequestParam(name = "signalName", required = false) String signalNames,
 									  @RequestParam(name = "assignees", required = false) String assignees,
 									  @RequestParam(name = "signalConfirmation", required = false) String signalConfirmation,
-									  @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date startDate,
-									  @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date endDate,
+									  @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date startDate,
+									  @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date endDate,
 									  @RequestParam(name = "isDueDate", required = false) boolean isDueDate) {
 
 		SearchDto dto = new SearchDto();
