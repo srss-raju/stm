@@ -95,4 +95,10 @@ public class SignalDetectionController {
 		}
 		return signalDetectionService.findAllForSearch(dto);
 	}
+	
+	@GetMapping(value = "/gantt/{signalDetectionId}")
+    public List<SignalDetection> getSignalDetectionsById(@PathVariable Long signalDetectionId) throws EntityNotFoundException {
+        return signalDetectionService.findByDetectionId(signalDetectionId);
+    }
+	
 }

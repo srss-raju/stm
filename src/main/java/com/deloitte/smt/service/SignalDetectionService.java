@@ -1,5 +1,24 @@
 package com.deloitte.smt.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.entity.Hlgt;
@@ -24,22 +43,6 @@ import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.util.SignalUtil;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
@@ -349,5 +352,28 @@ public class SignalDetectionService {
 			signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
 			signalDetection.setIncludeAEs(includeAEList);
 		});
+	}
+	
+	public List<SignalDetection> findByDetectionId(Long id) throws EntityNotFoundException {
+		List<SignalDetection> ganttDetections = new ArrayList<SignalDetection>();
+		SignalDetection signalDetection = signalDetectionRepository.findOne(id);
+		if(null == signalDetection) {
+            throw new EntityNotFoundException("Signal Detection not found with given Id :"+id);
+        }
+        addOtherInfoToSignalDetection(Arrays.asList(signalDetection));
+        createGanttSignalDetections(signalDetection, ganttDetections);
+		return ganttDetections;
+    }
+
+	private void createGanttSignalDetections(SignalDetection signalDetection, List<SignalDetection> ganttDetections) {
+		Date createdDate = signalDetection.getCreatedDate();
+		SignalDetection signalDetectionGantt;
+		for(int i=0; i<Integer.parseInt(signalDetection.getRunFrequency()); i++){
+			createdDate = SignalUtil.getNextRunDate(signalDetection.getWindowType(), createdDate);
+			signalDetectionGantt = (SignalDetection) SerializationUtils.clone(signalDetection);
+			LOG.info("Next Run Date  -->> "+createdDate);
+			signalDetectionGantt.setNextRunDate(createdDate);
+			ganttDetections.add(signalDetectionGantt);
+		}
 	}
 }
