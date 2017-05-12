@@ -365,8 +365,8 @@ public class SignalDetectionService {
 	private void createGanttSignalDetections(SignalDetection signalDetection) {
 		List<Date> nextRunDates = new ArrayList<>();
 		Date createdDate = signalDetection.getCreatedDate();
-		for(int i=0; i<Integer.parseInt(signalDetection.getRunFrequency()); i++){
-			createdDate = SignalUtil.getNextRunDate(signalDetection.getWindowType(), createdDate);
+		for(int i=0; i<Integer.parseInt(signalDetection.getWindowType()); i++){
+			createdDate = SignalUtil.getNextRunDate(signalDetection.getRunFrequency(), createdDate);
 			nextRunDates.add(createdDate);
 			LOG.info("Next Run Date  -->> "+createdDate);
 		}
