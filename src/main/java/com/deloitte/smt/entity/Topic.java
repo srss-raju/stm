@@ -54,6 +54,7 @@ public class Topic implements Serializable{
     private String assignTo;
     private Long runInstanceId;
     private String cases;
+    private String caselistId;
 
     @Transient
     private int casesCount;
@@ -319,4 +320,12 @@ public class Topic implements Serializable{
     public void setCases(String cases) {
         this.cases = cases;
     }
+
+	public String getCaselistId() {
+		return caselistId;
+	}
+
+	public void setCaselistId(String caselistId) {
+		this.caselistId = caselistId;
+	}
 }
