@@ -16,7 +16,7 @@ public class SignalUtil {
 		node.put("riskCount", riskCount);
 		return node.toString();
 	}
-	
+	 
 	public static Date getNextRunDate(String runFrequency, Date createdDate){
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(createdDate);
