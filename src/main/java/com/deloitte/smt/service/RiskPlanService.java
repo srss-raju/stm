@@ -1,5 +1,25 @@
 package com.deloitte.smt.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
@@ -18,24 +38,6 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -78,7 +80,7 @@ public class RiskPlanService {
 
     @PersistenceContext
     private EntityManager entityManager;
-
+    
     @Autowired
     private AssignmentConfigurationRepository assignmentConfigurationRepository;
 
@@ -176,6 +178,15 @@ public class RiskPlanService {
            		
             }
             
+            if (null != searchDto.getRiskTaskStatus()) {
+            	executeQuery = true;
+            	if (queryString.toString().contains("WHERE")){
+            		queryString.append(" AND o.riskTaskStatus = :riskTaskStatus ");
+            	}else{
+            		queryString.append(" WHERE o.riskTaskStatus = :riskTaskStatus ");
+            	}
+            }
+            
             queryString.append(" ORDER BY o.createdDate DESC");
             Query q = entityManager.createQuery(queryString.toString(), RiskPlan.class);
 
@@ -203,6 +214,12 @@ public class RiskPlanService {
 	            
 	            if (queryString.toString().contains(":endDate")) {
 	                q.setParameter("endDate", searchDto.getEndDate());
+	            }
+            }
+            
+            if (null != searchDto.getRiskTaskStatus()) {
+            	if (queryString.toString().contains(":riskTaskStatus")) {
+	                q.setParameter("riskTaskStatus", searchDto.getRiskTaskStatus());
 	            }
             }
             
@@ -277,6 +294,18 @@ public class RiskPlanService {
         riskTask.setLastUpdatedDate(new Date());
         riskTaskRepository.save(riskTask);
         attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, riskTask.getDeletedAttachmentIds(), riskTask.getFileMetadata());
+        List<RiskTask> risks = findAllByRiskId(riskTask.getRiskId(), null);
+        boolean allTasksCompletedFlag = true;
+        if(!CollectionUtils.isEmpty(risks)){
+        	for(RiskTask risk:risks){
+        		if(!"Completed".equals(risk.getStatus())){
+        			allTasksCompletedFlag = false;
+        		}
+        	}
+        }
+        if(allTasksCompletedFlag){
+        	riskPlanRepository.updateRiskTaskStatus("Completed", Long.valueOf(riskTask.getRiskId()));
+        }
     }
 
     public RiskPlan findByRiskId(Long riskId) throws EntityNotFoundException {

@@ -27,6 +27,7 @@ public class SearchDto {
     private Date endDate;
     private boolean isDueDate;
     private String assessmentTaskStatus;
+    private String riskTaskStatus;
     
 
     public void addAssignees(List<String> assignees){
@@ -175,6 +176,14 @@ public class SearchDto {
 
 	public void setAssessmentTaskStatus(String assessmentTaskStatus) {
 		this.assessmentTaskStatus = assessmentTaskStatus;
+	}
+
+	public String getRiskTaskStatus() {
+		return riskTaskStatus;
+	}
+
+	public void setRiskTaskStatus(String riskTaskStatus) {
+		this.riskTaskStatus = riskTaskStatus;
 	}
 
 }

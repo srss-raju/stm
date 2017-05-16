@@ -40,6 +40,7 @@ public class RiskPlan implements Serializable {
     private String source;
     private String assignTo;
     private Date riskDueDate;
+    private String riskTaskStatus;
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
     @JsonIgnore
@@ -184,5 +185,13 @@ public class RiskPlan implements Serializable {
 
 	public void setRiskDueDate(Date riskDueDate) {
 		this.riskDueDate = riskDueDate;
+	}
+
+	public String getRiskTaskStatus() {
+		return riskTaskStatus;
+	}
+
+	public void setRiskTaskStatus(String riskTaskStatus) {
+		this.riskTaskStatus = riskTaskStatus;
 	}
 }

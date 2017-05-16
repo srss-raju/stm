@@ -1,16 +1,17 @@
 package com.deloitte.smt.repository;
 
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.RiskPlan;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.deloitte.smt.entity.RiskPlan;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -35,5 +36,10 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	
 	@Query("SELECT DISTINCT(o.assignTo) FROM RiskPlan o WHERE o.assignTo IS NOT NULL")
 	List<String> getAssignedUsers();
+	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE RiskPlan o SET o.riskTaskStatus=:riskTaskStatus WHERE id= :id")
+	void updateRiskTaskStatus(@Param("riskTaskStatus") String riskTaskStatus, @Param("id") Long id);
 	
 }

@@ -57,6 +57,7 @@ public class RiskController {
                                           @RequestParam(value = "createdDate", required = false) Date createdDate,
     									  @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date startDate,
     									  @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date endDate,
+    									  @RequestParam(name = "riskTaskStatus", required = false) String riskTaskStatus,
     									  @RequestParam(name = "isDueDate", required = false) boolean isDueDate){
         SearchDto searchDto = new SearchDto();
         if(StringUtils.isNotBlank(status)) {
@@ -79,6 +80,9 @@ public class RiskController {
         	searchDto.setEndDate(endDate);
         	searchDto.setDueDate(isDueDate);
 		}
+        if(null != riskTaskStatus){
+        	searchDto.setRiskTaskStatus(riskTaskStatus);
+        }
         return riskPlanService.findAllRiskPlansForSearch(searchDto);
     }
     
