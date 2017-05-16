@@ -17,18 +17,18 @@ public class SignalUtil {
 		return node.toString();
 	}
 	
-	public static Date getNextRunDate(String windowType, Date createdDate){
+	public static Date getNextRunDate(String runFrequency, Date createdDate){
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(createdDate);
-		if("Daily".equalsIgnoreCase(windowType)){
+		if("Daily".equalsIgnoreCase(runFrequency)){
 			calendar.add(Calendar.DATE, 1);
-		}else if("Weekly".equalsIgnoreCase(windowType)){
+		}else if("Weekly".equalsIgnoreCase(runFrequency)){
 			calendar.add(Calendar.DATE, 7);
-		}else if("Monthly".equalsIgnoreCase(windowType)){
+		}else if("Monthly".equalsIgnoreCase(runFrequency)){
 			calendar.add(Calendar.MONTH, 1);
-		}else if("Quarterly".equalsIgnoreCase(windowType)){
+		}else if("Quarterly".equalsIgnoreCase(runFrequency)){
 			calendar.add(Calendar.MONTH, 3);
-		}else if("Yearly".equalsIgnoreCase(windowType)){
+		}else if("Yearly".equalsIgnoreCase(runFrequency)){
 			calendar.add(Calendar.YEAR, 1);
 		}
 		return calendar.getTime();

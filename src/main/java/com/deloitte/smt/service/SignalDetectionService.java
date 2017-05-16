@@ -94,7 +94,7 @@ public class SignalDetectionService {
 			signalDetection.setLastModifiedDate(c.getTime());
 		}
 		
-		signalDetection.setNextRunDate(SignalUtil.getNextRunDate(signalDetection.getWindowType(), signalDetection.getCreatedDate()));
+		signalDetection.setNextRunDate(SignalUtil.getNextRunDate(signalDetection.getRunFrequency(), signalDetection.getCreatedDate()));
 		SignalDetection clone = signalDetection;
 		clone = signalDetectionRepository.save(clone);
 		signalDetection.setId(clone.getId());
