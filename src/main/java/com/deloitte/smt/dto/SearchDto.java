@@ -26,6 +26,7 @@ public class SearchDto {
     private Date startDate;
     private Date endDate;
     private boolean isDueDate;
+    private String assessmentTaskStatus;
     
 
     public void addAssignees(List<String> assignees){
@@ -166,6 +167,14 @@ public class SearchDto {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getAssessmentTaskStatus() {
+		return assessmentTaskStatus;
+	}
+
+	public void setAssessmentTaskStatus(String assessmentTaskStatus) {
+		this.assessmentTaskStatus = assessmentTaskStatus;
 	}
 
 }

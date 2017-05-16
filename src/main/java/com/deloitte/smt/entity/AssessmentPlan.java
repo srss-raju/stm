@@ -54,6 +54,8 @@ public class AssessmentPlan {
 	private List<Long> templateIds;
 
 	private String assignTo;
+	
+	private String assessmentTaskStatus;
 
 	public AssessmentPlan() {
 		this.topics = new HashSet<>();
@@ -216,5 +218,13 @@ public class AssessmentPlan {
 
 	public void setAssignTo(String assignTo) {
 		this.assignTo = assignTo;
+	}
+
+	public String getAssessmentTaskStatus() {
+		return assessmentTaskStatus;
+	}
+
+	public void setAssessmentTaskStatus(String assessmentTaskStatus) {
+		this.assessmentTaskStatus = assessmentTaskStatus;
 	}
 }

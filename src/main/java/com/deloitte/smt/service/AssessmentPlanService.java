@@ -142,6 +142,15 @@ public class AssessmentPlanService {
            		
             }
             
+            if (null != searchDto.getAssessmentTaskStatus()) {
+            	executeQuery = true;
+            	if (queryString.toString().contains("WHERE")){
+            		queryString.append(" AND o.assessmentTaskStatus = :assessmentTaskStatus ");
+            	}else{
+            		queryString.append(" WHERE o.assessmentTaskStatus = :assessmentTaskStatus ");
+            	}
+            }
+            
             
             queryString.append(" ORDER BY o.createdDate DESC");
             Query q = entityManager.createQuery(queryString.toString(), AssessmentPlan.class);
@@ -170,6 +179,12 @@ public class AssessmentPlanService {
 	            
 	            if (queryString.toString().contains(":endDate")) {
 	                q.setParameter("endDate", searchDto.getEndDate());
+	            }
+            }
+            
+            if (null != searchDto.getAssessmentTaskStatus()) {
+            	if (queryString.toString().contains(":assessmentTaskStatus")) {
+	                q.setParameter("assessmentTaskStatus", searchDto.getAssessmentTaskStatus());
 	            }
             }
             if(executeQuery) {
