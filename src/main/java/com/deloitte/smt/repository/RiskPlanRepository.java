@@ -32,4 +32,8 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 
 	@Query(value = "SELECT t.id FROM RiskPlan o inner join o.assessmentPlan a inner join a.topics t")
 	Set<Long> findAllSignalIds();
+	
+	@Query("SELECT DISTINCT(o.assignTo) FROM RiskPlan o WHERE o.assignTo IS NOT NULL")
+	List<String> getAssignedUsers();
+	
 }

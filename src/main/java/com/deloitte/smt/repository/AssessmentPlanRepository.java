@@ -24,4 +24,8 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 
 	@Query("SELECT o FROM AssessmentPlan o WHERE o.assessmentPlanStatus IN (:assessmentPlanStatus) AND o.createdDate = :createdDate ORDER BY o.createdDate DESC")
 	List<AssessmentPlan> findAllByAssessmentPlanStatusAndCreatedDate(@Param("assessmentPlanStatus") List<String> assessmentPlanStatus, @Param("createdDate") Date createdDate);
+	
+	@Query("SELECT DISTINCT(o.assignTo) FROM AssessmentPlan o WHERE o.assignTo IS NOT NULL")
+	List<String> getAssignedUsers();
+	
 }

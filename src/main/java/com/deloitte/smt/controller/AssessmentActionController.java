@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/camunda/api/signal")
-public class AssessmentActionController {
+public class AssessmentActionController    {
 
     @Autowired
     AssessmentActionService assessmentActionService;

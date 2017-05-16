@@ -63,6 +63,8 @@ public class SearchService {
         dto.setPts(ptRepository.findDistinctPtNameForSignal());
         dto.setSignalNames(topicRepository.findDistinctSignalName());
         dto.setSignalConfirmations(topicRepository.findDistinctSignalConfirmationNames());
+        dto.addAssignees(topicRepository.getAssignedUsers());
+        
         return dto;
     }
 
@@ -81,12 +83,16 @@ public class SearchService {
 
     public SearchDto getAllFiltersForAssessmentPlan() {
         Set<Long> topicIds = assessmentPlanRepository.findAllSignalIds();
-        return getFilters(topicIds);
+        SearchDto searchDto= getFilters(topicIds);
+        searchDto.addAssignees(assessmentPlanRepository.getAssignedUsers());
+        return searchDto;
     }
 
     public SearchDto getAllFiltersForRiskPlan() {
         Set<Long> topicIds = riskPlanRepository.findAllSignalIds();
-        return getFilters(topicIds);
+        SearchDto searchDto= getFilters(topicIds);
+        searchDto.addAssignees(riskPlanRepository.getAssignedUsers());
+        return searchDto;
     }
 
     public List<String> getIngredients() {
@@ -104,6 +110,7 @@ public class SearchService {
             searchDto.setHlgts(hlgtRepository.findDistinctHlgtNamesTopicIdsIn(topicIds));
             searchDto.setHlts(hltRepository.findDistinctHltNamesTopicIdsIn(topicIds));
             searchDto.setPts(ptRepository.findDistinctPtNamesTopicIdsIn(topicIds));
+           
         }
         return searchDto;
     }
