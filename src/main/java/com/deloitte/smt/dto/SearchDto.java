@@ -1,5 +1,6 @@
 package com.deloitte.smt.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,13 +21,17 @@ public class SearchDto {
     private String description;
     private List<String> signalConfirmations;
     private List<String> signalNames;
-    private List<String> assignees;
+    private List<String> assignees=new ArrayList<String>();
     private String frequency;
     private Date startDate;
     private Date endDate;
     private boolean isDueDate;
     
 
+    public void addAssignees(List<String> assignees){
+    	this.assignees.addAll(assignees);
+    }
+    
     public List<String> getStatuses() {
         return statuses;
     }
