@@ -3,6 +3,8 @@ package com.deloitte.smt.service;
 import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.repository.DetectionRunRepository;
+import com.deloitte.smt.repository.SignalDetectionRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,17 @@ public class DetectionRunService {
 
     @Autowired
     DetectionRunRepository detectionRunRepository;
+    
+    @Autowired
+	private SignalDetectionRepository signalDetectionRepository;
 
     public DetectionRun insert(DetectionRun detectionRun) {
     	detectionRun.setCreatedDate(new Date());
     	detectionRun.setRunDate(new Date());
     	detectionRun.setLastModifiedDate(new Date());
-        return detectionRunRepository.save(detectionRun);
+    	detectionRun = detectionRunRepository.save(detectionRun);
+    	signalDetectionRepository.updateLastRunDate(detectionRun.getCreatedDate(), detectionRun.getDetectionId());
+        return detectionRun;
     }
 
     public DetectionRun findById(Long detectionRunId) throws EntityNotFoundException {

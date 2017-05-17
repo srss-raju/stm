@@ -34,6 +34,7 @@ public class SignalDetection implements Serializable{
     private String query;
     private String runFrequency;
     private String windowType;
+    private Date lastRunDate;
     private Date nextRunDate;
     private Long signalDetected;
 
@@ -199,6 +200,14 @@ public class SignalDetection implements Serializable{
 
 	public void setSignalDetected(Long signalDetected) {
 		this.signalDetected = signalDetected;
+	}
+
+	public Date getLastRunDate() {
+		return lastRunDate;
+	}
+
+	public void setLastRunDate(Date lastRunDate) {
+		this.lastRunDate = lastRunDate;
 	}
 
     }
