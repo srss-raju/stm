@@ -51,7 +51,7 @@ public class AttachmentService {
         return a;
     }
 
-    public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds, Map<String, String> metaData) throws IOException {
+    public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds, Map<String, Attachment> metaData) throws IOException {
 	    boolean flag = false;
     	
     	if(!CollectionUtils.isEmpty(deletedAttachmentIds)) {
@@ -65,8 +65,9 @@ public class AttachmentService {
                 if(!attachment.isEmpty() || StringUtils.isNotBlank(attachment.getOriginalFilename())) {
                     Attachment a = new Attachment();
                     a.setAttachmentType(attachmentType);
-                    if(metaData != null && StringUtils.isNotBlank(metaData.get(attachment.getOriginalFilename()))) {
-                        a.setDescription(metaData.get(attachment.getOriginalFilename()));
+                    if(metaData != null && StringUtils.isNotBlank(metaData.get(attachment.getOriginalFilename()).getFileName())) {
+                        a.setDescription(metaData.get(attachment.getOriginalFilename()).getDescription());
+                        a.setAttachmentsURL(metaData.get(attachment.getOriginalFilename()).getAttachmentsURL());
                     }
                     a.setAttachmentResourceId(attachmentResourceId);
                     a.setContentType(attachment.getContentType());
@@ -78,7 +79,7 @@ public class AttachmentService {
             }
         }
         if(!flag && !CollectionUtils.isEmpty(metaData)){
-        		metaData.forEach((k,v) -> attachmentRepository.updateDescription(k, v));
+        		metaData.forEach((k,v) -> attachmentRepository.updateDescription(k, v.getDescription()));
         }
     }
 }

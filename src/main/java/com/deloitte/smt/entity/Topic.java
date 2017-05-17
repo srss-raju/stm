@@ -75,7 +75,7 @@ public class Topic implements Serializable{
     private List<Long> deletedAttachmentIds;
 
     @Transient
-    private Map<String, String> fileMetadata;
+    private Map<String, Attachment> fileMetadata;
     
     public Topic() {
         this.startDate = new Date();
@@ -281,11 +281,11 @@ public class Topic implements Serializable{
 		this.signalStatistics = signalStatistics;
 	}
 
-    public Map<String, String> getFileMetadata() {
+    public Map<String, Attachment> getFileMetadata() {
         return fileMetadata;
     }
 
-    public void setFileMetadata(Map<String, String> fileMetadata) {
+    public void setFileMetadata(Map<String, Attachment> fileMetadata) {
         this.fileMetadata = fileMetadata;
     }
 

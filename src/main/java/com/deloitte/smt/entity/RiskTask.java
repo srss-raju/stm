@@ -47,7 +47,7 @@ public class RiskTask {
 	
 	private String recipients;
 	@Transient
-	private Map<String, String> fileMetadata;
+	private Map<String, Attachment> fileMetadata;
 	@Transient
 	private List<Long> deletedAttachmentIds;
 
@@ -174,11 +174,11 @@ public class RiskTask {
 		this.recipients = recipients;
 	}
 
-	public Map<String, String> getFileMetadata() {
+	public Map<String, Attachment> getFileMetadata() {
 		return fileMetadata;
 	}
 
-	public void setFileMetadata(Map<String, String> fileMetadata) {
+	public void setFileMetadata(Map<String, Attachment> fileMetadata) {
 		this.fileMetadata = fileMetadata;
 	}
 

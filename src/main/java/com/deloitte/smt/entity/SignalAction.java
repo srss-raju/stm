@@ -39,7 +39,7 @@ public class SignalAction {
 	private Integer inDays;
 
 	@Transient
-	private Map<String, String> fileMetadata;
+	private Map<String, Attachment> fileMetadata;
 	@Transient
 	private List<Long> deletedAttachmentIds;
 
@@ -179,11 +179,11 @@ public class SignalAction {
 		this.createdBy = createdBy;
 	}
 
-	public Map<String, String> getFileMetadata() {
+	public Map<String, Attachment> getFileMetadata() {
 		return fileMetadata;
 	}
 
-	public void setFileMetadata(Map<String, String> fileMetadata) {
+	public void setFileMetadata(Map<String, Attachment> fileMetadata) {
 		this.fileMetadata = fileMetadata;
 	}
 

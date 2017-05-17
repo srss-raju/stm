@@ -31,7 +31,7 @@ public class Meeting implements Serializable {
     @Transient
     private List<Long> deletedAttachmentIds;
     @Transient
-    private Map<String, String> fileMetadata;
+    private Map<String, Attachment> fileMetadata;
 
     private Date createdDate;
     private String createdBy;
@@ -93,11 +93,11 @@ public class Meeting implements Serializable {
         this.deletedAttachmentIds = deletedAttachmentIds;
     }
 
-    public Map<String, String> getFileMetadata() {
+    public Map<String, Attachment> getFileMetadata() {
         return fileMetadata;
     }
 
-    public void setFileMetadata(Map<String, String> fileMetadata) {
+    public void setFileMetadata(Map<String, Attachment> fileMetadata) {
         this.fileMetadata = fileMetadata;
     }
 

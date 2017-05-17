@@ -48,7 +48,7 @@ public class AssessmentPlan {
 	private String createdBy;
 	private Date lastModifiedDate;
 	@Transient
-	private Map<String, String> fileMetadata;
+	private Map<String, Attachment> fileMetadata;
 	
 	@Transient
 	private List<Long> templateIds;
@@ -172,11 +172,11 @@ public class AssessmentPlan {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
-	public Map<String, String> getFileMetadata() {
+	public Map<String, Attachment> getFileMetadata() {
 		return fileMetadata;
 	}
 
-	public void setFileMetadata(Map<String, String> fileMetadata) {
+	public void setFileMetadata(Map<String, Attachment> fileMetadata) {
 		this.fileMetadata = fileMetadata;
 	}
 
