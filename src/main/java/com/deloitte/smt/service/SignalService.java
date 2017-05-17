@@ -311,6 +311,7 @@ public class SignalService {
             assessmentPlan.setAssignTo(assignmentConfiguration.getAssessmentAssignmentUser());
         }
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
+        assessmentPlan.setAssessmentTaskStatus("Not Completed");
         topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
         topic.setSignalStatus("Completed");
         topic.setSignalValidation("Completed");
