@@ -4,6 +4,7 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
+import com.deloitte.smt.entity.RunFrequency;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
@@ -78,6 +79,7 @@ public class SearchService {
         dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignalDetection());
         dto.setHlts(hltRepository.findDistinctHltNameForSignalDetection());
         dto.setPts(ptRepository.findDistinctPtNameForSignalDetection());
+        dto.setFrequency(RunFrequency.getAll());
         return dto;
     }
 

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -216,70 +217,73 @@ public class SignalDetectionService {
 	        List<SignalDetection> signalDetections;
 	        Set<Long> signalDetectionIds = new HashSet<>();
 		 List<Ingredient> ingredients;
-		 List<Product> products;
-		 List<License> licenses;
-		 List<Soc> socs;
-		 List<Hlgt> hlgts;
-		 List<Hlt> hlts;
-		 List<Pt> pts;
-		 if(!CollectionUtils.isEmpty(searchDto.getIngredients())) {
-			 ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
-			 ingredients.parallelStream().forEach(ingredient -> {
-				 if(ingredient.getDetectionId() != null){
-					 signalDetectionIds.add(ingredient.getDetectionId());
-				 }
-			 });
-		 }
-	        if(!CollectionUtils.isEmpty(searchDto.getProducts())) {
-	            products = productRepository.findAllByProductNameIn(searchDto.getProducts());
-				products.parallelStream().forEach(product -> {
-					if(product.getDetectionId() != null){
-						signalDetectionIds.add(product.getDetectionId());
-					}
-				});
-	        }
-	        if(!CollectionUtils.isEmpty(searchDto.getLicenses())) {
-	            licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
-				licenses.parallelStream().forEach(license -> {
-					if(license.getDetectionId() != null){
-						signalDetectionIds.add(license.getDetectionId());
-					}
-				});
-	        }
-	        if(!CollectionUtils.isEmpty(searchDto.getSocs())) {
-				socs = socRepository.findAllBySocNameIn(searchDto.getSocs());
-				socs.parallelStream().forEach(soc -> {
-					if(soc.getDetectionId() != null) {
-						signalDetectionIds.add(soc.getDetectionId());
-					}
-				});
-			}
-	        if(!CollectionUtils.isEmpty(searchDto.getHlgts())) {
-	            hlgts = hlgtRepository.findAllByHlgtNameIn(searchDto.getHlgts());
-	            hlgts.parallelStream().forEach(hlgt -> {
-					if(hlgt.getDetectionId() != null) {
-						signalDetectionIds.add(hlgt.getDetectionId());
-					}
-	            });
-	        }
-	        
-	        if(!CollectionUtils.isEmpty(searchDto.getHlts())) {
-	            hlts = hltRepository.findAllByHltNameIn(searchDto.getHlts());
-	            hlts.parallelStream().forEach(hlt -> {
-					if(hlt.getDetectionId() != null) {
-						signalDetectionIds.add(hlt.getDetectionId());
-					}
-	            });
-	        }
-	        
-	        if(!CollectionUtils.isEmpty(searchDto.getPts())) {
-	            pts = ptRepository.findAllByPtNameIn(searchDto.getPts());
-	            pts.parallelStream().forEach(pt -> {
-					if(pt.getDetectionId() != null) {
-						signalDetectionIds.add(pt.getDetectionId());
-					}
-	            });
-	        }
+		List<Product> products = new ArrayList<Product>();
+		List<License> licenses=new ArrayList<License>();
+		List<Soc> socs;
+		List<Hlgt> hlgts;
+		List<Hlt> hlts;
+		List<Pt> pts;
+
+		if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
+			products = productRepository.findAllByProductNameIn(searchDto.getProducts());
+			products.parallelStream().forEach(product -> {
+				if (product.getDetectionId() != null) {
+					signalDetectionIds.add(product.getDetectionId());
+				}
+			});
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
+			ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
+			ingredients.parallelStream().forEach(ingredient -> {
+				if (ingredient.getDetectionId() != null) {
+					signalDetectionIds.add(ingredient.getDetectionId());
+				}
+			});
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
+			licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
+			licenses.parallelStream().forEach(license -> {
+				if (license.getDetectionId() != null) {
+					signalDetectionIds.add(license.getDetectionId());
+				}
+			});
+		}
+		if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
+			socs = socRepository.findAllBySocNameIn(searchDto.getSocs());
+			socs.parallelStream().forEach(soc -> {
+				if (soc.getDetectionId() != null) {
+					signalDetectionIds.add(soc.getDetectionId());
+				}
+			});
+		}
+		if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
+			hlgts = hlgtRepository.findAllByHlgtNameIn(searchDto.getHlgts());
+			hlgts.parallelStream().forEach(hlgt -> {
+				if (hlgt.getDetectionId() != null) {
+					signalDetectionIds.add(hlgt.getDetectionId());
+				}
+			});
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
+			hlts = hltRepository.findAllByHltNameIn(searchDto.getHlts());
+			hlts.parallelStream().forEach(hlt -> {
+				if (hlt.getDetectionId() != null) {
+					signalDetectionIds.add(hlt.getDetectionId());
+				}
+			});
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getPts())) {
+			pts = ptRepository.findAllByPtNameIn(searchDto.getPts());
+			pts.parallelStream().forEach(pt -> {
+				if (pt.getDetectionId() != null) {
+					signalDetectionIds.add(pt.getDetectionId());
+				}
+			});
+		}
 
 	        StringBuilder queryString = new StringBuilder("SELECT o FROM SignalDetection o WHERE 1=1 ");
 	        if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())){
@@ -290,9 +294,9 @@ public class SignalDetectionService {
 				queryString.append(" AND description IN :description ");
 			}
 
-			if(StringUtils.isNotBlank(searchDto.getFrequency())) {
-				queryString.append(" AND runFrequency IN :runFrequency");
-			}
+		if (!CollectionUtils.isEmpty(searchDto.getFrequency())) {
+			queryString.append(" AND runFrequency IN :runFrequency");
+		}
 
 	        queryString.append(" ORDER BY createdDate DESC");
 	        Query q = entityManager.createQuery(queryString.toString(), SignalDetection.class);
@@ -306,17 +310,41 @@ public class SignalDetectionService {
 	        }
 		 if(queryString.toString().contains(":description")){
 			q.setParameter("description", searchDto.getDescription());
-		 }
-		 if(queryString.toString().contains(":runFrequency")){
-			 q.setParameter("runFrequency", searchDto.getFrequency());
-		 }
-	        signalDetections = q.getResultList();
-	        
-	        if(!CollectionUtils.isEmpty(signalDetections)) {
-				addOtherInfoToSignalDetection(signalDetections);
-	        }
-	        return signalDetections;
-	    }
+		}
+		if (queryString.toString().contains(":runFrequency")) {
+			q.setParameter("runFrequency", searchDto.getFrequency());
+		}
+		signalDetections = q.getResultList();
+
+		if (!CollectionUtils.isEmpty(signalDetections)) {
+			addOtherInfoToSignalDetection(signalDetections);
+		}
+
+		Set<String> signalDetectedProductNames = products.stream().filter(product -> null != product.getDetectionId())
+				.map(Product::getProductName).collect(Collectors.toSet());
+
+		Set<String> signalDetectedLicenseNames = licenses.stream().filter(license -> null != license.getDetectionId())
+				.map(License::getLicenseName).collect(Collectors.toSet());
+
+		
+		signalDetections.parallelStream().forEach(signalDetection -> {
+			List<Product> matchedProducts = signalDetection.getIngredient().getProducts().stream()
+					.filter(product -> signalDetectedProductNames.contains(product.getProductName())).collect(Collectors.toList());
+			signalDetection.getIngredient().setProducts(matchedProducts);
+			
+			List<License> matchedLicenses = signalDetection.getIngredient().getLicenses().stream()
+					.filter(product -> signalDetectedLicenseNames.contains(product.getLicenseName())).collect(Collectors.toList());
+			signalDetection.getIngredient().setLicenses(matchedLicenses);
+			
+		});
+
+		List<SignalDetection> filtered=signalDetections.stream()
+				.filter(signalDetection -> !CollectionUtils.isEmpty(signalDetection.getIngredient().getProducts())
+						|| !CollectionUtils.isEmpty(signalDetection.getIngredient().getLicenses()))
+				.collect(Collectors.toList());
+
+		return filtered;
+	}
 
 	private void addOtherInfoToSignalDetection(List<SignalDetection> signalDetections) {
 		signalDetections.parallelStream().forEach((signalDetection) -> {

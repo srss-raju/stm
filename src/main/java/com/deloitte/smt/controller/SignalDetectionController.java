@@ -90,7 +90,7 @@ public class SignalDetectionController {
 			dto.setPts(StringConverterUtil.convertStringToList(pts));
 		}
 		if(StringUtils.isNotBlank(frequency)) {
-			dto.setFrequency(frequency);
+			dto.setFrequency(StringConverterUtil.convertStringToList(frequency));
 		}
 		if(StringUtils.isNotBlank(description)) {
 			dto.setDescription(description);

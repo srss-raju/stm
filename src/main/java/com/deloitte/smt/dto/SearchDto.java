@@ -22,8 +22,8 @@ public class SearchDto {
     private List<String> signalConfirmations;
     private List<String> signalNames;
     private List<String> assignees=new ArrayList<String>();
-    private String frequency;
-    private Date startDate;
+    private List<String> frequency;
+	private Date startDate;
     private Date endDate;
     private boolean isDueDate;
     private List<String> assessmentTaskStatus;
@@ -130,14 +130,6 @@ public class SearchDto {
         this.signalNames = signalNames;
     }
 
-    public String getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
-    }
-
 	public List<String> getAssignees() {
 		return assignees;
 	}
@@ -170,6 +162,14 @@ public class SearchDto {
 		this.endDate = endDate;
 	}
 
+	public List<String> getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(List<String> frequency) {
+		this.frequency = frequency;
+	}
+	
 	public List<String> getRiskTaskStatus() {
 		return riskTaskStatus;
 	}
@@ -184,6 +184,8 @@ public class SearchDto {
 
 	public void setAssessmentTaskStatus(List<String> assessmentTaskStatus) {
 		this.assessmentTaskStatus = assessmentTaskStatus;
+	
 	}
+	
 
 }
