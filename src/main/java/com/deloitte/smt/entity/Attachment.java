@@ -27,6 +27,7 @@ public class Attachment implements Serializable {
     private String contentType;
     private String description;
     private AttachmentType attachmentType;
+    private String attachmentsURL;
 
     private Long attachmentResourceId;
 
@@ -104,4 +105,12 @@ public class Attachment implements Serializable {
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
+
+	public String getAttachmentsURL() {
+		return attachmentsURL;
+	}
+
+	public void setAttachmentsURL(String attachmentsURL) {
+		this.attachmentsURL = attachmentsURL;
+	}
 }
