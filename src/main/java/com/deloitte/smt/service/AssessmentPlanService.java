@@ -142,12 +142,12 @@ public class AssessmentPlanService {
            		
             }
             
-            if (null != searchDto.getAssessmentTaskStatus()) {
+            if (!CollectionUtils.isEmpty(searchDto.getAssessmentTaskStatus())) {
             	executeQuery = true;
             	if (queryString.toString().contains("WHERE")){
-            		queryString.append(" AND o.assessmentTaskStatus = :assessmentTaskStatus ");
+            		queryString.append(" AND o.assessmentTaskStatus IN :assessmentTaskStatus ");
             	}else{
-            		queryString.append(" WHERE o.assessmentTaskStatus = :assessmentTaskStatus ");
+            		queryString.append(" WHERE o.assessmentTaskStatus IN :assessmentTaskStatus ");
             	}
             }
             

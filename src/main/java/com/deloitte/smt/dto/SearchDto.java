@@ -26,8 +26,8 @@ public class SearchDto {
     private Date startDate;
     private Date endDate;
     private boolean isDueDate;
-    private String assessmentTaskStatus;
-    private String riskTaskStatus;
+    private List<String> assessmentTaskStatus;
+    private List<String> riskTaskStatus;
     
 
     public void addAssignees(List<String> assignees){
@@ -170,20 +170,20 @@ public class SearchDto {
 		this.endDate = endDate;
 	}
 
-	public String getAssessmentTaskStatus() {
-		return assessmentTaskStatus;
-	}
-
-	public void setAssessmentTaskStatus(String assessmentTaskStatus) {
-		this.assessmentTaskStatus = assessmentTaskStatus;
-	}
-
-	public String getRiskTaskStatus() {
+	public List<String> getRiskTaskStatus() {
 		return riskTaskStatus;
 	}
 
-	public void setRiskTaskStatus(String riskTaskStatus) {
+	public void setRiskTaskStatus(List<String> riskTaskStatus) {
 		this.riskTaskStatus = riskTaskStatus;
+	}
+
+	public List<String> getAssessmentTaskStatus() {
+		return assessmentTaskStatus;
+	}
+
+	public void setAssessmentTaskStatus(List<String> assessmentTaskStatus) {
+		this.assessmentTaskStatus = assessmentTaskStatus;
 	}
 
 }

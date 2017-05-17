@@ -179,12 +179,12 @@ public class RiskPlanService {
            		
             }
             
-            if (null != searchDto.getRiskTaskStatus()) {
+            if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
             	executeQuery = true;
             	if (queryString.toString().contains("WHERE")){
-            		queryString.append(" AND o.riskTaskStatus = :riskTaskStatus ");
+            		queryString.append(" AND o.riskTaskStatus IN :riskTaskStatus ");
             	}else{
-            		queryString.append(" WHERE o.riskTaskStatus = :riskTaskStatus ");
+            		queryString.append(" WHERE o.riskTaskStatus IN :riskTaskStatus ");
             	}
             }
             

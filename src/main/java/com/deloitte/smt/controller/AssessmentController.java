@@ -70,8 +70,8 @@ public class AssessmentController {
         	searchDto.setEndDate(endDate);
         	searchDto.setDueDate(isDueDate);
 		}
-        if(null != assessmentTaskStatus){
-        	searchDto.setAssessmentTaskStatus(assessmentTaskStatus);
+        if(StringUtils.isNotBlank(assessmentTaskStatus)){
+        	searchDto.setAssessmentTaskStatus(StringConverterUtil.convertStringToList(assessmentTaskStatus));
         }
         return assessmentPlanService.findAllAssessmentPlansForSearch(searchDto);
     }

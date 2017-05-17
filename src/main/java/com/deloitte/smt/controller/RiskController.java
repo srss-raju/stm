@@ -80,8 +80,8 @@ public class RiskController {
         	searchDto.setEndDate(endDate);
         	searchDto.setDueDate(isDueDate);
 		}
-        if(null != riskTaskStatus){
-        	searchDto.setRiskTaskStatus(riskTaskStatus);
+        if(StringUtils.isNotBlank(riskTaskStatus)){
+        	searchDto.setRiskTaskStatus(StringConverterUtil.convertStringToList(riskTaskStatus));
         }
         return riskPlanService.findAllRiskPlansForSearch(searchDto);
     }
