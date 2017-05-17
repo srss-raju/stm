@@ -290,7 +290,10 @@ public class SignalDetectionService {
 //	            
 //	        }
 
-	        queryString.append(" AND id IN :ids ");
+	        if(signalDetectionIds.size()>0){
+	        	queryString.append(" AND id IN :ids ");
+	        }
+	        
 	        
 	        if(StringUtils.isNotBlank(searchDto.getDescription())){
 				queryString.append(" AND description IN :description ");
