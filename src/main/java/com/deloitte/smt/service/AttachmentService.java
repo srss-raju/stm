@@ -65,7 +65,7 @@ public class AttachmentService {
                 if(!attachment.isEmpty() || StringUtils.isNotBlank(attachment.getOriginalFilename())) {
                     Attachment a = new Attachment();
                     a.setAttachmentType(attachmentType);
-                    if(metaData != null && StringUtils.isNotBlank(metaData.get(attachment.getOriginalFilename()).getFileName())) {
+                    if(metaData != null && StringUtils.isNotBlank(metaData.get(attachment.getOriginalFilename()).getDescription())) {
                         a.setDescription(metaData.get(attachment.getOriginalFilename()).getDescription());
                         a.setAttachmentsURL(metaData.get(attachment.getOriginalFilename()).getAttachmentsURL());
                     }
