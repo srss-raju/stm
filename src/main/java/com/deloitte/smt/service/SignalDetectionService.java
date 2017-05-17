@@ -286,10 +286,12 @@ public class SignalDetectionService {
 		}
 
 	        StringBuilder queryString = new StringBuilder("SELECT o FROM SignalDetection o WHERE 1=1 ");
-	        if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())){
-	            queryString.append(" AND id IN :ids ");
-	        }
+//	        if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())){
+//	            
+//	        }
 
+	        queryString.append(" AND id IN :ids ");
+	        
 	        if(StringUtils.isNotBlank(searchDto.getDescription())){
 				queryString.append(" AND description IN :description ");
 			}
@@ -327,23 +329,23 @@ public class SignalDetectionService {
 				.map(License::getLicenseName).collect(Collectors.toSet());
 
 		
-		signalDetections.parallelStream().forEach(signalDetection -> {
-			List<Product> matchedProducts = signalDetection.getIngredient().getProducts().stream()
-					.filter(product -> signalDetectedProductNames.contains(product.getProductName())).collect(Collectors.toList());
-			signalDetection.getIngredient().setProducts(matchedProducts);
-			
-			List<License> matchedLicenses = signalDetection.getIngredient().getLicenses().stream()
-					.filter(product -> signalDetectedLicenseNames.contains(product.getLicenseName())).collect(Collectors.toList());
-			signalDetection.getIngredient().setLicenses(matchedLicenses);
-			
-		});
+//		signalDetections.parallelStream().forEach(signalDetection -> {
+//			List<Product> matchedProducts = signalDetection.getIngredient().getProducts().stream()
+//					.filter(product -> signalDetectedProductNames.contains(product.getProductName())).collect(Collectors.toList());
+//			signalDetection.getIngredient().setProducts(matchedProducts);
+//			
+//			List<License> matchedLicenses = signalDetection.getIngredient().getLicenses().stream()
+//					.filter(product -> signalDetectedLicenseNames.contains(product.getLicenseName())).collect(Collectors.toList());
+//			signalDetection.getIngredient().setLicenses(matchedLicenses);
+//			
+//		});
+//
+//		List<SignalDetection> filtered=signalDetections.stream()
+//				.filter(signalDetection -> !CollectionUtils.isEmpty(signalDetection.getIngredient().getProducts())
+//						|| !CollectionUtils.isEmpty(signalDetection.getIngredient().getLicenses()))
+//				.collect(Collectors.toList());
 
-		List<SignalDetection> filtered=signalDetections.stream()
-				.filter(signalDetection -> !CollectionUtils.isEmpty(signalDetection.getIngredient().getProducts())
-						|| !CollectionUtils.isEmpty(signalDetection.getIngredient().getLicenses()))
-				.collect(Collectors.toList());
-
-		return filtered;
+		return signalDetections;
 	}
 
 	private void addOtherInfoToSignalDetection(List<SignalDetection> signalDetections) {
