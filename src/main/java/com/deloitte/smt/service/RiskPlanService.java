@@ -91,6 +91,7 @@ public class RiskPlanService {
         Date d = new Date();
         riskPlan.setCreatedDate(d);
         riskPlan.setLastModifiedDate(d);
+        riskPlan.setRiskTaskStatus("Not Completed");
         AssignmentConfiguration assignmentConfiguration = null;
         
         if(!StringUtils.isEmpty(riskPlan.getSource())) {
