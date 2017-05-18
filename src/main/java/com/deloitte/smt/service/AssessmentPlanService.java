@@ -1,29 +1,33 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.AttachmentType;
-import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
-import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
-import com.deloitte.smt.repository.ProductRepository;
-import com.deloitte.smt.repository.TopicRepository;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.AttachmentType;
+import com.deloitte.smt.entity.Comments;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.CommentsRepository;
+import com.deloitte.smt.repository.IngredientRepository;
+import com.deloitte.smt.repository.LicenseRepository;
+import com.deloitte.smt.repository.ProductRepository;
+import com.deloitte.smt.repository.TopicRepository;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -48,6 +52,9 @@ public class AssessmentPlanService {
 
     @Autowired
     IngredientRepository ingredientRepository;
+    
+    @Autowired
+    CommentsRepository commentsRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -64,6 +71,7 @@ public class AssessmentPlanService {
             assessmentPlan.setAssessmentPlanStatus("In Progress");
             assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
         }
+        assessmentPlan.setComments(commentsRepository.findByAssessmentId(assessmentId));
         return assessmentPlan;
     }
 
@@ -200,6 +208,14 @@ public class AssessmentPlanService {
         assessmentPlan.setLastModifiedDate(new Date());
         attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata());
         assessmentPlanRepository.save(assessmentPlan);
+        List<Comments> list = assessmentPlan.getComments();
+        if(!CollectionUtils.isEmpty(list)){
+        	for(Comments comment:list){
+        		comment.setAssessmentId(assessmentPlan.getId());
+        		comment.setModifiedDate(new Date());
+        	}
+        }
+        commentsRepository.save(assessmentPlan.getComments());
     }
 
     public void finalAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws UpdateFailedException, IOException {

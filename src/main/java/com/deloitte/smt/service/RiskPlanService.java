@@ -24,6 +24,7 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.AttachmentType;
+import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.TaskInst;
@@ -32,6 +33,7 @@ import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
+import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
@@ -80,6 +82,9 @@ public class RiskPlanService {
 
     @PersistenceContext
     private EntityManager entityManager;
+    
+    @Autowired
+    CommentsRepository commentsRepository;
     
     @Autowired
     private AssignmentConfigurationRepository assignmentConfigurationRepository;
@@ -318,6 +323,7 @@ public class RiskPlanService {
             riskPlan.setStatus("In Progress");
             riskPlan = riskPlanRepository.save(riskPlan);
         }
+        riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
         return riskPlan;
     }
 
@@ -338,5 +344,13 @@ public class RiskPlanService {
 		riskPlan.setLastModifiedDate(new Date());
         attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata());
         riskPlanRepository.save(riskPlan);
+        List<Comments> list = riskPlan.getComments();
+        if(!CollectionUtils.isEmpty(list)){
+        	for(Comments comment:list){
+        		comment.setRiskPlanId(riskPlan.getId());
+        		comment.setModifiedDate(new Date());
+        	}
+        }
+        commentsRepository.save(riskPlan.getComments());
 	}
 }

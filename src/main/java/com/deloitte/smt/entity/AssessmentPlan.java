@@ -31,7 +31,6 @@ public class AssessmentPlan {
 	private String assessmentName;
 	private String priority;
 	private int inDays;
-    private String comments;
     private String ingrediantName;
 	private String source;
     private String caseInstanceId;
@@ -56,6 +55,8 @@ public class AssessmentPlan {
 	private String assignTo;
 	
 	private String assessmentTaskStatus;
+	@Transient
+	private List<Comments> comments;
 
 	public AssessmentPlan() {
 		this.topics = new HashSet<>();
@@ -95,10 +96,10 @@ public class AssessmentPlan {
 		this.inDays = inDays;
 	}
 
-	public String getComments() {
+	public List<Comments> getComments() {
 		return comments;
 	}
-	public void setComments(String comments) {
+	public void setComments(List<Comments> comments) {
 		this.comments = comments;
 	}
 	public String getCaseInstanceId() {
