@@ -22,6 +22,6 @@ public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     
     @Modifying
     @Transactional(readOnly=false)
-    @Query("update Attachment a set a.description = ?2 where a.fileName = ?1")
-    Integer updateDescription(String fileName, String description);
+    @Query("update Attachment a set a.description = ?2 and a.attachmentsURL = ?3 where a.fileName = ?1")
+    Integer updateDescriptionAndAttachmentsURL(String fileName, String description, String attachmentsURL);
 }
