@@ -11,6 +11,16 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
+import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
@@ -321,80 +331,78 @@ public class SignalService {
         return assessmentPlan;
     }
 
-    public List<Topic> findAllForSearch(SearchDto searchDto) {
-        List<Topic> topics;
-        List<Long> topicIds = new ArrayList<>();
-        searchService.getSignalIdsForSearch(searchDto, topicIds, true);
-        StringBuilder queryString = new StringBuilder("SELECT o FROM Topic o WHERE 1=1 ");
-        if(!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())){
-            queryString.append(" AND id IN :ids ");
-        }
-        if(null != searchDto.getCreatedDate()){
-            queryString.append(" AND DATE(createdDate) = :createdDate ");
-        }
-        if(!CollectionUtils.isEmpty(searchDto.getStatuses())){
-            queryString.append(" AND signalStatus IN :signalStatus ");
-        }
+	public List<Topic> findAllForSearch(SearchDto searchDto) {
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Topic> query = criteriaBuilder.createQuery(Topic.class);
+		Root<Topic> rootTopic = query.from(Topic.class);
 
-        if(!CollectionUtils.isEmpty(searchDto.getSignalNames())){
-            queryString.append(" AND name IN :signalName ");
-        }
-        if(!CollectionUtils.isEmpty(searchDto.getAssignees())){
-            queryString.append(" AND assignTo IN :assignees ");
-        }
-       	if(null != searchDto.getStartDate()){
-       		if(searchDto.isDueDate()){
-        		queryString.append(" AND dueDate BETWEEN :startDate and :endDate ");
-        	}else{
-        		queryString.append(" AND createdDate BETWEEN :startDate and :endDate ");
-        	}
-        }
-        if(!CollectionUtils.isEmpty(searchDto.getSignalConfirmations())){
-            queryString.append(" AND signalConfirmation IN :signalConfirmation ");
-        }
-        queryString.append(" ORDER BY createdDate DESC");
-        Query q = entityManager.createQuery(queryString.toString(), Topic.class);
+		Root<Hlt> rootHlt = query.from(Hlt.class);
+		Root<Hlgt> rootHlgt = query.from(Hlgt.class);
+		Root<Pt> rootPt = query.from(Pt.class);
 
-        if(queryString.toString().contains(":ids")){
-            if(CollectionUtils.isEmpty(topicIds)) {
-                q.setParameter("ids", null);
-            } else {
-                q.setParameter("ids", topicIds);
-            }
-        }
-        if(queryString.toString().contains(":createdDate")){
-            q.setParameter("createdDate", searchDto.getCreatedDate());
-        }
-        if(queryString.toString().contains(":signalStatus")){
-            q.setParameter("signalStatus", searchDto.getStatuses());
-        }
+		List<Predicate> predicates = new ArrayList<Predicate>(10);
 
-        if(queryString.toString().contains(":signalName")){
-            q.setParameter("signalName", searchDto.getSignalNames());
-        }
-        
-        if(queryString.toString().contains(":startDate")){
-       			q.setParameter("startDate", searchDto.getStartDate());
-       			q.setParameter("endDate", searchDto.getEndDate());
-        }
-        
-        
-        if(queryString.toString().contains(":assignees")){
-            q.setParameter("assignees", searchDto.getAssignees());
-        }
-        
-        if(queryString.toString().contains(":signalConfirmation")){
-            q.setParameter("signalConfirmation", searchDto.getSignalConfirmations());
-        }
+		if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
+			Predicate hltTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlt.get("topicId"));
+			Predicate hltNameEquals = criteriaBuilder.isTrue(rootHlt.get("hltName").in(searchDto.getHlts()));
+			predicates.add(hltTopicEquals);
+			predicates.add(hltNameEquals);
+		}
 
-        topics = q.getResultList();
-        topics.stream().forEach(topic->{
-            if(null == topic.getSignalValidation()) {
-                topic.setSignalValidation("In Progress");
-            }
-        });
-        return topics;
-    }
+		if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
+			Predicate hlgtTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlgt.get("topicId"));
+			Predicate hlgtNameEquals = criteriaBuilder.isTrue(rootHlgt.get("hlgtName").in(searchDto.getHlgts()));
+			predicates.add(hlgtTopicEquals);
+			predicates.add(hlgtNameEquals);
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getPts())) {
+			Predicate ptTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootPt.get("topicId"));
+			Predicate ptNameEquals = criteriaBuilder.isTrue(rootPt.get("ptName").in(searchDto.getPts()));
+			predicates.add(ptTopicEquals);
+			predicates.add(ptNameEquals);
+		}
+
+		if (null != searchDto.getCreatedDate()) {
+			predicates.add(criteriaBuilder.equal(rootTopic.get("createdDate"), searchDto.getCreatedDate()));
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
+			predicates.add(criteriaBuilder.isTrue(rootTopic.get("signalStatus").in(searchDto.getStatuses())));
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getSignalNames())) {
+			predicates.add(criteriaBuilder.isTrue(rootTopic.get("name").in(searchDto.getSignalNames())));
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+			predicates.add(criteriaBuilder.isTrue(rootTopic.get("assignTo").in(searchDto.getAssignees())));
+		}
+
+		if (null != searchDto.getStartDate() && null != searchDto.getEndDate()) {
+			if (searchDto.isDueDate()) {
+				predicates
+						.add(criteriaBuilder.greaterThanOrEqualTo(rootTopic.get("dueDate"), searchDto.getStartDate()));
+				predicates.add(criteriaBuilder.lessThanOrEqualTo(rootTopic.get("dueDate"), searchDto.getEndDate()));
+			} else {
+				predicates.add(
+						criteriaBuilder.greaterThanOrEqualTo(rootTopic.get("createdDate"), searchDto.getStartDate()));
+				predicates.add(criteriaBuilder.lessThanOrEqualTo(rootTopic.get("createdDate"), searchDto.getEndDate()));
+			}
+
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getSignalConfirmations())) {
+			predicates.add(
+					criteriaBuilder.isTrue(rootTopic.get("signalConfirmation").in(searchDto.getSignalConfirmations())));
+		}
+
+		Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+		query.select(rootTopic).where(andPredicate).orderBy(criteriaBuilder.desc(rootTopic.get("createdDate")))
+				.distinct(true);
+		TypedQuery<Topic> q = entityManager.createQuery(query);
+		return q.getResultList();
+	}
 
     public Long getValidateAndPrioritizeCount(String assignTo){
         return topicRepository.countByAssignToAndSignalStatusNotLikeIgnoreCase(assignTo, "Completed");

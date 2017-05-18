@@ -4,18 +4,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+
 /**
  * Created by myelleswarapu on 14-04-2017.
  */
 public class SearchDto {
 
+	
     private List<String> statuses;
     private Date createdDate;
     private List<String> ingredients;
     private List<String> products;
     private List<String> licenses;
     private List<String> socs;
-    private List<String> hlgts;
+    private List<String> hlgts=new ArrayList<String>();
     private List<String> hlts;
     private List<String> pts;
     private String description;
@@ -23,7 +27,10 @@ public class SearchDto {
     private List<String> signalNames;
     private List<String> assignees=new ArrayList<String>();
     private List<String> frequency;
-	private Date startDate;
+	
+    @DateTimeFormat(pattern="dd/MM/yyyy")
+    private Date startDate;
+	
     private Date endDate;
     private boolean isDueDate;
     private List<String> assessmentTaskStatus;
