@@ -231,13 +231,6 @@ public class SignalService {
                 }
                 licenseRepository.save(licenses);
             }
-            
-            if(!CollectionUtils.isEmpty(topic.getSignalUrls())){
-            	for(SignalURL url:topic.getSignalUrls()){
-            		url.setTopicId(topic.getId());
-            	}
-            	signalURLRepository.save(topic.getSignalUrls());
-            }
         }
         
         List<Soc> socs  = topic.getSocs();
@@ -276,6 +269,12 @@ public class SignalService {
                     ptRepository.save(pts);
                 }
             }
+        }
+        if(!CollectionUtils.isEmpty(topic.getSignalUrls())){
+        	for(SignalURL url:topic.getSignalUrls()){
+        		url.setTopicId(topic.getId());
+        	}
+        	signalURLRepository.save(topic.getSignalUrls());
         }
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topic.getFileMetadata());
         return topic;
