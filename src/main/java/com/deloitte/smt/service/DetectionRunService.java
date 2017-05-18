@@ -28,9 +28,7 @@ public class DetectionRunService {
     	detectionRun.setCreatedDate(new Date());
     	detectionRun.setRunDate(new Date());
     	detectionRun.setLastModifiedDate(new Date());
-    	detectionRun = detectionRunRepository.save(detectionRun);
-    	signalDetectionRepository.updateLastRunDate(detectionRun.getCreatedDate(), detectionRun.getDetectionId());
-        return detectionRun;
+        return detectionRunRepository.save(detectionRun);
     }
 
     public DetectionRun findById(Long detectionRunId) throws EntityNotFoundException {
