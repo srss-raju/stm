@@ -3,8 +3,8 @@ package com.deloitte.smt.dto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-import org.springframework.format.annotation.DateTimeFormat;
 
 
 /**
@@ -14,6 +14,8 @@ public class SearchDto {
 
 	
     private List<String> statuses;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdDate;
     private List<String> ingredients;
     private List<String> products;
@@ -28,9 +30,10 @@ public class SearchDto {
     private List<String> assignees=new ArrayList<String>();
     private List<String> frequency;
 	
-    @DateTimeFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 	
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
     private boolean isDueDate;
     private List<String> assessmentTaskStatus;
@@ -153,6 +156,7 @@ public class SearchDto {
 		this.isDueDate = isDueDate;
 	}
 
+	
 	public Date getStartDate() {
 		return startDate;
 	}
