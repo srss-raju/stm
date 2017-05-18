@@ -55,6 +55,7 @@ public class Topic implements Serializable{
     private Long runInstanceId;
     private String cases;
     private String caselistId;
+    @Transient
     private List<SignalURL> signalUrls;
 
     @Transient
