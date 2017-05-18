@@ -10,17 +10,11 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
@@ -46,7 +40,9 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.SignalSources;
 import com.deloitte.smt.entity.SignalStatistics;
+import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
@@ -65,6 +61,7 @@ import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
+import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
@@ -96,6 +93,8 @@ public class SignalService {
     private LicenseRepository licenseRepository;
     @Autowired
     TaskInstRepository taskInstRepository;
+    @Autowired
+    SignalURLRepository signalURLRepository;
     
     @Autowired
     CaseService caseService;
@@ -167,6 +166,8 @@ public class SignalService {
         		soc.setPts(ptRepository.findBySocId(soc.getId()));
         	}
         }
+        topic.setSignalUrls(signalURLRepository.findByTopicId(topicId));
+        
         topic.setSocs(socs);
         return topic;
     }
@@ -229,6 +230,13 @@ public class SignalService {
                     singleLicense.setTopicId(topic.getId());
                 }
                 licenseRepository.save(licenses);
+            }
+            
+            if(!CollectionUtils.isEmpty(topic.getSignalUrls())){
+            	for(SignalURL url:topic.getSignalUrls()){
+            		url.setTopicId(topic.getId());
+            	}
+            	signalURLRepository.save(topic.getSignalUrls());
             }
         }
         
@@ -545,5 +553,13 @@ public class SignalService {
 			}
 		}
 		return topics;
+	}
+
+	public void deleteSignalURL(Long signalUrlId) throws EntityNotFoundException {
+		SignalURL signalURL = signalURLRepository.findOne(signalUrlId);
+        if(signalURL == null) {
+            throw new EntityNotFoundException("Risk Plan Action Type not found with the given Id : "+signalUrlId);
+        }
+        signalURLRepository.delete(signalURL);
 	}
 }
