@@ -79,7 +79,7 @@ public class AttachmentService {
             }
         }
         if(!flag && !CollectionUtils.isEmpty(metaData)){
-        		metaData.forEach((k,v) -> attachmentRepository.updateDescription(k, v.getDescription()));
+        		metaData.forEach((k,v) -> attachmentRepository.updateDescriptionAndAttachmentsURL(k, v.getDescription(), v.getAttachmentsURL()));
         }
     }
 }
