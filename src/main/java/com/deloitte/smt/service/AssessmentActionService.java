@@ -100,6 +100,9 @@ public class AssessmentActionService {
         	}
         }
         if(!CollectionUtils.isEmpty(signalAction.getSignalUrls())){
+        	for(SignalURL url:signalAction.getSignalUrls()){
+        		url.setTopicId(signalAction.getId());
+        	}
         	signalURLRepository.save(signalAction.getSignalUrls());
         }
         if(allTasksCompletedFlag){
