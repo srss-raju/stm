@@ -161,13 +161,12 @@ public class RiskPlanService {
 				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("status").in(searchDto.getStatuses())));
 			}
 
-			if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
+			if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
 				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("assignTo").in(searchDto.getAssignees())));
 			}
 
-			if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-				predicates.add(criteriaBuilder
-						.isTrue(assementRiskJoin.get("riskTaskStatus").in(searchDto.getRiskTaskStatus())));
+			if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
+				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("riskTaskStatus").in(searchDto.getRiskTaskStatus())));
 			}
 
 			if (null != searchDto.getStartDate()) {
