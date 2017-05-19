@@ -290,7 +290,7 @@ public class SignalService {
 	 * @param topic
 	 */
 	private void findMatchingSignal(Topic topic) {
-		Topic matchingTopic = getMatchingTopic(topic);
+		Topic matchingTopic = getMatchingSignal(topic);
         topic.setValidationComments(matchingTopic.getValidationComments());
         topic.setSignalStrength(matchingTopic.getSignalStrength());
         topic.setSignalConfirmation(matchingTopic.getSignalConfirmation());
@@ -631,7 +631,7 @@ public class SignalService {
         signalURLRepository.delete(signalURL);
 	}
 	
-	private Topic getMatchingTopic(Topic topic){
+	private Topic getMatchingSignal(Topic topic){
 		StringBuilder builder = new StringBuilder();
 		String tempPt = null;
 		List<Soc> socs  = topic.getSocs();
