@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,42 +39,9 @@ public class AssessmentController {
     @Autowired
     AssessmentPlanService assessmentPlanService;
 
-    @GetMapping(value = "/allAssessmentPlans")
-    public List<AssessmentPlan> getAllAssessmentPlans(@RequestParam(value = "status", required = false) String status,
-                                                      @RequestParam(value = "product", required = false) String product,
-                                                      @RequestParam(value = "license", required = false) String license,
-                                                      @RequestParam(value = "ingredient", required = false) String ingredient,
-                                                      @RequestParam(name = "assignees", required = false) String assignees,
-                                                      @RequestParam(value = "createdDate", required = false) Date createdDate,
-                									  @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date startDate,
-                									  @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date endDate,
-                									  @RequestParam(name = "assessmentTaskStatus", required = false) String assessmentTaskStatus,
-                									  @RequestParam(name = "isDueDate", required = false) boolean isDueDate){
-        SearchDto searchDto = new SearchDto();
-        if(StringUtils.isNotBlank(status)) {
-            searchDto.setStatuses(StringConverterUtil.convertStringToList(status));
-        }
-        if(StringUtils.isNotBlank(product)) {
-            searchDto.setProducts(StringConverterUtil.convertStringToList(product));
-        }
-        if(StringUtils.isNotBlank(license)) {
-            searchDto.setLicenses(StringConverterUtil.convertStringToList(license));
-        }
-        if(StringUtils.isNotBlank(ingredient)) {
-            searchDto.setIngredients(StringConverterUtil.convertStringToList(ingredient));
-        }
-        if(StringUtils.isNotBlank(assignees)) {
-        	searchDto.setAssignees(StringConverterUtil.convertStringToList(assignees));
-		}
-        if(null != startDate){
-        	searchDto.setStartDate(startDate);
-        	searchDto.setEndDate(endDate);
-        	searchDto.setDueDate(isDueDate);
-		}
-        if(StringUtils.isNotBlank(assessmentTaskStatus)){
-        	searchDto.setAssessmentTaskStatus(StringConverterUtil.convertStringToList(assessmentTaskStatus));
-        }
-        return assessmentPlanService.findAllAssessmentPlansForSearch(searchDto);
+    @PostMapping(value = "/allAssessmentPlans")
+    public List<AssessmentPlan> getAllAssessmentPlans(@RequestBody(required=false) SearchDto searchDto){
+        return assessmentPlanService.findAllAssessmentPlans(searchDto);
     }
 
     @GetMapping(value = "/assessmentPlan/{id}")

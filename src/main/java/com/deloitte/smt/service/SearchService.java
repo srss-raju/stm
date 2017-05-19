@@ -1,9 +1,11 @@
 package com.deloitte.smt.service;
 
 import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.AssessmentTaskStatusType;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
+import com.deloitte.smt.entity.RiskTaskStatusType;
 import com.deloitte.smt.entity.RunFrequency;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.HlgtRepository;
@@ -87,6 +89,7 @@ public class SearchService {
         Set<Long> topicIds = assessmentPlanRepository.findAllSignalIds();
         SearchDto searchDto= getFilters(topicIds);
         searchDto.addAssignees(assessmentPlanRepository.getAssignedUsers());
+        searchDto.setAssessmentTaskStatus(AssessmentTaskStatusType.getAll());
         return searchDto;
     }
 
@@ -94,6 +97,7 @@ public class SearchService {
         Set<Long> topicIds = riskPlanRepository.findAllSignalIds();
         SearchDto searchDto= getFilters(topicIds);
         searchDto.addAssignees(riskPlanRepository.getAssignedUsers());
+        searchDto.setRiskTaskStatus(RiskTaskStatusType.getAll());
         return searchDto;
     }
 

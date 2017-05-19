@@ -14,8 +14,13 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
+import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
@@ -41,6 +46,7 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.SignalSources;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
@@ -342,75 +348,105 @@ public class SignalService {
         return assessmentPlan;
     }
 
-	public List<Topic> findAllForSearch(SearchDto searchDto) {
+	public List<Topic> findTopics(SearchDto searchDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Topic> query = criteriaBuilder.createQuery(Topic.class);
 		Root<Topic> rootTopic = query.from(Topic.class);
 
-		Root<Hlt> rootHlt = query.from(Hlt.class);
-		Root<Hlgt> rootHlgt = query.from(Hlgt.class);
-		Root<Pt> rootPt = query.from(Pt.class);
-
-		List<Predicate> predicates = new ArrayList<Predicate>(10);
-
-		if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
-			Predicate hltTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlt.get("topicId"));
-			Predicate hltNameEquals = criteriaBuilder.isTrue(rootHlt.get("hltName").in(searchDto.getHlts()));
-			predicates.add(hltTopicEquals);
-			predicates.add(hltNameEquals);
-		}
-
-		if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
-			Predicate hlgtTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlgt.get("topicId"));
-			Predicate hlgtNameEquals = criteriaBuilder.isTrue(rootHlgt.get("hlgtName").in(searchDto.getHlgts()));
-			predicates.add(hlgtTopicEquals);
-			predicates.add(hlgtNameEquals);
-		}
-
-		if (!CollectionUtils.isEmpty(searchDto.getPts())) {
-			Predicate ptTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootPt.get("topicId"));
-			Predicate ptNameEquals = criteriaBuilder.isTrue(rootPt.get("ptName").in(searchDto.getPts()));
-			predicates.add(ptTopicEquals);
-			predicates.add(ptNameEquals);
-		}
-
-		if (null != searchDto.getCreatedDate()) {
-			predicates.add(criteriaBuilder.equal(rootTopic.get("createdDate"), searchDto.getCreatedDate()));
-		}
-
-		if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get("signalStatus").in(searchDto.getStatuses())));
-		}
-
-		if (!CollectionUtils.isEmpty(searchDto.getSignalNames())) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get("name").in(searchDto.getSignalNames())));
-		}
-
-		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get("assignTo").in(searchDto.getAssignees())));
-		}
-
-		if (null != searchDto.getStartDate() && null != searchDto.getEndDate()) {
-			if (searchDto.isDueDate()) {
-				predicates
-						.add(criteriaBuilder.greaterThanOrEqualTo(rootTopic.get("dueDate"), searchDto.getStartDate()));
-				predicates.add(criteriaBuilder.lessThanOrEqualTo(rootTopic.get("dueDate"), searchDto.getEndDate()));
-			} else {
-				predicates.add(
-						criteriaBuilder.greaterThanOrEqualTo(rootTopic.get("createdDate"), searchDto.getStartDate()));
-				predicates.add(criteriaBuilder.lessThanOrEqualTo(rootTopic.get("createdDate"), searchDto.getEndDate()));
+		if (null != searchDto) {
+			List<Predicate> predicates = new ArrayList<Predicate>(10);
+			
+			if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
+				Root<Product> rootProduct = query.from(Product.class);
+				Predicate productEquals = criteriaBuilder.equal(rootTopic.get("id"), rootProduct.get("topicId"));
+				Predicate producNameEquals = criteriaBuilder.isTrue(rootProduct.get("productName").in(searchDto.getProducts()));
+				predicates.add(productEquals);
+				predicates.add(producNameEquals);
+			}
+			
+			if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
+				Root<License> rootLicense = query.from(License.class);
+				Predicate licenseEquals = criteriaBuilder.equal(rootTopic.get("id"), rootLicense.get("topicId"));
+				Predicate licenseNameEquals = criteriaBuilder.isTrue(rootLicense.get("licenseName").in(searchDto.getLicenses()));
+				predicates.add(licenseEquals);
+				predicates.add(licenseNameEquals);
+			}
+			
+			if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
+				Root<Ingredient> rootIngredient = query.from(Ingredient.class);
+				Predicate ingredientEquals = criteriaBuilder.equal(rootTopic.get("id"), rootIngredient.get("topicId"));
+				Predicate ingredientNameEquals = criteriaBuilder.isTrue(rootIngredient.get("ingredientName").in(searchDto.getIngredients()));
+				predicates.add(ingredientEquals);
+				predicates.add(ingredientNameEquals);
+			}
+			
+			
+			if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
+				Root<Hlt> rootHlt = query.from(Hlt.class);
+				Predicate hltTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlt.get("topicId"));
+				Predicate hltNameEquals = criteriaBuilder.isTrue(rootHlt.get("hltName").in(searchDto.getHlts()));
+				predicates.add(hltTopicEquals);
+				predicates.add(hltNameEquals);
 			}
 
-		}
+			if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
+				Root<Hlgt> rootHlgt = query.from(Hlgt.class);
+				Predicate hlgtTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlgt.get("topicId"));
+				Predicate hlgtNameEquals = criteriaBuilder.isTrue(rootHlgt.get("hlgtName").in(searchDto.getHlgts()));
+				predicates.add(hlgtTopicEquals);
+				predicates.add(hlgtNameEquals);
+			}
 
-		if (!CollectionUtils.isEmpty(searchDto.getSignalConfirmations())) {
-			predicates.add(
-					criteriaBuilder.isTrue(rootTopic.get("signalConfirmation").in(searchDto.getSignalConfirmations())));
-		}
+			if (!CollectionUtils.isEmpty(searchDto.getPts())) {
+				Root<Pt> rootPt = query.from(Pt.class);
+				Predicate ptTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootPt.get("topicId"));
+				Predicate ptNameEquals = criteriaBuilder.isTrue(rootPt.get("ptName").in(searchDto.getPts()));
+				predicates.add(ptTopicEquals);
+				predicates.add(ptNameEquals);
+			}
 
-		Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-		query.select(rootTopic).where(andPredicate).orderBy(criteriaBuilder.desc(rootTopic.get("createdDate")))
-				.distinct(true);
+			if (null != searchDto.getCreatedDate()) {
+				predicates.add(criteriaBuilder.equal(rootTopic.get("createdDate"), searchDto.getCreatedDate()));
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
+				predicates.add(criteriaBuilder.isTrue(rootTopic.get("signalStatus").in(searchDto.getStatuses())));
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getSignalNames())) {
+				predicates.add(criteriaBuilder.isTrue(rootTopic.get("name").in(searchDto.getSignalNames())));
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+				predicates.add(criteriaBuilder.isTrue(rootTopic.get("assignTo").in(searchDto.getAssignees())));
+			}
+
+			if (null != searchDto.getStartDate() && null != searchDto.getEndDate()) {
+				if (searchDto.isDueDate()) {
+					predicates.add(
+							criteriaBuilder.greaterThanOrEqualTo(rootTopic.get("dueDate"), searchDto.getStartDate()));
+					predicates.add(criteriaBuilder.lessThanOrEqualTo(rootTopic.get("dueDate"), searchDto.getEndDate()));
+				} else {
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootTopic.get("createdDate"),
+							searchDto.getStartDate()));
+					predicates.add(
+							criteriaBuilder.lessThanOrEqualTo(rootTopic.get("createdDate"), searchDto.getEndDate()));
+				}
+
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getSignalConfirmations())) {
+				predicates.add(criteriaBuilder
+						.isTrue(rootTopic.get("signalConfirmation").in(searchDto.getSignalConfirmations())));
+			}
+
+			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			query.select(rootTopic).where(andPredicate).orderBy(criteriaBuilder.desc(rootTopic.get("createdDate")))
+					.distinct(true);
+		} else {
+			query.select(rootTopic).orderBy(criteriaBuilder.desc(rootTopic.get("createdDate")));
+		}
+		
 		TypedQuery<Topic> q = entityManager.createQuery(query);
 		return q.getResultList();
 	}
