@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,8 @@ public class SignalAction {
 	private Map<String, Attachment> fileMetadata;
 	@Transient
 	private List<Long> deletedAttachmentIds;
+	@Transient
+    private List<SignalURL> signalUrls;
 
 	public Long getId() {
 		return id;
@@ -217,5 +220,13 @@ public class SignalAction {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public List<SignalURL> getSignalUrls() {
+		return signalUrls;
+	}
+
+	public void setSignalUrls(List<SignalURL> signalUrls) {
+		this.signalUrls = signalUrls;
 	}
 }
