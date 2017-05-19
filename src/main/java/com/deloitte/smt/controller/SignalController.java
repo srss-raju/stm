@@ -67,52 +67,10 @@ public class SignalController {
 	}
 
 	
-//	public List<Topic> getAllByStatus(@RequestParam(name = "status", required = false) String statuses,
-//									  @RequestParam(name = "createdDate", required = false) Date createdDate,
-//									  @RequestParam(name = "ingredient", required = false) String ingredients,
-//									  @RequestParam(name = "product", required = false) String products,
-//									  @RequestParam(name = "license", required = false) String licenses,
-//									  @RequestParam(name = "signalName", required = false) String signalNames,
-//									  @RequestParam(name = "assignees", required = false) String assignees,
-//									  @RequestParam(name = "signalConfirmation", required = false) String signalConfirmation,
-//									  @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date startDate,
-//									  @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern="dd/MM/yyyy") Date endDate,
-//									  @RequestParam(name = "isDueDate", required = false) boolean isDueDate) {
-	@PostMapping(value = "/all")	
-	public List<Topic> getAllByStatus(@RequestBody SearchDto dto) {
-		//SearchDto dto = new SearchDto();
-//		if(StringUtils.isNotBlank(statuses)) {
-//			dto.setStatuses(StringConverterUtil.convertStringToList(statuses));
-//		}
-//		if(StringUtils.isNotBlank(ingredients)) {
-//			dto.setIngredients(StringConverterUtil.convertStringToList(ingredients));
-//		}
-//		if(StringUtils.isNotBlank(products)) {
-//			dto.setProducts(StringConverterUtil.convertStringToList(products));
-//		}
-//		if(StringUtils.isNotBlank(licenses)) {
-//			dto.setLicenses(StringConverterUtil.convertStringToList(licenses));
-//		}
-//		if(StringUtils.isNotBlank(signalConfirmation)) {
-//			dto.setSignalConfirmations(StringConverterUtil.convertStringToList(signalConfirmation));
-//		}
-//		if(StringUtils.isNotBlank(signalNames)) {
-//			dto.setSignalNames(StringConverterUtil.convertStringToList(signalNames));
-//		}
-//		
-//		if(StringUtils.isNotBlank(assignees)) {
-//			dto.setAssignees(StringConverterUtil.convertStringToList(assignees));
-//		}
-//		if(null != createdDate){
-//			dto.setCreatedDate(createdDate);
-//		}
-//		if(null != startDate){
-//			dto.setStartDate(startDate);
-//			dto.setEndDate(endDate);
-//			dto.setDueDate(isDueDate);
-//		}
-		
-		return signalService.findAllForSearch(dto);
+
+	@PostMapping(value = "/search")	
+	public List<Topic> getAllByStatus(@RequestBody(required=false) SearchDto dto) {
+		return signalService.findTopics(dto);
 	}
 
 	@GetMapping(value = "/getCounts")

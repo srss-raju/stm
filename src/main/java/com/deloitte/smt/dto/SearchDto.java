@@ -3,47 +3,56 @@ package com.deloitte.smt.dto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * Created by myelleswarapu on 14-04-2017.
  */
 public class SearchDto {
 
-	
-    private List<String> statuses;
-    private Date createdDate;
-    private List<String> ingredients;
-    private List<String> products;
-    private List<String> licenses;
-    private List<String> socs;
-    private List<String> hlgts=new ArrayList<String>();
-    private List<String> hlts;
-    private List<String> pts;
-    private String description;
-    private List<String> signalConfirmations;
-    private List<String> signalNames;
-    private List<String> assignees=new ArrayList<String>();
-    private List<String> frequency;
-	
-    @DateTimeFormat(pattern="dd/MM/yyyy")
-    private Date startDate;
-	
-    private Date endDate;
-    private boolean isDueDate;
-    private List<String> assessmentTaskStatus;
-    private List<String> riskTaskStatus;
-    
+	private List<String> statuses;
 
-    public void addAssignees(List<String> assignees){
-    	this.assignees.addAll(assignees);
-    }
-    
-    public List<String> getStatuses() {
-        return statuses;
-    }
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date createdDate;
+	private List<String> ingredients;
+	private List<String> products;
+	private List<String> licenses;
+	private List<String> socs;
+	private List<String> hlgts = new ArrayList<String>();
+	private List<String> hlts;
+	private List<String> pts;
+	private String description;
+	private List<String> signalConfirmations;
+	private List<String> signalNames;
+	private List<String> assignees = new ArrayList<String>();
+	private List<String> frequency;
+
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date startDate;
+
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date endDate;
+	private boolean isDueDate;
+	private List<String> assessmentTaskStatus;
+	private List<String> riskTaskStatus;
+
+	private boolean gantt;
+
+	public boolean isGantt() {
+		return gantt;
+	}
+
+	public void setGantt(boolean gantt) {
+		this.gantt = gantt;
+	}
+
+	public void addAssignees(List<String> assignees) {
+		this.assignees.addAll(assignees);
+	}
+
+	public List<String> getStatuses() {
+		return statuses;
+	}
 
     public void setStatuses(List<String> statuses) {
         this.statuses = statuses;
@@ -153,6 +162,7 @@ public class SearchDto {
 		this.isDueDate = isDueDate;
 	}
 
+	
 	public Date getStartDate() {
 		return startDate;
 	}

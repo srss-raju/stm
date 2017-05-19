@@ -7,19 +7,30 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.Comments;
-import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.Hlgt;
+import com.deloitte.smt.entity.Hlt;
+import com.deloitte.smt.entity.Ingredient;
+import com.deloitte.smt.entity.License;
+import com.deloitte.smt.entity.Product;
+import com.deloitte.smt.entity.Pt;
+import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
@@ -100,112 +111,132 @@ public class AssessmentPlanService {
         }
     }
 
-    public List<AssessmentPlan> findAllAssessmentPlansForSearch(SearchDto searchDto) {
-        List<Long> topicIds = new ArrayList<>();
-        boolean searchAll = true;
-        if(!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-            searchAll = false;
-        }
-        searchAll = searchService.getSignalIdsForSearch(searchDto, topicIds, searchAll);
-        if(searchAll) {
-            Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-           // return assessmentPlanRepository.findAllByAssignToInOrderByCreatedDateDesc(searchDto.getAssignees());
-        }
-        List<AssessmentPlan> assessmentPlanList = new ArrayList<>();
-        boolean executeQuery = false;
-        StringBuilder queryString = new StringBuilder("SELECT o FROM AssessmentPlan o ");
-        if(!CollectionUtils.isEmpty(topicIds)) {
-            if (!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())) {
-                executeQuery = true;
-                queryString.append("INNER JOIN o.topics t WHERE t.id IN :topicIds ");
-            }
-        }
-            if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-                executeQuery = true;
-                if (queryString.toString().contains(":topicIds")) {
-                    queryString.append(" AND o.assessmentPlanStatus IN :assessmentPlanStatus ");
-                } else {
-                    queryString.append(" WHERE o.assessmentPlanStatus IN :assessmentPlanStatus ");
-                }
-            }
-            
-            if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-            	executeQuery = true;
-            	if (queryString.toString().contains("WHERE")){
-            		queryString.append(" AND o.assignTo IN :assignees ");
-            	}else{
-            		queryString.append(" WHERE o.assignTo IN :assignees ");
-            	}
-            }
-            
-            if(null != searchDto.getStartDate()){
-            	executeQuery = true;
-            	if (queryString.toString().contains("WHERE")){
-            		if(searchDto.isDueDate()){
-                		queryString.append(" AND assessmentDueDate BETWEEN :startDate and :endDate ");
-                	}else{
-                		queryString.append(" AND createdDate BETWEEN :startDate and :endDate ");
-                	}
-            	}else{
-            		if(searchDto.isDueDate()){
-                		queryString.append(" WHERE assessmentDueDate BETWEEN :startDate and :endDate ");
-                	}else{
-                		queryString.append(" WHERE createdDate BETWEEN :startDate and :endDate ");
-                	}
-            	}
-           		
-            }
-            
-            if (!CollectionUtils.isEmpty(searchDto.getAssessmentTaskStatus())) {
-            	executeQuery = true;
-            	if (queryString.toString().contains("WHERE")){
-            		queryString.append(" AND o.assessmentTaskStatus IN :assessmentTaskStatus ");
-            	}else{
-            		queryString.append(" WHERE o.assessmentTaskStatus IN :assessmentTaskStatus ");
-            	}
-            }
-            
-            
-            queryString.append(" ORDER BY o.createdDate DESC");
-            Query q = entityManager.createQuery(queryString.toString(), AssessmentPlan.class);
+	public List<AssessmentPlan> findAllAssessmentPlans(SearchDto searchDto) {
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<AssessmentPlan> criteriaQuery = criteriaBuilder.createQuery(AssessmentPlan.class);
 
-            if (queryString.toString().contains(":topicIds")) {
-                if (CollectionUtils.isEmpty(topicIds)) {
-                    q.setParameter("topicIds", null);
-                } else {
-                    q.setParameter("topicIds", topicIds);
-                }
-            }
-            if (queryString.toString().contains(":assessmentPlanStatus")) {
-                q.setParameter("assessmentPlanStatus", searchDto.getStatuses());
-            }
-            
-            if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-	            if (queryString.toString().contains(":assignees")) {
-	                q.setParameter("assignees", searchDto.getAssignees());
-	            }
-            }
-            
-            if(null != searchDto.getStartDate()){
-	            if (queryString.toString().contains(":startDate")) {
-	                q.setParameter("startDate", searchDto.getStartDate());
-	            }
-	            
-	            if (queryString.toString().contains(":endDate")) {
-	                q.setParameter("endDate", searchDto.getEndDate());
-	            }
-            }
-            
-            if (null != searchDto.getAssessmentTaskStatus()) {
-            	if (queryString.toString().contains(":assessmentTaskStatus")) {
-	                q.setParameter("assessmentTaskStatus", searchDto.getAssessmentTaskStatus());
-	            }
-            }
-            if(executeQuery) {
-                assessmentPlanList = q.getResultList();
-            }
-        return assessmentPlanList;
-    }
+		Root<Topic> topic = criteriaQuery.from(Topic.class);
+		Join<Topic, AssessmentPlan> topicAssignmentJoin = topic.join("assessmentPlan", JoinType.INNER);
+		Join<AssessmentPlan,RiskPlan> assementRiskJoin=topicAssignmentJoin.join("riskPlan",JoinType.LEFT);
+		
+
+		if (null != searchDto) {
+			List<Predicate> predicates = new ArrayList<Predicate>(10);
+			
+			if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
+				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("riskTaskStatus").in(searchDto.getRiskTaskStatus())));
+				
+			}
+			
+			if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
+				predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get("assessmentPlanStatus").in(searchDto.getStatuses())));
+			}
+			
+			if (!CollectionUtils.isEmpty(searchDto.getAssessmentTaskStatus())) {
+				predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get("assessmentTaskStatus").in(searchDto.getAssessmentTaskStatus())));
+			}
+			
+			if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+				predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get("assignTo").in(searchDto.getAssignees())));
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
+				Root<Product> rootProduct = criteriaQuery.from(Product.class);
+				Predicate productEquals = criteriaBuilder.equal(topic.get("id"),
+						rootProduct.get("topicId"));
+				Predicate producNameEquals = criteriaBuilder
+						.isTrue(rootProduct.get("productName").in(searchDto.getProducts()));
+				predicates.add(productEquals);
+				predicates.add(producNameEquals);
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
+				Root<License> rootLicense = criteriaQuery.from(License.class);
+				Predicate licenseEquals = criteriaBuilder.equal(topic.get("id"), rootLicense.get("topicId"));
+				Predicate licenseNameEquals = criteriaBuilder.isTrue(rootLicense.get("licenseName").in(searchDto.getLicenses()));
+				predicates.add(licenseEquals);
+				predicates.add(licenseNameEquals);
+			}
+			
+			if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
+				Root<Ingredient> rootIngredient = criteriaQuery.from(Ingredient.class);
+				Predicate ingredientEquals = criteriaBuilder.equal(topic.get("id"), rootIngredient.get("topicId"));
+				Predicate ingredientNameEquals = criteriaBuilder.isTrue(rootIngredient.get("ingredientName").in(searchDto.getIngredients()));
+				predicates.add(ingredientEquals);
+				predicates.add(ingredientNameEquals);
+			}
+			
+			if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
+				Root<Hlt> rootHlt = criteriaQuery.from(Hlt.class);
+				Predicate hltTopicEquals = criteriaBuilder.equal(topic.get("id"), rootHlt.get("topicId"));
+				Predicate hltNameEquals = criteriaBuilder.isTrue(rootHlt.get("hltName").in(searchDto.getHlts()));
+				predicates.add(hltTopicEquals);
+				predicates.add(hltNameEquals);
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
+				Root<Hlgt> rootHlgt = criteriaQuery.from(Hlgt.class);
+				Predicate hlgtTopicEquals = criteriaBuilder.equal(topic.get("id"), rootHlgt.get("topicId"));
+				Predicate hlgtNameEquals = criteriaBuilder.isTrue(rootHlgt.get("hlgtName").in(searchDto.getHlgts()));
+				predicates.add(hlgtTopicEquals);
+				predicates.add(hlgtNameEquals);
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getPts())) {
+				Root<Pt> rootPt = criteriaQuery.from(Pt.class);
+				Predicate ptTopicEquals = criteriaBuilder.equal(topic.get("id"), rootPt.get("topicId"));
+				Predicate ptNameEquals = criteriaBuilder.isTrue(rootPt.get("ptName").in(searchDto.getPts()));
+				predicates.add(ptTopicEquals);
+				predicates.add(ptNameEquals);
+			}
+			
+			if (null != searchDto.getStartDate()) {
+				if (searchDto.isDueDate()) {
+					predicates.add(
+							criteriaBuilder.greaterThanOrEqualTo(topicAssignmentJoin.get("assessmentDueDate"), searchDto.getStartDate()));
+					if(null!=searchDto.getEndDate()){
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(topicAssignmentJoin.get("assessmentDueDate"), searchDto.getEndDate()));
+					}
+					
+				} else {
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(topicAssignmentJoin.get("createdDate"),	searchDto.getStartDate()));
+					if(null!=searchDto.getEndDate()){
+						predicates.add(
+								criteriaBuilder.lessThanOrEqualTo(topicAssignmentJoin.get("createdDate"), searchDto.getEndDate()));
+					}
+					
+				}
+
+			}
+			
+			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
+					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("priority"),
+					topicAssignmentJoin.get("inDays"), topicAssignmentJoin.get("ingrediantName"),
+					topicAssignmentJoin.get("source"), topicAssignmentJoin.get("caseInstanceId"),
+					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("assessmentRiskStatus"),
+					topicAssignmentJoin.get("assessmentDueDate"), topicAssignmentJoin.get("finalAssessmentSummary"),
+					topicAssignmentJoin.get("riskPlan"), topicAssignmentJoin.get("createdDate"),
+					topicAssignmentJoin.get("createdBy"), topicAssignmentJoin.get("lastModifiedDate"),
+					topicAssignmentJoin.get("assignTo"), topicAssignmentJoin.get("assessmentTaskStatus")))
+					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("createdDate")));
+		} else {
+			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
+					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("priority"),
+					topicAssignmentJoin.get("inDays"), topicAssignmentJoin.get("ingrediantName"),
+					topicAssignmentJoin.get("source"), topicAssignmentJoin.get("caseInstanceId"),
+					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("assessmentRiskStatus"),
+					topicAssignmentJoin.get("assessmentDueDate"), topicAssignmentJoin.get("finalAssessmentSummary"),
+					topicAssignmentJoin.get("riskPlan"), topicAssignmentJoin.get("createdDate"),
+					topicAssignmentJoin.get("createdBy"), topicAssignmentJoin.get("lastModifiedDate"),
+					topicAssignmentJoin.get("assignTo"), topicAssignmentJoin.get("assessmentTaskStatus")))
+			.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("createdDate")));
+		}
+
+		TypedQuery<AssessmentPlan> q = entityManager.createQuery(criteriaQuery);
+		List<AssessmentPlan> results = q.getResultList();
+		return results;
+	}
 
     public void updateAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws UpdateFailedException, IOException {
         if(assessmentPlan.getId() == null) {

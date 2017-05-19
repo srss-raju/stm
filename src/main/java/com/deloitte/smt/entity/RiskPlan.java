@@ -43,9 +43,31 @@ public class RiskPlan implements Serializable {
     private String riskTaskStatus;
     @Transient
 	private List<Comments> comments;
-    
-    @Transient
+
+ 	@Transient
     private List<SignalURL> signalUrls;
+    public RiskPlan(){}
+    
+    public RiskPlan(Long id, String name, String description, int inDays, Date createdDate, String createdBy,
+			Date lastModifiedDate, String summary, String caseInstanceId, String status, String ingredient,
+			String source, String assignTo, Date riskDueDate, String riskTaskStatus) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.inDays = inDays;
+		this.createdDate = createdDate;
+		this.createdBy = createdBy;
+		this.lastModifiedDate = lastModifiedDate;
+		this.summary = summary;
+		this.caseInstanceId = caseInstanceId;
+		this.status = status;
+		this.ingredient = ingredient;
+		this.source = source;
+		this.assignTo = assignTo;
+		this.riskDueDate = riskDueDate;
+		this.riskTaskStatus = riskTaskStatus;
+	}
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
     @JsonIgnore

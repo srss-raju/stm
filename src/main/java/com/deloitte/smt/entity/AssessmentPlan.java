@@ -66,6 +66,29 @@ public class AssessmentPlan {
 		this.topics = new HashSet<>();
 	}
 
+	public AssessmentPlan(Long id, String assessmentName, String priority, int inDays, String ingrediantName,
+			String source, String caseInstanceId, String assessmentPlanStatus, String assessmentRiskStatus,
+			Date assessmentDueDate, String finalAssessmentSummary, RiskPlan riskPlan, Date createdDate,
+			String createdBy, Date lastModifiedDate, String assignTo, String assessmentTaskStatus) {
+		this.id = id;
+		this.assessmentName = assessmentName;
+		this.priority = priority;
+		this.inDays=inDays;
+		this.ingrediantName = ingrediantName;
+		this.source = source;
+		this.caseInstanceId = caseInstanceId;
+		this.assessmentPlanStatus = assessmentPlanStatus;
+		this.assessmentRiskStatus = assessmentRiskStatus;
+		this.assessmentDueDate = assessmentDueDate;
+		this.finalAssessmentSummary = finalAssessmentSummary;
+		this.riskPlan = riskPlan;
+		this.createdDate = createdDate;
+		this.createdBy = createdBy;
+		this.lastModifiedDate = lastModifiedDate;
+		this.assignTo = assignTo;
+		this.assessmentTaskStatus = assessmentTaskStatus;
+	}
+
 	public Long getId() {
 		return id;
 	}

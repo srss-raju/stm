@@ -8,6 +8,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.TaskService;
@@ -29,6 +36,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
+import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
@@ -138,113 +146,79 @@ public class RiskPlanService {
         return riskPlan;
     }
 
-    public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
-        List<Long> riskTopicIds = new ArrayList<>();
-        boolean searchAll = true;
-        if(!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-            searchAll = false;
-        }
-        searchAll = searchService.getSignalIdsForSearch(searchDto, riskTopicIds, searchAll);
-        if(searchAll) {
-            Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-            //return riskPlanRepository.findAllByAssignToInOrderByCreatedDateDesc(searchDto.getAssignees());
-        }
-        List<RiskPlan> riskPlanList = new ArrayList<>();
-        StringBuilder queryString = new StringBuilder("SELECT o FROM RiskPlan o ");
-        boolean executeQuery = false;
-        if(!CollectionUtils.isEmpty(riskTopicIds)) {
-            if (!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())) {
-                executeQuery = true;
-                queryString.append("INNER JOIN o.assessmentPlan a ");
-                queryString.append("INNER JOIN a.topics t WHERE t.id IN :topicIds ");
-            }
-        }
-            if(!CollectionUtils.isEmpty(searchDto.getStatuses())){
-                executeQuery = true;
-                if(queryString.toString().contains(":topicIds")){
-                    queryString.append(" AND o.status IN :riskPlanStatus ");
-                } else {
-                    queryString.append(" WHERE o.status IN :riskPlanStatus ");
-                }
-            }
-            
-            if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-            	executeQuery = true;
-            	if (queryString.toString().contains("WHERE")){
-            		queryString.append(" AND o.assignTo IN :assignees ");
-            	}else{
-            		queryString.append(" WHERE o.assignTo IN :assignees ");
-            	}
-            }
-            
-            if(null != searchDto.getStartDate()){
-            	executeQuery = true;
-            	if (queryString.toString().contains("WHERE")){
-            		if(searchDto.isDueDate()){
-                		queryString.append(" AND riskDueDate BETWEEN :startDate and :endDate ");
-                	}else{
-                		queryString.append(" AND createdDate BETWEEN :startDate and :endDate ");
-                	}
-            	}else{
-            		if(searchDto.isDueDate()){
-                		queryString.append(" WHERE riskDueDate BETWEEN :startDate and :endDate ");
-                	}else{
-                		queryString.append(" WHERE createdDate BETWEEN :startDate and :endDate ");
-                	}
-            	}
-           		
-            }
-            
-            if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
-            	executeQuery = true;
-            	if (queryString.toString().contains("WHERE")){
-            		queryString.append(" AND o.riskTaskStatus IN :riskTaskStatus ");
-            	}else{
-            		queryString.append(" WHERE o.riskTaskStatus IN :riskTaskStatus ");
-            	}
-            }
-            
-            queryString.append(" ORDER BY o.createdDate DESC");
-            Query q = entityManager.createQuery(queryString.toString(), RiskPlan.class);
+	public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
 
-            if(queryString.toString().contains(":topicIds")){
-                if(CollectionUtils.isEmpty(riskTopicIds)) {
-                    q.setParameter("topicIds", null);
-                } else {
-                    q.setParameter("topicIds", riskTopicIds);
-                }
-            }
-            if(queryString.toString().contains(":riskPlanStatus")){
-                q.setParameter("riskPlanStatus", searchDto.getStatuses());
-            }
-            
-            if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-	            if (queryString.toString().contains(":assignees")) {
-	                q.setParameter("assignees", searchDto.getAssignees());
-	            }
-            }
-            
-            if(null != searchDto.getStartDate()){
-	            if (queryString.toString().contains(":startDate")) {
-	                q.setParameter("startDate", searchDto.getStartDate());
-	            }
-	            
-	            if (queryString.toString().contains(":endDate")) {
-	                q.setParameter("endDate", searchDto.getEndDate());
-	            }
-            }
-            
-            if (null != searchDto.getRiskTaskStatus()) {
-            	if (queryString.toString().contains(":riskTaskStatus")) {
-	                q.setParameter("riskTaskStatus", searchDto.getRiskTaskStatus());
-	            }
-            }
-            
-        if(executeQuery) {
-            riskPlanList = q.getResultList();
-        }
-        return riskPlanList;
-    }
+		Root<Topic> topic = criteriaQuery.from(Topic.class);
+		Join<Topic, AssessmentPlan> topicAssignmentJoin = topic.join("assessmentPlan", JoinType.INNER);
+		Join<AssessmentPlan, RiskPlan> assementRiskJoin = topicAssignmentJoin.join("riskPlan", JoinType.LEFT);
+
+		if (null != searchDto) {
+			List<Predicate> predicates = new ArrayList<Predicate>(10);
+
+			if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
+				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("status").in(searchDto.getStatuses())));
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
+				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("assignTo").in(searchDto.getAssignees())));
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+				predicates.add(criteriaBuilder
+						.isTrue(assementRiskJoin.get("riskTaskStatus").in(searchDto.getRiskTaskStatus())));
+			}
+
+			if (null != searchDto.getStartDate()) {
+				if (searchDto.isDueDate()) {
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get("riskDueDate"),
+							searchDto.getStartDate()));
+					if (null != searchDto.getEndDate()) {
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get("riskDueDate"),
+								searchDto.getEndDate()));
+					}
+
+				} else {
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get("createdDate"),
+							searchDto.getStartDate()));
+					if (null != searchDto.getEndDate()) {
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get("createdDate"),
+								searchDto.getEndDate()));
+					}
+				}
+
+			}
+
+			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			criteriaQuery
+					.multiselect(criteriaBuilder.construct(RiskPlan.class, assementRiskJoin.get("id"),
+							assementRiskJoin.get("name"), assementRiskJoin.get("description"),
+							assementRiskJoin.get("inDays"), assementRiskJoin.get("createdDate"),
+							assementRiskJoin.get("createdBy"), assementRiskJoin.get("lastModifiedDate"),
+							assementRiskJoin.get("summary"), assementRiskJoin.get("caseInstanceId"),
+							assementRiskJoin.get("status"), assementRiskJoin.get("ingredient"),
+							assementRiskJoin.get("source"), assementRiskJoin.get("assignTo"),
+							assementRiskJoin.get("riskDueDate"), assementRiskJoin.get("riskTaskStatus")))
+					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("createdDate")));
+
+		} else {
+			criteriaQuery
+					.multiselect(criteriaBuilder.construct(RiskPlan.class, assementRiskJoin.get("id"),
+							assementRiskJoin.get("name"), assementRiskJoin.get("description"),
+							assementRiskJoin.get("inDays"), assementRiskJoin.get("createdDate"),
+							assementRiskJoin.get("createdBy"), assementRiskJoin.get("lastModifiedDate"),
+							assementRiskJoin.get("summary"), assementRiskJoin.get("caseInstanceId"),
+							assementRiskJoin.get("status"), assementRiskJoin.get("ingredient"),
+							assementRiskJoin.get("source"), assementRiskJoin.get("assignTo"),
+							assementRiskJoin.get("riskDueDate"), assementRiskJoin.get("riskTaskStatus")))
+					.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("createdDate")));
+		}
+
+		TypedQuery<RiskPlan> q = entityManager.createQuery(criteriaQuery);
+		List<RiskPlan> results = q.getResultList();
+		return results;
+	}
 
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {
 		if(riskTask.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(riskTask.getStatus())){

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,51 +55,14 @@ public class SignalDetectionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 	
-	@GetMapping(value = "/all")
-	public List<SignalDetection> getAllByStatus(@RequestParam(name = "socs", required = false) String socs,
-									  @RequestParam(name = "ingredient", required = false) String ingredients,
-									  @RequestParam(name = "product", required = false) String products,
-									  @RequestParam(name = "license", required = false) String licenses,
-									  @RequestParam(name = "hlgts", required = false) String hlgts,
-									  @RequestParam(name = "hlts", required = false) String hlts,
-									  @RequestParam(name = "pts", required = false) String pts,
-									  @RequestParam(name = "frequency", required = false) String frequency,
-									  @RequestParam(name = "description", required = false) String description,
-									  @RequestParam(name = "isGantt", required = false) boolean isGantt) {
-
+	@PostMapping(value = "/all")
+	public List<SignalDetection> getAllByStatus(@RequestBody(required=false) SearchDto searchDto) {
 		List<SignalDetection> detectionList;
-		SearchDto dto = new SearchDto();
-		if(StringUtils.isNotBlank(socs)) {
-			dto.setSocs(StringConverterUtil.convertStringToList(socs));
-		}
-		if(StringUtils.isNotBlank(ingredients)) {
-			dto.setIngredients(StringConverterUtil.convertStringToList(ingredients));
-		}
-		if(StringUtils.isNotBlank(products)) {
-			dto.setProducts(StringConverterUtil.convertStringToList(products));
-		}
-		if(StringUtils.isNotBlank(licenses)) {
-			dto.setLicenses(StringConverterUtil.convertStringToList(licenses));
-		}
-		if(StringUtils.isNotBlank(hlgts)) {
-			dto.setHlgts(StringConverterUtil.convertStringToList(hlgts));
-		}
-		if(StringUtils.isNotBlank(hlts)) {
-			dto.setHlts(StringConverterUtil.convertStringToList(hlts));
-		}
-		if(StringUtils.isNotBlank(pts)) {
-			dto.setPts(StringConverterUtil.convertStringToList(pts));
-		}
-		if(StringUtils.isNotBlank(frequency)) {
-			dto.setFrequency(StringConverterUtil.convertStringToList(frequency));
-		}
-		if(StringUtils.isNotBlank(description)) {
-			dto.setDescription(description);
-		}
-		if(isGantt) {
-			detectionList = signalDetectionService.ganttDetections(signalDetectionService.findAllForSearch(dto));
+
+		if(null!=searchDto && searchDto.isGantt()) {
+			detectionList = signalDetectionService.ganttDetections(signalDetectionService.findAllForSearch(searchDto));
 		}else{
-			detectionList = signalDetectionService.findAllForSearch(dto);
+			detectionList = signalDetectionService.findAllForSearch(searchDto);
 		}
 		return detectionList;
 	}
