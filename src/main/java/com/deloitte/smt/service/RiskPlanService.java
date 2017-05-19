@@ -322,6 +322,7 @@ public class RiskPlanService {
             riskPlan = riskPlanRepository.save(riskPlan);
         }
         riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
+        riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskPlan.getId()));
         return riskPlan;
     }
 

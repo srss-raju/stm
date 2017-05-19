@@ -14,13 +14,8 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
@@ -37,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
@@ -46,7 +42,6 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
-import com.deloitte.smt.entity.SignalSources;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
@@ -60,6 +55,7 @@ import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
+import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
 import com.deloitte.smt.repository.IngredientRepository;
@@ -140,6 +136,9 @@ public class SignalService {
 
     @Autowired
     SearchService searchService;
+    
+    @Autowired
+    AttachmentRepository attachmentRepository;
 
     @Autowired
     private AssignmentConfigurationRepository assignmentConfigurationRepository;
@@ -283,9 +282,36 @@ public class SignalService {
         	signalURLRepository.save(topic.getSignalUrls());
         }
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topic.getFileMetadata());
-        Topic matchingTopic = getMatchingTopic(topic);
+        findMatchingSignal(topic);
         return topic;
     }
+
+	/**
+	 * @param topic
+	 */
+	private void findMatchingSignal(Topic topic) {
+		Topic matchingTopic = getMatchingTopic(topic);
+        topic.setValidationComments(matchingTopic.getValidationComments());
+        topic.setSignalStrength(matchingTopic.getSignalStrength());
+        topic.setSignalConfirmation(matchingTopic.getSignalConfirmation());
+        topic.setSignalValidation(matchingTopic.getSignalValidation());
+        topic.setAssessmentPlan(matchingTopic.getAssessmentPlan());
+        topicRepository.save(matchingTopic);
+        List<Attachment> matchingTopicAttachments = attachmentService.findByResourceIdAndAttachmentType(matchingTopic.getId(), AttachmentType.TOPIC_ATTACHMENT);
+        if(!CollectionUtils.isEmpty(matchingTopicAttachments)){
+        	for(Attachment attachment:matchingTopicAttachments){
+        		attachment.setAttachmentResourceId(topic.getId());
+        	}
+        }
+        attachmentRepository.save(matchingTopicAttachments);
+        List<SignalURL> matchingTopicSignalUrls = signalURLRepository.findByTopicId(matchingTopic.getId());
+        if(!CollectionUtils.isEmpty(matchingTopicSignalUrls)){
+        	for(SignalURL url:matchingTopicSignalUrls){
+        		url.setTopicId(topic.getId());
+        	}
+        }
+        signalURLRepository.save(matchingTopicSignalUrls);
+	}
 
     public String updateTopic(Topic topic, MultipartFile[] attachments) throws UpdateFailedException, IOException {
         if(topic.getId() == null) {
