@@ -300,6 +300,9 @@ public class SignalService {
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, topic.getDeletedAttachmentIds(), topic.getFileMetadata());
         topicRepository.save(topic);
         if(!CollectionUtils.isEmpty(topic.getSignalUrls())){
+        	for(SignalURL url:topic.getSignalUrls()){
+        		url.setTopicId(topic.getId());
+        	}
         	signalURLRepository.save(topic.getSignalUrls());
         }
         return "Update Success";

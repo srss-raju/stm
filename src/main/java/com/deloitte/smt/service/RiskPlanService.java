@@ -302,6 +302,9 @@ public class RiskPlanService {
         	}
         }
         if(!CollectionUtils.isEmpty(riskTask.getSignalUrls())){
+        	for(SignalURL url:riskTask.getSignalUrls()){
+        		url.setTopicId(riskTask.getId());
+        	}
         	signalURLRepository.save(riskTask.getSignalUrls());
         }
         if(allTasksCompletedFlag){
@@ -349,6 +352,9 @@ public class RiskPlanService {
         commentsRepository.save(riskPlan.getComments());
         
         if(!CollectionUtils.isEmpty(riskPlan.getSignalUrls())){
+        	for(SignalURL url:riskPlan.getSignalUrls()){
+        		url.setTopicId(riskPlan.getId());
+        	}
         	signalURLRepository.save(riskPlan.getSignalUrls());
         }
 	}
