@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -40,7 +41,6 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
-import com.deloitte.smt.entity.SignalSources;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
@@ -277,6 +277,7 @@ public class SignalService {
         	signalURLRepository.save(topic.getSignalUrls());
         }
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topic.getFileMetadata());
+        Topic matchingTopic = getMatchingTopic(topic);
         return topic;
     }
 
@@ -563,5 +564,34 @@ public class SignalService {
             throw new EntityNotFoundException("Risk Plan Action Type not found with the given Id : "+signalUrlId);
         }
         signalURLRepository.delete(signalURL);
+	}
+	
+	private Topic getMatchingTopic(Topic topic){
+		StringBuilder builder = new StringBuilder();
+		String tempPt = null;
+		List<Soc> socs  = topic.getSocs();
+        if(!CollectionUtils.isEmpty(socs)) {
+            List<Pt> pts;
+            for (Soc soc : socs) {
+                pts = soc.getPts();
+                if (!CollectionUtils.isEmpty(pts)) {
+                    for (Pt pt : pts) {
+                    	tempPt = pt.getPtName();
+                    	builder.append('\'');
+                    	builder.append(pt.getPtName()).append('\'').append(",");
+                    }
+                    builder.append('\'');
+                    builder.append(tempPt);
+                    builder.append('\'');
+                }
+            }
+        }
+        StringBuilder queryBuilder = new StringBuilder("select signal.* from sm_topic signal INNER JOIN sm_ingredient ing ON  (signal.id = ing.topic_id) LEFT OUTER JOIN  sm_pt pt ON (signal.id = pt.topic_id )  where signal.created_date < ?  and ing.ingredient_name=? and pt.pt_name IN (");
+        queryBuilder.append(builder.toString()).append(") order by signal.created_date desc limit 1");
+		Query q = entityManager.createNativeQuery(queryBuilder.toString(),Topic.class);
+		q.setParameter(1, topic.getCreatedDate());
+		q.setParameter(2, topic.getIngredient().getIngredientName());
+		Topic signal = (Topic)q.getSingleResult();
+		return signal;
 	}
 }
