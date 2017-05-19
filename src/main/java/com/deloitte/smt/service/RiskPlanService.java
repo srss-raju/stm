@@ -27,6 +27,7 @@ import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
@@ -39,6 +40,7 @@ import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
+import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 
 /**
@@ -87,6 +89,9 @@ public class RiskPlanService {
     CommentsRepository commentsRepository;
     
     @Autowired
+    SignalURLRepository signalURLRepository;
+    
+    @Autowired
     private AssignmentConfigurationRepository assignmentConfigurationRepository;
 
     public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, EntityNotFoundException {
@@ -124,6 +129,12 @@ public class RiskPlanService {
             riskPlan = riskPlanRepository.save(riskPlan);
         }
         attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null, riskPlan.getFileMetadata());
+        if(!CollectionUtils.isEmpty(riskPlan.getSignalUrls())){
+        	for(SignalURL url:riskPlan.getSignalUrls()){
+        		url.setTopicId(riskPlan.getId());
+        	}
+        	signalURLRepository.save(riskPlan.getSignalUrls());
+        }
         return riskPlan;
     }
 
@@ -263,6 +274,12 @@ public class RiskPlanService {
         taskInstRepository.save(taskInstance);
         riskTask = riskTaskRepository.save(riskTask);
         attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, riskTask.getFileMetadata());
+        if(!CollectionUtils.isEmpty(riskTask.getSignalUrls())){
+        	for(SignalURL url:riskTask.getSignalUrls()){
+        		url.setTopicId(riskTask.getId());
+        	}
+        	signalURLRepository.save(riskTask.getSignalUrls());
+        }
 	}
 	
 	public RiskTask findById(Long id) {
@@ -271,6 +288,7 @@ public class RiskPlanService {
             riskTask.setStatus("In Progress");
             riskTask = riskTaskRepository.save(riskTask);
         }
+        riskTask.setSignalUrls(signalURLRepository.findByTopicId(riskTask.getId()));
         return riskTask;
     }
 	
@@ -308,6 +326,9 @@ public class RiskPlanService {
         			allTasksCompletedFlag = false;
         		}
         	}
+        }
+        if(!CollectionUtils.isEmpty(riskTask.getSignalUrls())){
+        	signalURLRepository.save(riskTask.getSignalUrls());
         }
         if(allTasksCompletedFlag){
         	riskPlanRepository.updateRiskTaskStatus("Completed", Long.valueOf(riskTask.getRiskId()));
@@ -352,5 +373,9 @@ public class RiskPlanService {
         	}
         }
         commentsRepository.save(riskPlan.getComments());
+        
+        if(!CollectionUtils.isEmpty(riskPlan.getSignalUrls())){
+        	signalURLRepository.save(riskPlan.getSignalUrls());
+        }
 	}
 }

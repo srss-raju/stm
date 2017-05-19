@@ -19,6 +19,7 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.Comments;
+import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
@@ -27,6 +28,7 @@ import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
+import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRepository;
 
 /**
@@ -61,6 +63,9 @@ public class AssessmentPlanService {
 
     @Autowired
     SearchService searchService;
+    
+    @Autowired
+    SignalURLRepository signalURLRepository;
 
     public AssessmentPlan findById(Long assessmentId) throws EntityNotFoundException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
@@ -72,6 +77,7 @@ public class AssessmentPlanService {
             assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
         }
         assessmentPlan.setComments(commentsRepository.findByAssessmentId(assessmentId));
+        assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentId));
         return assessmentPlan;
     }
 
@@ -216,6 +222,12 @@ public class AssessmentPlanService {
         	}
         }
         commentsRepository.save(assessmentPlan.getComments());
+        if(!CollectionUtils.isEmpty(assessmentPlan.getSignalUrls())){
+        	for(SignalURL url:assessmentPlan.getSignalUrls()){
+        		url.setTopicId(assessmentPlan.getId());
+        	}
+        	signalURLRepository.save(assessmentPlan.getSignalUrls());
+        }
     }
 
     public void finalAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws UpdateFailedException, IOException {
