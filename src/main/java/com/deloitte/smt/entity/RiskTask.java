@@ -50,6 +50,9 @@ public class RiskTask {
 	private Map<String, Attachment> fileMetadata;
 	@Transient
 	private List<Long> deletedAttachmentIds;
+	
+	@Transient
+    private List<SignalURL> signalUrls;
 
 	private String assignTo;
 	private String owner;
@@ -204,5 +207,13 @@ public class RiskTask {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public List<SignalURL> getSignalUrls() {
+		return signalUrls;
+	}
+
+	public void setSignalUrls(List<SignalURL> signalUrls) {
+		this.signalUrls = signalUrls;
 	}
 }

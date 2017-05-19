@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +54,9 @@ public class AssessmentPlan {
 	private List<Long> templateIds;
 
 	private String assignTo;
+	
+	@Transient
+    private List<SignalURL> signalUrls;
 	
 	private String assessmentTaskStatus;
 	@Transient
@@ -227,5 +231,13 @@ public class AssessmentPlan {
 
 	public void setAssessmentTaskStatus(String assessmentTaskStatus) {
 		this.assessmentTaskStatus = assessmentTaskStatus;
+	}
+
+	public List<SignalURL> getSignalUrls() {
+		return signalUrls;
+	}
+
+	public void setSignalUrls(List<SignalURL> signalUrls) {
+		this.signalUrls = signalUrls;
 	}
 }

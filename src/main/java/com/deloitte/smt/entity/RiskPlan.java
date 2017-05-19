@@ -43,6 +43,9 @@ public class RiskPlan implements Serializable {
     private String riskTaskStatus;
     @Transient
 	private List<Comments> comments;
+    
+    @Transient
+    private List<SignalURL> signalUrls;
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
     @JsonIgnore
@@ -203,5 +206,13 @@ public class RiskPlan implements Serializable {
 
 	public void setComments(List<Comments> comments) {
 		this.comments = comments;
+	}
+
+	public List<SignalURL> getSignalUrls() {
+		return signalUrls;
+	}
+
+	public void setSignalUrls(List<SignalURL> signalUrls) {
+		this.signalUrls = signalUrls;
 	}
 }

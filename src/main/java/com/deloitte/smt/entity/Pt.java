@@ -1,5 +1,7 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "sm_pt")
-public class Pt {
+public class Pt implements Serializable{
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -13,11 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.util.SignalUtil;
 
@@ -41,6 +43,9 @@ public class AssessmentActionService {
     
     @Autowired
     AssessmentPlanRepository assessmentPlanRepository;
+    
+    @Autowired
+    SignalURLRepository signalURLRepository;
 
     public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
         if(signalAction.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(signalAction.getActionStatus())){
@@ -66,6 +71,12 @@ public class AssessmentActionService {
         signalAction.setActionStatus("New");
         signalAction = assessmentActionRepository.save(signalAction);
         attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
+        if(!CollectionUtils.isEmpty(signalAction.getSignalUrls())){
+        	for(SignalURL url:signalAction.getSignalUrls()){
+        		url.setTopicId(signalAction.getId());
+        	}
+        	signalURLRepository.save(signalAction.getSignalUrls());
+        }
         return signalAction;
     }
 
@@ -88,6 +99,9 @@ public class AssessmentActionService {
         		}
         	}
         }
+        if(!CollectionUtils.isEmpty(signalAction.getSignalUrls())){
+        	signalURLRepository.save(signalAction.getSignalUrls());
+        }
         if(allTasksCompletedFlag){
         	assessmentPlanRepository.updateAssessmentTaskStatus("Completed", Long.valueOf(signalAction.getAssessmentId()));
         }
@@ -99,6 +113,7 @@ public class AssessmentActionService {
             signalAction.setActionStatus("In Progress");
             signalAction = assessmentActionRepository.save(signalAction);
         }
+        signalAction.setSignalUrls(signalURLRepository.findByTopicId(signalAction.getId()));
         return signalAction;
     }
 
