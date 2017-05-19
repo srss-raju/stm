@@ -55,6 +55,8 @@ public class Topic implements Serializable{
     private Long runInstanceId;
     private String cases;
     private String caselistId;
+    @Transient
+    private List<SignalURL> signalUrls;
 
     @Transient
     private int casesCount;
@@ -327,5 +329,13 @@ public class Topic implements Serializable{
 
 	public void setCaselistId(String caselistId) {
 		this.caselistId = caselistId;
+	}
+
+	public List<SignalURL> getSignalUrls() {
+		return signalUrls;
+	}
+
+	public void setSignalUrls(List<SignalURL> signalUrls) {
+		this.signalUrls = signalUrls;
 	}
 }

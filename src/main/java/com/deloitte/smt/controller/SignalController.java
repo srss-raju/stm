@@ -1,14 +1,13 @@
 package com.deloitte.smt.controller;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +29,6 @@ import com.deloitte.smt.exception.TopicNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
-import com.deloitte.smt.util.StringConverterUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -139,6 +137,12 @@ public class SignalController {
 	@GetMapping(value = "/run/{runInstanceId}")
     public List<Topic> findTopicsByRunInstanceId(@PathVariable Long runInstanceId) {
         return signalService.findTopicsByRunInstanceId(runInstanceId);
+    }
+	
+	@DeleteMapping(value = "/url/{signalUrlId}")
+    public ResponseEntity<Void> deleteSignalURL(@PathVariable Long signalUrlId) throws EntityNotFoundException {
+		signalService.deleteSignalURL(signalUrlId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 	
 }
