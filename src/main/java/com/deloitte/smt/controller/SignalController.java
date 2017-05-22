@@ -75,11 +75,11 @@ public class SignalController {
 
 	@GetMapping(value = "/getCounts")
 	public String getCounts(@RequestParam(value = "ingredient", required = false) String ingredient, 
-							@RequestParam(value = "assignTo", required = false) String assignTo) {
+							@RequestParam(value = "assignees", required = false) String assignees) {
 		if(StringUtils.isNotBlank(ingredient)){
-			return signalService.getCountsByFilter(ingredient, assignTo);
+			return signalService.getCountsByFilter(ingredient, assignees);
 		}
-		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(assignTo),signalService.getAssessmentCount(assignTo),signalService.getRiskCount(assignTo));
+		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(assignees),signalService.getAssessmentCount(assignees),signalService.getRiskCount(assignees));
 	}
 	
 	@GetMapping(value = "/getTemplates/{ingrediantName}")
