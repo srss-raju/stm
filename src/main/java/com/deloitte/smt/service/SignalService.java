@@ -656,7 +656,7 @@ public class SignalService {
         	queryBuilder.append(" and pt.pt_name IN (");
         	queryBuilder.append(builder.toString());
         	queryBuilder.append(")");
-        }
+        } 
         queryBuilder.append("order by signal.created_date desc limit 1");
 		Query q = entityManager.createNativeQuery(queryBuilder.toString(),Topic.class);
 		q.setParameter(1, topic.getCreatedDate());
