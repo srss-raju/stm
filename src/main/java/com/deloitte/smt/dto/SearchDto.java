@@ -26,6 +26,16 @@ public class SearchDto {
 	private List<String> signalNames;
 	private List<String> assignees = new ArrayList<String>();
 	private List<String> frequency;
+	
+	private String dateKey;
+
+	public String getDateKey() {
+		return dateKey;
+	}
+
+	public void setDateKey(String dateKey) {
+		this.dateKey = dateKey;
+	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date startDate;

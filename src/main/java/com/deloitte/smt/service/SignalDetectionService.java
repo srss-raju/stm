@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.DateKeyType;
 import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
@@ -300,8 +302,32 @@ public class SignalDetectionService {
 			if (!CollectionUtils.isEmpty(searchDto.getFrequency())) {
 				queryString.append(" AND runFrequency IN :runFrequency");
 			}
-
+			
+			if(DateKeyType.searchIn(searchDto.getDateKey())){
+				if(searchDto.getDateKey().equalsIgnoreCase(DateKeyType.CREATED.name())){
+					queryString.append(" AND date(createdDate)>= :startDate");
+					
+					if(null!=searchDto.getEndDate()){
+						queryString.append(" AND date(createdDate)<= :endDate");	
+					}
+				}else if(searchDto.getDateKey().equalsIgnoreCase(DateKeyType.LASTRUN.name())){
+					queryString.append(" AND date(lastRunDate)>= :startDate");
+					
+					if(null!=searchDto.getEndDate()){
+						queryString.append(" AND date(lastRunDate)<= :endDate");	
+					}
+				}else if(searchDto.getDateKey().equalsIgnoreCase(DateKeyType.NEXTRUN.name())){
+					queryString.append(" AND date(nextRunDate)>= :startDate");
+					
+					if(null!=searchDto.getEndDate()){
+						queryString.append(" AND date(nextRunDate)<= :endDate");	
+					}
+				}
+				
+			}
 		} 
+		
+		
 
 		queryString.append(" ORDER BY createdDate DESC");
 		Query q = entityManager.createQuery(queryString.toString(), SignalDetection.class);
@@ -320,6 +346,15 @@ public class SignalDetectionService {
 			if (queryString.toString().contains(":runFrequency")) {
 				q.setParameter("runFrequency", searchDto.getFrequency());
 			}
+			
+			if (queryString.toString().contains(":startDate")) {
+				q.setParameter("startDate", searchDto.getStartDate(),TemporalType.DATE);
+			}
+			
+			if (queryString.toString().contains(":endDate")) {
+				q.setParameter("endDate", searchDto.getEndDate(),TemporalType.DATE);
+			}
+			
 		}
 		
 		signalDetections = q.getResultList();
