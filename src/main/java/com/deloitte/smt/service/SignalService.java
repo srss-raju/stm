@@ -296,6 +296,7 @@ public class SignalService {
         topic.setSignalConfirmation(matchingTopic.getSignalConfirmation());
         topic.setSignalValidation(matchingTopic.getSignalValidation());
         topic.setAssessmentPlan(matchingTopic.getAssessmentPlan());
+        topic.setSignalStatus(matchingTopic.getSignalStatus());
         topicRepository.save(matchingTopic);
         List<Attachment> matchingTopicAttachments = attachmentService.findByResourceIdAndAttachmentType(matchingTopic.getId(), AttachmentType.TOPIC_ATTACHMENT);
         if(!CollectionUtils.isEmpty(matchingTopicAttachments)){
