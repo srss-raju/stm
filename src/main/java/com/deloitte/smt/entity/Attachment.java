@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import com.deloitte.smt.constant.AttachmentType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;

@@ -1,7 +1,8 @@
 package com.deloitte.smt.repository;
 
+import com.deloitte.smt.constant.MeetingType;
 import com.deloitte.smt.entity.Meeting;
-import com.deloitte.smt.entity.MeetingType;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

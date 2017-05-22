@@ -1,4 +1,4 @@
-package com.deloitte.smt.entity;
+package com.deloitte.smt.constant;
 
 import java.util.ArrayList;
 import java.util.List;

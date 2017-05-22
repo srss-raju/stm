@@ -14,47 +14,59 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Created by Rajesh on 21-04-2017.
  */
 @Entity
 @Table(name = "sm_signal_detection")
-public class SignalDetection implements Serializable{
+public class SignalDetection implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    private String name;
-    private String description;
-    private Date createdDate;
-    private String createdBy;
-    private Date lastModifiedDate;
-    private String lastModifiedBy;
-    private String query;
-    private String runFrequency;
-    private String windowType;
-    private Date lastRunDate;
-    private Date nextRunDate;
-    private Long signalDetected;
+	private String name;
+	private String description;
+	private Date createdDate;
+	private String createdBy;
+	private Date lastModifiedDate;
+	private String lastModifiedBy;
+	private String query;
+	private String runFrequency;
+	private String windowType;
+	private Date lastRunDate;
+	private Date nextRunDate;
+	private Long signalDetected;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="signalDetection")
-    private Set<SignalDetectionStatistics> signalDetectionStatistics;
+	public static void main(String[] args) throws JsonProcessingException {
+		ObjectMapper mapper=new ObjectMapper();
+		
+		SignalDetection signalDetection=new SignalDetection();
+		String json=mapper.writeValueAsString(signalDetection);
+		
+		System.out.println(json);
+	}
 
-    @Transient
-    private Ingredient ingredient;
-    
-    @Transient
-    private List<Soc> socs;
-    
-    @Transient
-    private List<DenominatorForPoisson> denominatorForPoisson;
-    
-    @Transient
-    private List<IncludeAE> includeAEs;
-    
-    @Transient
-    private List<Date> nextRunDates;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "signalDetection")
+	private Set<SignalDetectionStatistics> signalDetectionStatistics;
+
+	@Transient
+	private Ingredient ingredient;
+
+	@Transient
+	private List<Soc> socs;
+
+	@Transient
+	private List<DenominatorForPoisson> denominatorForPoisson;
+
+	@Transient
+	private List<IncludeAE> includeAEs;
+
+	@Transient
+	private List<Date> nextRunDates;
 
 	public Long getId() {
 		return id;
@@ -132,8 +144,7 @@ public class SignalDetection implements Serializable{
 		return signalDetectionStatistics;
 	}
 
-	public void setSignalDetectionStatistics(
-			Set<SignalDetectionStatistics> signalDetectionStatistics) {
+	public void setSignalDetectionStatistics(Set<SignalDetectionStatistics> signalDetectionStatistics) {
 		this.signalDetectionStatistics = signalDetectionStatistics;
 	}
 
@@ -157,8 +168,7 @@ public class SignalDetection implements Serializable{
 		return denominatorForPoisson;
 	}
 
-	public void setDenominatorForPoisson(
-			List<DenominatorForPoisson> denominatorForPoisson) {
+	public void setDenominatorForPoisson(List<DenominatorForPoisson> denominatorForPoisson) {
 		this.denominatorForPoisson = denominatorForPoisson;
 	}
 
@@ -210,4 +220,4 @@ public class SignalDetection implements Serializable{
 		this.lastRunDate = lastRunDate;
 	}
 
-    }
+}

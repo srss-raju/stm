@@ -1,7 +1,7 @@
 package com.deloitte.smt.controller;
 
+import com.deloitte.smt.constant.MeetingType;
 import com.deloitte.smt.entity.Meeting;
-import com.deloitte.smt.entity.MeetingType;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.MeetingService;

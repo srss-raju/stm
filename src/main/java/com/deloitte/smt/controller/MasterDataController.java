@@ -1,8 +1,8 @@
 package com.deloitte.smt.controller;
 
+import com.deloitte.smt.constant.ActionStatus;
+import com.deloitte.smt.constant.ActionType;
 import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.ActionStatus;
-import com.deloitte.smt.entity.ActionType;
 import com.deloitte.smt.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

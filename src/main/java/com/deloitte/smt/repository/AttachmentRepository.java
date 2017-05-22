@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.entity.AttachmentType;
 
 /**
  * Created by myelleswarapu on 06-04-2017.

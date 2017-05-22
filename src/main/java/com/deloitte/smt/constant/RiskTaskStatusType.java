@@ -1,4 +1,4 @@
-package com.deloitte.smt.entity;
+package com.deloitte.smt.constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,15 +6,14 @@ import java.util.List;
 /**
  * Created by myelleswarapu on 06-04-2017.
  */
-public enum ActionStatus {
-    UNASSIGNED("Unassigned"),
-    IN_PROGRESS("In Progress"),
-    APPROVED("Approved"),
-    COMPLETED("Completed");
+public enum RiskTaskStatusType {
+    COMPLETED("Completed"),
+    NOT_COMPLETED("Not Completed");
+    
 
     private String description;
 
-    ActionStatus(String description) {
+    RiskTaskStatusType(String description) {
         this.description = description;
     }
 
@@ -24,8 +23,8 @@ public enum ActionStatus {
 
     public static List<String> getAll(){
         List<String> descriptionList = new ArrayList<>();
-        for(ActionStatus actionStatus : ActionStatus.values()) {
-            descriptionList.add(actionStatus.getDescription());
+        for(RiskTaskStatusType actionType : RiskTaskStatusType.values()) {
+            descriptionList.add(actionType.getDescription());
         }
         return descriptionList;
     }
