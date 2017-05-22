@@ -30,6 +30,8 @@ public class SignalUtil {
 			calendar.add(Calendar.MONTH, 3);
 		}else if("Yearly".equalsIgnoreCase(runFrequency)){
 			calendar.add(Calendar.YEAR, 1);
+		}else{
+			calendar.add(Calendar.MONTH, 3);
 		}
 		return calendar.getTime();
 	}

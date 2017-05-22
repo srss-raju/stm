@@ -2,6 +2,7 @@ package com.deloitte.smt.controller;
 
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.SignalDetection;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
@@ -32,7 +33,7 @@ public class SignalDetectionController {
 	SignalDetectionService signalDetectionService;
 
 	@PostMapping(value = "/createSignalDetection")
-	public SignalDetection  createSignalDetection(@RequestParam(value = "data") String topicString) throws IOException {
+	public SignalDetection  createSignalDetection(@RequestParam(value = "data") String topicString) throws IOException ,ApplicationException{
 		SignalDetection signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
 		return signalDetectionService.createOrUpdateSignalDetection(signalDetection);
 	}
@@ -43,7 +44,7 @@ public class SignalDetectionController {
     }
 	
 	@PostMapping(value = "/updateSignalDetection")
-	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString) throws IOException, UpdateFailedException {
+	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString) throws IOException, UpdateFailedException,ApplicationException {
 		SignalDetection signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
 		signalDetectionService.createOrUpdateSignalDetection(signalDetection);
 		return new ResponseEntity<>(HttpStatus.OK);
