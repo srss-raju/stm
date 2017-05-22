@@ -1,4 +1,4 @@
-package com.deloitte.smt.entity;
+package com.deloitte.smt.constant;
 
 /**
  * Created by myelleswarapu on 06-04-2017.

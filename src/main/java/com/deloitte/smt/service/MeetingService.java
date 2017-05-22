@@ -1,8 +1,8 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.entity.AttachmentType;
+import com.deloitte.smt.constant.AttachmentType;
+import com.deloitte.smt.constant.MeetingType;
 import com.deloitte.smt.entity.Meeting;
-import com.deloitte.smt.entity.MeetingType;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.repository.MeetingRepository;

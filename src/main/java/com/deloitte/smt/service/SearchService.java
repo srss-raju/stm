@@ -1,12 +1,12 @@
 package com.deloitte.smt.service;
 
+import com.deloitte.smt.constant.AssessmentTaskStatusType;
+import com.deloitte.smt.constant.RiskTaskStatusType;
+import com.deloitte.smt.constant.RunFrequency;
 import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.AssessmentTaskStatusType;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
-import com.deloitte.smt.entity.RiskTaskStatusType;
-import com.deloitte.smt.entity.RunFrequency;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;

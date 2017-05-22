@@ -1,7 +1,7 @@
 package com.deloitte.smt.service;
 
+import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.entity.AttachmentType;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.repository.AttachmentRepository;

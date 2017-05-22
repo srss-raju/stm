@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -20,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.deloitte.smt.constant.DateKeyType;
 import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.DateKeyType;
 import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
@@ -32,6 +33,7 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
@@ -49,6 +51,7 @@ import com.deloitte.smt.util.SignalUtil;
 /**
  * Created by myelleswarapu on 04-04-2017.
  */
+@Transactional(rollbackOn = Exception.class)
 @Service
 public class SignalDetectionService {
 
@@ -56,7 +59,7 @@ public class SignalDetectionService {
 
 	@Autowired
 	private IngredientRepository ingredientRepository;
-	
+
 	@Autowired
 	private ProductRepository productRepository;
 
@@ -74,151 +77,156 @@ public class SignalDetectionService {
 
 	@Autowired
 	private PtRepository ptRepository;
-	
+
 	@Autowired
 	private SignalDetectionRepository signalDetectionRepository;
-	
+
 	@Autowired
 	private DenominatorForPoissonRepository denominatorForPoissonRepository;
-	
+
 	@Autowired
 	private IncludeAERepository includeAERepository;
-	
+
 	@PersistenceContext
-    private EntityManager entityManager;
+	private EntityManager entityManager;
 
-	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) {
-		
-		Calendar c = Calendar.getInstance();
-		if(signalDetection.getId() == null) {
-			signalDetection.setCreatedDate(c.getTime());
-			signalDetection.setLastModifiedDate(c.getTime());
-		} else {
-			signalDetection.setLastModifiedDate(c.getTime());
-		}
-		
-		signalDetection.setNextRunDate(SignalUtil.getNextRunDate(signalDetection.getRunFrequency(), signalDetection.getCreatedDate()));
-		SignalDetection clone = signalDetection;
-		clone = signalDetectionRepository.save(clone);
-		signalDetection.setId(clone.getId());
-		Ingredient ingredient = signalDetection.getIngredient();
-        if(ingredient != null) {
-            List<Product> products = ingredient.getProducts();
-            List<License> licenses = ingredient.getLicenses();
-            ingredient.setDetectionId(signalDetection.getId());
-			ingredientRepository.deleteByDetectionId(signalDetection.getId());
-            ingredient = ingredientRepository.save(ingredient);
-
-            if(!CollectionUtils.isEmpty(products)){
-                for (Product singleProduct : products) {
-                    singleProduct.setIngredientId(ingredient.getId());
-                    singleProduct.setDetectionId(signalDetection.getId());
-                }
-				productRepository.deleteByDetectionId(signalDetection.getId());
-                productRepository.save(products);
-            }
-            if(!CollectionUtils.isEmpty(licenses)) {
-                for (License singleLicense : licenses) {
-                    singleLicense.setIngredientId(ingredient.getId());
-                    singleLicense.setDetectionId(signalDetection.getId());
-                }
-				licenseRepository.deleteByDetectionId(signalDetection.getId());
-                licenseRepository.save(licenses);
-            }
-        }
-        
-        List<Soc> socs  = signalDetection.getSocs();
-		if(!CollectionUtils.isEmpty(socs)) {
-			for (Soc soc : socs) {
-				soc.setDetectionId(signalDetection.getId());
+	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection)throws ApplicationException {
+		try {
+			Calendar c = Calendar.getInstance();
+			if (signalDetection.getId() == null) {
+				signalDetection.setCreatedDate(c.getTime());
+				signalDetection.setLastModifiedDate(c.getTime());
+			} else {
+				signalDetection.setLastModifiedDate(c.getTime());
 			}
-			socRepository.deleteByDetectionId(signalDetection.getId());
-			socs = socRepository.save(socs);
-			List<Hlgt> hlgts;
-			List<Hlt> hlts;
-			List<Pt> pts;
 
-			for (Soc soc : socs) {
-				hlgts = soc.getHlgts();
-				hlts = soc.getHlts();
-				pts = soc.getPts();
-				if (!CollectionUtils.isEmpty(hlgts)) {
-					for (Hlgt hlgt : hlgts) {
-						hlgt.setSocId(soc.getId());
-						hlgt.setDetectionId(signalDetection.getId());
+			signalDetection.setNextRunDate(
+					SignalUtil.getNextRunDate(signalDetection.getRunFrequency(), signalDetection.getCreatedDate()));
+			SignalDetection clone = signalDetection;
+			clone = signalDetectionRepository.save(clone);
+			signalDetection.setId(clone.getId());
+			Ingredient ingredient = signalDetection.getIngredient();
+			if (ingredient != null) {
+				List<Product> products = ingredient.getProducts();
+				List<License> licenses = ingredient.getLicenses();
+				ingredient.setDetectionId(signalDetection.getId());
+				ingredientRepository.deleteByDetectionId(signalDetection.getId());
+				ingredient = ingredientRepository.save(ingredient);
+
+				if (!CollectionUtils.isEmpty(products)) {
+					for (Product singleProduct : products) {
+						singleProduct.setIngredientId(ingredient.getId());
+						singleProduct.setDetectionId(signalDetection.getId());
 					}
-					hlgtRepository.deleteByDetectionId(signalDetection.getId());
-					hlgtRepository.save(hlgts);
+					productRepository.deleteByDetectionId(signalDetection.getId());
+					productRepository.save(products);
 				}
-				if (!CollectionUtils.isEmpty(hlts)) {
-					for (Hlt hlt : hlts) {
-						hlt.setSocId(soc.getId());
-						hlt.setDetectionId(signalDetection.getId());
+				if (!CollectionUtils.isEmpty(licenses)) {
+					for (License singleLicense : licenses) {
+						singleLicense.setIngredientId(ingredient.getId());
+						singleLicense.setDetectionId(signalDetection.getId());
 					}
-					hltRepository.deleteByDetectionId(signalDetection.getId());
-					hltRepository.save(hlts);
-				}
-				if (!CollectionUtils.isEmpty(pts)) {
-					for (Pt pt : pts) {
-						pt.setSocId(soc.getId());
-						pt.setDetectionId(signalDetection.getId());
-					}
-					ptRepository.deleteByDetectionId(signalDetection.getId());
-					ptRepository.save(pts);
+					licenseRepository.deleteByDetectionId(signalDetection.getId());
+					licenseRepository.save(licenses);
 				}
 			}
+
+			List<Soc> socs = signalDetection.getSocs();
+			if (!CollectionUtils.isEmpty(socs)) {
+				for (Soc soc : socs) {
+					soc.setDetectionId(signalDetection.getId());
+				}
+				socRepository.deleteByDetectionId(signalDetection.getId());
+				socs = socRepository.save(socs);
+				List<Hlgt> hlgts;
+				List<Hlt> hlts;
+				List<Pt> pts;
+
+				for (Soc soc : socs) {
+					hlgts = soc.getHlgts();
+					hlts = soc.getHlts();
+					pts = soc.getPts();
+					if (!CollectionUtils.isEmpty(hlgts)) {
+						for (Hlgt hlgt : hlgts) {
+							hlgt.setSocId(soc.getId());
+							hlgt.setDetectionId(signalDetection.getId());
+						}
+						hlgtRepository.deleteByDetectionId(signalDetection.getId());
+						hlgtRepository.save(hlgts);
+					}
+					if (!CollectionUtils.isEmpty(hlts)) {
+						for (Hlt hlt : hlts) {
+							hlt.setSocId(soc.getId());
+							hlt.setDetectionId(signalDetection.getId());
+						}
+						hltRepository.deleteByDetectionId(signalDetection.getId());
+						hltRepository.save(hlts);
+					}
+					if (!CollectionUtils.isEmpty(pts)) {
+						for (Pt pt : pts) {
+							pt.setSocId(soc.getId());
+							pt.setDetectionId(signalDetection.getId());
+						}
+						ptRepository.deleteByDetectionId(signalDetection.getId());
+						ptRepository.save(pts);
+					}
+				}
+			}
+
+			List<IncludeAE> includeAEs = signalDetection.getIncludeAEs();
+			List<DenominatorForPoisson> denominatorForPoissons = signalDetection.getDenominatorForPoisson();
+
+			if (!CollectionUtils.isEmpty(includeAEs)) {
+				for (IncludeAE ae : includeAEs) {
+					ae.setDetectionId(signalDetection.getId());
+				}
+				includeAERepository.deleteByDetectionId(signalDetection.getId());
+				includeAERepository.save(includeAEs);
+			}
+			if (!CollectionUtils.isEmpty(denominatorForPoissons)) {
+				for (DenominatorForPoisson dfp : denominatorForPoissons) {
+					dfp.setDetectionId(signalDetection.getId());
+				}
+				denominatorForPoissonRepository.deleteByDetectionId(signalDetection.getId());
+				denominatorForPoissonRepository.save(denominatorForPoissons);
+			}
+			return signalDetection;
+		} catch (Exception ex) {
+			throw new ApplicationException("Problem Creating Signal Detection");
 		}
-    	
-    	List<IncludeAE> includeAEs  = signalDetection.getIncludeAEs();
-    	List<DenominatorForPoisson> denominatorForPoissons  = signalDetection.getDenominatorForPoisson();
-    	
-    	if(!CollectionUtils.isEmpty(includeAEs)){
-    		for(IncludeAE ae:includeAEs){
-    			ae.setDetectionId(signalDetection.getId());
-    		}
-			includeAERepository.deleteByDetectionId(signalDetection.getId());
-    		includeAERepository.save(includeAEs);
-    	}
-    	if(!CollectionUtils.isEmpty(denominatorForPoissons)){
-    		for(DenominatorForPoisson dfp:denominatorForPoissons){
-    			dfp.setDetectionId(signalDetection.getId());
-    		}
-			denominatorForPoissonRepository.deleteByDetectionId(signalDetection.getId());
-    		denominatorForPoissonRepository.save(denominatorForPoissons);
-    	}
-		return signalDetection;
 	}
-	
-	/*public String updateSignalDetection(SignalDetection signalDetection) throws UpdateFailedException, IOException {
-        if(signalDetection.getId() == null) {
-            throw new UpdateFailedException("Update failed for Topic, since it does not have any valid Id field.");
-        }
-        signalDetection.setLastModifiedDate(new Date());
-        signalDetectionRepository.save(signalDetection);
-        return "Update Success";
-    }*/
-	
+
+	/*
+	 * public String updateSignalDetection(SignalDetection signalDetection)
+	 * throws UpdateFailedException, IOException { if(signalDetection.getId() ==
+	 * null) { throw new
+	 * UpdateFailedException("Update failed for Topic, since it does not have any valid Id field."
+	 * ); } signalDetection.setLastModifiedDate(new Date());
+	 * signalDetectionRepository.save(signalDetection); return "Update Success";
+	 * }
+	 */
+
 	public void delete(Long signalDetectionId) throws DeleteFailedException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(signalDetectionId);
-        if(signalDetection == null) {
-            throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
-        }
-        signalDetectionRepository.delete(signalDetection);
-    }
-	
+		if (signalDetection == null) {
+			throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
+		}
+		signalDetectionRepository.delete(signalDetection);
+	}
+
 	public SignalDetection findById(Long id) throws EntityNotFoundException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(id);
-		if(null == signalDetection) {
-            throw new EntityNotFoundException("Signal Detection not found with given Id :"+id);
-        }
-        addOtherInfoToSignalDetection(Arrays.asList(signalDetection));
+		if (null == signalDetection) {
+			throw new EntityNotFoundException("Signal Detection not found with given Id :" + id);
+		}
+		addOtherInfoToSignalDetection(Arrays.asList(signalDetection));
 		return signalDetection;
-    }
-	
-	 public List<SignalDetection> findAllForSearch(SearchDto searchDto) {
-	        List<SignalDetection> signalDetections;
-	        Set<Long> signalDetectionIds = new HashSet<>();
-		 List<Ingredient> ingredients;
+	}
+
+	public List<SignalDetection> findAllForSearch(SearchDto searchDto) {
+		List<SignalDetection> signalDetections;
+		Set<Long> signalDetectionIds = new HashSet<>();
+		List<Ingredient> ingredients;
 		List<Product> products = new ArrayList<Product>();
 		List<License> licenses = new ArrayList<License>();
 		List<Soc> socs;
@@ -302,32 +310,30 @@ public class SignalDetectionService {
 			if (!CollectionUtils.isEmpty(searchDto.getFrequency())) {
 				queryString.append(" AND runFrequency IN :runFrequency");
 			}
-			
-			if(DateKeyType.searchIn(searchDto.getDateKey())){
-				if(searchDto.getDateKey().equalsIgnoreCase(DateKeyType.CREATED.name())){
+
+			if (DateKeyType.searchIn(searchDto.getDateKey())) {
+				if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.CREATED.name())) {
 					queryString.append(" AND date(createdDate)>= :startDate");
-					
-					if(null!=searchDto.getEndDate()){
-						queryString.append(" AND date(createdDate)<= :endDate");	
+
+					if (null != searchDto.getEndDate()) {
+						queryString.append(" AND date(createdDate)<= :endDate");
 					}
-				}else if(searchDto.getDateKey().equalsIgnoreCase(DateKeyType.LASTRUN.name())){
+				} else if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.LASTRUN.name())) {
 					queryString.append(" AND date(lastRunDate)>= :startDate");
-					
-					if(null!=searchDto.getEndDate()){
-						queryString.append(" AND date(lastRunDate)<= :endDate");	
+
+					if (null != searchDto.getEndDate()) {
+						queryString.append(" AND date(lastRunDate)<= :endDate");
 					}
-				}else if(searchDto.getDateKey().equalsIgnoreCase(DateKeyType.NEXTRUN.name())){
+				} else if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.NEXTRUN.name())) {
 					queryString.append(" AND date(nextRunDate)>= :startDate");
-					
-					if(null!=searchDto.getEndDate()){
-						queryString.append(" AND date(nextRunDate)<= :endDate");	
+
+					if (null != searchDto.getEndDate()) {
+						queryString.append(" AND date(nextRunDate)<= :endDate");
 					}
 				}
-				
+
 			}
-		} 
-		
-		
+		}
 
 		queryString.append(" ORDER BY createdDate DESC");
 		Query q = entityManager.createQuery(queryString.toString(), SignalDetection.class);
@@ -346,17 +352,17 @@ public class SignalDetectionService {
 			if (queryString.toString().contains(":runFrequency")) {
 				q.setParameter("runFrequency", searchDto.getFrequency());
 			}
-			
+
 			if (queryString.toString().contains(":startDate")) {
-				q.setParameter("startDate", searchDto.getStartDate(),TemporalType.DATE);
+				q.setParameter("startDate", searchDto.getStartDate(), TemporalType.DATE);
 			}
-			
+
 			if (queryString.toString().contains(":endDate")) {
-				q.setParameter("endDate", searchDto.getEndDate(),TemporalType.DATE);
+				q.setParameter("endDate", searchDto.getEndDate(), TemporalType.DATE);
 			}
-			
+
 		}
-		
+
 		signalDetections = q.getResultList();
 
 		if (!CollectionUtils.isEmpty(signalDetections)) {
@@ -401,19 +407,19 @@ public class SignalDetectionService {
 			Ingredient ingredient;
 			ingredient = ingredientRepository.findByDetectionId(signalDetection.getId());
 			List<Product> products;
-				products = productRepository.findByDetectionId(signalDetection.getId());
+			products = productRepository.findByDetectionId(signalDetection.getId());
 
 			List<License> licenses;
-				licenses = licenseRepository.findByDetectionId(signalDetection.getId());
+			licenses = licenseRepository.findByDetectionId(signalDetection.getId());
 
-			if(ingredient != null) {
+			if (ingredient != null) {
 				ingredient.setProducts(products);
 				ingredient.setLicenses(licenses);
 				signalDetection.setIngredient(ingredient);
 			}
 
 			List<Soc> socs;
-				socs = socRepository.findByDetectionId(signalDetection.getId());
+			socs = socRepository.findByDetectionId(signalDetection.getId());
 			if (!CollectionUtils.isEmpty(socs)) {
 				for (Soc soc : socs) {
 					soc.setHlgts(hlgtRepository.findByDetectionId(signalDetection.getId()));
@@ -424,29 +430,30 @@ public class SignalDetectionService {
 			}
 			signalDetection.setSocs(socs);
 
-			List<DenominatorForPoisson> denominatorForPoissonList = denominatorForPoissonRepository.findByDetectionId(signalDetection.getId());
+			List<DenominatorForPoisson> denominatorForPoissonList = denominatorForPoissonRepository
+					.findByDetectionId(signalDetection.getId());
 			List<IncludeAE> includeAEList = includeAERepository.findByDetectionId(signalDetection.getId());
 			signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
 			signalDetection.setIncludeAEs(includeAEList);
 		});
 	}
-	
+
 	public List<SignalDetection> ganttDetections(List<SignalDetection> detections) {
 		if (!CollectionUtils.isEmpty(detections)) {
-			for(SignalDetection signalDetection:detections){
+			for (SignalDetection signalDetection : detections) {
 				createGanttSignalDetections(signalDetection);
 			}
 		}
 		return detections;
-    }
+	}
 
 	private void createGanttSignalDetections(SignalDetection signalDetection) {
 		List<Date> nextRunDates = new ArrayList<>();
 		Date createdDate = signalDetection.getCreatedDate();
-		for(int i=0; i<Integer.parseInt(signalDetection.getWindowType()); i++){
+		for (int i = 0; i < Integer.parseInt(signalDetection.getWindowType()); i++) {
 			createdDate = SignalUtil.getNextRunDate(signalDetection.getRunFrequency(), createdDate);
 			nextRunDates.add(createdDate);
-			LOG.info("Next Run Date  -->> "+createdDate);
+			LOG.info("Next Run Date  -->> " + createdDate);
 		}
 		signalDetection.setNextRunDates(nextRunDates);
 	}

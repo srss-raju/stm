@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.entity.AttachmentType;
+import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
