@@ -240,63 +240,63 @@ public class SignalDetectionService {
 
 			if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
 				products = productRepository.findAllByProductNameIn(searchDto.getProducts());
-				products.parallelStream().forEach(product -> {
-					if (product.getDetectionId() != null) {
-						signalDetectionIds.add(product.getDetectionId());
-					}
-				});
+//				products.parallelStream().forEach(product -> {
+//					if (product.getDetectionId() != null) {
+//						signalDetectionIds.add(product.getDetectionId());
+//					}
+//				});
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
 				ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
-				ingredients.parallelStream().forEach(ingredient -> {
-					if (ingredient.getDetectionId() != null) {
-						signalDetectionIds.add(ingredient.getDetectionId());
-					}
-				});
+//				ingredients.parallelStream().forEach(ingredient -> {
+//					if (ingredient.getDetectionId() != null) {
+//						signalDetectionIds.add(ingredient.getDetectionId());
+//					}
+//				});
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
 				licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
-				licenses.parallelStream().forEach(license -> {
-					if (license.getDetectionId() != null) {
-						signalDetectionIds.add(license.getDetectionId());
-					}
-				});
+//				licenses.parallelStream().forEach(license -> {
+//					if (license.getDetectionId() != null) {
+//						signalDetectionIds.add(license.getDetectionId());
+//					}
+//				});
 			}
 			if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
 				socs = socRepository.findAllBySocNameIn(searchDto.getSocs());
-				socs.parallelStream().forEach(soc -> {
-					if (soc.getDetectionId() != null) {
-						signalDetectionIds.add(soc.getDetectionId());
-					}
-				});
+//				socs.parallelStream().forEach(soc -> {
+//					if (soc.getDetectionId() != null) {
+//						signalDetectionIds.add(soc.getDetectionId());
+//					}
+//				});
 			}
 			if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
 				hlgts = hlgtRepository.findAllByHlgtNameIn(searchDto.getHlgts());
-				hlgts.parallelStream().forEach(hlgt -> {
-					if (hlgt.getDetectionId() != null) {
-						signalDetectionIds.add(hlgt.getDetectionId());
-					}
-				});
+//				hlgts.parallelStream().forEach(hlgt -> {
+//					if (hlgt.getDetectionId() != null) {
+//						signalDetectionIds.add(hlgt.getDetectionId());
+//					}
+//				});
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
 				hlts = hltRepository.findAllByHltNameIn(searchDto.getHlts());
-				hlts.parallelStream().forEach(hlt -> {
-					if (hlt.getDetectionId() != null) {
-						signalDetectionIds.add(hlt.getDetectionId());
-					}
-				});
+//				hlts.parallelStream().forEach(hlt -> {
+//					if (hlt.getDetectionId() != null) {
+//						signalDetectionIds.add(hlt.getDetectionId());
+//					}
+//				});
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getPts())) {
 				pts = ptRepository.findAllByPtNameIn(searchDto.getPts());
-				pts.parallelStream().forEach(pt -> {
-					if (pt.getDetectionId() != null) {
-						signalDetectionIds.add(pt.getDetectionId());
-					}
-				});
+//				pts.parallelStream().forEach(pt -> {
+//					if (pt.getDetectionId() != null) {
+//						signalDetectionIds.add(pt.getDetectionId());
+//					}
+//				});
 			}
 
 			if (signalDetectionIds.size() > 0) {
