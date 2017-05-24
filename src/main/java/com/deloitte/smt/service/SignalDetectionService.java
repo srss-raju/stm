@@ -13,6 +13,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +30,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.DateKeyType;
 import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
@@ -31,8 +39,10 @@ import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
+import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
@@ -90,7 +100,7 @@ public class SignalDetectionService {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection)throws ApplicationException {
+	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
 			Calendar c = Calendar.getInstance();
 			if (signalDetection.getId() == null) {
@@ -223,183 +233,145 @@ public class SignalDetectionService {
 		return signalDetection;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<SignalDetection> findAllForSearch(SearchDto searchDto) {
-		List<SignalDetection> signalDetections;
-		Set<Long> signalDetectionIds = new HashSet<>();
-		List<Ingredient> ingredients;
-		List<Product> products = new ArrayList<Product>();
-		List<License> licenses = new ArrayList<License>();
-		List<Soc> socs;
-		List<Hlgt> hlgts;
-		List<Hlt> hlts;
-		List<Pt> pts;
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
 
-		StringBuilder queryString = new StringBuilder("SELECT o FROM SignalDetection o WHERE 1=1 ");
+		Root<SignalDetection> rootSignalDetection = criteriaQuery.from(SignalDetection.class);
+		
 
-		if (searchDto != null) {
-
-			if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
-				products = productRepository.findAllByProductNameIn(searchDto.getProducts());
-//				products.parallelStream().forEach(product -> {
-//					if (product.getDetectionId() != null) {
-//						signalDetectionIds.add(product.getDetectionId());
-//					}
-//				});
-			}
-
-			if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
-				ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
-//				ingredients.parallelStream().forEach(ingredient -> {
-//					if (ingredient.getDetectionId() != null) {
-//						signalDetectionIds.add(ingredient.getDetectionId());
-//					}
-//				});
-			}
-
-			if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
-				licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
-//				licenses.parallelStream().forEach(license -> {
-//					if (license.getDetectionId() != null) {
-//						signalDetectionIds.add(license.getDetectionId());
-//					}
-//				});
-			}
-			if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
-				socs = socRepository.findAllBySocNameIn(searchDto.getSocs());
-//				socs.parallelStream().forEach(soc -> {
-//					if (soc.getDetectionId() != null) {
-//						signalDetectionIds.add(soc.getDetectionId());
-//					}
-//				});
-			}
-			if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
-				hlgts = hlgtRepository.findAllByHlgtNameIn(searchDto.getHlgts());
-//				hlgts.parallelStream().forEach(hlgt -> {
-//					if (hlgt.getDetectionId() != null) {
-//						signalDetectionIds.add(hlgt.getDetectionId());
-//					}
-//				});
-			}
-
-			if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
-				hlts = hltRepository.findAllByHltNameIn(searchDto.getHlts());
-//				hlts.parallelStream().forEach(hlt -> {
-//					if (hlt.getDetectionId() != null) {
-//						signalDetectionIds.add(hlt.getDetectionId());
-//					}
-//				});
-			}
-
-			if (!CollectionUtils.isEmpty(searchDto.getPts())) {
-				pts = ptRepository.findAllByPtNameIn(searchDto.getPts());
-//				pts.parallelStream().forEach(pt -> {
-//					if (pt.getDetectionId() != null) {
-//						signalDetectionIds.add(pt.getDetectionId());
-//					}
-//				});
-			}
-
-			if (signalDetectionIds.size() > 0) {
-				queryString.append(" AND id IN :ids ");
-			}
+		if (null != searchDto) {
+			Root<Ingredient> rootIngredient = criteriaQuery.from(Ingredient.class);
+			List<Predicate> predicates = new ArrayList<Predicate>(10);
+			predicates.add(criteriaBuilder.equal(rootSignalDetection.get("id"), rootIngredient.get("detectionId")));
 
 			if (StringUtils.isNotBlank(searchDto.getDescription())) {
-				queryString.append(" AND description IN :description ");
+				predicates.add(
+						criteriaBuilder.isTrue(rootSignalDetection.get("description").in(searchDto.getDescription())));
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getFrequency())) {
-				queryString.append(" AND runFrequency IN :runFrequency");
+				predicates.add(
+						criteriaBuilder.isTrue(rootSignalDetection.get("runFrequency").in(searchDto.getFrequency())));
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
+				Predicate ingredientNameEquals = criteriaBuilder
+						.isTrue(rootIngredient.get("ingredientName").in(searchDto.getIngredients()));
+				predicates.add(ingredientNameEquals);
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
+				Root<Product> rootProduct = criteriaQuery.from(Product.class);
+				Predicate ingredientProductEquals = criteriaBuilder.equal(rootIngredient.get("id"),
+						rootProduct.get("ingredientId"));
+
+				Predicate productNameIn = criteriaBuilder
+						.isTrue(rootProduct.get("productName").in(searchDto.getProducts()));
+
+				predicates.add(ingredientProductEquals);
+				predicates.add(productNameIn);
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
+				Root<License> rootLicense = criteriaQuery.from(License.class);
+				Predicate ingredientLicenseEquals = criteriaBuilder.equal(rootIngredient.get("id"),
+						rootLicense.get("ingredientId"));
+
+				Predicate LicenseNameIn = criteriaBuilder
+						.isTrue(rootLicense.get("licenseName").in(searchDto.getLicenses()));
+
+				predicates.add(ingredientLicenseEquals);
+				predicates.add(LicenseNameIn);
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
+				Root<Soc> rootSoc = criteriaQuery.from(Soc.class);
+				Predicate signalDetectionSocEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
+						rootSoc.get("detectionId"));
+
+				Predicate socNameIn = criteriaBuilder.isTrue(rootSoc.get("socName").in(searchDto.getSocs()));
+
+				predicates.add(signalDetectionSocEquals);
+				predicates.add(socNameIn);
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
+				Root<Hlt> rootHlt = criteriaQuery.from(Hlt.class);
+				Predicate signalDetectionHltEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
+						rootHlt.get("detectionId"));
+
+				Predicate hltNameIn = criteriaBuilder.isTrue(rootHlt.get("hltName").in(searchDto.getHlts()));
+
+				predicates.add(signalDetectionHltEquals);
+				predicates.add(hltNameIn);
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
+				Root<Hlgt> rootHlgt = criteriaQuery.from(Hlgt.class);
+				Predicate signalDetectionHlgtEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
+						rootHlgt.get("detectionId"));
+
+				Predicate hlgtNameIn = criteriaBuilder.isTrue(rootHlgt.get("hlgtName").in(searchDto.getHlgts()));
+
+				predicates.add(signalDetectionHlgtEquals);
+				predicates.add(hlgtNameIn);
+			}
+
+			if (!CollectionUtils.isEmpty(searchDto.getPts())) {
+				Root<Pt> rootPt = criteriaQuery.from(Pt.class);
+				Predicate signalDetectionPtEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
+						rootPt.get("detectionId"));
+
+				Predicate hlgtNameIn = criteriaBuilder.isTrue(rootPt.get("ptName").in(searchDto.getPts()));
+
+				predicates.add(signalDetectionPtEquals);
+				predicates.add(hlgtNameIn);
 			}
 
 			if (DateKeyType.searchIn(searchDto.getDateKey())) {
 				if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.CREATED.name())) {
-					queryString.append(" AND date(createdDate)>= :startDate");
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootSignalDetection.get("createdDate"),
+							searchDto.getStartDate()));
 
 					if (null != searchDto.getEndDate()) {
-						queryString.append(" AND date(createdDate)<= :endDate");
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(rootSignalDetection.get("createdDate"),
+								searchDto.getEndDate()));
 					}
 				} else if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.LASTRUN.name())) {
-					queryString.append(" AND date(lastRunDate)>= :startDate");
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootSignalDetection.get("lastRunDate"),
+							searchDto.getStartDate()));
 
 					if (null != searchDto.getEndDate()) {
-						queryString.append(" AND date(lastRunDate)<= :endDate");
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(rootSignalDetection.get("lastRunDate"),
+								searchDto.getEndDate()));
 					}
+
 				} else if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.NEXTRUN.name())) {
-					queryString.append(" AND date(nextRunDate)>= :startDate");
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootSignalDetection.get("nextRunDate"),
+							searchDto.getStartDate()));
 
 					if (null != searchDto.getEndDate()) {
-						queryString.append(" AND date(nextRunDate)<= :endDate");
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(rootSignalDetection.get("nextRunDate"),
+								searchDto.getEndDate()));
 					}
-				}
 
-			}
-		}
-
-		queryString.append(" ORDER BY createdDate DESC");
-		Query q = entityManager.createQuery(queryString.toString(), SignalDetection.class);
-
-		if (null != searchDto) {
-			if (queryString.toString().contains(":ids")) {
-				if (CollectionUtils.isEmpty(signalDetectionIds)) {
-					q.setParameter("ids", null);
-				} else {
-					q.setParameter("ids", signalDetectionIds);
 				}
 			}
-			if (queryString.toString().contains(":description")) {
-				q.setParameter("description", searchDto.getDescription());
-			}
-			if (queryString.toString().contains(":runFrequency")) {
-				q.setParameter("runFrequency", searchDto.getFrequency());
-			}
 
-			if (queryString.toString().contains(":startDate")) {
-				q.setParameter("startDate", searchDto.getStartDate(), TemporalType.DATE);
-			}
+			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			criteriaQuery.multiselect(rootSignalDetection).where(andPredicate)
+					.orderBy(criteriaBuilder.desc(rootSignalDetection.get("createdDate")));
 
-			if (queryString.toString().contains(":endDate")) {
-				q.setParameter("endDate", searchDto.getEndDate(), TemporalType.DATE);
-			}
-
+		} else {
+			criteriaQuery.multiselect(rootSignalDetection)
+					.orderBy(criteriaBuilder.desc(rootSignalDetection.get("createdDate")));
 		}
 
-		signalDetections = q.getResultList();
-
-		if (!CollectionUtils.isEmpty(signalDetections)) {
-			addOtherInfoToSignalDetection(signalDetections);
-		}
-
-		// Set<String> signalDetectedProductNames =
-		// products.stream().filter(product -> null != product.getDetectionId())
-		// .map(Product::getProductName).collect(Collectors.toSet());
-		//
-		// Set<String> signalDetectedLicenseNames =
-		// licenses.stream().filter(license -> null != license.getDetectionId())
-		// .map(License::getLicenseName).collect(Collectors.toSet());
-
-		// signalDetections.parallelStream().forEach(signalDetection -> {
-		// List<Product> matchedProducts =
-		// signalDetection.getIngredient().getProducts().stream()
-		// .filter(product ->
-		// signalDetectedProductNames.contains(product.getProductName())).collect(Collectors.toList());
-		// signalDetection.getIngredient().setProducts(matchedProducts);
-		//
-		// List<License> matchedLicenses =
-		// signalDetection.getIngredient().getLicenses().stream()
-		// .filter(product ->
-		// signalDetectedLicenseNames.contains(product.getLicenseName())).collect(Collectors.toList());
-		// signalDetection.getIngredient().setLicenses(matchedLicenses);
-		//
-		// });
-		//
-		// List<SignalDetection> filtered=signalDetections.stream()
-		// .filter(signalDetection ->
-		// !CollectionUtils.isEmpty(signalDetection.getIngredient().getProducts())
-		// ||
-		// !CollectionUtils.isEmpty(signalDetection.getIngredient().getLicenses()))
-		// .collect(Collectors.toList());
-
-		return signalDetections;
+		TypedQuery<SignalDetection> q = entityManager.createQuery(criteriaQuery);
+		List<SignalDetection> results = q.getResultList();
+		return results;
 	}
 
 	private void addOtherInfoToSignalDetection(List<SignalDetection> signalDetections) {
