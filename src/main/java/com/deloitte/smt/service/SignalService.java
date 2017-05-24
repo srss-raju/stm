@@ -207,7 +207,7 @@ public class SignalService {
             if(!StringUtils.isEmpty(topic.getSourceName())) {
                 assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(ingredient.getIngredientName(), topic.getSourceName());
             } 
-            // If Source is not null and combination not available we have to fetch with Ingredient
+            // If Source is  null and combination not available we have to fetch with Ingredient
             if(assignmentConfiguration == null){
             	assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSourceIsNull(ingredient.getIngredientName());
             }
