@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import com.deloitte.smt.util.SignalUtil;
 /**
  * Created by myelleswarapu on 10-04-2017.
  */
+@Transactional
 @Service
 public class AssessmentActionService {
 

@@ -2,6 +2,8 @@ package com.deloitte.smt.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import com.deloitte.smt.repository.ExternalDatasetsRepository;
 /**
  * Created by Rajesh on 02-05-2017.
  */
+@Transactional
 @Service
 public class ExternalDatasetsService {
 

@@ -15,6 +15,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.TaskService;
@@ -54,6 +55,7 @@ import com.deloitte.smt.repository.TaskInstRepository;
 /**
  * Created by myelleswarapu on 12-04-2017.
  */
+@Transactional
 @Service
 public class RiskPlanService {
 

@@ -3,6 +3,8 @@ package com.deloitte.smt.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +19,7 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 
+@Transactional
 @Service
 public class TaskTemplateService {
 	

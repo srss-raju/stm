@@ -11,9 +11,12 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by myelleswarapu on 02-05-2017.
  */
+@Transactional
 @Service
 public class SignalSourcesService {
 

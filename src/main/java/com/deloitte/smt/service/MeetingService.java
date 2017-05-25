@@ -14,9 +14,12 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by myelleswarapu on 12-04-2017.
  */
+@Transactional
 @Service
 public class MeetingService {
 
