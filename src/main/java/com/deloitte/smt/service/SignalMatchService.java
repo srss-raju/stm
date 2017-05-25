@@ -79,7 +79,7 @@ public class SignalMatchService {
                 }
             }
         }
-        StringBuilder queryBuilder = new StringBuilder("select signal.* from sm_topic signal INNER JOIN sm_ingredient ing ON  (signal.id = ing.topic_id) LEFT OUTER JOIN  sm_pt pt ON (signal.id = pt.topic_id )  where signal.created_date < ?  and ing.ingredient_name=? ");
+        StringBuilder queryBuilder = new StringBuilder("select distinct signal.* from sm_topic signal INNER JOIN sm_ingredient ing ON  (signal.id = ing.topic_id) LEFT OUTER JOIN  sm_pt pt ON (signal.id = pt.topic_id )  where signal.created_date < ?  and ing.ingredient_name=? ");
         if(topic.getSourceName() != null){
         	queryBuilder.append(" and source_name =\'");
         	queryBuilder.append(topic.getSourceName());
