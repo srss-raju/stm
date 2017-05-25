@@ -43,6 +43,8 @@ public class AssessmentPlan {
 	private RiskPlan riskPlan;
 	@Transient
 	private List<Long> deletedAttachmentIds;
+	@Transient
+	private Long cohortPercentage;
 
 	private Date createdDate;
 	private String createdBy;
@@ -262,5 +264,13 @@ public class AssessmentPlan {
 
 	public void setSignalUrls(List<SignalURL> signalUrls) {
 		this.signalUrls = signalUrls;
+	}
+
+	public Long getCohortPercentage() {
+		return cohortPercentage;
+	}
+
+	public void setCohortPercentage(Long cohortPercentage) {
+		this.cohortPercentage = cohortPercentage;
 	}
 }
