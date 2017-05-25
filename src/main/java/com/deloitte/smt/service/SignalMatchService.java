@@ -125,7 +125,9 @@ public class SignalMatchService {
 					cohort95PercentageSignals.add(ciSignal);
 				}else {
 					cohort75To95PercentageSignals.add(ciSignal);
-					ciSignal.getAssessmentPlan().setCohortPercentage(ciSignal.getCohortPercentage());
+					if(ciSignal.getAssessmentPlan() != null){
+						ciSignal.getAssessmentPlan().setCohortPercentage(ciSignal.getCohortPercentage());
+					}
 					matchingAssessments.add(ciSignal.getAssessmentPlan());
 				}
 			}
