@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deloitte.smt.entity.DenominationForPoission;
+import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.DenominationForPoissionService;
@@ -30,13 +30,13 @@ public class DenominationForPoissionController {
     DenominationForPoissionService denominationForPoissionService;
 
     @PostMapping
-    public List<DenominationForPoission> createNewAssessmentActionType(@RequestBody List<DenominationForPoission> denominationForPoissions) {
+    public List<DenominatorForPoisson> createNewAssessmentActionType(@RequestBody List<DenominatorForPoisson> denominationForPoissions) {
     	denominationForPoissions = denominationForPoissionService.insert(denominationForPoissions);
         return denominationForPoissions;
     }
 
     @PutMapping
-    public DenominationForPoission updateAssessmentActionType(@RequestBody DenominationForPoission denominationForPoission) throws UpdateFailedException {
+    public DenominatorForPoisson updateAssessmentActionType(@RequestBody DenominatorForPoisson denominationForPoission) throws UpdateFailedException {
     	denominationForPoission = denominationForPoissionService.update(denominationForPoission);
         return denominationForPoission;
     }
@@ -48,12 +48,12 @@ public class DenominationForPoissionController {
     }
 
     @GetMapping(value = "/{denominationForPoissionId}")
-    public DenominationForPoission findAssessmentActionTypeById(@PathVariable Long denominationForPoissionId) throws EntityNotFoundException {
+    public DenominatorForPoisson findAssessmentActionTypeById(@PathVariable Long denominationForPoissionId) throws EntityNotFoundException {
         return denominationForPoissionService.findById(denominationForPoissionId);
     }
 
     @GetMapping
-    public List<DenominationForPoission> findAll() {
+    public List<DenominatorForPoisson> findAll() {
         return denominationForPoissionService.findAll();
     }
 }
