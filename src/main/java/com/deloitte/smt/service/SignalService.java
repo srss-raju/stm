@@ -175,6 +175,9 @@ public class SignalService {
         topic.setSignalUrls(signalURLRepository.findByTopicId(topicId));
         
         topic.setSocs(socs);
+        if(!"Completed".equalsIgnoreCase(topic.getSignalStatus())){
+        	topic = signalMatchService.findMatchingSignal(topic);
+        }
         return topic;
     }
 
