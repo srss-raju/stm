@@ -1,5 +1,11 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,14 +17,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
- * Created by myelleswarapu on 04-04-2017.
+ * Created by RKB on 04-04-2017.
  */
 @Entity
 @Table(name = "sm_topic")
@@ -57,6 +58,8 @@ public class Topic implements Serializable{
     private String caselistId;
     @Transient
     private List<SignalURL> signalUrls;
+    private Long confidenceIndex;
+    private Long cohortPercentage;
 
     @Transient
     private int casesCount;
@@ -78,6 +81,9 @@ public class Topic implements Serializable{
 
     @Transient
     private Map<String, Attachment> fileMetadata;
+    
+    @Transient
+    private List<AssessmentPlan> assessmentPlans;
     
     public Topic() {
         this.startDate = new Date();
@@ -338,4 +344,29 @@ public class Topic implements Serializable{
 	public void setSignalUrls(List<SignalURL> signalUrls) {
 		this.signalUrls = signalUrls;
 	}
+
+	public Long getConfidenceIndex() {
+		return confidenceIndex;
+	}
+
+	public void setConfidenceIndex(Long confidenceIndex) {
+		this.confidenceIndex = confidenceIndex;
+	}
+
+	public Long getCohortPercentage() {
+		return cohortPercentage;
+	}
+
+	public void setCohortPercentage(Long cohortPercentage) {
+		this.cohortPercentage = cohortPercentage;
+	}
+
+	public List<AssessmentPlan> getAssessmentPlans() {
+		return assessmentPlans;
+	}
+
+	public void setAssessmentPlans(List<AssessmentPlan> assessmentPlans) {
+		this.assessmentPlans = assessmentPlans;
+	}
+
 }

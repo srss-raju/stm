@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -33,7 +32,6 @@ import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
 import com.deloitte.smt.entity.Ingredient;
@@ -72,7 +70,7 @@ import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
- * Created by myelleswarapu on 04-04-2017.
+ * Created by RKB on 04-04-2017.
  */
 @Service
 public class SignalService {
@@ -81,6 +79,9 @@ public class SignalService {
 
     @Autowired
     private TaskService taskService;
+    
+    @Autowired
+    private SignalMatchService signalMatchService;
 
     @Autowired
     private RuntimeService runtimeService;
@@ -199,6 +200,7 @@ public class SignalService {
                 signalStatistic.setTopic(topic);
             }
         }
+        topic.setConfidenceIndex(60l);
         topic = topicRepository.save(topic);
 
         Ingredient ingredient = topic.getIngredient();
@@ -282,37 +284,12 @@ public class SignalService {
         	signalURLRepository.save(topic.getSignalUrls());
         }
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topic.getFileMetadata());
-        findMatchingSignal(topic);
+        LOG.info("Start Algorithm for matching signal");
+        topic = signalMatchService.findMatchingSignal(topic);
         return topic;
     }
 
-	/**
-	 * @param topic
-	 */
-	private void findMatchingSignal(Topic topic) {
-		Topic matchingTopic = getMatchingSignal(topic);
-        topic.setValidationComments(matchingTopic.getValidationComments());
-        topic.setSignalStrength(matchingTopic.getSignalStrength());
-        topic.setSignalConfirmation(matchingTopic.getSignalConfirmation());
-        topic.setSignalValidation(matchingTopic.getSignalValidation());
-        topic.setAssessmentPlan(matchingTopic.getAssessmentPlan());
-        topic.setSignalStatus(matchingTopic.getSignalStatus());
-        topicRepository.save(topic);
-        List<Attachment> matchingTopicAttachments = attachmentService.findByResourceIdAndAttachmentType(matchingTopic.getId(), AttachmentType.TOPIC_ATTACHMENT);
-        if(!CollectionUtils.isEmpty(matchingTopicAttachments)){
-        	for(Attachment attachment:matchingTopicAttachments){
-        		attachment.setAttachmentResourceId(topic.getId());
-        	}
-        }
-        attachmentRepository.save(matchingTopicAttachments);
-        List<SignalURL> matchingTopicSignalUrls = signalURLRepository.findByTopicId(matchingTopic.getId());
-        if(!CollectionUtils.isEmpty(matchingTopicSignalUrls)){
-        	for(SignalURL url:matchingTopicSignalUrls){
-        		url.setTopicId(topic.getId());
-        	}
-        }
-        signalURLRepository.save(matchingTopicSignalUrls);
-	}
+	
 
     public String updateTopic(Topic topic, MultipartFile[] attachments) throws UpdateFailedException, IOException {
         if(topic.getId() == null) {
@@ -632,37 +609,4 @@ public class SignalService {
         signalURLRepository.delete(signalURL);
 	}
 	
-	private Topic getMatchingSignal(Topic topic){
-		StringBuilder builder = new StringBuilder();
-		String tempPt = null;
-		List<Soc> socs  = topic.getSocs();
-        if(!CollectionUtils.isEmpty(socs)) {
-            List<Pt> pts;
-            for (Soc soc : socs) {
-                pts = soc.getPts();
-                if (!CollectionUtils.isEmpty(pts)) {
-                    for (Pt pt : pts) {
-                    	tempPt = pt.getPtName();
-                    	builder.append('\'');
-                    	builder.append(pt.getPtName()).append('\'').append(",");
-                    }
-                    builder.append('\'');
-                    builder.append(tempPt);
-                    builder.append('\'');
-                }
-            }
-        }
-        StringBuilder queryBuilder = new StringBuilder("select signal.* from sm_topic signal INNER JOIN sm_ingredient ing ON  (signal.id = ing.topic_id) LEFT OUTER JOIN  sm_pt pt ON (signal.id = pt.topic_id )  where signal.created_date < ?  and ing.ingredient_name=?");
-        if(!StringUtils.isEmpty(builder.toString())){
-        	queryBuilder.append(" and pt.pt_name IN (");
-        	queryBuilder.append(builder.toString());
-        	queryBuilder.append(")");
-        } 
-        queryBuilder.append("order by signal.created_date desc limit 1");
-		Query q = entityManager.createNativeQuery(queryBuilder.toString(),Topic.class);
-		q.setParameter(1, topic.getCreatedDate());
-		q.setParameter(2, topic.getIngredient().getIngredientName());
-		Topic signal = (Topic)q.getSingleResult();
-		return signal;
-	}
 }
