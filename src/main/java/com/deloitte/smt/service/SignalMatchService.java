@@ -59,7 +59,7 @@ public class SignalMatchService {
 	}
 
 	private List<Topic> getMatchingSignals(Topic topic) {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder ptBuilder = new StringBuilder();
 		String tempPt = null;
 		
 		List<Soc> socs = topic.getSocs();
@@ -69,12 +69,12 @@ public class SignalMatchService {
 				pts = soc.getPts();
 				if (!CollectionUtils.isEmpty(pts)) {
 					for (Pt pt : pts) {
-							builder.append('\'');
-							builder.append(pt.getPtName().replaceAll("'", "''"));
-							builder.append('\'');
-							builder.append(",");
+							ptBuilder.append('\'');
+							ptBuilder.append(pt.getPtName().replaceAll("'", "''"));
+							ptBuilder.append('\'');
+							ptBuilder.append(",");
 					}
-					tempPt=builder.toString().substring(0, builder.lastIndexOf(","));
+					tempPt=ptBuilder.toString().substring(0, ptBuilder.lastIndexOf(","));
 				}
 			}
 		}
@@ -86,7 +86,7 @@ public class SignalMatchService {
 			queryBuilder.append(topic.getSourceName());
 			queryBuilder.append("\'");
 		}
-		if (!StringUtils.isEmpty(builder.toString())) {
+		if (null!=tempPt) {
 			queryBuilder.append(" and pt.pt_name IN (");
 			queryBuilder.append(tempPt);
 			queryBuilder.append(")");
