@@ -61,7 +61,7 @@ public class SignalMatchService {
 	
 	private List<Topic> getMatchingSignals(Topic topic){
 		StringBuilder builder = new StringBuilder();
-		String tempPt = null;
+		//String tempPt = null;
 		List<Soc> socs  = topic.getSocs();
         if(!CollectionUtils.isEmpty(socs)) {
             List<Pt> pts;
@@ -69,17 +69,22 @@ public class SignalMatchService {
                 pts = soc.getPts();
                 if (!CollectionUtils.isEmpty(pts)) {
                     for (Pt pt : pts) {
-                    	tempPt = pt.getPtName();
-                    	builder.append('\'');
-                    	builder.append(pt.getPtName()).append('\'').append(",");
+                    	pt.getPtName().replaceAll("'","''");
+//                    	tempPt = pt.getPtName();
+//                    	
+//                    	builder.append('\'');
+//                    	builder.append(pt.getPtName()).append('\'').append(",");
                     }
-                    builder.append('\'');
-                    builder.append(tempPt);
-                    builder.append('\'');
+//                    builder.append('\'');
+//                    builder.append(tempPt);
+//                    builder.append('\'');
                 }
             }
         }
         StringBuilder queryBuilder = new StringBuilder("select distinct signal.* from sm_topic signal INNER JOIN sm_ingredient ing ON  (signal.id = ing.topic_id) LEFT OUTER JOIN  sm_pt pt ON (signal.id = pt.topic_id )  where signal.created_date < ?  and ing.ingredient_name=? ");
+        
+       // StringBuilder queryBuilder = new StringBuilder("select distinct signal.* from sm_topic signal INNER JOIN sm_ingredient ing ON  (signal.id = ing.topic_id) LEFT OUTER JOIN  sm_pt pt ON (signal.id = pt.topic_id )  where  ing.ingredient_name=? ");
+        
         if(topic.getSourceName() != null){
         	queryBuilder.append(" and source_name =\'");
         	queryBuilder.append(topic.getSourceName());
