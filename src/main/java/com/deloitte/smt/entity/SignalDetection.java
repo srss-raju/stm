@@ -40,6 +40,9 @@ public class SignalDetection implements Serializable {
 	private Date lastRunDate;
 	private Date nextRunDate;
 	private Long signalDetected;
+	
+	@Transient
+	private List<QueryBuilder> queryBuilder;
 
 	public static void main(String[] args) throws JsonProcessingException {
 		ObjectMapper mapper=new ObjectMapper();
@@ -218,6 +221,14 @@ public class SignalDetection implements Serializable {
 
 	public void setLastRunDate(Date lastRunDate) {
 		this.lastRunDate = lastRunDate;
+	}
+
+	public List<QueryBuilder> getQueryBuilder() {
+		return queryBuilder;
+	}
+
+	public void setQueryBuilder(List<QueryBuilder> queryBuilder) {
+		this.queryBuilder = queryBuilder;
 	}
 
 }

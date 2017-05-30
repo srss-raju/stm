@@ -30,6 +30,7 @@ import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
+import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.exception.ApplicationException;
@@ -43,6 +44,7 @@ import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
+import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.util.SignalUtil;
@@ -85,6 +87,9 @@ public class SignalDetectionService {
 
 	@Autowired
 	private IncludeAERepository includeAERepository;
+	
+	@Autowired
+	private QueryBuilderRepository queryBuilderRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -189,6 +194,16 @@ public class SignalDetectionService {
 				denominatorForPoissonRepository.deleteByDetectionId(signalDetection.getId());
 				denominatorForPoissonRepository.save(denominatorForPoissons);
 			}
+			
+			List<QueryBuilder> queryBuilder = signalDetection.getQueryBuilder();
+			if (!CollectionUtils.isEmpty(queryBuilder)) {
+				for (QueryBuilder query : queryBuilder) {
+					query.setDetectionId(signalDetection.getId());
+				}
+				queryBuilderRepository.deleteByDetectionId(signalDetection.getId());
+				queryBuilderRepository.save(queryBuilder);
+			}
+			
 			return signalDetection;
 		} catch (Exception ex) {
 			throw new ApplicationException("Problem Creating Signal Detection");
@@ -395,6 +410,7 @@ public class SignalDetectionService {
 			List<IncludeAE> includeAEList = includeAERepository.findByDetectionId(signalDetection.getId());
 			signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
 			signalDetection.setIncludeAEs(includeAEList);
+			signalDetection.setQueryBuilder(queryBuilderRepository.findByDetectionId(signalDetection.getId()));
 	}
 
 	public List<SignalDetection> ganttDetections(List<SignalDetection> detections) {
