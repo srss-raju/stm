@@ -154,7 +154,7 @@ public class RiskPlanService {
 
 		Root<Topic> topic = criteriaQuery.from(Topic.class);
 		Join<Topic, AssessmentPlan> topicAssignmentJoin = topic.join("assessmentPlan", JoinType.INNER);
-		Join<AssessmentPlan, RiskPlan> assementRiskJoin = topicAssignmentJoin.join("riskPlan", JoinType.LEFT);
+		Join<AssessmentPlan, RiskPlan> assementRiskJoin = topicAssignmentJoin.join("riskPlan", JoinType.INNER);
 
 		if (null != searchDto) {
 			List<Predicate> predicates = new ArrayList<Predicate>(10);
