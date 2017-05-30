@@ -1,23 +1,15 @@
 package com.deloitte.smt.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
@@ -30,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.DateKeyType;
 import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
@@ -39,10 +30,8 @@ import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
-import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
-import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
@@ -146,7 +135,7 @@ public class SignalDetectionService {
 				for (Soc soc : socs) {
 					soc.setDetectionId(signalDetection.getId());
 				}
-				socRepository.deleteByDetectionId(signalDetection.getId());
+				//socRepository.deleteByDetectionId(signalDetection.getId());
 				socs = socRepository.save(socs);
 				List<Hlgt> hlgts;
 				List<Hlt> hlts;
@@ -161,7 +150,7 @@ public class SignalDetectionService {
 							hlgt.setSocId(soc.getId());
 							hlgt.setDetectionId(signalDetection.getId());
 						}
-						hlgtRepository.deleteByDetectionId(signalDetection.getId());
+						//hlgtRepository.deleteByDetectionId(signalDetection.getId());
 						hlgtRepository.save(hlgts);
 					}
 					if (!CollectionUtils.isEmpty(hlts)) {
@@ -169,7 +158,7 @@ public class SignalDetectionService {
 							hlt.setSocId(soc.getId());
 							hlt.setDetectionId(signalDetection.getId());
 						}
-						hltRepository.deleteByDetectionId(signalDetection.getId());
+						//hltRepository.deleteByDetectionId(signalDetection.getId());
 						hltRepository.save(hlts);
 					}
 					if (!CollectionUtils.isEmpty(pts)) {
@@ -177,7 +166,7 @@ public class SignalDetectionService {
 							pt.setSocId(soc.getId());
 							pt.setDetectionId(signalDetection.getId());
 						}
-						ptRepository.deleteByDetectionId(signalDetection.getId());
+						//ptRepository.deleteByDetectionId(signalDetection.getId());
 						ptRepository.save(pts);
 					}
 				}
@@ -229,7 +218,7 @@ public class SignalDetectionService {
 		if (null == signalDetection) {
 			throw new EntityNotFoundException("Signal Detection not found with given Id :" + id);
 		}
-		addOtherInfoToSignalDetection(Arrays.asList(signalDetection));
+		addOtherInfoToSignalDetection(signalDetection);
 		return signalDetection;
 	}
 
@@ -374,8 +363,7 @@ public class SignalDetectionService {
 		return results;
 	}
 
-	private void addOtherInfoToSignalDetection(List<SignalDetection> signalDetections) {
-		signalDetections.parallelStream().forEach((signalDetection) -> {
+	private void addOtherInfoToSignalDetection(SignalDetection signalDetection) {
 			Ingredient ingredient;
 			ingredient = ingredientRepository.findByDetectionId(signalDetection.getId());
 			List<Product> products;
@@ -394,10 +382,10 @@ public class SignalDetectionService {
 			socs = socRepository.findByDetectionId(signalDetection.getId());
 			if (!CollectionUtils.isEmpty(socs)) {
 				for (Soc soc : socs) {
-					soc.setHlgts(hlgtRepository.findByDetectionId(signalDetection.getId()));
+					soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
 
-					soc.setHlts(hltRepository.findByDetectionId(signalDetection.getId()));
-					soc.setPts(ptRepository.findByDetectionId(signalDetection.getId()));
+					soc.setHlts(hltRepository.findBySocId(soc.getId()));
+					soc.setPts(ptRepository.findBySocId(soc.getId()));
 				}
 			}
 			signalDetection.setSocs(socs);
@@ -407,7 +395,6 @@ public class SignalDetectionService {
 			List<IncludeAE> includeAEList = includeAERepository.findByDetectionId(signalDetection.getId());
 			signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
 			signalDetection.setIncludeAEs(includeAEList);
-		});
 	}
 
 	public List<SignalDetection> ganttDetections(List<SignalDetection> detections) {

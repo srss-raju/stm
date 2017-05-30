@@ -95,7 +95,6 @@ public class SignalMatchService {
 		Query q = entityManager.createNativeQuery(queryBuilder.toString(), Topic.class);
 		q.setParameter(1, topic.getCreatedDate());
 		q.setParameter(2, topic.getIngredient().getIngredientName());
-		// q.setParameter(3, topic.getSourceName());
 		List<Topic> signals = (List<Topic>) q.getResultList();
 		return signals;
 	}
@@ -179,18 +178,21 @@ public class SignalMatchService {
 		for (Topic cohort95PercentageSignal : cohort95PercentageSignals) {
 
 			if (prevTopic != null) {
-				if (cohort95PercentageSignal.getCohortPercentage() > prevTopic.getCohortPercentage()) {
+				if (final95Signal.getCohortPercentage() < prevTopic.getCohortPercentage()) {
 					final95Signal = cohort95PercentageSignal;
 					prevTopic = cohort95PercentageSignal;
 				} else {
 					prevTopic = cohort95PercentageSignal;
 				}
 			} else {
+				System.out.println("Cohort P ->> "+cohort95PercentageSignal.getCohortPercentage());
 				prevTopic = cohort95PercentageSignal;
 				final95Signal = cohort95PercentageSignal;
 			}
 
 		}
+		
+		final95Signal = getLatestMatchingSignal(cohort95PercentageSignals, final95Signal);
 
 		createdTopic.setValidationComments(final95Signal.getValidationComments());
 		createdTopic.setSignalStrength(final95Signal.getSignalStrength());
@@ -198,6 +200,7 @@ public class SignalMatchService {
 		createdTopic.setSignalValidation(final95Signal.getSignalValidation());
 		createdTopic.setAssessmentPlan(final95Signal.getAssessmentPlan());
 		createdTopic.setSignalStatus(final95Signal.getSignalStatus());
+		createdTopic.setCohortPercentage(final95Signal.getCohortPercentage());
 		topicRepository.save(createdTopic);
 		List<Attachment> matchingTopicAttachments = attachmentService
 				.findByResourceIdAndAttachmentType(final95Signal.getId(), AttachmentType.TOPIC_ATTACHMENT);
@@ -214,6 +217,25 @@ public class SignalMatchService {
 			}
 		}
 		signalURLRepository.save(matchingTopicSignalUrls);
+	}
+
+	/**
+	 * @param cohort95PercentageSignals
+	 * @param final95Signal
+	 * @return
+	 */
+	private Topic getLatestMatchingSignal(
+			List<Topic> cohort95PercentageSignals, Topic final95Signal) {
+		if(cohort95PercentageSignals.size() > 1){
+			for(Topic cohort95PercentageSignal:cohort95PercentageSignals){
+				if(cohort95PercentageSignal.getCohortPercentage() == final95Signal.getCohortPercentage()){
+					if(final95Signal.getCreatedDate().compareTo(cohort95PercentageSignal.getCreatedDate()) < 0){
+						final95Signal = cohort95PercentageSignal;
+					}
+				}
+			}
+		}
+		return final95Signal;
 	}
 
 }
