@@ -25,7 +25,7 @@ public class DenominationForPoissionService {
     DenominatorForPoissonRepository denominationForPoissionRespository;
 
     public List<DenominatorForPoisson> insert(List<DenominatorForPoisson> denominationForPoissions) {
-    	denominationForPoissionRespository.deleteAll();
+    	denominationForPoissionRespository.deleteByDetectionIdIsNull();
     	for(DenominatorForPoisson denominationForPoission:denominationForPoissions){
     		denominationForPoission.setCreatedDate(new Date());
     		denominationForPoission.setLastModifiedDate(new Date());
@@ -60,5 +60,9 @@ public class DenominationForPoissionService {
 
     public List<DenominatorForPoisson> findAll() {
         return denominationForPoissionRespository.findAll(new Sort(Sort.Direction.ASC, "name"));
+    }
+    
+    public List<DenominatorForPoisson> findByDetectionIdIsNull() {
+        return denominationForPoissionRespository.findByDetectionIdIsNullOrderByName();
     }
 }

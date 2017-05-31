@@ -10,4 +10,9 @@ public interface DenominatorForPoissonRepository extends JpaRepository<Denominat
 	List<DenominatorForPoisson> findByDetectionId(Long detectionId);
 	@Transactional
 	Long deleteByDetectionId(Long detectionId);
+	
+	@Transactional
+	void deleteByDetectionIdIsNull();
+	
+	List<DenominatorForPoisson> findByDetectionIdIsNullOrderByName();
 }

@@ -54,6 +54,11 @@ public class DenominationForPoissionController {
 
     @GetMapping
     public List<DenominatorForPoisson> findAll() {
-        return denominationForPoissionService.findAll();
+        return denominationForPoissionService.findByDetectionIdIsNull();
+    }
+    
+    @GetMapping(value = "/all")
+    public List<DenominatorForPoisson> findByDetectionIdIsNullOrderByName() {
+        return denominationForPoissionService.findByDetectionIdIsNull();
     }
 }

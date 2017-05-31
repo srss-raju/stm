@@ -375,6 +375,11 @@ public class SignalDetectionService {
 
 		TypedQuery<SignalDetection> q = entityManager.createQuery(criteriaQuery);
 		List<SignalDetection> results = q.getResultList();
+		if (!CollectionUtils.isEmpty(results)) {
+			for(SignalDetection signalDetection:results){
+				signalDetection.setDenominatorForPoisson(denominatorForPoissonRepository.findByDetectionId(signalDetection.getId()));
+			}
+		}
 		return results;
 	}
 
