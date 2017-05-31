@@ -381,7 +381,7 @@ public class SignalDetectionService {
 			}
 		}
 		return results;
-	}
+	} 
 
 	private void addOtherInfoToSignalDetection(SignalDetection signalDetection) {
 			Ingredient ingredient;
