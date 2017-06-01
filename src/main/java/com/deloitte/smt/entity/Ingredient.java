@@ -20,6 +20,8 @@ public class Ingredient  implements Serializable{
 	private Long topicId;
 	private Long detectionId;
 	
+	private String ingredientHanaId;
+	
 	@Transient
     private List<Product> products;
 	
@@ -63,5 +65,13 @@ public class Ingredient  implements Serializable{
 
 	public void setDetectionId(Long detectionId) {
 		this.detectionId = detectionId;
+	}
+	
+
+	public String getIngredientHanaId() {
+		return ingredientHanaId;
+	}
+	public void setIngredientHanaId(String ingredientHanaId) {
+		this.ingredientHanaId = ingredientHanaId;
 	}
 }
