@@ -20,6 +20,8 @@ import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.CaseInstance;
+import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -41,6 +43,7 @@ import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.EntityNotFoundException;
@@ -180,8 +183,8 @@ public class SignalService {
 
     public Topic createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
     	String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
-        /*Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-        taskService.delegateTask(task.getId(), "Demo Demo");*/
+        Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+        taskService.delegateTask(task.getId(), "Demo Demo");
         if(topic.getId() != null) {
             topic.setId(null);
         }
@@ -317,14 +320,14 @@ public class SignalService {
         if(topic == null) {
             throw new TopicNotFoundException("Topic not found with the given Id ["+topicId+"]");
         }
-       /* Task task = taskService.createTaskQuery().processInstanceId(topic.getProcessId()).singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(topic.getProcessId()).singleResult();
         if(task == null) {
             throw new TaskNotFoundException("Task not found for the process "+topic.getProcessId());
         }
         taskService.complete(task.getId());
         
         CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
-        topic.setProcessId(instance.getCaseInstanceId());*/
+        topic.setProcessId(instance.getCaseInstanceId());
         Date d = new Date();
         assessmentPlan.setCreatedDate(d);
         assessmentPlan.setLastModifiedDate(d);
@@ -552,7 +555,7 @@ public class SignalService {
                         	signalAction.setAssignTo(action.getAssignTo());
                         }
                         signalAction.setOwner(assessmentPlan.getAssignTo());
-						/*Task task = taskService.newTask();
+						Task task = taskService.newTask();
 						task.setCaseInstanceId(signalAction.getCaseInstanceId());
 						task.setName(signalAction.getActionName());
 						taskService.saveTask(task);
@@ -563,7 +566,7 @@ public class SignalService {
 						taskInstance.setTaskDefKey("assessment");
 						taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
 						taskInstance.setStartTime(new Date());
-						signalAction.setTaskId(taskInstance.getId());*/
+						signalAction.setTaskId(taskInstance.getId());
 						signalActionList.add(signalAction);
 					}
 				}
