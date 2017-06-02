@@ -51,7 +51,7 @@ public class AssessmentActionService {
     SignalURLRepository signalURLRepository;
 
     public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
-        if(signalAction.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(signalAction.getActionStatus())){
+        /*if(signalAction.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(signalAction.getActionStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
         }
@@ -67,7 +67,7 @@ public class AssessmentActionService {
         taskInstance.setCaseInstId(signalAction.getCaseInstanceId());
         taskInstance.setStartTime(new Date());
         signalAction.setTaskId(taskInstance.getId());
-        taskInstRepository.save(taskInstance);
+        taskInstRepository.save(taskInstance);*/
         Date d = new Date();
         signalAction.setCreatedDate(d);
         signalAction.setLastModifiedDate(d);
@@ -87,9 +87,9 @@ public class AssessmentActionService {
         if(signalAction.getId() == null) {
             throw new UpdateFailedException("Failed to update Action. Invalid Id received");
         }
-        if("completed".equalsIgnoreCase(signalAction.getActionStatus())) {
+        /*if("completed".equalsIgnoreCase(signalAction.getActionStatus())) {
             taskService.complete(signalAction.getTaskId());
-        }
+        }*/
         signalAction.setLastModifiedDate(new Date());
         assessmentActionRepository.save(signalAction);
         attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, signalAction.getDeletedAttachmentIds(), signalAction.getFileMetadata());
@@ -136,9 +136,9 @@ public class AssessmentActionService {
             throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
         }
         assessmentActionRepository.delete(signalAction);
-        if(taskId != null){
+       /* if(taskId != null){
         	taskService.deleteTask(taskId);
-        }
+        }*/
     }
     
     public SignalAction createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {

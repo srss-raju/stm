@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,9 +19,7 @@ import javax.transaction.Transactional;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -36,7 +33,6 @@ import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
-import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
@@ -222,7 +218,7 @@ public class RiskPlanService {
 	}
 
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {
-		if(riskTask.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(riskTask.getStatus())){
+		/*if(riskTask.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(riskTask.getStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
         }
@@ -237,16 +233,16 @@ public class RiskPlanService {
         taskInstance.setTaskDefKey("risk");
         taskInstance.setCaseInstId(riskTask.getCaseInstanceId());
         taskInstance.setStartTime(new Date());
-        riskTask.setTaskId(taskInstance.getId());
+        riskTask.setTaskId(taskInstance.getId());*/
         Date d = new Date();
         riskTask.setCreatedDate(d);
         riskTask.setLastUpdatedDate(d);
         riskTask.setStatus("New");
         /*RiskPlan riskPlan = riskPlanRepository.findOne(Long.valueOf(riskTask.getRiskId()));
         riskTask.setAssignTo(riskPlan.getAssignTo());
-        riskTask.setOwner(riskPlan.getAssignTo());*/
+        riskTask.setOwner(riskPlan.getAssignTo());
 
-        taskInstRepository.save(taskInstance);
+        taskInstRepository.save(taskInstance);*/
         riskTask = riskTaskRepository.save(riskTask);
         attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, riskTask.getFileMetadata());
         if(!CollectionUtils.isEmpty(riskTask.getSignalUrls())){
@@ -280,16 +276,16 @@ public class RiskPlanService {
             throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
         }
         riskTaskRepository.delete(riskTask);
-        taskService.deleteTask(taskId);
+        //taskService.deleteTask(taskId);
     }
 
     public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws UpdateFailedException, IOException {
         if(riskTask.getId() == null) {
             throw new UpdateFailedException("Failed to update Action. Invalid Id received");
         }
-        if("completed".equalsIgnoreCase(riskTask.getStatus())) {
+        /*if("completed".equalsIgnoreCase(riskTask.getStatus())) {
             taskService.complete(riskTask.getTaskId());
-        }
+        }*/
         riskTask.setLastUpdatedDate(new Date());
         riskTaskRepository.save(riskTask);
         attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, riskTask.getDeletedAttachmentIds(), riskTask.getFileMetadata());
