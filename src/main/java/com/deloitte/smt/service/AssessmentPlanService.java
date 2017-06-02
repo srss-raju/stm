@@ -214,7 +214,7 @@ public class AssessmentPlanService {
 			
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
-					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("priority"),
+					topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("priority"),
 					topicAssignmentJoin.get("inDays"), topicAssignmentJoin.get("ingrediantName"),
 					topicAssignmentJoin.get("source"), topicAssignmentJoin.get("caseInstanceId"),
 					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("assessmentRiskStatus"),
@@ -225,7 +225,7 @@ public class AssessmentPlanService {
 					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("createdDate")));
 		} else {
 			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
-					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("priority"),
+					topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("priority"),
 					topicAssignmentJoin.get("inDays"), topicAssignmentJoin.get("ingrediantName"),
 					topicAssignmentJoin.get("source"), topicAssignmentJoin.get("caseInstanceId"),
 					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("assessmentRiskStatus"),
