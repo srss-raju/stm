@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -322,10 +321,10 @@ public class SignalService {
         if(task == null) {
             throw new TaskNotFoundException("Task not found for the process "+topic.getProcessId());
         }
-        taskService.complete(task.getId());*/
+        taskService.complete(task.getId());
         
         CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
-        topic.setProcessId(instance.getCaseInstanceId());
+        topic.setProcessId(instance.getCaseInstanceId());*/
         Date d = new Date();
         assessmentPlan.setCreatedDate(d);
         assessmentPlan.setLastModifiedDate(d);
@@ -345,7 +344,7 @@ public class SignalService {
         if(assignmentConfiguration != null){
             assessmentPlan.setAssignTo(assignmentConfiguration.getAssessmentAssignmentUser());
         }
-        assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
+       // assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan.setAssessmentTaskStatus("Not Completed");
         topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
         topic.setSignalStatus("Completed");
