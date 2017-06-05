@@ -40,6 +40,7 @@ public class SignalDetection implements Serializable {
 	private Date lastRunDate;
 	private Date nextRunDate;
 	private Long signalDetected;
+	private String caselistId;
 	
 	@Transient
 	private List<QueryBuilder> queryBuilder;
@@ -229,6 +230,14 @@ public class SignalDetection implements Serializable {
 
 	public void setQueryBuilder(List<QueryBuilder> queryBuilder) {
 		this.queryBuilder = queryBuilder;
+	}
+
+	public String getCaselistId() {
+		return caselistId;
+	}
+
+	public void setCaselistId(String caselistId) {
+		this.caselistId = caselistId;
 	}
 
 }
