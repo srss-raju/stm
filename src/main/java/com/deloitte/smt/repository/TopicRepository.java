@@ -26,4 +26,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	
 	@Query("SELECT DISTINCT(o.assignTo) FROM Topic o WHERE o.assignTo IS NOT NULL")
 	List<String> getAssignedUsers();
+	
+	@Query(value="select t.* from sm_topic t inner join sm_ingredient i on t.id=i.topic_id where i.ingredient_name=?1", nativeQuery=true)
+	List<Topic> findByIngredientName(String ingredientName);
 }

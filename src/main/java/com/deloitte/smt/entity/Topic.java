@@ -32,34 +32,31 @@ public class Topic implements Serializable{
     private String name;
     private String description;
 
-    @Embedded
-    private Drug drug;
-
-    @Embedded
-    private Condition condition;
-    private String sourceName;
-    private String sourceUrl;
-    private Date startDate;
-    private Date endDate;
-    private Date createdDate;
-    private String createdBy;
-    private Date lastModifiedDate;
-    private String remarks;
-    private String processId;
-    private String signalValidation;
-    private String signalConfirmation;
-    private String validationComments;
-    private String signalStatus;
-    private String signalStrength;
-    private Date dueDate;
-    private String assignTo;
-    private Long runInstanceId;
-    private String cases;
-    private String caselistId;
-    @Transient
-    private List<SignalURL> signalUrls;
-    private Long confidenceIndex;
-    private Long cohortPercentage;
+	@Embedded
+	private Condition condition;
+	private String sourceName;
+	private String sourceUrl;
+	private Date startDate;
+	private Date endDate;
+	private Date createdDate;
+	private String createdBy;
+	private Date lastModifiedDate;
+	private String remarks;
+	private String processId;
+	private String signalValidation;
+	private String signalConfirmation;
+	private String validationComments;
+	private String signalStatus;
+	private String signalStrength;
+	private Date dueDate;
+	private String assignTo;
+	private Long runInstanceId;
+	private String cases;
+	private String caselistId;
+	@Transient
+	private List<SignalURL> signalUrls;
+	private Long confidenceIndex;
+	private Long cohortPercentage;
 
     @Transient
     private int casesCount;
@@ -109,17 +106,9 @@ public class Topic implements Serializable{
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Drug getDrug() {
-        return drug;
-    }
-
-    public void setDrug(Drug drug) {
-        this.drug = drug;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
     public Condition getCondition() {
         return condition;

@@ -11,18 +11,39 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.deloitte.smt.dto.DashboardDTO;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.RiskPlan;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.RiskPlanRepository;
+import com.deloitte.smt.repository.TopicRepository;
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dto.SmtComplianceDto;
 
 @Service
-public class ChartsService {
+public class DashboardService {
 	
-	private static final Logger LOG = Logger.getLogger(ChartsService.class);
+	private static final Logger LOG = Logger.getLogger(DashboardService.class);
 	
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	
+	@Autowired
+	private TopicRepository topicRepository;
+	
+	@Autowired
+	private AssessmentPlanRepository assessmentPlanRepository;
+	
+	@Autowired
+	private RiskPlanRepository riskPlanRepository;
+	
+	
 	
 	@SuppressWarnings("unchecked")
 	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails(){
@@ -59,6 +80,17 @@ public class ChartsService {
 			}
 			smtComplianceMap.put(type, smtComplianceList);
 		}
+	}
+	
+		public  DashboardDTO getSignalsByIngredient(String ingredientName){
+		List<Topic> topics=  topicRepository.findByIngredientName(ingredientName);
+		List<AssessmentPlan> assessmentPlans=assessmentPlanRepository.getAssessmentPlansByIngredientName(ingredientName);
+		List<RiskPlan> risks=riskPlanRepository.findByIngredientName(ingredientName);
+		DashboardDTO dahboardDTO=new DashboardDTO();
+		dahboardDTO.setAssessmentPlans(assessmentPlans);
+		dahboardDTO.setTopics(topics);
+		dahboardDTO.setRiskPlans(risks);
+		return dahboardDTO;
 	}
 
 }

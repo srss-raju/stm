@@ -35,4 +35,7 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	@Query(value = "UPDATE AssessmentPlan o SET o.assessmentTaskStatus=:assessmentTaskStatus WHERE id= :id")
 	void updateAssessmentTaskStatus(@Param("assessmentTaskStatus") String assessmentTaskStatus, @Param("id") Long id);
 	
+	@Query(value="select a.* from sm_topic t inner join sm_assessment_plan a on t.assessment_plan_id=a.id inner join sm_ingredient i on i.topic_id=t.id and  i.ingredient_name=?1",nativeQuery=true)
+	List<AssessmentPlan> getAssessmentPlansByIngredientName(String ingredientName);
+	
 }
