@@ -11,34 +11,34 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dto.SmtComplianceDto;
-import com.deloitte.smt.repository.TopicRepository;
 
 @Service
 public class ChartsService {
 	
 	private static final Logger LOG = Logger.getLogger(ChartsService.class);
 	
-	@Autowired
-	private TopicRepository topicRepository;
-	
 	@PersistenceContext
 	private EntityManager entityManager;
 	
+	@SuppressWarnings("unchecked")
 	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails(){
 		LOG.info("Method Start getSmtComplianceDetails");
 		Map<String, List<SmtComplianceDto>> smtComplianceMap = new HashMap<>();
 		Query signalQuery = entityManager.createNativeQuery("select case when current_timestamp > due_date then 'LATE' else 'ONTIME' end as STATUS,COUNT(*) from sm_topic where due_date is not null GROUP BY STATUS");
 		List<Object[]> signals = signalQuery.getResultList();
-		complianceResponse(smtComplianceMap, signals, "Signal");
+		complianceResponse(smtComplianceMap, signals, "Signals");
 		
 		Query assessmentQuery = entityManager.createNativeQuery("select case when current_timestamp > assessment_due_date then 'LATE' else 'ONTIME' end as STATUS,COUNT(*) from sm_assessment_plan where assessment_due_date is not null GROUP BY STATUS");
 		List<Object[]> assessments = assessmentQuery.getResultList();
-		complianceResponse(smtComplianceMap, assessments, "Assessment");
+		complianceResponse(smtComplianceMap, assessments, "Assessment Plans");
+		
+		Query riskQuery = entityManager.createNativeQuery("select case when current_timestamp > risk_due_date then 'LATE' else 'ONTIME' end as RISKSTATUS,COUNT(*) from sm_risk_plan where risk_due_date is not null GROUP BY RISKSTATUS");
+		List<Object[]> risks = riskQuery.getResultList();
+		complianceResponse(smtComplianceMap, risks, "Risk Plans");
 		
 		return smtComplianceMap;
 	}
