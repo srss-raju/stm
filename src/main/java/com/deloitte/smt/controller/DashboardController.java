@@ -15,7 +15,7 @@ import com.deloitte.smt.dto.DashboardDTO;
 import com.deloitte.smt.entity.Topic;
 
 @RestController
-@RequestMapping(value = "/camunda/api/charts/signal")
+@RequestMapping(value = "/camunda/api/dashboard")
 public class DashboardController {
 	
 	@Autowired
