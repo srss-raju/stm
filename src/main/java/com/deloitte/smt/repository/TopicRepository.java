@@ -1,5 +1,6 @@
 package com.deloitte.smt.repository;
 
+import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.entity.Topic;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,6 +28,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	@Query("SELECT DISTINCT(o.assignTo) FROM Topic o WHERE o.assignTo IS NOT NULL")
 	List<String> getAssignedUsers();
 	
-	@Query(value="select t.* from sm_topic t inner join sm_ingredient i on t.id=i.topic_id where i.ingredient_name=?1", nativeQuery=true)
-	List<Topic> findByIngredientName(String ingredientName);
+	@Query(value="select NEW com.deloitte.smt.dto.TopicDTO(t.id,i.ingredientName,t.name,t.signalStatus) from Topic  t , Ingredient  i where t.id=i.topicId order by i.ingredientName", nativeQuery=false)
+	List<TopicDTO> findByIngredientName();
 }

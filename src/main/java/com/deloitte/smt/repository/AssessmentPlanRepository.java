@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.deloitte.smt.dto.AssessmentPlanDTO;
 import com.deloitte.smt.entity.AssessmentPlan;
 
 public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, Long> {
@@ -35,7 +36,7 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	@Query(value = "UPDATE AssessmentPlan o SET o.assessmentTaskStatus=:assessmentTaskStatus WHERE id= :id")
 	void updateAssessmentTaskStatus(@Param("assessmentTaskStatus") String assessmentTaskStatus, @Param("id") Long id);
 	
-	@Query(value="select a.* from sm_topic t inner join sm_assessment_plan a on t.assessment_plan_id=a.id inner join sm_ingredient i on i.topic_id=t.id and  i.ingredient_name=?1",nativeQuery=true)
-	List<AssessmentPlan> getAssessmentPlansByIngredientName(String ingredientName);
-	
+//	@Query(value="select NEW com.deloitte.smt.dto.AssessmentPlanDTO(i.ingredientName,a.assessmentName.a.assessmentPlanStatus) from Topic t , AssessmentPlan a , Ingredient i where t.assessmentPlan.id=a.id and  i.topicId=t.id order by i.ingredientName",nativeQuery=false)
+//	List<AssessmentPlanDTO> getAssessmentPlansByIngredientName();
+//	
 }

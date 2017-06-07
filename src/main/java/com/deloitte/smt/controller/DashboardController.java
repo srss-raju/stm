@@ -19,7 +19,7 @@ import com.deloitte.smt.entity.Topic;
 public class DashboardController {
 	
 	@Autowired
-	private DashboardService chartsService;
+	private DashboardService dashboardService;
 	
 	@GetMapping(value = "/bysmt")
 	public String getSmtComplianceDetails() {
@@ -27,9 +27,9 @@ public class DashboardController {
 		return null;
 	}
 	
-	@GetMapping(value="/ingredient/{ingredientName}")
-	public DashboardDTO getSignalsByIngredient(@PathVariable String ingredientName){
-		return chartsService.getSignalsByIngredient(ingredientName);
+	@GetMapping(value="/ingredient")
+	public DashboardDTO getSignalsByIngredient(){
+		return dashboardService.getDashboardData();
 	}
 
 }

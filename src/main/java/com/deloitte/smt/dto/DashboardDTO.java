@@ -14,26 +14,26 @@ public class DashboardDTO implements Serializable{
 	 */
 	private static final long serialVersionUID = -6678141117765723101L;
 	
-	List<Topic> topics;
-	List<AssessmentPlan> assessmentPlans;
-	List<RiskPlan> riskPlans;
+	List<TopicDTO> topics;
+	List<AssessmentPlanDTO> assessmentPlans;
+	List<RiskPlanDTO> riskPlans;
 	
-	public List<RiskPlan> getRiskPlans() {
+	public List<RiskPlanDTO> getRiskPlans() {
 		return riskPlans;
 	}
-	public void setRiskPlans(List<RiskPlan> riskPlans) {
+	public void setRiskPlans(List<RiskPlanDTO> riskPlans) {
 		this.riskPlans = riskPlans;
 	}
-	public List<Topic> getTopics() {
+	public List<TopicDTO> getTopics() {
 		return topics;
 	}
-	public void setTopics(List<Topic> topics) {
+	public void setTopics(List<TopicDTO> topics) {
 		this.topics = topics;
 	}
-	public List<AssessmentPlan> getAssessmentPlans() {
+	public List<AssessmentPlanDTO> getAssessmentPlans() {
 		return assessmentPlans;
 	}
-	public void setAssessmentPlans(List<AssessmentPlan> assessmentPlans) {
+	public void setAssessmentPlans(List<AssessmentPlanDTO> assessmentPlans) {
 		this.assessmentPlans = assessmentPlans;
 	}
 	

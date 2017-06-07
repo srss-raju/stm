@@ -9,58 +9,75 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.log4j.Logger;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.deloitte.smt.constant.DashboardChartType;
+import com.deloitte.smt.dto.AssessmentPlanDTO;
 import com.deloitte.smt.dto.DashboardDTO;
+import com.deloitte.smt.dto.RiskPlanDTO;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.TopicRepository;
+
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dto.SmtComplianceDto;
+import com.deloitte.smt.dto.TopicDTO;
 
 @Service
 public class DashboardService {
-	
+
 	private static final Logger LOG = Logger.getLogger(DashboardService.class);
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	
 	@Autowired
 	private TopicRepository topicRepository;
-	
+
 	@Autowired
 	private AssessmentPlanRepository assessmentPlanRepository;
-	
+
 	@Autowired
 	private RiskPlanRepository riskPlanRepository;
+
 	
 	
 	
 	@SuppressWarnings("unchecked")
-	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails(){
+	private Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
 		LOG.info("Method Start getSmtComplianceDetails");
 		Map<String, List<SmtComplianceDto>> smtComplianceMap = new HashMap<>();
-		Query signalQuery = entityManager.createNativeQuery("select case when current_timestamp > due_date then 'LATE' else 'ONTIME' end as STATUS,COUNT(*) from sm_topic where due_date is not null GROUP BY STATUS");
+		Query signalQuery = entityManager.createNativeQuery(
+				"select case when current_timestamp > due_date then 'LATE' else 'ONTIME' end as STATUS,COUNT(*) from sm_topic where due_date is not null GROUP BY STATUS");
 		List<Object[]> signals = signalQuery.getResultList();
 		complianceResponse(smtComplianceMap, signals, "Signals");
-		
-		Query assessmentQuery = entityManager.createNativeQuery("select case when current_timestamp > assessment_due_date then 'LATE' else 'ONTIME' end as STATUS,COUNT(*) from sm_assessment_plan where assessment_due_date is not null GROUP BY STATUS");
+
+		Query assessmentQuery = entityManager.createNativeQuery(
+				"select case when current_timestamp > assessment_due_date then 'LATE' else 'ONTIME' end as STATUS,COUNT(*) from sm_assessment_plan where assessment_due_date is not null GROUP BY STATUS");
 		List<Object[]> assessments = assessmentQuery.getResultList();
 		complianceResponse(smtComplianceMap, assessments, "Assessment Plans");
-		
-		Query riskQuery = entityManager.createNativeQuery("select case when current_timestamp > risk_due_date then 'LATE' else 'ONTIME' end as RISKSTATUS,COUNT(*) from sm_risk_plan where risk_due_date is not null GROUP BY RISKSTATUS");
+
+		Query riskQuery = entityManager.createNativeQuery(
+				"select case when current_timestamp > risk_due_date then 'LATE' else 'ONTIME' end as RISKSTATUS,COUNT(*) from sm_risk_plan where risk_due_date is not null GROUP BY RISKSTATUS");
 		List<Object[]> risks = riskQuery.getResultList();
 		complianceResponse(smtComplianceMap, risks, "Risk Plans");
-		
+
 		return smtComplianceMap;
 	}
 
@@ -68,29 +85,79 @@ public class DashboardService {
 	 * @param smtComplianceMap
 	 * @param authors
 	 */
-	private void complianceResponse(Map<String, List<SmtComplianceDto>> smtComplianceMap, List<Object[]> authors, String type) {
+	public void complianceResponse(Map<String, List<SmtComplianceDto>> smtComplianceMap, List<Object[]> authors,
+			String type) {
 		List<SmtComplianceDto> smtComplianceList;
-		if(!CollectionUtils.isEmpty(authors)){
+		if (!CollectionUtils.isEmpty(authors)) {
 			smtComplianceList = new ArrayList<>();
-			for(Object[] row : authors){
+			for (Object[] row : authors) {
 				SmtComplianceDto dto = new SmtComplianceDto();
-				dto.setCount(((BigInteger)row[1]).longValue());
-				dto.setStatus((String)row[0]);
+				dto.setCount(((BigInteger) row[1]).longValue());
+				dto.setStatus((String) row[0]);
 				smtComplianceList.add(dto);
 			}
 			smtComplianceMap.put(type, smtComplianceList);
 		}
 	}
+
 	
-		public  DashboardDTO getSignalsByIngredient(String ingredientName){
-		List<Topic> topics=  topicRepository.findByIngredientName(ingredientName);
-		List<AssessmentPlan> assessmentPlans=assessmentPlanRepository.getAssessmentPlansByIngredientName(ingredientName);
-		List<RiskPlan> risks=riskPlanRepository.findByIngredientName(ingredientName);
-		DashboardDTO dahboardDTO=new DashboardDTO();
-		dahboardDTO.setAssessmentPlans(assessmentPlans);
-		dahboardDTO.setTopics(topics);
-		dahboardDTO.setRiskPlans(risks);
-		return dahboardDTO;
+	public DashboardDTO getDashboardData(){
+		DashboardDTO dashboardData=new DashboardDTO();
+		dashboardData.setTopics(getSignalsDTO());
+		dashboardData.setAssessmentPlans(getAssessmentPlanDTOS());
+		dashboardData.setRiskPlans(getRiskPlanDTOS());
+		return dashboardData;
 	}
+	
+	
+	private List<TopicDTO> getSignalsDTO() {
+		return topicRepository.findByIngredientName();
+	}
+	
+	private List<AssessmentPlanDTO> getAssessmentPlanDTOS(){
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<AssessmentPlanDTO> criteriaQuery = cb.createQuery(AssessmentPlanDTO.class);
+
+		Root<Topic> topic = criteriaQuery.from(Topic.class);
+		Root<Ingredient> ingredient = criteriaQuery.from(Ingredient.class);
+		Join<Topic, AssessmentPlan> topicAssignmentJoin = topic.join("assessmentPlan", JoinType.INNER);
+
+		List<Predicate> predicates = new ArrayList<Predicate>(10);
+		predicates.add(cb.equal(ingredient.get("topicId"), topic.get("id")));
+
+		Predicate andPredicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
+		criteriaQuery
+				.select(cb.construct(AssessmentPlanDTO.class, topicAssignmentJoin.get("id"),
+						ingredient.get("ingredientName"), topicAssignmentJoin.get("assessmentName"),
+						topicAssignmentJoin.get("assessmentPlanStatus")))
+				.where(andPredicate).orderBy(cb.desc(ingredient.get("ingredientName")));
+
+		TypedQuery<AssessmentPlanDTO> q = entityManager.createQuery(criteriaQuery);
+		return q.getResultList();
+	}
+	
+	private List<RiskPlanDTO> getRiskPlanDTOS(){
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<RiskPlanDTO> criteriaQuery2 = cb.createQuery(RiskPlanDTO.class);
+
+		Root<Ingredient> ingredient = criteriaQuery2.from(Ingredient.class);
+		Root<Topic> topic2 = criteriaQuery2.from(Topic.class);
+		Root<Ingredient> ingredient2 = criteriaQuery2.from(Ingredient.class);
+		Join<Topic, AssessmentPlan> topicAssignmentJoin2 = topic2.join("assessmentPlan", JoinType.INNER);
+		Join<AssessmentPlan, RiskPlan> assementRiskJoin = topicAssignmentJoin2.join("riskPlan", JoinType.INNER);
+		List<Predicate> predicates2 = new ArrayList<Predicate>(10);
+		predicates2.add(cb.equal(ingredient2.get("topicId"), topic2.get("id")));
+
+		Predicate andPredicate2 = cb.and(predicates2.toArray(new Predicate[predicates2.size()]));
+		criteriaQuery2
+				.select(cb.construct(RiskPlanDTO.class, assementRiskJoin.get("id"), ingredient2.get("ingredientName"),
+						assementRiskJoin.get("name"), assementRiskJoin.get("status")))
+				.where(andPredicate2).orderBy(cb.desc(ingredient.get("ingredientName")));
+
+		TypedQuery<RiskPlanDTO> q2 = entityManager.createQuery(criteriaQuery2);
+		return q2.getResultList();
+	}
+
+
 
 }
