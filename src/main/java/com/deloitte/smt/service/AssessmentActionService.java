@@ -146,6 +146,9 @@ public class AssessmentActionService {
         signalAction.setCreatedDate(d);
         signalAction.setDueDate(SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate()));
         signalAction.setActionStatus("New");
+        if(!CollectionUtils.isEmpty(signalAction.getSignalUrls())){
+        	signalURLRepository.save(signalAction.getSignalUrls());
+        }
         signalAction = assessmentActionRepository.save(signalAction);
     	attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
     	return signalAction;
