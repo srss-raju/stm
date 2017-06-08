@@ -22,7 +22,10 @@ public class AppDataController    {
     public AppDataDTO getAppData(){
     	AppDataDTO appData=new AppDataDTO();
     	FileMetaDataDTO fileMetadata=new FileMetaDataDTO();
-    	fileMetadata.setMaxFileUploadSize(environment.getProperty("spring.http.multipart.max-file-size"));
+    	
+    	String fileUploadSize=environment.getProperty("spring.http.multipart.max-file-size");
+    	Long bytes=Long.valueOf(fileUploadSize.replaceAll("[^\\d.]", "")) * 1000;
+    	fileMetadata.setMaxFileUploadSize(bytes);
     	appData.setFileMetaData(fileMetadata);
     	return appData;
     }

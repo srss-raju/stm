@@ -1,13 +1,13 @@
 package com.deloitte.smt.dto;
 
 public class FileMetaDataDTO {
-	private String maxFileUploadSize;
+	private Long maxFileUploadSize;
 
-	public String getMaxFileUploadSize() {
+	public Long getMaxFileUploadSize() {
 		return maxFileUploadSize;
 	}
 
-	public void setMaxFileUploadSize(String maxFileUploadSize) {
+	public void setMaxFileUploadSize(Long maxFileUploadSize) {
 		this.maxFileUploadSize = maxFileUploadSize;
 	}
 
