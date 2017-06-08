@@ -2,6 +2,7 @@ package com.deloitte.smt.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.RiskPlan;
@@ -17,6 +18,11 @@ public class DashboardDTO implements Serializable{
 	List<TopicDTO> topics;
 	List<AssessmentPlanDTO> assessmentPlans;
 	List<RiskPlanDTO> riskPlans;
+
+	private Map<String, Map<String, Long>> topicMetrics;
+	private Map<String, Map<String, Long>> assessmentMetrics;
+	private Map<String, Map<String, Long>> riskMetrics;
+	
 	
 	public List<RiskPlanDTO> getRiskPlans() {
 		return riskPlans;
@@ -38,5 +44,24 @@ public class DashboardDTO implements Serializable{
 	}
 	
 	
+	public Map<String, Map<String, Long>> getTopicMetrics() {
+		return topicMetrics;
+	}
+	public void setTopicMetrics(Map<String, Map<String, Long>> topicMetrics) {
+		this.topicMetrics = topicMetrics;
+	}
+	public Map<String, Map<String, Long>> getAssessmentMetrics() {
+		return assessmentMetrics;
+	}
+	public void setAssessmentMetrics(Map<String, Map<String, Long>> assessmentMetrics) {
+		this.assessmentMetrics = assessmentMetrics;
+	}
+	public Map<String, Map<String, Long>> getRiskMetrics() {
+		return riskMetrics;
+	}
+	public void setRiskMetrics(Map<String, Map<String, Long>> riskMetrics) {
+		this.riskMetrics = riskMetrics;
+	}
+
 
 }

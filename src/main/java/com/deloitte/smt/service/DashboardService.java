@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -103,16 +104,58 @@ public class DashboardService {
 	
 	public DashboardDTO getDashboardData(){
 		DashboardDTO dashboardData=new DashboardDTO();
-		dashboardData.setTopics(getSignalsDTO());
-		dashboardData.setAssessmentPlans(getAssessmentPlanDTOS());
-		dashboardData.setRiskPlans(getRiskPlanDTOS());
+		Map<String, Map<String, Long>> topicMetrics=calculateTopicMetrics(getSignalsDTO());
+		dashboardData.setTopicMetrics(topicMetrics);
+		Map<String, Map<String, Long>> assessmentMetrics=calculateAssessmentMetrics(getAssessmentPlanDTOS());
+		dashboardData.setAssessmentMetrics(assessmentMetrics);
+		Map<String, Map<String, Long>> riskPlanMetrics=calculatRiskMetrics(getRiskPlanDTOS());
+		dashboardData.setRiskMetrics(riskPlanMetrics);
 		return dashboardData;
 	}
 	
 	
 	private List<TopicDTO> getSignalsDTO() {
-		return topicRepository.findByIngredientName();
+		List<TopicDTO> topics= topicRepository.findByIngredientName();
+		return topics;
 	}
+	
+	private Map<String, Map<String, Long>> calculateTopicMetrics(List<TopicDTO> topics){
+		Map<String, Map<String, Long>> metrics= topics.stream().collect(
+					Collectors.groupingBy(TopicDTO::getIngredientName,
+								Collectors.groupingBy(TopicDTO::getSignalStatus,Collectors.counting())
+							)
+				);
+		
+		
+		return metrics;
+		
+	}
+
+	private Map<String, Map<String, Long>> calculateAssessmentMetrics(List<AssessmentPlanDTO> topics){
+		Map<String, Map<String, Long>> metrics= topics.stream().collect(
+					Collectors.groupingBy(AssessmentPlanDTO::getIngredientName,
+								Collectors.groupingBy(AssessmentPlanDTO::getAssessmentPlanStatus,Collectors.counting())
+							)
+				);
+		
+		
+		return metrics;
+		
+	}
+	
+	
+	private Map<String, Map<String, Long>> calculatRiskMetrics(List<RiskPlanDTO> topics){
+		Map<String, Map<String, Long>> metrics= topics.stream().collect(
+					Collectors.groupingBy(RiskPlanDTO::getIngredientName,
+								Collectors.groupingBy(RiskPlanDTO::getRiskPlanStatus,Collectors.counting())
+							)
+				);
+		
+		
+		return metrics;
+		
+	}
+	
 	
 	private List<AssessmentPlanDTO> getAssessmentPlanDTOS(){
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
