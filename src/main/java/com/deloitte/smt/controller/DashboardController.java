@@ -21,10 +21,9 @@ public class DashboardController {
 	@Autowired
 	private DashboardService dashboardService;
 	
-	@GetMapping(value = "/bysmt")
-	public String getSmtComplianceDetails() {
-		
-		return null;
+	@GetMapping(value = "/getSmtComplianceDetails")
+	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
+		return dashboardService.getSmtComplianceDetails();
 	}
 	
 	@GetMapping(value="/ingredient")

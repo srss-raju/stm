@@ -61,7 +61,7 @@ public class DashboardService {
 	
 	
 	@SuppressWarnings("unchecked")
-	private Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
+	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
 		LOG.info("Method Start getSmtComplianceDetails");
 		Map<String, List<SmtComplianceDto>> smtComplianceMap = new HashMap<>();
 		Query signalQuery = entityManager.createNativeQuery(
