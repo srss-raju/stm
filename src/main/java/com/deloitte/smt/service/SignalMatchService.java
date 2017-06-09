@@ -201,6 +201,8 @@ public class SignalMatchService {
 		createdTopic.setAssessmentPlan(final95Signal.getAssessmentPlan());
 		createdTopic.setSignalStatus(final95Signal.getSignalStatus());
 		createdTopic.setCohortPercentage(final95Signal.getCohortPercentage());
+		createdTopic.setCasesCount(final95Signal.getCasesCount());
+		createdTopic.setCaselistId(final95Signal.getCaselistId());
 		topicRepository.save(createdTopic);
 		List<Attachment> matchingTopicAttachments = attachmentService
 				.findByResourceIdAndAttachmentType(final95Signal.getId(), AttachmentType.TOPIC_ATTACHMENT);
