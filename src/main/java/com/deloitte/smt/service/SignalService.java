@@ -23,6 +23,7 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -32,6 +33,7 @@ import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
 import com.deloitte.smt.entity.Ingredient;
@@ -530,8 +532,8 @@ public class SignalService {
     }
 
 	public List<SignalAction> associateTemplateTasks(AssessmentPlan assessmentPlan) {
-		List<SignalAction> signalActionListCreated = new ArrayList<>();
-		List<SignalAction> signalActionList;
+		Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+		List<SignalAction> signalActionList = null;
 		if (!CollectionUtils.isEmpty(assessmentPlan.getTemplateIds())) {
 			for (Long id : assessmentPlan.getTemplateIds()) {
 				List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(id);
@@ -567,15 +569,62 @@ public class SignalService {
 						taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
 						taskInstance.setStartTime(new Date());
 						signalAction.setTaskId(taskInstance.getId());
+						signalAction = assessmentActionRepository.save(signalAction);
 						signalActionList.add(signalAction);
+						associateTemplateAttachments(sort, action, signalAction);
+						associateTemplateURLs(action, signalAction);
 					}
-				}
-				if (!CollectionUtils.isEmpty(signalActionList)) {
-					signalActionListCreated.addAll(assessmentActionRepository.save(signalActionList));
 				}
 			}
 		}
-		return signalActionListCreated;
+		return signalActionList;
+	}
+
+	/**
+	 * @param action
+	 * @param signalAction
+	 */
+	private void associateTemplateURLs(SignalAction action, SignalAction signalAction) {
+		List<SignalURL> templateTaskUrls = signalURLRepository.findByTopicId(action.getId());
+		if(!CollectionUtils.isEmpty(templateTaskUrls)){
+			List<SignalURL> assessmentActionSignalURLs = new ArrayList<>();
+			for(SignalURL url:templateTaskUrls){
+				SignalURL assessmentActionSignalURL = new SignalURL();
+				assessmentActionSignalURL.setDescription(url.getDescription());
+				assessmentActionSignalURL.setTopicId(signalAction.getId());
+				assessmentActionSignalURL.setUrl(url.getUrl());
+				assessmentActionSignalURL.setModifiedDate(new Date());
+				assessmentActionSignalURLs.add(assessmentActionSignalURL);
+			}
+			signalURLRepository.save(assessmentActionSignalURLs);
+		}
+	}
+
+	/**
+	 * @param sort
+	 * @param action
+	 * @param signalAction
+	 */
+	private void associateTemplateAttachments(Sort sort, SignalAction action, SignalAction signalAction) {
+		List<Attachment> attachments = attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort);
+		if(!CollectionUtils.isEmpty(attachments)){
+			List<Attachment> assessmentActionAttachments = new ArrayList<>();
+			for(Attachment attachment:attachments){
+				Attachment assessmentActionAttachment = new Attachment();
+				
+				assessmentActionAttachment.setDescription(attachment.getDescription());
+				assessmentActionAttachment.setAttachmentsURL(attachment.getAttachmentsURL());
+				assessmentActionAttachment.setAttachmentResourceId(signalAction.getId());
+				assessmentActionAttachment.setContentType(attachment.getContentType());
+				assessmentActionAttachment.setContent(attachment.getContent());
+				assessmentActionAttachment.setFileName(attachment.getFileName());
+				assessmentActionAttachment.setCreatedDate(new Date());
+				assessmentActionAttachment.setAttachmentType(attachment.getAttachmentType());
+				
+				assessmentActionAttachments.add(assessmentActionAttachment);
+			}
+			attachmentRepository.save(assessmentActionAttachments);
+		}
 	}
 
 	public List<Topic> findTopicsByRunInstanceId(Long runInstanceId) {
