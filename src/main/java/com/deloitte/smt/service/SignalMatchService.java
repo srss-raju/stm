@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.entity.AssessmentPlan;
@@ -203,6 +202,12 @@ public class SignalMatchService {
 		createdTopic.setCohortPercentage(final95Signal.getCohortPercentage());
 		createdTopic.setCasesCount(final95Signal.getCasesCount());
 		createdTopic.setCaselistId(final95Signal.getCaselistId());
+		createdTopic.setDueDate(final95Signal.getDueDate());
+		createdTopic.setSourceName(final95Signal.getSourceName());
+		createdTopic.setSourceUrl(final95Signal.getSourceUrl());
+		createdTopic.setAssignTo(final95Signal.getAssignTo());
+		createdTopic.setStartDate(final95Signal.getStartDate());
+		createdTopic.setEndDate(final95Signal.getEndDate());
 		topicRepository.save(createdTopic);
 		List<Attachment> matchingTopicAttachments = attachmentService
 				.findByResourceIdAndAttachmentType(final95Signal.getId(), AttachmentType.TOPIC_ATTACHMENT);
