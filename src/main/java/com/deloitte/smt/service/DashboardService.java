@@ -1,9 +1,8 @@
 package com.deloitte.smt.service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +22,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.log4j.Logger;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.AssessmentPlanStatus;
-import com.deloitte.smt.constant.DashboardChartType;
 import com.deloitte.smt.constant.ExecutionType;
 import com.deloitte.smt.constant.RiskPlanStatus;
 import com.deloitte.smt.constant.SignalConfirmationStatus;
@@ -37,19 +35,15 @@ import com.deloitte.smt.constant.ValidationOutComesLabelTypes;
 import com.deloitte.smt.dto.AssessmentPlanDTO;
 import com.deloitte.smt.dto.DashboardDTO;
 import com.deloitte.smt.dto.RiskPlanDTO;
+import com.deloitte.smt.dto.SignalDetectDTO;
+import com.deloitte.smt.dto.SmtComplianceDto;
+import com.deloitte.smt.dto.TopicDTO;
+import com.deloitte.smt.dto.ValidationOutComesDTO;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.TopicRepository;
-
-import org.springframework.util.CollectionUtils;
-
-import com.deloitte.smt.dto.SmtComplianceDto;
-import com.deloitte.smt.dto.TopicDTO;
-import com.deloitte.smt.dto.ValidationOutComesDTO;
 
 @Service
 public class DashboardService {
@@ -91,16 +85,16 @@ public class DashboardService {
 	public void complianceResponse(Map<String, List<SmtComplianceDto>> smtComplianceMap, List<Object[]> results,
 			String type) {
 		List<SmtComplianceDto> smtComplianceList = new ArrayList();
-		// if (!CollectionUtils.isEmpty(authors)) {
-		smtComplianceList = new ArrayList<>();
-		for (Object[] row : results) {
-			SmtComplianceDto dto = new SmtComplianceDto();
-			dto.setCount(((BigInteger) row[1]).longValue());
-			dto.setStatus((String) row[0]);
-			smtComplianceList.add(dto);
+		if (!CollectionUtils.isEmpty(results)) {
+			smtComplianceList = new ArrayList<>();
+			for (Object[] row : results) {
+				SmtComplianceDto dto = new SmtComplianceDto();
+				dto.setStatus((String) row[0]);
+				dto.setCount(((BigInteger) row[1]).longValue());
+				smtComplianceList.add(dto);
+			}
+			smtComplianceMap.put(type, smtComplianceList);
 		}
-		smtComplianceMap.put(type, smtComplianceList);
-		// }
 
 		Set<String> addedExecutionTypes = smtComplianceList.stream().map(SmtComplianceDto::getStatus)
 				.collect(Collectors.toSet());
@@ -281,6 +275,41 @@ public class DashboardService {
 		validateOutComesList.add(validationOutComeDTO4);
 
 		return validateOutComesList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SignalDetectDTO> getDetectedSignalDetails() {
+		LOG.info("Method Start getDetectedSignalDetails");
+		Query signalQuery = entityManager.createNativeQuery("select to_char(created_date,'Mon-yy') cd, signal_status, count(signal_status), sum(cases_count) cases_count from sm_topic group by cd,signal_status order by to_date(to_char(created_date,'Mon-yy'),'Mon-yy')");
+		List<Object[]> signals = signalQuery.getResultList();
+		String prevMonth = null;
+		SignalDetectDTO previousDto = null;
+		List<SignalDetectDTO> signalDetectDTOs = null;
+		if(!CollectionUtils.isEmpty(signals)){
+			 signalDetectDTOs = new ArrayList<>();
+			for(Object[] signal:signals){
+				SignalDetectDTO dto = new SignalDetectDTO();
+				dto.setMonth((String)signal[0]);
+				dto.setStatus((String)signal[1]);
+				dto.setSignalCount(((BigInteger)signal[2]).longValue());
+				dto.setCasesCount(((BigDecimal)signal[3]).longValue());
+				if(((String)signal[0]).equals(prevMonth)){
+					if(previousDto != null){
+						dto.setTotalSignalCount(previousDto.getTotalSignalCount()+((BigInteger)signal[2]).longValue());
+						dto.setTotalCasesCount(previousDto.getTotalCasesCount()+((BigDecimal)signal[3]).longValue());
+						previousDto.setTotalSignalCount(dto.getTotalSignalCount());
+						previousDto.setTotalCasesCount(dto.getTotalCasesCount());
+					}
+				}else{
+					dto.setTotalSignalCount(((BigInteger)signal[2]).longValue());
+					dto.setTotalCasesCount(((BigDecimal)signal[3]).longValue());
+				}
+				prevMonth = (String)signal[0];
+				previousDto = dto;
+				signalDetectDTOs.add(dto);
+			}
+		}
+		return signalDetectDTOs;
 	}
 
 }

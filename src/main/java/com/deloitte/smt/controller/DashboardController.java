@@ -5,15 +5,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deloitte.smt.dto.DashboardDTO;
+import com.deloitte.smt.dto.SignalDetectDTO;
 import com.deloitte.smt.dto.SmtComplianceDto;
 import com.deloitte.smt.dto.ValidationOutComesDTO;
 import com.deloitte.smt.service.DashboardService;
-import com.deloitte.smt.dto.DashboardDTO;
-import com.deloitte.smt.entity.Topic;
 
 @RestController
 @RequestMapping(value = "/camunda/api/dashboard")
@@ -36,6 +35,11 @@ public class DashboardController {
 	@GetMapping(value="/chat/validationoutcomes")
 	public List<ValidationOutComesDTO> getValidationOutcomes(){
 		return dashboardService.generateDataForValidateOutcomesChart();
+	}
+	
+	@GetMapping(value = "/getDetectedSignalDetails")
+	public List<SignalDetectDTO> getDetectedSignalDetails() {
+		return dashboardService.getDetectedSignalDetails();
 	}
 	
 }
