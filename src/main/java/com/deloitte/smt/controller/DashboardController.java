@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.dto.SmtComplianceDto;
+import com.deloitte.smt.dto.ValidationOutComesDTO;
 import com.deloitte.smt.service.DashboardService;
 import com.deloitte.smt.dto.DashboardDTO;
 import com.deloitte.smt.entity.Topic;
@@ -31,4 +32,10 @@ public class DashboardController {
 		return dashboardService.getDashboardData();
 	}
 
+	
+	@GetMapping(value="/chat/validationoutcomes")
+	public List<ValidationOutComesDTO> getValidationOutcomes(){
+		return dashboardService.generateDataForValidateOutcomesChart();
+	}
+	
 }
