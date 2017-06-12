@@ -58,7 +58,6 @@ public class Topic implements Serializable{
 	private Long confidenceIndex;
 	private Long cohortPercentage;
 
-    @Transient
     private int casesCount;
     
     @OneToMany(fetch = FetchType.EAGER, mappedBy="topic", cascade = CascadeType.ALL)
