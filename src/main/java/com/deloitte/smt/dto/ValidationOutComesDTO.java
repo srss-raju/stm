@@ -1,8 +1,12 @@
 package com.deloitte.smt.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ValidationOutComesDTO {
 	
 	private String label;
+	
+	@JsonProperty("value")
 	private Long count;
 	private String color;
 	
