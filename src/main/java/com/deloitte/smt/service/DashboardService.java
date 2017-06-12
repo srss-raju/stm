@@ -284,25 +284,33 @@ public class DashboardService {
 		List<Object[]> signals = signalQuery.getResultList();
 		String prevMonth = null;
 		SignalDetectDTO previousDto = null;
+		Long casesCount = 0l;
 		List<SignalDetectDTO> signalDetectDTOs = null;
+		
 		if(!CollectionUtils.isEmpty(signals)){
 			 signalDetectDTOs = new ArrayList<>();
 			for(Object[] signal:signals){
 				SignalDetectDTO dto = new SignalDetectDTO();
+				LOG.info("Month--->>"+signal[0]);
 				dto.setMonth((String)signal[0]);
+				LOG.info("Status--->>"+signal[1]);
 				dto.setStatus((String)signal[1]);
+				LOG.info("Signal COunt--->>"+((BigInteger)signal[2]).longValue());
 				dto.setSignalCount(((BigInteger)signal[2]).longValue());
-				dto.setCasesCount(((BigDecimal)signal[3]).longValue());
+				if(signal[3] != null){
+					casesCount = ((BigDecimal)signal[3]).longValue();
+				}
+				dto.setCasesCount(casesCount);
 				if(((String)signal[0]).equals(prevMonth)){
 					if(previousDto != null){
 						dto.setTotalSignalCount(previousDto.getTotalSignalCount()+((BigInteger)signal[2]).longValue());
-						dto.setTotalCasesCount(previousDto.getTotalCasesCount()+((BigDecimal)signal[3]).longValue());
+						dto.setTotalCasesCount(previousDto.getTotalCasesCount()+casesCount);
 						previousDto.setTotalSignalCount(dto.getTotalSignalCount());
 						previousDto.setTotalCasesCount(dto.getTotalCasesCount());
 					}
 				}else{
 					dto.setTotalSignalCount(((BigInteger)signal[2]).longValue());
-					dto.setTotalCasesCount(((BigDecimal)signal[3]).longValue());
+					dto.setTotalCasesCount(casesCount);
 				}
 				prevMonth = (String)signal[0];
 				previousDto = dto;
