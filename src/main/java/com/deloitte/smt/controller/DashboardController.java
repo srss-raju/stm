@@ -32,7 +32,7 @@ public class DashboardController {
 	}
 
 	
-	@GetMapping(value="/chat/validationoutcomes")
+	@GetMapping(value="/validationoutcomes")
 	public List<ValidationOutComesDTO> getValidationOutcomes(){
 		return dashboardService.generateDataForValidateOutcomesChart();
 	}
