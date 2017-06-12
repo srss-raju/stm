@@ -2,9 +2,13 @@ package com.deloitte.smt.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -23,7 +27,11 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.deloitte.smt.constant.AssessmentPlanStatus;
 import com.deloitte.smt.constant.DashboardChartType;
+import com.deloitte.smt.constant.ExecutionType;
+import com.deloitte.smt.constant.RiskPlanStatus;
+import com.deloitte.smt.constant.SignalStatus;
 import com.deloitte.smt.dto.AssessmentPlanDTO;
 import com.deloitte.smt.dto.DashboardDTO;
 import com.deloitte.smt.dto.RiskPlanDTO;
@@ -51,14 +59,6 @@ public class DashboardService {
 	@Autowired
 	private TopicRepository topicRepository;
 
-	@Autowired
-	private AssessmentPlanRepository assessmentPlanRepository;
-
-	@Autowired
-	private RiskPlanRepository riskPlanRepository;
-
-	
-	
 	
 	@SuppressWarnings("unchecked")
 	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
@@ -86,30 +86,43 @@ public class DashboardService {
 	 * @param smtComplianceMap
 	 * @param authors
 	 */
-	public void complianceResponse(Map<String, List<SmtComplianceDto>> smtComplianceMap, List<Object[]> authors,
+	public void complianceResponse(Map<String, List<SmtComplianceDto>> smtComplianceMap, List<Object[]> results,
 			String type) {
-		List<SmtComplianceDto> smtComplianceList;
-		if (!CollectionUtils.isEmpty(authors)) {
+		List<SmtComplianceDto> smtComplianceList=new ArrayList();
+		//if (!CollectionUtils.isEmpty(authors)) {
 			smtComplianceList = new ArrayList<>();
-			for (Object[] row : authors) {
+			for (Object[] row : results) {
 				SmtComplianceDto dto = new SmtComplianceDto();
 				dto.setCount(((BigInteger) row[1]).longValue());
 				dto.setStatus((String) row[0]);
 				smtComplianceList.add(dto);
 			}
 			smtComplianceMap.put(type, smtComplianceList);
+		//}
+		
+		Set<String>  addedExecutionTypes=  smtComplianceList.stream().map(SmtComplianceDto:: getStatus).collect(Collectors.toSet());
+		
+		List<String> unAddedTypes=ExecutionType.getExecutionTypes().stream().filter( type1 -> !addedExecutionTypes.contains(type1)).collect(Collectors.toList());
+		
+		for (String unAddedType : unAddedTypes) {
+			SmtComplianceDto dto = new SmtComplianceDto();
+			dto.setCount(0l);
+			dto.setStatus(unAddedType);
+			smtComplianceList.add(dto);
 		}
+		
+		System.out.println(unAddedTypes);
 	}
 
 	
 	public DashboardDTO getDashboardData(){
 		DashboardDTO dashboardData=new DashboardDTO();
 		Map<String, Map<String, Long>> topicMetrics=calculateTopicMetrics(getSignalsDTO());
-		dashboardData.setTopicMetrics(topicMetrics);
+		dashboardData.getTopicMetrics().add(topicMetrics);
 		Map<String, Map<String, Long>> assessmentMetrics=calculateAssessmentMetrics(getAssessmentPlanDTOS());
-		dashboardData.setAssessmentMetrics(assessmentMetrics);
+		dashboardData.getAssessmentMetrics().add(assessmentMetrics);
 		Map<String, Map<String, Long>> riskPlanMetrics=calculatRiskMetrics(getRiskPlanDTOS());
-		dashboardData.setRiskMetrics(riskPlanMetrics);
+		dashboardData.getRiskMetrics().add(riskPlanMetrics);
 		return dashboardData;
 	}
 	
@@ -126,7 +139,16 @@ public class DashboardService {
 							)
 				);
 		
-		
+		Set<Entry<String, Map<String, Long>>> set= metrics.entrySet();
+		for (Entry<String, Map<String, Long>> entry : set) {
+			Map<String,Long> ingredientMap=entry.getValue();
+			
+			for (String status: SignalStatus.getStatusValues()) {
+				if(!ingredientMap.containsKey(status)){
+					ingredientMap.put(status, 0l);
+				}
+			}
+		}
 		return metrics;
 		
 	}
@@ -138,6 +160,18 @@ public class DashboardService {
 							)
 				);
 		
+		
+		
+		Set<Entry<String, Map<String, Long>>> set= metrics.entrySet();
+		for (Entry<String, Map<String, Long>> entry : set) {
+			Map<String,Long> ingredientMap=entry.getValue();
+			
+			for (String status: AssessmentPlanStatus.getStatusValues()) {
+				if(!ingredientMap.containsKey(status)){
+					ingredientMap.put(status, 0l);
+				}
+			}
+		}
 		
 		return metrics;
 		
@@ -151,6 +185,17 @@ public class DashboardService {
 							)
 				);
 		
+		
+		Set<Entry<String, Map<String, Long>>> set= metrics.entrySet();
+		for (Entry<String, Map<String, Long>> entry : set) {
+			Map<String,Long> ingredientMap=entry.getValue();
+			
+			for (String status: RiskPlanStatus.getStatusValues()) {
+				if(!ingredientMap.containsKey(status)){
+					ingredientMap.put(status, 0l);
+				}
+			}
+		}
 		
 		return metrics;
 		
