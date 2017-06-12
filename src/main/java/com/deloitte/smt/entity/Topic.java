@@ -58,7 +58,7 @@ public class Topic implements Serializable{
 	private Long confidenceIndex;
 	private Long cohortPercentage;
 
-    private int casesCount;
+    private Long casesCount;
     
     @OneToMany(fetch = FetchType.EAGER, mappedBy="topic", cascade = CascadeType.ALL)
     private Set<SignalStatistics> signalStatistics;
@@ -261,11 +261,11 @@ public class Topic implements Serializable{
 		this.ingredient = ingredient;
 	}
 
-	public int getCasesCount() {
+	public Long getCasesCount() {
 		return casesCount;
 	}
 
-	public void setCasesCount(int casesCount) {
+	public void setCasesCount(Long casesCount) {
 		this.casesCount = casesCount;
 	}
 
