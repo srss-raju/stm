@@ -275,7 +275,7 @@ public class DashboardService {
 						+ SignalConfirmationStatus.CONTINUE_TO_MONITOR + "'");
 		Object continueToMonitorResults = continueToMonitor.getSingleResult();
 		ValidationOutComesDTO validationOutComeDTO4 = new ValidationOutComesDTO();
-		validationOutComeDTO4.setLabel(ValidationOutComesLabelTypes.NON_SIGNAL);
+		validationOutComeDTO4.setLabel(ValidationOutComesLabelTypes.CONTINUE_TO_MONTOR);
 		validationOutComeDTO4.setCount(((BigInteger) continueToMonitorResults).longValue());
 		validationOutComeDTO4.setColor("#017CAB");
 		validateOutComesList.add(validationOutComeDTO4);
