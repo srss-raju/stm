@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by cavula
+ * Created by myelleswarapu on 06-04-2017.
  */
-public enum RiskPlanStatus {
-	NEW("New"), IN_PREGRESS("In Progress"),COMPLETED("Completed");
+public enum AssessmentPlanStatus {
+	COMPLETED("Completed"), IN_PREGRESS("In Progress");
 
 	private String status;
 
@@ -15,12 +15,12 @@ public enum RiskPlanStatus {
 		return status;
 	}
 
-	RiskPlanStatus(String status) {
+	AssessmentPlanStatus(String status) {
 		this.status = status;
 	}
 
 	public boolean isStatusAvailable(String status) {
-		for (RiskPlanStatus assessmentPlanStatus : RiskPlanStatus.values()) {
+		for (AssessmentPlanStatus assessmentPlanStatus : AssessmentPlanStatus.values()) {
 			if(assessmentPlanStatus.getStatus().equalsIgnoreCase(status)){
 				return true;
 			}
@@ -31,7 +31,7 @@ public enum RiskPlanStatus {
 	
 	public static List<String> getStatusValues(){
 		List<String> values=new ArrayList();
-		for (RiskPlanStatus assessmentPlanStatus : RiskPlanStatus.values()) {
+		for (AssessmentPlanStatus assessmentPlanStatus : AssessmentPlanStatus.values()) {
 			values.add(assessmentPlanStatus.getStatus());
 		}
 		
