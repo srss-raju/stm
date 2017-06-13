@@ -6,7 +6,7 @@ public class SignalDetectDTO {
 	private Long casesCount;
 	private Long signalCount;
 	private Long totalSignalCount;
-	private Long totalCasesCount;
+	private Long recurringCount;
 	private String status;
 	
 	public String getMonth() {
@@ -33,16 +33,17 @@ public class SignalDetectDTO {
 	public void setTotalSignalCount(Long totalSignalCount) {
 		this.totalSignalCount = totalSignalCount;
 	}
-	public Long getTotalCasesCount() {
-		return totalCasesCount;
-	}
-	public void setTotalCasesCount(Long totalCasesCount) {
-		this.totalCasesCount = totalCasesCount;
-	}
+	
 	public String getStatus() {
 		return status;
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public Long getRecurringCount() {
+		return recurringCount;
+	}
+	public void setRecurringCount(Long recurringCount) {
+		this.recurringCount = recurringCount;
 	}
 }
