@@ -1,6 +1,7 @@
 package com.deloitte.smt.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,13 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.AttachmentType;
+import com.deloitte.smt.constant.MeetingType;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Attachment;
+import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.AttachmentRepository;
+import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRepository;
 
@@ -45,6 +49,12 @@ public class SignalMatchService {
 
 	@Autowired
 	AttachmentRepository attachmentRepository;
+	
+	@Autowired
+    MeetingService meetingService;
+	
+	@Autowired
+    MeetingRepository meetingRepository;
 
 	/**
 	 * @param topic
@@ -224,6 +234,21 @@ public class SignalMatchService {
 			}
 		}
 		signalURLRepository.save(matchingTopicSignalUrls);
+		
+		List<Meeting> meetings = meetingService.findAllyByResourceIdAndMeetingType(final95Signal.getId(), MeetingType.getByDescription("Signal Meeting"));
+		if(!CollectionUtils.isEmpty(meetings)){
+			List<Meeting> matchingMeetings = new ArrayList<>();
+			for(Meeting meeting:meetings){
+				Meeting matchingMeeting = new Meeting();
+				matchingMeeting.setName(meeting.getName());
+				matchingMeeting.setDescription(meeting.getDescription());
+				matchingMeeting.setMeetingResourceId(final95Signal.getId());
+				matchingMeeting.setCreatedDate(new Date());
+				matchingMeeting.setMeetingType(MeetingType.getByDescription("Signal Meeting"));
+				matchingMeetings.add(matchingMeeting);
+			}
+			meetingRepository.save(matchingMeetings);
+		}
 	}
 
 	/**
