@@ -231,7 +231,7 @@ public class DashboardService {
 	}
 
 	public List<ValidationOutComesDTO> generateDataForValidateOutcomesChart() {
-		List<ValidationOutComesDTO> validateOutComesList = new ArrayList();
+		List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
 
 		Query validatedSignalsWithOutRisk = entityManager.createNativeQuery(
 				"select count(*) from sm_assessment_plan a  inner join sm_topic t on a.id=t.assessment_plan_id where t.created_date >= (now() - interval '1 month') and a.risk_plan_id is null and t.signal_confirmation='"
@@ -280,40 +280,19 @@ public class DashboardService {
 	@SuppressWarnings("unchecked")
 	public List<SignalDetectDTO> getDetectedSignalDetails() {
 		LOG.info("Method Start getDetectedSignalDetails");
-		Query signalQuery = entityManager.createNativeQuery("select to_char(created_date,'Mon-yy') cd, signal_status, count(signal_status), sum(cases_count) cases_count from sm_topic group by cd,signal_status order by to_date(to_char(created_date,'Mon-yy'),'Mon-yy')");
+		Query signalQuery = entityManager.createNativeQuery("select to_char(created_date,'Mon-yy') cd, sum(case when signal_status='New' then 1 else 0 end) as signalcount,sum(case when signal_status<>'New' then 1 else 0 end) as recurringcount,count(signal_status) as totalsignalcount,sum(cases_count) as casesCount from sm_topic group by cd order by to_date(to_char(created_date,'Mon-yy'),'Mon-yy')");
 		List<Object[]> signals = signalQuery.getResultList();
-		String prevMonth = null;
-		SignalDetectDTO previousDto = null;
-		Long casesCount = 0l;
 		List<SignalDetectDTO> signalDetectDTOs = null;
 		
 		if(!CollectionUtils.isEmpty(signals)){
 			 signalDetectDTOs = new ArrayList<>();
 			for(Object[] signal:signals){
 				SignalDetectDTO dto = new SignalDetectDTO();
-				LOG.info("Month--->>"+signal[0]);
 				dto.setMonth((String)signal[0]);
-				LOG.info("Status--->>"+signal[1]);
-				dto.setStatus((String)signal[1]);
-				LOG.info("Signal COunt--->>"+((BigInteger)signal[2]).longValue());
-				dto.setSignalCount(((BigInteger)signal[2]).longValue());
-				if(signal[3] != null){
-					casesCount = ((BigDecimal)signal[3]).longValue();
-				}
-				dto.setCasesCount(casesCount);
-				if(((String)signal[0]).equals(prevMonth)){
-					if(previousDto != null){
-						dto.setTotalSignalCount(previousDto.getTotalSignalCount()+((BigInteger)signal[2]).longValue());
-						dto.setTotalCasesCount(previousDto.getTotalCasesCount()+casesCount);
-						previousDto.setTotalSignalCount(dto.getTotalSignalCount());
-						previousDto.setTotalCasesCount(dto.getTotalCasesCount());
-					}
-				}else{
-					dto.setTotalSignalCount(((BigInteger)signal[2]).longValue());
-					dto.setTotalCasesCount(casesCount);
-				}
-				prevMonth = (String)signal[0];
-				previousDto = dto;
+				dto.setSignalCount(((BigInteger)signal[1]).longValue());
+				dto.setRecurringCount(((BigInteger)signal[2]).longValue());
+				dto.setTotalSignalCount(((BigInteger)signal[3]).longValue());
+				dto.setCasesCount(((BigDecimal)signal[4]).longValue());
 				signalDetectDTOs.add(dto);
 			}
 		}
