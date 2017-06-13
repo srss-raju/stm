@@ -85,7 +85,7 @@ public class DashboardService {
 	public void complianceResponse(Map<String, List<SmtComplianceDto>> smtComplianceMap, List<Object[]> results,
 			String type) {
 		List<SmtComplianceDto> smtComplianceList = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(results)) {
+		if (results!=null) {
 			smtComplianceList = new ArrayList<>();
 			for (Object[] row : results) {
 				SmtComplianceDto dto = new SmtComplianceDto();
