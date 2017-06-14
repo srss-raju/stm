@@ -63,8 +63,8 @@ public class SignalMatchService {
 		LOG.info("Algorith started");
 		List<Topic> matchingSignals = getMatchingSignals(topic);
 		List<Topic> ciSignals = checkConfidenceIndex(matchingSignals, topic);
-		topic = checkCohortPercentage(ciSignals, topic);
-		return topic;
+		Topic topicUpdated = checkCohortPercentage(ciSignals, topic);
+		return topicUpdated;
 	}
 
 	private List<Topic> getMatchingSignals(Topic topic) {
@@ -104,8 +104,7 @@ public class SignalMatchService {
 		Query q = entityManager.createNativeQuery(queryBuilder.toString(), Topic.class);
 		q.setParameter(1, topic.getCreatedDate());
 		q.setParameter(2, topic.getIngredient().getIngredientName());
-		List<Topic> signals = (List<Topic>) q.getResultList();
-		return signals;
+		return q.getResultList();
 	}
 
 	public List<Topic> checkConfidenceIndex(List<Topic> signals, Topic createdTopic) {

@@ -140,7 +140,6 @@ public class SignalDetectionService {
 				for (Soc soc : socs) {
 					soc.setDetectionId(signalDetection.getId());
 				}
-				//socRepository.deleteByDetectionId(signalDetection.getId());
 				socs = socRepository.save(socs);
 				List<Hlgt> hlgts;
 				List<Hlt> hlts;
@@ -155,7 +154,6 @@ public class SignalDetectionService {
 							hlgt.setSocId(soc.getId());
 							hlgt.setDetectionId(signalDetection.getId());
 						}
-						//hlgtRepository.deleteByDetectionId(signalDetection.getId());
 						hlgtRepository.save(hlgts);
 					}
 					if (!CollectionUtils.isEmpty(hlts)) {
@@ -163,7 +161,6 @@ public class SignalDetectionService {
 							hlt.setSocId(soc.getId());
 							hlt.setDetectionId(signalDetection.getId());
 						}
-						//hltRepository.deleteByDetectionId(signalDetection.getId());
 						hltRepository.save(hlts);
 					}
 					if (!CollectionUtils.isEmpty(pts)) {
@@ -171,7 +168,6 @@ public class SignalDetectionService {
 							pt.setSocId(soc.getId());
 							pt.setDetectionId(signalDetection.getId());
 						}
-						//ptRepository.deleteByDetectionId(signalDetection.getId());
 						ptRepository.save(pts);
 					}
 				}
@@ -210,15 +206,6 @@ public class SignalDetectionService {
 		}
 	}
 
-	/*
-	 * public String updateSignalDetection(SignalDetection signalDetection)
-	 * throws UpdateFailedException, IOException { if(signalDetection.getId() ==
-	 * null) { throw new
-	 * UpdateFailedException("Update failed for Topic, since it does not have any valid Id field."
-	 * ); } signalDetection.setLastModifiedDate(new Date());
-	 * signalDetectionRepository.save(signalDetection); return "Update Success";
-	 * }
-	 */
 
 	public void delete(Long signalDetectionId) throws DeleteFailedException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(signalDetectionId);
@@ -283,11 +270,11 @@ public class SignalDetectionService {
 				Predicate ingredientLicenseEquals = criteriaBuilder.equal(rootIngredient.get("id"),
 						rootLicense.get("ingredientId"));
 
-				Predicate LicenseNameIn = criteriaBuilder
+				Predicate licenseNameIn = criteriaBuilder
 						.isTrue(rootLicense.get("licenseName").in(searchDto.getLicenses()));
 
 				predicates.add(ingredientLicenseEquals);
-				predicates.add(LicenseNameIn);
+				predicates.add(licenseNameIn);
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getSocs())) {

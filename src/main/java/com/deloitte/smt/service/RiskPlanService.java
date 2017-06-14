@@ -217,8 +217,7 @@ public class RiskPlanService {
 		}
 
 		TypedQuery<RiskPlan> q = entityManager.createQuery(criteriaQuery);
-		List<RiskPlan> results = q.getResultList();
-		return results;
+		return q.getResultList();
 	}
 
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {
@@ -247,13 +246,13 @@ public class RiskPlanService {
         riskTask.setOwner(riskPlan.getAssignTo());
 
         taskInstRepository.save(taskInstance);
-        riskTask = riskTaskRepository.save(riskTask);
-        attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, riskTask.getFileMetadata());
-        if(!CollectionUtils.isEmpty(riskTask.getSignalUrls())){
-        	for(SignalURL url:riskTask.getSignalUrls()){
-        		url.setTopicId(riskTask.getId());
+        RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
+        attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT, null, riskTaskUpdated.getFileMetadata());
+        if(!CollectionUtils.isEmpty(riskTaskUpdated.getSignalUrls())){
+        	for(SignalURL url:riskTaskUpdated.getSignalUrls()){
+        		url.setTopicId(riskTaskUpdated.getId());
         	}
-        	signalURLRepository.save(riskTask.getSignalUrls());
+        	signalURLRepository.save(riskTaskUpdated.getSignalUrls());
         }
 	}
 	

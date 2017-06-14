@@ -206,13 +206,13 @@ public class SignalService {
             }
         }
         topic.setConfidenceIndex(60l);
-        topic = topicRepository.save(topic);
+        Topic topicUpdated = topicRepository.save(topic);
 
-        Ingredient ingredient = topic.getIngredient();
+        Ingredient ingredient = topicUpdated.getIngredient();
         if(ingredient != null) {
             AssignmentConfiguration assignmentConfiguration = null;
-            if(!StringUtils.isEmpty(topic.getSourceName())) {
-                assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(ingredient.getIngredientName(), topic.getSourceName());
+            if(!StringUtils.isEmpty(topicUpdated.getSourceName())) {
+                assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(ingredient.getIngredientName(), topicUpdated.getSourceName());
             } 
             // If Source is  null and combination not available we have to fetch with Ingredient
             if(assignmentConfiguration == null){
@@ -221,34 +221,34 @@ public class SignalService {
             
             
             if(assignmentConfiguration != null) {
-                topic.setAssignTo(assignmentConfiguration.getSignalValidationAssignmentUser());
-                topic = topicRepository.save(topic);
+                topicUpdated.setAssignTo(assignmentConfiguration.getSignalValidationAssignmentUser());
+                topicUpdated = topicRepository.save(topicUpdated);
             }
             List<Product> products = ingredient.getProducts();
             List<License> licenses = ingredient.getLicenses();
-            ingredient.setTopicId(topic.getId());
+            ingredient.setTopicId(topicUpdated.getId());
             ingredient = ingredientRepository.save(ingredient);
 
             if(!CollectionUtils.isEmpty(products)){
                 for (Product singleProduct : products) {
                     singleProduct.setIngredientId(ingredient.getId());
-                    singleProduct.setTopicId(topic.getId());
+                    singleProduct.setTopicId(topicUpdated.getId());
                 }
                 productRepository.save(products);
             }
             if(!CollectionUtils.isEmpty(licenses)) {
                 for (License singleLicense : licenses) {
                     singleLicense.setIngredientId(ingredient.getId());
-                    singleLicense.setTopicId(topic.getId());
+                    singleLicense.setTopicId(topicUpdated.getId());
                 }
                 licenseRepository.save(licenses);
             }
         }
         
-        List<Soc> socs  = topic.getSocs();
+        List<Soc> socs  = topicUpdated.getSocs();
         if(!CollectionUtils.isEmpty(socs)) {
             for (Soc soc : socs) {
-                soc.setTopicId(topic.getId());
+                soc.setTopicId(topicUpdated.getId());
             }
             socs = socRepository.save(socs);
             List<Hlgt> hlgts;
@@ -262,36 +262,35 @@ public class SignalService {
                 if (!CollectionUtils.isEmpty(hlgts)) {
                     for (Hlgt hlgt : hlgts) {
                         hlgt.setSocId(soc.getId());
-                        hlgt.setTopicId(topic.getId());
+                        hlgt.setTopicId(topicUpdated.getId());
                     }
                     hlgtRepository.save(hlgts);
                 }
                 if (!CollectionUtils.isEmpty(hlts)) {
                     for (Hlt hlt : hlts) {
                         hlt.setSocId(soc.getId());
-                        hlt.setTopicId(topic.getId());
+                        hlt.setTopicId(topicUpdated.getId());
                     }
                     hltRepository.save(hlts);
                 }
                 if (!CollectionUtils.isEmpty(pts)) {
                     for (Pt pt : pts) {
                         pt.setSocId(soc.getId());
-                        pt.setTopicId(topic.getId());
+                        pt.setTopicId(topicUpdated.getId());
                     }
                     ptRepository.save(pts);
                 }
             }
         }
-        if(!CollectionUtils.isEmpty(topic.getSignalUrls())){
-        	for(SignalURL url:topic.getSignalUrls()){
-        		url.setTopicId(topic.getId());
+        if(!CollectionUtils.isEmpty(topicUpdated.getSignalUrls())){
+        	for(SignalURL url:topicUpdated.getSignalUrls()){
+        		url.setTopicId(topicUpdated.getId());
         	}
-        	signalURLRepository.save(topic.getSignalUrls());
+        	signalURLRepository.save(topicUpdated.getSignalUrls());
         }
-        attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topic.getFileMetadata());
+        attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topicUpdated.getFileMetadata());
         LOG.info("Start Algorithm for matching signal");
-        topic = signalMatchService.findMatchingSignal(topic);
-        return topic;
+        return signalMatchService.findMatchingSignal(topicUpdated);
     }
 
 	
@@ -366,7 +365,7 @@ public class SignalService {
 		Root<Topic> rootTopic = query.from(Topic.class);
 
 		if (null != searchDto) {
-			List<Predicate> predicates = new ArrayList<Predicate>(10);
+			List<Predicate> predicates = new ArrayList<>(10);
 			
 			if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
 				Root<Product> rootProduct = query.from(Product.class);

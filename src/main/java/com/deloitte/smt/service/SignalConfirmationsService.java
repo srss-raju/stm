@@ -37,8 +37,7 @@ public class SignalConfirmationsService {
             throw new UpdateFailedException("Required field Id is no present in the given request.");
         }
         signalConfirmation.setLastModifiedDate(new Date());
-        signalConfirmation = signalConfirmationRespository.save(signalConfirmation);
-        return signalConfirmation;
+        return signalConfirmationRespository.save(signalConfirmation);
     }
 
     public void delete(Long signalConfirmationId) throws EntityNotFoundException {
