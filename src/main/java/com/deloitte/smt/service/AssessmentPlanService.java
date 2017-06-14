@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.AssessmentPlan;
@@ -119,7 +120,7 @@ public class AssessmentPlanService {
 
 		Root<Topic> topic = criteriaQuery.from(Topic.class);
 		Join<Topic, AssessmentPlan> topicAssignmentJoin = topic.join("assessmentPlan", JoinType.INNER);
-		Join<AssessmentPlan,RiskPlan> assementRiskJoin=topicAssignmentJoin.join("riskPlan",JoinType.LEFT);
+		Join<AssessmentPlan,RiskPlan> assementRiskJoin=topicAssignmentJoin.join(SmtConstant.RISK_PLAN.getDescription(),JoinType.LEFT);
 		
 
 		if (null != searchDto) {
@@ -131,21 +132,21 @@ public class AssessmentPlanService {
 			}
 			
 			if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-				predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get("assessmentPlanStatus").in(searchDto.getStatuses())));
+				predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get(SmtConstant.ASSESSMENT_PLAN_STATUS.getDescription()).in(searchDto.getStatuses())));
 			}
 			
 			if (!CollectionUtils.isEmpty(searchDto.getAssessmentTaskStatus())) {
-				predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get("assessmentTaskStatus").in(searchDto.getAssessmentTaskStatus())));
+				predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription()).in(searchDto.getAssessmentTaskStatus())));
 			}
 			
 			if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-				predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get("assignTo").in(searchDto.getAssignees())));
+				predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()).in(searchDto.getAssignees())));
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
 				Root<Product> rootProduct = criteriaQuery.from(Product.class);
 				Predicate productEquals = criteriaBuilder.equal(topic.get("id"),
-						rootProduct.get("topicId"));
+						rootProduct.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate producNameEquals = criteriaBuilder
 						.isTrue(rootProduct.get("productName").in(searchDto.getProducts()));
 				predicates.add(productEquals);
@@ -154,7 +155,7 @@ public class AssessmentPlanService {
 
 			if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
 				Root<License> rootLicense = criteriaQuery.from(License.class);
-				Predicate licenseEquals = criteriaBuilder.equal(topic.get("id"), rootLicense.get("topicId"));
+				Predicate licenseEquals = criteriaBuilder.equal(topic.get("id"), rootLicense.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate licenseNameEquals = criteriaBuilder.isTrue(rootLicense.get("licenseName").in(searchDto.getLicenses()));
 				predicates.add(licenseEquals);
 				predicates.add(licenseNameEquals);
@@ -162,7 +163,7 @@ public class AssessmentPlanService {
 			
 			if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
 				Root<Ingredient> rootIngredient = criteriaQuery.from(Ingredient.class);
-				Predicate ingredientEquals = criteriaBuilder.equal(topic.get("id"), rootIngredient.get("topicId"));
+				Predicate ingredientEquals = criteriaBuilder.equal(topic.get("id"), rootIngredient.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate ingredientNameEquals = criteriaBuilder.isTrue(rootIngredient.get("ingredientName").in(searchDto.getIngredients()));
 				predicates.add(ingredientEquals);
 				predicates.add(ingredientNameEquals);
@@ -170,7 +171,7 @@ public class AssessmentPlanService {
 			
 			if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
 				Root<Hlt> rootHlt = criteriaQuery.from(Hlt.class);
-				Predicate hltTopicEquals = criteriaBuilder.equal(topic.get("id"), rootHlt.get("topicId"));
+				Predicate hltTopicEquals = criteriaBuilder.equal(topic.get("id"), rootHlt.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate hltNameEquals = criteriaBuilder.isTrue(rootHlt.get("hltName").in(searchDto.getHlts()));
 				predicates.add(hltTopicEquals);
 				predicates.add(hltNameEquals);
@@ -178,7 +179,7 @@ public class AssessmentPlanService {
 
 			if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
 				Root<Hlgt> rootHlgt = criteriaQuery.from(Hlgt.class);
-				Predicate hlgtTopicEquals = criteriaBuilder.equal(topic.get("id"), rootHlgt.get("topicId"));
+				Predicate hlgtTopicEquals = criteriaBuilder.equal(topic.get("id"), rootHlgt.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate hlgtNameEquals = criteriaBuilder.isTrue(rootHlgt.get("hlgtName").in(searchDto.getHlgts()));
 				predicates.add(hlgtTopicEquals);
 				predicates.add(hlgtNameEquals);
@@ -186,7 +187,7 @@ public class AssessmentPlanService {
 
 			if (!CollectionUtils.isEmpty(searchDto.getPts())) {
 				Root<Pt> rootPt = criteriaQuery.from(Pt.class);
-				Predicate ptTopicEquals = criteriaBuilder.equal(topic.get("id"), rootPt.get("topicId"));
+				Predicate ptTopicEquals = criteriaBuilder.equal(topic.get("id"), rootPt.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate ptNameEquals = criteriaBuilder.isTrue(rootPt.get("ptName").in(searchDto.getPts()));
 				predicates.add(ptTopicEquals);
 				predicates.add(ptNameEquals);
@@ -195,16 +196,16 @@ public class AssessmentPlanService {
 			if (null != searchDto.getStartDate()) {
 				if (searchDto.isDueDate()) {
 					predicates.add(
-							criteriaBuilder.greaterThanOrEqualTo(topicAssignmentJoin.get("assessmentDueDate"), searchDto.getStartDate()));
+							criteriaBuilder.greaterThanOrEqualTo(topicAssignmentJoin.get(SmtConstant.ASSESSMENT_DUE_DATE.getDescription()), searchDto.getStartDate()));
 					if(null!=searchDto.getEndDate()){
-						predicates.add(criteriaBuilder.lessThanOrEqualTo(topicAssignmentJoin.get("assessmentDueDate"), searchDto.getEndDate()));
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(topicAssignmentJoin.get(SmtConstant.ASSESSMENT_DUE_DATE.getDescription()), searchDto.getEndDate()));
 					}
 					
 				} else {
-					predicates.add(criteriaBuilder.greaterThanOrEqualTo(topicAssignmentJoin.get("createdDate"),	searchDto.getStartDate()));
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription()),	searchDto.getStartDate()));
 					if(null!=searchDto.getEndDate()){
 						predicates.add(
-								criteriaBuilder.lessThanOrEqualTo(topicAssignmentJoin.get("createdDate"), searchDto.getEndDate()));
+								criteriaBuilder.lessThanOrEqualTo(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription()), searchDto.getEndDate()));
 					}
 					
 				}
@@ -216,23 +217,23 @@ public class AssessmentPlanService {
 					topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("priority"),
 					topicAssignmentJoin.get("inDays"), topicAssignmentJoin.get("ingrediantName"),
 					topicAssignmentJoin.get("source"), topicAssignmentJoin.get("caseInstanceId"),
-					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("assessmentRiskStatus"),
-					topicAssignmentJoin.get("assessmentDueDate"), topicAssignmentJoin.get("finalAssessmentSummary"),
-					topicAssignmentJoin.get("riskPlan"), topicAssignmentJoin.get("createdDate"),
+					topicAssignmentJoin.get(SmtConstant.ASSESSMENT_PLAN_STATUS.getDescription()), topicAssignmentJoin.get("assessmentRiskStatus"),
+					topicAssignmentJoin.get(SmtConstant.ASSESSMENT_DUE_DATE.getDescription()), topicAssignmentJoin.get("finalAssessmentSummary"),
+					topicAssignmentJoin.get(SmtConstant.RISK_PLAN.getDescription()), topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription()),
 					topicAssignmentJoin.get("createdBy"), topicAssignmentJoin.get("lastModifiedDate"),
-					topicAssignmentJoin.get("assignTo"), topicAssignmentJoin.get("assessmentTaskStatus")))
-					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("createdDate")));
+					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription())))
+					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));
 		} else {
 			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
 					topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("priority"),
 					topicAssignmentJoin.get("inDays"), topicAssignmentJoin.get("ingrediantName"),
 					topicAssignmentJoin.get("source"), topicAssignmentJoin.get("caseInstanceId"),
-					topicAssignmentJoin.get("assessmentPlanStatus"), topicAssignmentJoin.get("assessmentRiskStatus"),
-					topicAssignmentJoin.get("assessmentDueDate"), topicAssignmentJoin.get("finalAssessmentSummary"),
-					topicAssignmentJoin.get("riskPlan"), topicAssignmentJoin.get("createdDate"),
+					topicAssignmentJoin.get(SmtConstant.ASSESSMENT_PLAN_STATUS.getDescription()), topicAssignmentJoin.get("assessmentRiskStatus"),
+					topicAssignmentJoin.get(SmtConstant.ASSESSMENT_DUE_DATE.getDescription()), topicAssignmentJoin.get("finalAssessmentSummary"),
+					topicAssignmentJoin.get(SmtConstant.RISK_PLAN.getDescription()), topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription()),
 					topicAssignmentJoin.get("createdBy"), topicAssignmentJoin.get("lastModifiedDate"),
-					topicAssignmentJoin.get("assignTo"), topicAssignmentJoin.get("assessmentTaskStatus")))
-			.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("createdDate")));
+					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription())))
+			.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));
 		}
 
 		TypedQuery<AssessmentPlan> q = entityManager.createQuery(criteriaQuery);
