@@ -24,9 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Table(name = "sm_signal_detection")
 public class SignalDetection implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

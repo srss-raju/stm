@@ -18,15 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by myelleswarapu on 12-04-2017.
+ * Created by RajeshKumarB on 12-04-2017.
  */
 @Entity
 @Table(name = "sm_risk_plan")
 public class RiskPlan implements Serializable {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -3652414302035277522L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

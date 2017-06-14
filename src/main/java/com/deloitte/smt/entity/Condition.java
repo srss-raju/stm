@@ -1,12 +1,16 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Embeddable;
 
 /**
  * Created by myelleswarapu on 04-04-2017.
  */
 @Embeddable
-public class Condition {
+public class Condition implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
     private String soc;
     private String hlgt;

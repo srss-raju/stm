@@ -30,8 +30,7 @@ public class SMUserService {
             throw new ApplicationException("Required field Id is no present in the given request.");
         }
         smUser.setLastModifiedDate(new Date());
-        smUser = smUserRepository.save(smUser);
-        return smUser;
+        return smUserRepository.save(smUser);
     }
 
     public void delete(Long smUserId) throws ApplicationException {

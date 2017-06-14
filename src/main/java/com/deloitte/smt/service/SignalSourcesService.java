@@ -36,8 +36,7 @@ public class SignalSourcesService {
             throw new ApplicationException("Required field Id is no present in the given request.");
         }
         signalSources.setLastModifiedDate(new Date());
-        signalSources = signalSourcesRepository.save(signalSources);
-        return signalSources;
+        return signalSourcesRepository.save(signalSources);
     }
 
     public void delete(Long signalSourceId) throws ApplicationException {

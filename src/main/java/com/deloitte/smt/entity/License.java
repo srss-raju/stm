@@ -1,5 +1,7 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +10,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "sm_license")
-public class License {
+public class License  implements Serializable{
+	
+	private static final long serialVersionUID = -8113868399732487172L;
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

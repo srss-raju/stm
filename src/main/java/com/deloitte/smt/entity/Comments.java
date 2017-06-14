@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -10,7 +11,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "sm_comments")
-public class Comments {
+public class Comments  implements Serializable {
+
+	private static final long serialVersionUID = -3652484302035277522L;
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

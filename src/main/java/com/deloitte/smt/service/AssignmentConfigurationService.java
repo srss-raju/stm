@@ -35,8 +35,7 @@ public class AssignmentConfigurationService {
             throw new ApplicationException("Required field Id is no present in the given request.");
         }
         assignmentConfiguration.setLastModifiedDate(new Date());
-        assignmentConfiguration = assignmentConfigurationRepository.save(assignmentConfiguration);
-        return assignmentConfiguration;
+        return assignmentConfigurationRepository.save(assignmentConfiguration);
     }
 
     public void delete(Long assignmentConfigurationId) throws ApplicationException {

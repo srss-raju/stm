@@ -200,7 +200,7 @@ public class SignalDetectionService {
 			
 			return signalDetection;
 		} catch (Exception ex) {
-			throw new ApplicationException("Problem Creating Signal Detection");
+			throw new ApplicationException("Problem Creating Signal Detection"+ex);
 		}
 	}
 

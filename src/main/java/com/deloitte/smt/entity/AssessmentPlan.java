@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +22,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "sm_assessment_plan")
-public class AssessmentPlan {
+public class AssessmentPlan  implements Serializable {
+
+	private static final long serialVersionUID = -3652414302035277522L;
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
