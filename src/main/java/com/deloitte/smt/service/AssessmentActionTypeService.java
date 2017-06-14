@@ -1,8 +1,7 @@
 package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.AssessmentActionType;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentActionTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -32,26 +31,26 @@ public class AssessmentActionTypeService {
         return assessmentActionTypeRepository.save(assessmentActionTypes);
     }
 
-    public AssessmentActionType update(AssessmentActionType assessmentActionType) throws UpdateFailedException {
+    public AssessmentActionType update(AssessmentActionType assessmentActionType) throws ApplicationException {
         if(assessmentActionType.getId() == null) {
-            throw new UpdateFailedException("Required field Id is no present in the given request.");
+            throw new ApplicationException("Required field Id is no present in the given request.");
         }
         assessmentActionType.setLastModifiedDate(new Date());
         return assessmentActionTypeRepository.save(assessmentActionType);
     }
 
-    public void delete(Long assessmentActionTypeId) throws EntityNotFoundException {
+    public void delete(Long assessmentActionTypeId) throws ApplicationException {
         AssessmentActionType assessmentActionType = assessmentActionTypeRepository.findOne(assessmentActionTypeId);
         if(assessmentActionType == null) {
-            throw new EntityNotFoundException("Assessment Action Type not found with the given Id : "+assessmentActionTypeId);
+            throw new ApplicationException("Assessment Action Type not found with the given Id : "+assessmentActionTypeId);
         }
         assessmentActionTypeRepository.delete(assessmentActionType);
     }
 
-    public AssessmentActionType findById(Long assessmentActionTypeId) throws EntityNotFoundException {
+    public AssessmentActionType findById(Long assessmentActionTypeId) throws ApplicationException {
         AssessmentActionType assessmentActionType = assessmentActionTypeRepository.findOne(assessmentActionTypeId);
         if(assessmentActionType == null) {
-            throw new EntityNotFoundException("Assessment Action Type not found with the given Id : "+assessmentActionTypeId);
+            throw new ApplicationException("Assessment Action Type not found with the given Id : "+assessmentActionTypeId);
         }
         return assessmentActionType;
     }

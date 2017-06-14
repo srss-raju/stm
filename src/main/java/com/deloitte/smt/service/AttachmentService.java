@@ -2,8 +2,7 @@ package com.deloitte.smt.service;
 
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AttachmentRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +29,10 @@ public class AttachmentService {
         attachmentRepository.save(attachment);
     }
 
-    public void delete(Long attachmentId) throws DeleteFailedException {
+    public void delete(Long attachmentId) throws ApplicationException {
         Attachment a = attachmentRepository.findOne(attachmentId);
         if(a == null) {
-            throw new DeleteFailedException("Delete failed for Attachment with given Id: "+attachmentId);
+            throw new ApplicationException("Delete failed for Attachment with given Id: "+attachmentId);
         }
         attachmentRepository.delete(a);
     }
@@ -43,10 +42,10 @@ public class AttachmentService {
         return attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(resourceId, attachmentType, sort);
     }
 
-    public Attachment findById(Long attachmentId) throws EntityNotFoundException {
+    public Attachment findById(Long attachmentId) throws ApplicationException {
         Attachment a = attachmentRepository.findOne(attachmentId);
         if(a == null) {
-            throw new EntityNotFoundException("Attachment not found with the given Id : "+attachmentId);
+            throw new ApplicationException("Attachment not found with the given Id : "+attachmentId);
         }
         return a;
     }

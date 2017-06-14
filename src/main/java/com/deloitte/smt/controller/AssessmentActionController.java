@@ -1,8 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.SignalAction;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.AssessmentActionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class AssessmentActionController    {
 
     @PostMapping(value = "/updateAssessmentAction")
     public ResponseEntity<Void> updateAssessmentAction(@RequestParam("data") String signalActionString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
+                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
         SignalAction signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
         assessmentActionService.updateAssessmentAction(signalAction, attachments);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -62,7 +61,7 @@ public class AssessmentActionController    {
     }
 
     @DeleteMapping(value = "/assessmentAction/{assessmentActionId}/{taskId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long assessmentActionId, @PathVariable String taskId) throws DeleteFailedException {
+    public ResponseEntity<Void> deleteById(@PathVariable Long assessmentActionId, @PathVariable String taskId) throws ApplicationException {
         assessmentActionService.delete(assessmentActionId, taskId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -4,9 +4,7 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.RiskPlanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,7 +37,7 @@ public class RiskController {
     @PostMapping()
     public RiskPlan createRiskPlan(@RequestParam("data") String riskPlanString,
                                                @RequestParam(value = "assessmentId", required = false) Long assessmentId,
-                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, EntityNotFoundException {
+                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
         RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
         riskPlan = riskPlanService.insert(riskPlan, attachments, assessmentId);
         return riskPlan;
@@ -71,7 +69,7 @@ public class RiskController {
     }
 
     @DeleteMapping(value = "/task/{riskTaskId}/{taskId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long riskTaskId, @PathVariable String taskId) throws DeleteFailedException {
+    public ResponseEntity<Void> deleteById(@PathVariable Long riskTaskId, @PathVariable String taskId) throws ApplicationException {
     	riskPlanService.delete(riskTaskId, taskId);
     	return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -79,7 +77,7 @@ public class RiskController {
     
     @PostMapping(value = "/task/updateRiskTask")
     public ResponseEntity<Void> updateRiskTask(@RequestParam("data") String riskTaskString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
+                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
     	RiskTask riskTask = new ObjectMapper().readValue(riskTaskString, RiskTask.class);
         riskPlanService.updateRiskTask(riskTask, attachments);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -87,13 +85,13 @@ public class RiskController {
     
     
     @GetMapping(value = "/{id}")
-    public RiskPlan findByRiskId(@PathVariable Long id) throws EntityNotFoundException {
+    public RiskPlan findByRiskId(@PathVariable Long id) throws ApplicationException {
         return riskPlanService.findByRiskId(id);
     }
     
     @PostMapping(value = "/updateRiskPlan")
     public ResponseEntity<Void> updateRiskPlan(@RequestParam("data") String riskPlanString,
-                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
+                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
         RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
         riskPlanService.updateRiskPlan(riskPlan, attachments);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -101,14 +99,14 @@ public class RiskController {
     
     @PostMapping(value = "/riskPlanSummary")
     public ResponseEntity<Void> riskPlanSummary(@RequestParam("data") String riskPlanString,
-                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
+                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
         RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
         riskPlanService.riskPlanSummary(riskPlan, attachments);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{riskId}/assessmentPlan")
-    public AssessmentPlan getAssessmentPlanByRiskId(@PathVariable Long riskId) throws EntityNotFoundException {
+    public AssessmentPlan getAssessmentPlanByRiskId(@PathVariable Long riskId) throws ApplicationException {
         return riskPlanService.findByRiskId(riskId).getAssessmentPlan();
     }
 }

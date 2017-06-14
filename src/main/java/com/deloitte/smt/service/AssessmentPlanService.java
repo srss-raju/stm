@@ -34,8 +34,7 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.IngredientRepository;
@@ -81,10 +80,10 @@ public class AssessmentPlanService {
     @Autowired
     SignalURLRepository signalURLRepository;
 
-    public AssessmentPlan findById(Long assessmentId) throws EntityNotFoundException {
+    public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
         if(assessmentPlan == null) {
-            throw new EntityNotFoundException("Assessment Plan not found with given Id :"+assessmentId);
+            throw new ApplicationException("Assessment Plan not found with given Id :"+assessmentId);
         }
         if("New".equalsIgnoreCase(assessmentPlan.getAssessmentPlanStatus())) {
             assessmentPlan.setAssessmentPlanStatus("In Progress");
@@ -241,9 +240,9 @@ public class AssessmentPlanService {
 		return results;
 	}
 
-    public void updateAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws UpdateFailedException, IOException {
+    public void updateAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException, IOException {
         if(assessmentPlan.getId() == null) {
-            throw new UpdateFailedException("Failed to update Assessment. Invalid Id received");
+            throw new ApplicationException("Failed to update Assessment. Invalid Id received");
         }
         assessmentPlan.setLastModifiedDate(new Date());
         attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata());
@@ -264,9 +263,9 @@ public class AssessmentPlanService {
         }
     }
 
-    public void finalAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws UpdateFailedException, IOException {
+    public void finalAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException, IOException {
         if(assessmentPlan.getId() == null) {
-            throw new UpdateFailedException("Failed to update Assessment. Invalid Id received");
+            throw new ApplicationException("Failed to update Assessment. Invalid Id received");
         }
         assessmentPlan.setLastModifiedDate(new Date());
         assessmentPlan.setAssessmentPlanStatus("Completed");

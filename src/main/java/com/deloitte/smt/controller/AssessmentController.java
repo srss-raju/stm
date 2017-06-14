@@ -3,8 +3,7 @@ package com.deloitte.smt.controller;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.AssessmentPlanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -41,12 +40,12 @@ public class AssessmentController {
     }
 
     @GetMapping(value = "/assessmentPlan/{id}")
-    public AssessmentPlan getAssessmentPlanById(@PathVariable Long id) throws EntityNotFoundException {
+    public AssessmentPlan getAssessmentPlanById(@PathVariable Long id) throws ApplicationException {
         return assessmentPlanService.findById(id);
     }
 
     @GetMapping(value = "/{assessmentId}/allTopics")
-    public Set<Topic> getAllSignalsByAssessmentId(@PathVariable Long assessmentId) throws EntityNotFoundException {
+    public Set<Topic> getAllSignalsByAssessmentId(@PathVariable Long assessmentId) throws ApplicationException {
         return assessmentPlanService.findById(assessmentId).getTopics();
     }
 
@@ -58,7 +57,7 @@ public class AssessmentController {
 
     @PostMapping(value = "/updateAssessment")
     public ResponseEntity<Void> updateAssessment(@RequestParam("data") String assessmentPlanString,
-                                   @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
+                                   @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
         AssessmentPlan assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
         assessmentPlanService.updateAssessment(assessmentPlan, attachments);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -66,7 +65,7 @@ public class AssessmentController {
 
     @PostMapping(value = "/finalAssessment")
     public ResponseEntity<Void> finalAssessment(@RequestParam("data") String assessmentPlanString,
-                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws UpdateFailedException, IOException {
+                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
         AssessmentPlan assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
         assessmentPlanService.finalAssessment(assessmentPlan, attachments);
         return new ResponseEntity<>(HttpStatus.OK);

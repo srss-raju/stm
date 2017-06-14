@@ -1,7 +1,7 @@
 package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.DetectionRun;
-import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.DetectionRunRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,10 @@ public class DetectionRunService {
         return detectionRunRepository.save(detectionRun);
     }
 
-    public DetectionRun findById(Long detectionRunId) throws EntityNotFoundException {
+    public DetectionRun findById(Long detectionRunId) throws ApplicationException {
     	DetectionRun detectionRun = detectionRunRepository.findOne(detectionRunId);
         if(detectionRun == null) {
-            throw new EntityNotFoundException("Detection Run not found with the given Id : "+detectionRunId);
+            throw new ApplicationException("Detection Run not found with the given Id : "+detectionRunId);
         }
         return detectionRun;
     }

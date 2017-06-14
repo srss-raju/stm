@@ -1,8 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.AssessmentActionType;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.AssessmentActionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,18 +33,18 @@ public class AssessmentActionTypeController {
     }
 
     @PutMapping
-    public AssessmentActionType updateAssessmentActionType(@RequestBody AssessmentActionType assessmentActionType) throws UpdateFailedException {
+    public AssessmentActionType updateAssessmentActionType(@RequestBody AssessmentActionType assessmentActionType) throws ApplicationException {
     	return assessmentActionTypeService.update(assessmentActionType);
     }
 
     @DeleteMapping(value = "/{assessmentActionTypeId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long assessmentActionTypeId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long assessmentActionTypeId) throws ApplicationException {
         assessmentActionTypeService.delete(assessmentActionTypeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{assessmentActionTypeId}")
-    public AssessmentActionType findAssessmentActionTypeById(@PathVariable Long assessmentActionTypeId) throws EntityNotFoundException {
+    public AssessmentActionType findAssessmentActionTypeById(@PathVariable Long assessmentActionTypeId) throws ApplicationException {
         return assessmentActionTypeService.findById(assessmentActionTypeId);
     }
 

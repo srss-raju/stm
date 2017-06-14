@@ -1,8 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.RiskPlanActionTaskType;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.RiskPlanActionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,18 +33,18 @@ public class RiskPlanActionTypeController {
     }
 
     @PutMapping
-    public RiskPlanActionTaskType updateAssessmentActionType(@RequestBody RiskPlanActionTaskType riskPlanActionTaskType) throws UpdateFailedException {
+    public RiskPlanActionTaskType updateAssessmentActionType(@RequestBody RiskPlanActionTaskType riskPlanActionTaskType) throws ApplicationException {
         return riskPlanActionTypeService.update(riskPlanActionTaskType);
     }
 
     @DeleteMapping(value = "/{riskPlanActionTypeId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long riskPlanActionTypeId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long riskPlanActionTypeId) throws ApplicationException {
         riskPlanActionTypeService.delete(riskPlanActionTypeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{riskPlanActionTypeId}")
-    public RiskPlanActionTaskType findAssessmentActionTypeById(@PathVariable Long riskPlanActionTypeId) throws EntityNotFoundException {
+    public RiskPlanActionTaskType findAssessmentActionTypeById(@PathVariable Long riskPlanActionTypeId) throws ApplicationException {
         return riskPlanActionTypeService.findById(riskPlanActionTypeId);
     }
 

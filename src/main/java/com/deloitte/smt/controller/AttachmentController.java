@@ -2,8 +2,7 @@ package com.deloitte.smt.controller;
 
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.AttachmentService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,7 @@ public class AttachmentController {
     }
 
     @DeleteMapping(value = "/{attachmentId}")
-    public ResponseEntity<Void> deleteAttachment(@PathVariable Long attachmentId) throws DeleteFailedException {
+    public ResponseEntity<Void> deleteAttachment(@PathVariable Long attachmentId) throws ApplicationException {
         attachmentService.delete(attachmentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -69,7 +68,7 @@ public class AttachmentController {
 
     @GetMapping(value = "/content/{attachmentId}")
     public void downloadContent(@PathVariable Long attachmentId,
-                                HttpServletResponse response) throws EntityNotFoundException, IOException {
+                                HttpServletResponse response) throws ApplicationException, IOException {
         Attachment a = attachmentService.findById(attachmentId);
         response.setContentType(a.getContentType());
         response.setHeader("Content-Disposition", "attachment;filename=" + a.getFileName());

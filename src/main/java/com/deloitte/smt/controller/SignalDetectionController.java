@@ -3,8 +3,6 @@ package com.deloitte.smt.controller;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.service.SignalDetectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +34,7 @@ public class SignalDetectionController {
 	}
 	
 	@GetMapping(value = "/{signalDetectionId}")
-    public SignalDetection getSignalDetectionById(@PathVariable Long signalDetectionId) throws EntityNotFoundException {
+    public SignalDetection getSignalDetectionById(@PathVariable Long signalDetectionId) throws ApplicationException {
         return signalDetectionService.findById(signalDetectionId);
     }
 	
@@ -48,7 +46,7 @@ public class SignalDetectionController {
 	}
 	
 	@DeleteMapping(value = "/{signalDetectionId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long signalDetectionId) throws DeleteFailedException {
+    public ResponseEntity<Void> deleteById(@PathVariable Long signalDetectionId) throws ApplicationException {
 		signalDetectionService.delete(signalDetectionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

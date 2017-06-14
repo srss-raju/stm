@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.entity.ExternalDatasets;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.ExternalDatasetsService;
 
 /**
@@ -35,18 +34,18 @@ public class ExternalDatasetsController {
     }
 
     @PutMapping
-    public ExternalDatasets updateAssessmentActionType(@RequestBody ExternalDatasets externalDatasets) throws UpdateFailedException {
+    public ExternalDatasets updateAssessmentActionType(@RequestBody ExternalDatasets externalDatasets) throws ApplicationException {
     	return externalDatasetsService.update(externalDatasets);
     }
 
     @DeleteMapping(value = "/{externalDatasetsId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long externalDatasetsId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long externalDatasetsId) throws ApplicationException {
     	externalDatasetsService.delete(externalDatasetsId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{includeAEId}")
-    public ExternalDatasets findAssessmentActionTypeById(@PathVariable Long externalDatasetsId) throws EntityNotFoundException {
+    public ExternalDatasets findAssessmentActionTypeById(@PathVariable Long externalDatasetsId) throws ApplicationException {
         return externalDatasetsService.findById(externalDatasetsId);
     }
 

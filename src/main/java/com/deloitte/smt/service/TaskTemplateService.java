@@ -13,8 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateIngrediant;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
@@ -60,10 +59,10 @@ public class TaskTemplateService {
 		return taskTemplateRepository.save(template);
 	}
 
-	public void delete(Long taskId) throws DeleteFailedException {
+	public void delete(Long taskId) throws ApplicationException {
 		TaskTemplate taskTemplate = taskTemplateRepository.findOne(taskId);
 		if(taskTemplate == null) {
-            throw new DeleteFailedException("Failed to delete Task. Invalid Id received");
+            throw new ApplicationException("Failed to delete Task. Invalid Id received");
         }
 		taskTemplateRepository.delete(taskTemplate);
 	}
@@ -86,10 +85,10 @@ public class TaskTemplateService {
 		return templates;
 	}
 
-	public TaskTemplate findById(Long templateId) throws EntityNotFoundException {
+	public TaskTemplate findById(Long templateId) throws ApplicationException {
 		TaskTemplate taskTemplate = taskTemplateRepository.findOne(templateId);
 		if(taskTemplate == null) {
-			throw new EntityNotFoundException("Template not found with given Id : "+templateId);
+			throw new ApplicationException("Template not found with given Id : "+templateId);
 		}else{
 			taskTemplate.setTaskTemplateIngrediant(taskTemplateIngrediantRepository.findByTaskTemplateId(taskTemplate.getId()));
 		}

@@ -1,8 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.SignalConfirmations;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SignalConfirmationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,18 +33,18 @@ public class SignalConfirmationsController {
     }
 
     @PutMapping
-    public SignalConfirmations updateAssessmentActionType(@RequestBody SignalConfirmations signalConfirmation) throws UpdateFailedException {
+    public SignalConfirmations updateAssessmentActionType(@RequestBody SignalConfirmations signalConfirmation) throws ApplicationException {
         return signalConfirmationsService.update(signalConfirmation);
     }
 
     @DeleteMapping(value = "/{signalConfirmationId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long signalConfirmationId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long signalConfirmationId) throws ApplicationException {
         signalConfirmationsService.delete(signalConfirmationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{signalConfirmationId}")
-    public SignalConfirmations findAssessmentActionTypeById(@PathVariable Long signalConfirmationId) throws EntityNotFoundException {
+    public SignalConfirmations findAssessmentActionTypeById(@PathVariable Long signalConfirmationId) throws ApplicationException {
         return signalConfirmationsService.findById(signalConfirmationId);
     }
 

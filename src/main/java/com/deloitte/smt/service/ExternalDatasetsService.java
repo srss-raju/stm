@@ -9,8 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.deloitte.smt.entity.ExternalDatasets;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.ExternalDatasetsRepository;
 
 /**
@@ -28,25 +27,25 @@ public class ExternalDatasetsService {
         return externalDatasetsRepository.save(externalDatasets);
     }
 
-    public ExternalDatasets update(ExternalDatasets externalDatasets) throws UpdateFailedException {
+    public ExternalDatasets update(ExternalDatasets externalDatasets) throws ApplicationException {
         if(externalDatasets.getId() == null) {
-            throw new UpdateFailedException("Required field Id is no present in the given request.");
+            throw new ApplicationException("Required field Id is no present in the given request.");
         }
         return externalDatasetsRepository.save(externalDatasets);
     }
 
-    public void delete(Long externalDatasetsId) throws EntityNotFoundException {
+    public void delete(Long externalDatasetsId) throws ApplicationException {
     	ExternalDatasets externalDatasets = externalDatasetsRepository.findOne(externalDatasetsId);
         if(externalDatasets == null) {
-            throw new EntityNotFoundException("Risk Plan Action Type not found with the given Id : "+externalDatasetsId);
+            throw new ApplicationException("Risk Plan Action Type not found with the given Id : "+externalDatasetsId);
         }
         externalDatasetsRepository.delete(externalDatasets);
     }
 
-    public ExternalDatasets findById(Long externalDatasetsId) throws EntityNotFoundException {
+    public ExternalDatasets findById(Long externalDatasetsId) throws ApplicationException {
     	ExternalDatasets externalDatasets = externalDatasetsRepository.findOne(externalDatasetsId);
         if(externalDatasets == null) {
-            throw new EntityNotFoundException("External Dataset not found with the given Id : "+externalDatasetsId);
+            throw new ApplicationException("External Dataset not found with the given Id : "+externalDatasetsId);
         }
         return externalDatasets;
     }

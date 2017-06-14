@@ -36,9 +36,7 @@ import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.CommentsRepository;
@@ -102,7 +100,7 @@ public class RiskPlanService {
     @Autowired
     private AssignmentConfigurationRepository assignmentConfigurationRepository;
 
-    public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, EntityNotFoundException {
+    public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, ApplicationException {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
         riskPlan.setStatus("New");
@@ -129,7 +127,7 @@ public class RiskPlanService {
         if(assessmentId != null){
             AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
             if(assessmentPlan == null) {
-                throw new EntityNotFoundException("Assessment Plan not found with the given Id : "+assessmentId);
+                throw new ApplicationException("Assessment Plan not found with the given Id : "+assessmentId);
             }
             assessmentPlan.setRiskPlan(riskPlan);
             riskPlan.setAssessmentPlan(assessmentPlan);
@@ -273,18 +271,18 @@ public class RiskPlanService {
         return riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(riskId);
     }
 
-    public void delete(Long riskTaskId, String taskId) throws DeleteFailedException {
+    public void delete(Long riskTaskId, String taskId) throws ApplicationException {
         RiskTask riskTask = riskTaskRepository.findOne(riskTaskId);
         if(riskTask == null) {
-            throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
+            throw new ApplicationException("Failed to delete Action. Invalid Id received");
         }
         riskTaskRepository.delete(riskTask);
         taskService.deleteTask(taskId);
     }
 
-    public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws UpdateFailedException, IOException {
+    public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException, IOException {
         if(riskTask.getId() == null) {
-            throw new UpdateFailedException("Failed to update Action. Invalid Id received");
+            throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
         if("completed".equalsIgnoreCase(riskTask.getStatus())) {
             taskService.complete(riskTask.getTaskId());
@@ -312,10 +310,10 @@ public class RiskPlanService {
         }
     }
 
-    public RiskPlan findByRiskId(Long riskId) throws EntityNotFoundException {
+    public RiskPlan findByRiskId(Long riskId) throws ApplicationException {
         RiskPlan riskPlan = riskPlanRepository.findOne(riskId);
         if(riskPlan == null) {
-            throw new EntityNotFoundException("Risk Plan not found with the given Id : "+riskId);
+            throw new ApplicationException("Risk Plan not found with the given Id : "+riskId);
         }
         if("New".equalsIgnoreCase(riskPlan.getStatus())) {
             riskPlan.setStatus("In Progress");
@@ -326,9 +324,9 @@ public class RiskPlanService {
         return riskPlan;
     }
 
-	public void riskPlanSummary(RiskPlan riskPlan, MultipartFile[] attachments)  throws UpdateFailedException, IOException {
+	public void riskPlanSummary(RiskPlan riskPlan, MultipartFile[] attachments)  throws ApplicationException, IOException {
 		if(riskPlan.getId() == null) {
-            throw new UpdateFailedException("Failed to update Risk. Invalid Id received");
+            throw new ApplicationException("Failed to update Risk. Invalid Id received");
         }
 		riskPlan.setLastModifiedDate(new Date());
 		riskPlan.setStatus("Completed");
@@ -336,9 +334,9 @@ public class RiskPlanService {
         riskPlanRepository.save(riskPlan);
 	}
 	
-	public void updateRiskPlan(RiskPlan riskPlan, MultipartFile[] attachments)  throws UpdateFailedException, IOException {
+	public void updateRiskPlan(RiskPlan riskPlan, MultipartFile[] attachments)  throws ApplicationException, IOException {
 		if(riskPlan.getId() == null) {
-            throw new UpdateFailedException("Failed to update Risk. Invalid Id received");
+            throw new ApplicationException("Failed to update Risk. Invalid Id received");
         }
 		riskPlan.setLastModifiedDate(new Date());
         attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata());

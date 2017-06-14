@@ -48,10 +48,7 @@ import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.TaskNotFoundException;
-import com.deloitte.smt.exception.TopicNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
@@ -146,10 +143,10 @@ public class SignalService {
     @Autowired
     private AssignmentConfigurationRepository assignmentConfigurationRepository;
 
-    public Topic findById(Long topicId) throws EntityNotFoundException {
+    public Topic findById(Long topicId) throws ApplicationException {
         Topic topic = topicRepository.findOne(topicId);
         if(topic == null) {
-            throw new EntityNotFoundException("Signal not found with the given Id :"+topicId);
+            throw new ApplicationException("Signal not found with the given Id :"+topicId);
         }
         if(null == topic.getSignalValidation()) {
             topic.setSignalValidation("In Progress");
@@ -295,9 +292,9 @@ public class SignalService {
 
 	
 
-    public String updateTopic(Topic topic, MultipartFile[] attachments) throws UpdateFailedException, IOException {
+    public String updateTopic(Topic topic, MultipartFile[] attachments) throws ApplicationException, IOException {
         if(topic.getId() == null) {
-            throw new UpdateFailedException("Update failed for Topic, since it does not have any valid Id field.");
+            throw new ApplicationException("Update failed for Topic, since it does not have any valid Id field.");
         }
         topic.setLastModifiedDate(new Date());
         if(!CollectionUtils.isEmpty(topic.getSignalStatistics())) {
@@ -316,14 +313,14 @@ public class SignalService {
         return "Update Success";
     }
 
-    public AssessmentPlan validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan) throws TaskNotFoundException, TopicNotFoundException {
+    public AssessmentPlan validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan) throws ApplicationException {
         Topic topic = topicRepository.findOne(topicId);
         if(topic == null) {
-            throw new TopicNotFoundException("Topic not found with the given Id ["+topicId+"]");
+            throw new ApplicationException("Topic not found with the given Id ["+topicId+"]");
         }
         Task task = taskService.createTaskQuery().processInstanceId(topic.getProcessId()).singleResult();
         if(task == null) {
-            throw new TaskNotFoundException("Task not found for the process "+topic.getProcessId());
+            throw new ApplicationException("Task not found for the process "+topic.getProcessId());
         }
         taskService.complete(task.getId());
         
@@ -654,10 +651,10 @@ public class SignalService {
 		return topics;
 	}
 
-	public void deleteSignalURL(Long signalUrlId) throws EntityNotFoundException {
+	public void deleteSignalURL(Long signalUrlId) throws ApplicationException {
 		SignalURL signalURL = signalURLRepository.findOne(signalUrlId);
         if(signalURL == null) {
-            throw new EntityNotFoundException("Risk Plan Action Type not found with the given Id : "+signalUrlId);
+            throw new ApplicationException("Risk Plan Action Type not found with the given Id : "+signalUrlId);
         }
         signalURLRepository.delete(signalURL);
 	}

@@ -1,8 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.SMUser;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SMUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,18 +33,18 @@ public class SMUserController {
     }
 
     @PutMapping
-    public SMUser updateUser(@RequestBody SMUser smUser) throws UpdateFailedException {
+    public SMUser updateUser(@RequestBody SMUser smUser) throws ApplicationException {
         return smUserService.update(smUser);
     }
 
     @DeleteMapping(value = "/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) throws ApplicationException {
         smUserService.delete(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{userId}")
-    public SMUser findAssignmentConfigurationById(@PathVariable Long userId) throws EntityNotFoundException {
+    public SMUser findAssignmentConfigurationById(@PathVariable Long userId) throws ApplicationException {
         return smUserService.findById(userId);
     }
 

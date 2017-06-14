@@ -1,9 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.exception.EntityAlreadyExistsException;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.AssignmentConfigurationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,23 +29,23 @@ public class AssignmentConfigurationController {
     AssignmentConfigurationService assignmentConfigurationService;
 
     @PostMapping
-    public AssignmentConfiguration createNewAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws EntityAlreadyExistsException {
+    public AssignmentConfiguration createNewAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
         return assignmentConfigurationService.insert(assignmentConfiguration);
     }
 
     @PutMapping
-    public AssignmentConfiguration updateAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws UpdateFailedException {
+    public AssignmentConfiguration updateAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
         return assignmentConfigurationService.update(assignmentConfiguration);
     }
 
     @DeleteMapping(value = "/{assignmentConfigurationId}")
-    public ResponseEntity<Void> deleteAssignmentConfiguration(@PathVariable Long assignmentConfigurationId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteAssignmentConfiguration(@PathVariable Long assignmentConfigurationId) throws ApplicationException {
         assignmentConfigurationService.delete(assignmentConfigurationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{assignmentConfigurationId}")
-    public AssignmentConfiguration findAssignmentConfigurationById(@PathVariable Long assignmentConfigurationId) throws EntityNotFoundException {
+    public AssignmentConfiguration findAssignmentConfigurationById(@PathVariable Long assignmentConfigurationId) throws ApplicationException {
         return assignmentConfigurationService.findById(assignmentConfigurationId);
     }
 

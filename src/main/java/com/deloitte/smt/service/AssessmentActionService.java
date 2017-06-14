@@ -18,8 +18,7 @@ import com.deloitte.smt.constant.SignalStatus;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
@@ -84,9 +83,9 @@ public class AssessmentActionService {
         return signalActionUpdated;
     }
 
-    public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws UpdateFailedException, IOException {
+    public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws ApplicationException, IOException {
         if(signalAction.getId() == null) {
-            throw new UpdateFailedException("Failed to update Action. Invalid Id received");
+            throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
         if("completed".equalsIgnoreCase(signalAction.getActionStatus())) {
             taskService.complete(signalAction.getTaskId());
@@ -131,10 +130,10 @@ public class AssessmentActionService {
         return assessmentActionRepository.findAllByAssessmentId(assessmentId);
     }
 
-    public void delete(Long assessmentActionId, String taskId) throws DeleteFailedException {
+    public void delete(Long assessmentActionId, String taskId) throws ApplicationException {
         SignalAction signalAction = assessmentActionRepository.findOne(assessmentActionId);
         if(signalAction == null) {
-            throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
+            throw new ApplicationException("Failed to delete Action. Invalid Id received");
         }
         assessmentActionRepository.delete(signalAction);
         if(taskId != null){

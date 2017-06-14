@@ -34,8 +34,6 @@ import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
@@ -207,18 +205,18 @@ public class SignalDetectionService {
 	}
 
 
-	public void delete(Long signalDetectionId) throws DeleteFailedException {
+	public void delete(Long signalDetectionId) throws ApplicationException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(signalDetectionId);
 		if (signalDetection == null) {
-			throw new DeleteFailedException("Failed to delete Action. Invalid Id received");
+			throw new ApplicationException("Failed to delete Action. Invalid Id received");
 		}
 		signalDetectionRepository.delete(signalDetection);
 	}
 
-	public SignalDetection findById(Long id) throws EntityNotFoundException {
+	public SignalDetection findById(Long id) throws ApplicationException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(id);
 		if (null == signalDetection) {
-			throw new EntityNotFoundException("Signal Detection not found with given Id :" + id);
+			throw new ApplicationException("Signal Detection not found with given Id :" + id);
 		}
 		addOtherInfoToSignalDetection(signalDetection);
 		return signalDetection;

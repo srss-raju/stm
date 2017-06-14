@@ -3,8 +3,7 @@ package com.deloitte.smt.service;
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.MeetingType;
 import com.deloitte.smt.entity.Meeting;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.MeetingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,9 +39,9 @@ public class MeetingService {
         attachmentService.addAttachments(meetingUpdated.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null, meetingUpdated.getFileMetadata());
     }
 
-    public void update(Meeting meeting, MultipartFile[] attachments) throws UpdateFailedException, IOException {
+    public void update(Meeting meeting, MultipartFile[] attachments) throws ApplicationException, IOException {
         if(meeting.getId() == null) {
-            throw new UpdateFailedException("Failed to update Meeting. Invalid Id received");
+            throw new ApplicationException("Failed to update Meeting. Invalid Id received");
         }
         meeting.setLastModifiedDate(new Date());
         attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, meeting.getDeletedAttachmentIds(), meeting.getFileMetadata());
@@ -57,10 +56,10 @@ public class MeetingService {
         return meetingRepository.findAllByMeetingResourceIdAndMeetingType(resourceId, meetingType);
     }
 
-    public void delete(Long meetingId) throws DeleteFailedException {
+    public void delete(Long meetingId) throws ApplicationException {
         Meeting m = meetingRepository.findOne(meetingId);
         if(m == null) {
-            throw new DeleteFailedException("Meeting not found with the given Id : "+meetingId);
+            throw new ApplicationException("Meeting not found with the given Id : "+meetingId);
         }
         meetingRepository.delete(m);
     }

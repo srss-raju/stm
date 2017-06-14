@@ -1,8 +1,7 @@
 package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.RiskPlanActionTaskType;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.RiskPlanActionTaskTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -32,26 +31,26 @@ public class RiskPlanActionTypeService {
         return riskPlanActionTaskTypeRepository.save(riskPlanActionTaskTypes);
     }
 
-    public RiskPlanActionTaskType update(RiskPlanActionTaskType riskPlanActionTaskType) throws UpdateFailedException {
+    public RiskPlanActionTaskType update(RiskPlanActionTaskType riskPlanActionTaskType) throws ApplicationException {
         if(riskPlanActionTaskType.getId() == null) {
-            throw new UpdateFailedException("Required field Id is no present in the given request.");
+            throw new ApplicationException("Required field Id is no present in the given request.");
         }
         riskPlanActionTaskType.setLastModifiedDate(new Date());
         return riskPlanActionTaskTypeRepository.save(riskPlanActionTaskType);
     }
 
-    public void delete(Long riskPlanActionTypeId) throws EntityNotFoundException {
+    public void delete(Long riskPlanActionTypeId) throws ApplicationException {
         RiskPlanActionTaskType riskPlanActionTaskType = riskPlanActionTaskTypeRepository.findOne(riskPlanActionTypeId);
         if(riskPlanActionTaskType == null) {
-            throw new EntityNotFoundException("Risk Plan Action Type not found with the given Id : "+riskPlanActionTypeId);
+            throw new ApplicationException("Risk Plan Action Type not found with the given Id : "+riskPlanActionTypeId);
         }
         riskPlanActionTaskTypeRepository.delete(riskPlanActionTaskType);
     }
 
-    public RiskPlanActionTaskType findById(Long riskPlanActionTypeId) throws EntityNotFoundException {
+    public RiskPlanActionTaskType findById(Long riskPlanActionTypeId) throws ApplicationException {
         RiskPlanActionTaskType riskPlanActionTaskType = riskPlanActionTaskTypeRepository.findOne(riskPlanActionTypeId);
         if(riskPlanActionTaskType == null) {
-            throw new EntityNotFoundException("Risk Plan Action Type not found with the given Id : "+riskPlanActionTypeId);
+            throw new ApplicationException("Risk Plan Action Type not found with the given Id : "+riskPlanActionTypeId);
         }
         return riskPlanActionTaskType;
     }

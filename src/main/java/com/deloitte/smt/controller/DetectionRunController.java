@@ -1,7 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.DetectionRun;
-import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.DetectionRunService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +25,7 @@ public class DetectionRunController {
     }
 
     @GetMapping(value = "/{detectionRunId}")
-    public DetectionRun findDetectionRunById(@PathVariable Long detectionRunId) throws EntityNotFoundException {
+    public DetectionRun findDetectionRunById(@PathVariable Long detectionRunId) throws ApplicationException {
         return detectionRunService.findById(detectionRunId);
     }
 

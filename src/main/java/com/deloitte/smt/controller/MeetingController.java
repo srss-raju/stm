@@ -2,8 +2,7 @@ package com.deloitte.smt.controller;
 
 import com.deloitte.smt.constant.MeetingType;
 import com.deloitte.smt.entity.Meeting;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.MeetingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,7 @@ public class MeetingController {
     @PostMapping(value = "/update")
     public ResponseEntity<Void> updateMeeting(
             @RequestParam("data") String meetingString,
-            @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, UpdateFailedException {
+            @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
         Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
         meetingService.update(meeting, attachments);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -64,7 +63,7 @@ public class MeetingController {
     }
 
     @DeleteMapping( value = "/byId/{meetingId}")
-    public ResponseEntity<Void> deleteMeeting(@PathVariable Long meetingId) throws DeleteFailedException {
+    public ResponseEntity<Void> deleteMeeting(@PathVariable Long meetingId) throws ApplicationException {
         meetingService.delete(meetingId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

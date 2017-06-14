@@ -1,8 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.FinalDispositions;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.FinalDispositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,18 +33,18 @@ public class FinalDispositionsController {
     }
 
     @PutMapping
-    public FinalDispositions updateAssessmentActionType(@RequestBody FinalDispositions finalDisposition) throws UpdateFailedException {
+    public FinalDispositions updateAssessmentActionType(@RequestBody FinalDispositions finalDisposition) throws ApplicationException {
         return finalDispositionService.update(finalDisposition);
     }
 
     @DeleteMapping(value = "/{finalDispositionId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long finalDispositionId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long finalDispositionId) throws ApplicationException {
         finalDispositionService.delete(finalDispositionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{finalDispositionId}")
-    public FinalDispositions findAssessmentActionTypeById(@PathVariable Long finalDispositionId) throws EntityNotFoundException {
+    public FinalDispositions findAssessmentActionTypeById(@PathVariable Long finalDispositionId) throws ApplicationException {
         return finalDispositionService.findById(finalDispositionId);
     }
 

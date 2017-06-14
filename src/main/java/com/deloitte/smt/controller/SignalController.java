@@ -23,10 +23,7 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.TaskNotFoundException;
-import com.deloitte.smt.exception.TopicNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,21 +44,21 @@ public class SignalController {
 
 	@PostMapping(value = "/updateTopic")
 	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString,
-							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, UpdateFailedException {
+							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
 		Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
 		signalService.updateTopic(topic, attachments);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/{topicId}")
-    public Topic getTopicById(@PathVariable Long topicId) throws EntityNotFoundException {
+    public Topic getTopicById(@PathVariable Long topicId) throws ApplicationException {
         return signalService.findById(topicId);
     }
 
 	@PutMapping(value = "/{topicId}/validateAndPrioritize")
 	public AssessmentPlan validateAndPrioritizeTopic(
 	        @PathVariable Long topicId,
-			@RequestBody AssessmentPlan assessmentPlan) throws TaskNotFoundException, TopicNotFoundException {
+			@RequestBody AssessmentPlan assessmentPlan) throws ApplicationException{
 		return signalService.validateAndPrioritize(topicId, assessmentPlan);
 	}
 
@@ -97,7 +94,7 @@ public class SignalController {
     }
 	
 	@DeleteMapping(value = "/url/{signalUrlId}")
-    public ResponseEntity<Void> deleteSignalURL(@PathVariable Long signalUrlId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteSignalURL(@PathVariable Long signalUrlId) throws ApplicationException {
 		signalService.deleteSignalURL(signalUrlId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

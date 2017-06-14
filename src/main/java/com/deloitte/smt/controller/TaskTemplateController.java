@@ -2,8 +2,7 @@ package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
-import com.deloitte.smt.exception.DeleteFailedException;
-import com.deloitte.smt.exception.EntityNotFoundException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.TaskTemplateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class TaskTemplateController {
 	}
 	
 	@DeleteMapping(value = "/{taskId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long taskId) throws DeleteFailedException {
+    public ResponseEntity<Void> deleteById(@PathVariable Long taskId) throws ApplicationException {
 		taskTemplateService.delete(taskId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -57,7 +56,7 @@ public class TaskTemplateController {
     }
 	
 	@GetMapping(value = "/{templateId}")
-    public TaskTemplate findByTemplateId(@PathVariable Long templateId) throws EntityNotFoundException {
+    public TaskTemplate findByTemplateId(@PathVariable Long templateId) throws ApplicationException {
         return taskTemplateService.findById(templateId);
     }
 }

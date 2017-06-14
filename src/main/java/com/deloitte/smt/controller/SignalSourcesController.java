@@ -1,8 +1,7 @@
 package com.deloitte.smt.controller;
 
 import com.deloitte.smt.entity.SignalSources;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SignalSourcesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,18 +33,18 @@ public class SignalSourcesController {
     }
 
     @PutMapping
-    public SignalSources updateAssessmentActionType(@RequestBody SignalSources signalSource) throws UpdateFailedException {
+    public SignalSources updateAssessmentActionType(@RequestBody SignalSources signalSource) throws ApplicationException {
         return  signalSourcesService.update(signalSource);
     }
 
     @DeleteMapping(value = "/{signalSourceId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long signalSourceId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long signalSourceId) throws ApplicationException {
         signalSourcesService.delete(signalSourceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{signalSourceId}")
-    public SignalSources findAssessmentActionTypeById(@PathVariable Long signalSourceId) throws EntityNotFoundException {
+    public SignalSources findAssessmentActionTypeById(@PathVariable Long signalSourceId) throws ApplicationException {
         return signalSourcesService.findById(signalSourceId);
     }
 

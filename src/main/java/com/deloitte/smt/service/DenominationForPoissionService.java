@@ -10,8 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.deloitte.smt.entity.DenominatorForPoisson;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
 
 /**
@@ -33,26 +32,26 @@ public class DenominationForPoissionService {
         return denominationForPoissionRespository.save(denominationForPoissions);
     }
 
-    public DenominatorForPoisson update(DenominatorForPoisson denominationForPoission) throws UpdateFailedException {
+    public DenominatorForPoisson update(DenominatorForPoisson denominationForPoission) throws ApplicationException {
         if(denominationForPoission.getId() == null) {
-            throw new UpdateFailedException("Required field Id is no present in the given request.");
+            throw new ApplicationException("Required field Id is no present in the given request.");
         }
         denominationForPoission.setLastModifiedDate(new Date());
         return denominationForPoissionRespository.save(denominationForPoission);
     }
 
-    public void delete(Long denominationForPoissionId) throws EntityNotFoundException {
+    public void delete(Long denominationForPoissionId) throws ApplicationException {
     	DenominatorForPoisson denominationForPoission = denominationForPoissionRespository.findOne(denominationForPoissionId);
         if(denominationForPoission == null) {
-            throw new EntityNotFoundException("Risk Plan Action Type not found with the given Id : "+denominationForPoission);
+            throw new ApplicationException("Risk Plan Action Type not found with the given Id : "+denominationForPoission);
         }
         denominationForPoissionRespository.delete(denominationForPoission);
     }
 
-    public DenominatorForPoisson findById(Long denominationForPoissionId) throws EntityNotFoundException {
+    public DenominatorForPoisson findById(Long denominationForPoissionId) throws ApplicationException {
     	DenominatorForPoisson denominationForPoission = denominationForPoissionRespository.findOne(denominationForPoissionId);
         if(denominationForPoission == null) {
-            throw new EntityNotFoundException("Signal Confirmation not found with the given Id : "+denominationForPoissionId);
+            throw new ApplicationException("Signal Confirmation not found with the given Id : "+denominationForPoissionId);
         }
         return denominationForPoission;
     }

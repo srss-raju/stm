@@ -8,9 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.exception.EntityAlreadyExistsException;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 
 /**
@@ -22,37 +20,37 @@ public class AssignmentConfigurationService {
     @Autowired
     AssignmentConfigurationRepository assignmentConfigurationRepository;
 
-    public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws EntityAlreadyExistsException {
+    public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
         assignmentConfiguration.setCreatedDate(new Date());
         assignmentConfiguration.setLastModifiedDate(new Date());
         AssignmentConfiguration assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIngredientAndSignalSource(assignmentConfiguration.getIngredient(), assignmentConfiguration.getSignalSource());
         if(assignmentConfigurationFromDB != null){
-        	throw new EntityAlreadyExistsException("Configuration already exists");
+        	throw new ApplicationException("Configuration already exists");
         }
         return assignmentConfigurationRepository.save(assignmentConfiguration);
     }
 
-    public AssignmentConfiguration update(AssignmentConfiguration assignmentConfiguration) throws UpdateFailedException {
+    public AssignmentConfiguration update(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
         if(assignmentConfiguration.getId() == null) {
-            throw new UpdateFailedException("Required field Id is no present in the given request.");
+            throw new ApplicationException("Required field Id is no present in the given request.");
         }
         assignmentConfiguration.setLastModifiedDate(new Date());
         assignmentConfiguration = assignmentConfigurationRepository.save(assignmentConfiguration);
         return assignmentConfiguration;
     }
 
-    public void delete(Long assignmentConfigurationId) throws EntityNotFoundException {
+    public void delete(Long assignmentConfigurationId) throws ApplicationException {
         AssignmentConfiguration assignmentConfiguration = assignmentConfigurationRepository.findOne(assignmentConfigurationId);
         if(assignmentConfiguration == null) {
-            throw new EntityNotFoundException("Assignment Configuration not found with the given Id : "+assignmentConfigurationId);
+            throw new ApplicationException("Assignment Configuration not found with the given Id : "+assignmentConfigurationId);
         }
         assignmentConfigurationRepository.delete(assignmentConfiguration);
     }
 
-    public AssignmentConfiguration findById(Long assignmentConfigurationId) throws EntityNotFoundException {
+    public AssignmentConfiguration findById(Long assignmentConfigurationId) throws ApplicationException {
         AssignmentConfiguration assignmentConfiguration = assignmentConfigurationRepository.findOne(assignmentConfigurationId);
         if(assignmentConfiguration == null) {
-            throw new EntityNotFoundException("Assignment Configuration not found with the given Id : "+assignmentConfigurationId);
+            throw new ApplicationException("Assignment Configuration not found with the given Id : "+assignmentConfigurationId);
         }
         return assignmentConfiguration;
     }

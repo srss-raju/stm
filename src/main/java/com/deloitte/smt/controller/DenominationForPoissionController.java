@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.entity.DenominatorForPoisson;
-import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.DenominationForPoissionService;
 
 /**
@@ -35,18 +34,18 @@ public class DenominationForPoissionController {
     }
 
     @PutMapping
-    public DenominatorForPoisson updateAssessmentActionType(@RequestBody DenominatorForPoisson denominationForPoission) throws UpdateFailedException {
+    public DenominatorForPoisson updateAssessmentActionType(@RequestBody DenominatorForPoisson denominationForPoission) throws ApplicationException {
     	return denominationForPoissionService.update(denominationForPoission);
     }
 
     @DeleteMapping(value = "/{denominationForPoissionId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long denominationForPoissionId) throws EntityNotFoundException {
+    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long denominationForPoissionId) throws ApplicationException {
     	denominationForPoissionService.delete(denominationForPoissionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{denominationForPoissionId}")
-    public DenominatorForPoisson findAssessmentActionTypeById(@PathVariable Long denominationForPoissionId) throws EntityNotFoundException {
+    public DenominatorForPoisson findAssessmentActionTypeById(@PathVariable Long denominationForPoissionId) throws ApplicationException {
         return denominationForPoissionService.findById(denominationForPoissionId);
     }
 
