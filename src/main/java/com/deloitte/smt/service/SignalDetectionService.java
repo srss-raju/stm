@@ -109,98 +109,170 @@ public class SignalDetectionService {
 			signalDetection.setId(clone.getId());
 			Ingredient ingredient = signalDetection.getIngredient();
 			if (ingredient != null) {
-				List<Product> products = ingredient.getProducts();
-				List<License> licenses = ingredient.getLicenses();
 				ingredient.setDetectionId(signalDetection.getId());
 				ingredientRepository.deleteByDetectionId(signalDetection.getId());
 				ingredient = ingredientRepository.save(ingredient);
-
-				if (!CollectionUtils.isEmpty(products)) {
-					for (Product singleProduct : products) {
-						singleProduct.setIngredientId(ingredient.getId());
-						singleProduct.setDetectionId(signalDetection.getId());
-					}
-					productRepository.deleteByDetectionId(signalDetection.getId());
-					productRepository.save(products);
-				}
-				if (!CollectionUtils.isEmpty(licenses)) {
-					for (License singleLicense : licenses) {
-						singleLicense.setIngredientId(ingredient.getId());
-						singleLicense.setDetectionId(signalDetection.getId());
-					}
-					licenseRepository.deleteByDetectionId(signalDetection.getId());
-					licenseRepository.save(licenses);
-				}
+				
+				saveProduct(signalDetection, ingredient);
+				saveLicense(signalDetection, ingredient);
 			}
 
-			List<Soc> socs = signalDetection.getSocs();
-			if (!CollectionUtils.isEmpty(socs)) {
-				for (Soc soc : socs) {
-					soc.setDetectionId(signalDetection.getId());
-				}
-				socs = socRepository.save(socs);
-				List<Hlgt> hlgts;
-				List<Hlt> hlts;
-				List<Pt> pts;
-
-				for (Soc soc : socs) {
-					hlgts = soc.getHlgts();
-					hlts = soc.getHlts();
-					pts = soc.getPts();
-					if (!CollectionUtils.isEmpty(hlgts)) {
-						for (Hlgt hlgt : hlgts) {
-							hlgt.setSocId(soc.getId());
-							hlgt.setDetectionId(signalDetection.getId());
-						}
-						hlgtRepository.save(hlgts);
-					}
-					if (!CollectionUtils.isEmpty(hlts)) {
-						for (Hlt hlt : hlts) {
-							hlt.setSocId(soc.getId());
-							hlt.setDetectionId(signalDetection.getId());
-						}
-						hltRepository.save(hlts);
-					}
-					if (!CollectionUtils.isEmpty(pts)) {
-						for (Pt pt : pts) {
-							pt.setSocId(soc.getId());
-							pt.setDetectionId(signalDetection.getId());
-						}
-						ptRepository.save(pts);
-					}
-				}
-			}
-
-			List<IncludeAE> includeAEs = signalDetection.getIncludeAEs();
-			List<DenominatorForPoisson> denominatorForPoissons = signalDetection.getDenominatorForPoisson();
-
-			if (!CollectionUtils.isEmpty(includeAEs)) {
-				for (IncludeAE ae : includeAEs) {
-					ae.setDetectionId(signalDetection.getId());
-				}
-				includeAERepository.deleteByDetectionId(signalDetection.getId());
-				includeAERepository.save(includeAEs);
-			}
-			if (!CollectionUtils.isEmpty(denominatorForPoissons)) {
-				for (DenominatorForPoisson dfp : denominatorForPoissons) {
-					dfp.setDetectionId(signalDetection.getId());
-				}
-				denominatorForPoissonRepository.deleteByDetectionId(signalDetection.getId());
-				denominatorForPoissonRepository.save(denominatorForPoissons);
-			}
-			
-			List<QueryBuilder> queryBuilder = signalDetection.getQueryBuilder();
-			if (!CollectionUtils.isEmpty(queryBuilder)) {
-				for (QueryBuilder query : queryBuilder) {
-					query.setDetectionId(signalDetection.getId());
-				}
-				queryBuilderRepository.deleteByDetectionId(signalDetection.getId());
-				queryBuilderRepository.save(queryBuilder);
-			}
+			saveSoc(signalDetection);
+			saveIncludeAE(signalDetection);
+			saveDenominatorForPoisson(signalDetection);
+			saveQueryBuilder(signalDetection);
 			
 			return signalDetection;
 		} catch (Exception ex) {
 			throw new ApplicationException("Problem Creating Signal Detection"+ex);
+		}
+	}
+
+
+	/**
+	 * @param signalDetection
+	 */
+	private void saveSoc(SignalDetection signalDetection) {
+		List<Soc> socs = signalDetection.getSocs();
+		if (!CollectionUtils.isEmpty(socs)) {
+			for (Soc soc : socs) {
+				soc.setDetectionId(signalDetection.getId());
+			}
+			socs = socRepository.save(socs);
+			for (Soc soc : socs) {
+				saveHlgt(signalDetection, soc);
+				saveHlt(signalDetection, soc);
+				savePt(signalDetection, soc);
+			}
+		}
+	}
+
+
+	/**
+	 * @param signalDetection
+	 * @param soc
+	 */
+	private void savePt(SignalDetection signalDetection, Soc soc) {
+		List<Pt> pts = soc.getPts();
+		if (!CollectionUtils.isEmpty(pts)) {
+			for (Pt pt : pts) {
+				pt.setSocId(soc.getId());
+				pt.setDetectionId(signalDetection.getId());
+			}
+			ptRepository.save(pts);
+		}
+	}
+
+
+	/**
+	 * @param signalDetection
+	 * @param soc
+	 */
+	private void saveHlt(SignalDetection signalDetection, Soc soc) {
+		List<Hlt> hlts = soc.getHlts();
+		if (!CollectionUtils.isEmpty(hlts)) {
+			for (Hlt hlt : hlts) {
+				hlt.setSocId(soc.getId());
+				hlt.setDetectionId(signalDetection.getId());
+			}
+			hltRepository.save(hlts);
+		}
+	}
+
+
+	/**
+	 * @param signalDetection
+	 * @param soc
+	 */
+	private void saveHlgt(SignalDetection signalDetection, Soc soc) {
+		List<Hlgt> hlgts = soc.getHlgts();
+		if (!CollectionUtils.isEmpty(hlgts)) {
+			for (Hlgt hlgt : hlgts) {
+				hlgt.setSocId(soc.getId());
+				hlgt.setDetectionId(signalDetection.getId());
+			}
+			hlgtRepository.save(hlgts);
+		}
+	}
+
+
+	/**
+	 * @param signalDetection
+	 * @param ingredient
+	 */
+	private void saveProduct(SignalDetection signalDetection,
+			Ingredient ingredient) {
+		List<Product> products = ingredient.getProducts();
+		if (!CollectionUtils.isEmpty(products)) {
+			for (Product singleProduct : products) {
+				singleProduct.setIngredientId(ingredient.getId());
+				singleProduct.setDetectionId(signalDetection.getId());
+			}
+			productRepository.deleteByDetectionId(signalDetection.getId());
+			productRepository.save(products);
+		}
+	}
+
+
+	/**
+	 * @param signalDetection
+	 * @param ingredient
+	 */
+	private void saveLicense(SignalDetection signalDetection,
+			Ingredient ingredient) {
+		List<License> licenses = ingredient.getLicenses();
+		if (!CollectionUtils.isEmpty(licenses)) {
+			for (License singleLicense : licenses) {
+				singleLicense.setIngredientId(ingredient.getId());
+				singleLicense.setDetectionId(signalDetection.getId());
+			}
+			licenseRepository.deleteByDetectionId(signalDetection.getId());
+			licenseRepository.save(licenses);
+		}
+	}
+
+
+	/**
+	 * @param signalDetection
+	 */
+	private void saveIncludeAE(SignalDetection signalDetection) {
+		List<IncludeAE> includeAEs = signalDetection.getIncludeAEs();
+		if (!CollectionUtils.isEmpty(includeAEs)) {
+			for (IncludeAE ae : includeAEs) {
+				ae.setDetectionId(signalDetection.getId());
+			}
+			includeAERepository.deleteByDetectionId(signalDetection.getId());
+			includeAERepository.save(includeAEs);
+		}
+	}
+
+
+	/**
+	 * @param signalDetection
+	 */
+	private void saveDenominatorForPoisson(SignalDetection signalDetection) {
+		List<DenominatorForPoisson> denominatorForPoissons = signalDetection.getDenominatorForPoisson();
+		if (!CollectionUtils.isEmpty(denominatorForPoissons)) {
+			for (DenominatorForPoisson dfp : denominatorForPoissons) {
+				dfp.setDetectionId(signalDetection.getId());
+			}
+			denominatorForPoissonRepository.deleteByDetectionId(signalDetection.getId());
+			denominatorForPoissonRepository.save(denominatorForPoissons);
+		}
+	}
+
+
+	/**
+	 * @param signalDetection
+	 */
+	private void saveQueryBuilder(SignalDetection signalDetection) {
+		List<QueryBuilder> queryBuilder = signalDetection.getQueryBuilder();
+		if (!CollectionUtils.isEmpty(queryBuilder)) {
+			for (QueryBuilder query : queryBuilder) {
+				query.setDetectionId(signalDetection.getId());
+			}
+			queryBuilderRepository.deleteByDetectionId(signalDetection.getId());
+			queryBuilderRepository.save(queryBuilder);
 		}
 	}
 
