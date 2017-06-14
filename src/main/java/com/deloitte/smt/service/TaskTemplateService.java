@@ -31,7 +31,7 @@ public class TaskTemplateService {
 	@Autowired
 	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
 
-	public TaskTemplate createTaskTemplate(TaskTemplate taskTemplate, MultipartFile[] attachments) {
+	public TaskTemplate createTaskTemplate(TaskTemplate taskTemplate) {
 		taskTemplate.setCreatedDate(new Date());
 		TaskTemplate template = taskTemplateRepository.save(taskTemplate);
 		if(!CollectionUtils.isEmpty(template.getTaskTemplateIngrediant())){
@@ -44,7 +44,7 @@ public class TaskTemplateService {
 		return template;
 	}
 
-	public TaskTemplate updateTaskTemplate(TaskTemplate template, MultipartFile[] attachments) {
+	public TaskTemplate updateTaskTemplate(TaskTemplate template) {
 		if(template.getDeletedIngrediantIds() != null){
 			deleteIngrediants(template.getDeletedIngrediantIds());
 		}

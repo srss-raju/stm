@@ -30,13 +30,13 @@ public class TaskTemplateController {
 	@PostMapping(value = "/createTaskTemplate")
 	public TaskTemplate createTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
 		TaskTemplate taskTemplate = new ObjectMapper().readValue(taskTemplateString, TaskTemplate.class);
-		return taskTemplateService.createTaskTemplate(taskTemplate, attachments);
+		return taskTemplateService.createTaskTemplate(taskTemplate);
 	}
 	
 	@PostMapping(value = "/updateTaskTemplate")
 	public TaskTemplate updateTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
 		TaskTemplate taskTemplate = new ObjectMapper().readValue(taskTemplateString, TaskTemplate.class);
-		return taskTemplateService.updateTaskTemplate(taskTemplate, attachments);
+		return taskTemplateService.updateTaskTemplate(taskTemplate);
 	}
 	
 	@DeleteMapping(value = "/{taskId}")
