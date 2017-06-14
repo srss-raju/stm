@@ -63,8 +63,7 @@ public class SignalMatchService {
 		LOG.info("Algorith started");
 		List<Topic> matchingSignals = getMatchingSignals(topic);
 		List<Topic> ciSignals = checkConfidenceIndex(matchingSignals, topic);
-		Topic topicUpdated = checkCohortPercentage(ciSignals, topic);
-		return topicUpdated;
+		return checkCohortPercentage(ciSignals, topic);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -126,28 +125,14 @@ public class SignalMatchService {
 		List<Topic> cohort95PercentageSignals = new ArrayList<>();
 		List<AssessmentPlan> matchingAssessments = new ArrayList<>();
 
-		if (!CollectionUtils.isEmpty(ciSignals)) {
-			for (Topic ciSignal : ciSignals) {
-				if (ciSignal.getCohortPercentage() < 75) {
-					cohort75PercentageSignals.add(ciSignal);
-				} else if (ciSignal.getCohortPercentage() >= 95) {
-					cohort95PercentageSignals.add(ciSignal);
-				} else {
-					cohort75To95PercentageSignals.add(ciSignal);
-					if (ciSignal.getAssessmentPlan() != null) {
-						ciSignal.getAssessmentPlan().setCohortPercentage(ciSignal.getCohortPercentage());
-						matchingAssessments.add(ciSignal.getAssessmentPlan());
-					}
-				}
-			}
-		}
+		getCohorPercentages(ciSignals, cohort75PercentageSignals,
+				cohort75To95PercentageSignals, cohort95PercentageSignals,
+				matchingAssessments);
 
 		if (!CollectionUtils.isEmpty(cohort75PercentageSignals)) {
-
 			if (!CollectionUtils.isEmpty(cohort75To95PercentageSignals)) {
 				// 75 and 7595 signals
 				createdTopic.setAssessmentPlans(matchingAssessments);
-
 				if (!CollectionUtils.isEmpty(cohort95PercentageSignals)) {
 					// 75, 7595 and 95 signals
 					applyMatchingSignalDetails(createdTopic, cohort95PercentageSignals);
@@ -160,7 +145,6 @@ public class SignalMatchService {
 				// only 75 Signals - Do Nothing
 			}
 		} else if (!CollectionUtils.isEmpty(cohort75To95PercentageSignals)) {
-
 			if (!CollectionUtils.isEmpty(cohort95PercentageSignals)) {
 				// 7595 and 95 signals
 				applyMatchingSignalDetails(createdTopic, cohort95PercentageSignals);
@@ -174,6 +158,53 @@ public class SignalMatchService {
 		}
 
 		return createdTopic;
+	}
+
+	/**
+	 * @param ciSignals
+	 * @param cohort75PercentageSignals
+	 * @param cohort75To95PercentageSignals
+	 * @param cohort95PercentageSignals
+	 * @param matchingAssessments
+	 */
+	private void getCohorPercentages(List<Topic> ciSignals,
+			List<Topic> cohort75PercentageSignals,
+			List<Topic> cohort75To95PercentageSignals,
+			List<Topic> cohort95PercentageSignals,
+			List<AssessmentPlan> matchingAssessments) {
+		if (!CollectionUtils.isEmpty(ciSignals)) {
+			for (Topic ciSignal : ciSignals) {
+				calculateCohortPercentages(cohort75PercentageSignals,
+						cohort75To95PercentageSignals,
+						cohort95PercentageSignals, matchingAssessments,
+						ciSignal);
+			}
+		}
+	}
+
+	/**
+	 * @param cohort75PercentageSignals
+	 * @param cohort75To95PercentageSignals
+	 * @param cohort95PercentageSignals
+	 * @param matchingAssessments
+	 * @param ciSignal
+	 */
+	private void calculateCohortPercentages(
+			List<Topic> cohort75PercentageSignals,
+			List<Topic> cohort75To95PercentageSignals,
+			List<Topic> cohort95PercentageSignals,
+			List<AssessmentPlan> matchingAssessments, Topic ciSignal) {
+		if (ciSignal.getCohortPercentage() < 75) {
+			cohort75PercentageSignals.add(ciSignal);
+		} else if (ciSignal.getCohortPercentage() >= 95) {
+			cohort95PercentageSignals.add(ciSignal);
+		} else {
+			cohort75To95PercentageSignals.add(ciSignal);
+			if (ciSignal.getAssessmentPlan() != null) {
+				ciSignal.getAssessmentPlan().setCohortPercentage(ciSignal.getCohortPercentage());
+				matchingAssessments.add(ciSignal.getAssessmentPlan());
+			}
+		}
 	}
 
 	/**
@@ -194,7 +225,6 @@ public class SignalMatchService {
 					prevTopic = cohort95PercentageSignal;
 				}
 			} else {
-				System.out.println("Cohort P ->> "+cohort95PercentageSignal.getCohortPercentage());
 				prevTopic = cohort95PercentageSignal;
 				final95Signal = cohort95PercentageSignal;
 			}
@@ -202,31 +232,51 @@ public class SignalMatchService {
 		}
 		
 		final95Signal = getLatestMatchingSignal(cohort95PercentageSignals, final95Signal);
+		if(final95Signal != null){
+			createdTopic.setValidationComments(final95Signal.getValidationComments());
+			createdTopic.setSignalStrength(final95Signal.getSignalStrength());
+			createdTopic.setSignalConfirmation(final95Signal.getSignalConfirmation());
+			createdTopic.setSignalValidation(final95Signal.getSignalValidation());
+			createdTopic.setAssessmentPlan(final95Signal.getAssessmentPlan());
+			createdTopic.setSignalStatus(final95Signal.getSignalStatus());
+			createdTopic.setCohortPercentage(final95Signal.getCohortPercentage());
+			createdTopic.setCasesCount(final95Signal.getCasesCount());
+			createdTopic.setCaselistId(final95Signal.getCaselistId());
+			createdTopic.setDueDate(final95Signal.getDueDate());
+			createdTopic.setSourceName(final95Signal.getSourceName());
+			createdTopic.setSourceUrl(final95Signal.getSourceUrl());
+			createdTopic.setAssignTo(final95Signal.getAssignTo());
+			createdTopic.setStartDate(final95Signal.getStartDate());
+			createdTopic.setEndDate(final95Signal.getEndDate());
+			topicRepository.save(createdTopic);
+			List<Attachment> matchingTopicAttachments = applyMatchingSignalAttachments(createdTopic, final95Signal);
+			attachmentRepository.save(matchingTopicAttachments);
+			applyMatchingSignalUrls(createdTopic, final95Signal);
+			applyMatchingSignalMeetings(final95Signal);
+		}
+	}
 
-		createdTopic.setValidationComments(final95Signal.getValidationComments());
-		createdTopic.setSignalStrength(final95Signal.getSignalStrength());
-		createdTopic.setSignalConfirmation(final95Signal.getSignalConfirmation());
-		createdTopic.setSignalValidation(final95Signal.getSignalValidation());
-		createdTopic.setAssessmentPlan(final95Signal.getAssessmentPlan());
-		createdTopic.setSignalStatus(final95Signal.getSignalStatus());
-		createdTopic.setCohortPercentage(final95Signal.getCohortPercentage());
-		createdTopic.setCasesCount(final95Signal.getCasesCount());
-		createdTopic.setCaselistId(final95Signal.getCaselistId());
-		createdTopic.setDueDate(final95Signal.getDueDate());
-		createdTopic.setSourceName(final95Signal.getSourceName());
-		createdTopic.setSourceUrl(final95Signal.getSourceUrl());
-		createdTopic.setAssignTo(final95Signal.getAssignTo());
-		createdTopic.setStartDate(final95Signal.getStartDate());
-		createdTopic.setEndDate(final95Signal.getEndDate());
-		topicRepository.save(createdTopic);
-		List<Attachment> matchingTopicAttachments = attachmentService
-				.findByResourceIdAndAttachmentType(final95Signal.getId(), AttachmentType.TOPIC_ATTACHMENT);
+	/**
+	 * @param createdTopic
+	 * @param final95Signal
+	 * @return
+	 */
+	private List<Attachment> applyMatchingSignalAttachments(Topic createdTopic,
+			Topic final95Signal) {
+		List<Attachment> matchingTopicAttachments = attachmentService.findByResourceIdAndAttachmentType(final95Signal.getId(), AttachmentType.TOPIC_ATTACHMENT);
 		if (!CollectionUtils.isEmpty(matchingTopicAttachments)) {
 			for (Attachment attachment : matchingTopicAttachments) {
 				attachment.setAttachmentResourceId(createdTopic.getId());
 			}
 		}
-		attachmentRepository.save(matchingTopicAttachments);
+		return matchingTopicAttachments;
+	}
+
+	/**
+	 * @param createdTopic
+	 * @param final95Signal
+	 */
+	private void applyMatchingSignalUrls(Topic createdTopic, Topic final95Signal) {
 		List<SignalURL> matchingTopicSignalUrls = signalURLRepository.findByTopicId(final95Signal.getId());
 		if (!CollectionUtils.isEmpty(matchingTopicSignalUrls)) {
 			for (SignalURL url : matchingTopicSignalUrls) {
@@ -234,7 +284,12 @@ public class SignalMatchService {
 			}
 		}
 		signalURLRepository.save(matchingTopicSignalUrls);
-		
+	}
+
+	/**
+	 * @param final95Signal
+	 */
+	private void applyMatchingSignalMeetings(Topic final95Signal) {
 		List<Meeting> meetings = meetingService.findAllyByResourceIdAndMeetingType(final95Signal.getId(), MeetingType.getByDescription("Signal Meeting"));
 		if(!CollectionUtils.isEmpty(meetings)){
 			List<Meeting> matchingMeetings = new ArrayList<>();
@@ -256,18 +311,28 @@ public class SignalMatchService {
 	 * @param final95Signal
 	 * @return
 	 */
-	private Topic getLatestMatchingSignal(
-			List<Topic> cohort95PercentageSignals, Topic final95Signal) {
+	private Topic getLatestMatchingSignal(List<Topic> cohort95PercentageSignals, Topic final95Signal) {
+		Topic result = null;
 		if(cohort95PercentageSignals.size() > 1){
 			for(Topic cohort95PercentageSignal:cohort95PercentageSignals){
-				if(cohort95PercentageSignal.getCohortPercentage() == final95Signal.getCohortPercentage()){
-					if(final95Signal.getCreatedDate().compareTo(cohort95PercentageSignal.getCreatedDate()) < 0){
-						final95Signal = cohort95PercentageSignal;
-					}
-				}
+				result = getResult(final95Signal, cohort95PercentageSignal);
 			}
 		}
-		return final95Signal;
+		return result;
+	}
+
+	/**
+	 * @param final95Signal
+	 * @param cohort95PercentageSignal
+	 * @return
+	 */
+	private Topic getResult(Topic final95Signal, Topic cohort95PercentageSignal) {
+		Topic result = null;
+		if(cohort95PercentageSignal.getCohortPercentage() == final95Signal.getCohortPercentage() && 
+				final95Signal.getCreatedDate().compareTo(cohort95PercentageSignal.getCreatedDate()) < 0){
+				result = cohort95PercentageSignal;
+		}
+		return result;
 	}
 
 }
