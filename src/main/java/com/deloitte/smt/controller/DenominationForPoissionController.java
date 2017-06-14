@@ -37,8 +37,7 @@ public class DenominationForPoissionController {
 
     @PutMapping
     public DenominatorForPoisson updateAssessmentActionType(@RequestBody DenominatorForPoisson denominationForPoission) throws UpdateFailedException {
-    	denominationForPoission = denominationForPoissionService.update(denominationForPoission);
-        return denominationForPoission;
+    	return denominationForPoissionService.update(denominationForPoission);
     }
 
     @DeleteMapping(value = "/{denominationForPoissionId}")

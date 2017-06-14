@@ -21,7 +21,7 @@ public enum ExecutionType {
 	}
 	
 	public static List<String> getExecutionTypes(){
-		List<String> values=new ArrayList();
+		List<String> values=new ArrayList<String>();
 		for (ExecutionType executionType : ExecutionType.values()) {
 			values.add(executionType.name());
 		}

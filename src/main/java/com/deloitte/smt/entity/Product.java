@@ -11,6 +11,10 @@ import java.io.Serializable;
 @Table(name = "sm_product")
 public class Product  implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3866550129431257035L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

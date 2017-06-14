@@ -3,7 +3,6 @@ package com.deloitte.smt.service;
 import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.repository.DetectionRunRepository;
-import com.deloitte.smt.repository.SignalDetectionRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,9 +20,6 @@ public class DetectionRunService {
     @Autowired
     DetectionRunRepository detectionRunRepository;
     
-    @Autowired
-	private SignalDetectionRepository signalDetectionRepository;
-
     public DetectionRun insert(DetectionRun detectionRun) {
     	detectionRun.setCreatedDate(new Date());
     	detectionRun.setRunDate(new Date());

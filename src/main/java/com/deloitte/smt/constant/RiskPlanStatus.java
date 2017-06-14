@@ -30,7 +30,7 @@ public enum RiskPlanStatus {
 	}
 	
 	public static List<String> getStatusValues(){
-		List<String> values=new ArrayList();
+		List<String> values=new ArrayList<String>();
 		for (RiskPlanStatus assessmentPlanStatus : RiskPlanStatus.values()) {
 			values.add(assessmentPlanStatus.getStatus());
 		}

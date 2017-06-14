@@ -18,7 +18,12 @@ import java.util.Date;
 @Table(name = "sm_attachment")
 public class Attachment implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5681759063819490433L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

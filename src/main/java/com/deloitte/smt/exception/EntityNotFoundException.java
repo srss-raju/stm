@@ -5,7 +5,12 @@ package com.deloitte.smt.exception;
  */
 public class EntityNotFoundException extends Exception {
 
-    public EntityNotFoundException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2827895364134905499L;
+
+	public EntityNotFoundException(String message) {
         super(message);
     }
 }

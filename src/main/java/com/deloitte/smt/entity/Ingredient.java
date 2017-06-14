@@ -13,6 +13,10 @@ import java.util.List;
 @Table(name = "sm_ingredient")
 public class Ingredient  implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8213868399732487172L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

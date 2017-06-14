@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.exception.EntityAlreadyExistsException;
 import com.deloitte.smt.exception.EntityNotFoundException;

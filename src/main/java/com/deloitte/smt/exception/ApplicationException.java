@@ -5,7 +5,12 @@ package com.deloitte.smt.exception;
  */
 public class ApplicationException extends Exception {
 
-    public ApplicationException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7514043640207755571L;
+
+	public ApplicationException(String message) {
         super(message);
     }
 }

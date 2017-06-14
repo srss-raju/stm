@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deloitte.smt.dto.AssessmentPlanDTO;
 import com.deloitte.smt.entity.AssessmentPlan;
 
 public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, Long> {

@@ -15,7 +15,11 @@ import java.util.Date;
 @Table(name = "sm_assessment_action_type")
 public class AssessmentActionType implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4407992044529243005L;
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Date createdDate;

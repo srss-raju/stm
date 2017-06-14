@@ -16,7 +16,11 @@ import javax.persistence.Table;
 @Table(name = "sm_assignment_configuration")
 public class AssignmentConfiguration implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 274553099392305910L;
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Date createdDate;

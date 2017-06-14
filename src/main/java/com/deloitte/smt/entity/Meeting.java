@@ -21,7 +21,12 @@ import java.util.Map;
 @Table(name = "sm_meeting")
 public class Meeting implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7342659915978492209L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

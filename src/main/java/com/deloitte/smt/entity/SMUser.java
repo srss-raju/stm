@@ -14,7 +14,11 @@ import java.util.Date;
 @Entity
 @Table(name = "sm_user")
 public class SMUser implements Serializable {
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5760498974851001365L;
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Date createdDate;

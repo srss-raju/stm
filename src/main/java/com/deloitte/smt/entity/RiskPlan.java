@@ -24,7 +24,11 @@ import java.util.Map;
 @Table(name = "sm_risk_plan")
 public class RiskPlan implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3652414302035277522L;
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;

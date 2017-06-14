@@ -231,7 +231,7 @@ public class DashboardService {
 	}
 
 	public List<ValidationOutComesDTO> generateDataForValidateOutcomesChart() {
-		List<ValidationOutComesDTO> validateOutComesList = new ArrayList();
+		List<ValidationOutComesDTO> validateOutComesList = new ArrayList<ValidationOutComesDTO>();
 
 		Query validatedSignalsWithOutRisk = entityManager.createNativeQuery(
 				"select count(*) from sm_assessment_plan a  inner join sm_topic t on a.id=t.assessment_plan_id where t.created_date >= (now() - interval '1 month') and a.risk_plan_id is null and t.signal_confirmation='"

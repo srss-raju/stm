@@ -35,8 +35,7 @@ public class AssessmentActionTypeController {
 
     @PutMapping
     public AssessmentActionType updateAssessmentActionType(@RequestBody AssessmentActionType assessmentActionType) throws UpdateFailedException {
-        assessmentActionType = assessmentActionTypeService.update(assessmentActionType);
-        return assessmentActionType;
+    	return assessmentActionTypeService.update(assessmentActionType);
     }
 
     @DeleteMapping(value = "/{assessmentActionTypeId}")

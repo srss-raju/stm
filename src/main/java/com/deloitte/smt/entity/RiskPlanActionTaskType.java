@@ -15,7 +15,11 @@ import java.util.Date;
 @Table(name = "sm_risk_plan_action_type")
 public class RiskPlanActionTaskType implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5717215760922567227L;
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Date createdDate;

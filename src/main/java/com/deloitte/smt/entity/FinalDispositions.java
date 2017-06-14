@@ -15,7 +15,11 @@ import java.util.Date;
 @Table(name = "sm_final_dispositions")
 public class FinalDispositions implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 9115830195565829065L;
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Date createdDate;

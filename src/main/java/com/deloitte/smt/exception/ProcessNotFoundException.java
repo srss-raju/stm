@@ -5,7 +5,12 @@ package com.deloitte.smt.exception;
  */
 public class ProcessNotFoundException extends Exception {
 
-    public ProcessNotFoundException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7216072263672783288L;
+
+	public ProcessNotFoundException(String message) {
         super(message);
     }
 }
