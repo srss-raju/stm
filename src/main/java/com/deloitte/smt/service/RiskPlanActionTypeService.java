@@ -24,7 +24,7 @@ public class RiskPlanActionTypeService {
     RiskPlanActionTaskTypeRepository riskPlanActionTaskTypeRepository;
 
     public List<RiskPlanActionTaskType> insert(List<RiskPlanActionTaskType> riskPlanActionTaskTypes) {
-    	riskPlanActionTaskTypeRepository.deleteAll();
+    	riskPlanActionTaskTypeRepository.deleteAll(); 	
     	for(RiskPlanActionTaskType riskPlanActionTaskType:riskPlanActionTaskTypes){
     		riskPlanActionTaskType.setCreatedDate(new Date());
             riskPlanActionTaskType.setLastModifiedDate(new Date());
@@ -37,8 +37,7 @@ public class RiskPlanActionTypeService {
             throw new UpdateFailedException("Required field Id is no present in the given request.");
         }
         riskPlanActionTaskType.setLastModifiedDate(new Date());
-        riskPlanActionTaskType = riskPlanActionTaskTypeRepository.save(riskPlanActionTaskType);
-        return riskPlanActionTaskType;
+        return riskPlanActionTaskTypeRepository.save(riskPlanActionTaskType);
     }
 
     public void delete(Long riskPlanActionTypeId) throws EntityNotFoundException {

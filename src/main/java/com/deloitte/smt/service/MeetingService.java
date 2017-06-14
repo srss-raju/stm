@@ -36,8 +36,8 @@ public class MeetingService {
         Date d = new Date();
         meeting.setCreatedDate(d);
         meeting.setLastModifiedDate(d);
-        meeting = meetingRepository.save(meeting);
-        attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null, meeting.getFileMetadata());
+        Meeting meetingUpdated = meetingRepository.save(meeting);
+        attachmentService.addAttachments(meetingUpdated.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null, meetingUpdated.getFileMetadata());
     }
 
     public void update(Meeting meeting, MultipartFile[] attachments) throws UpdateFailedException, IOException {

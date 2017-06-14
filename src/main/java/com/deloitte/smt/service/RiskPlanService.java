@@ -124,6 +124,8 @@ public class RiskPlanService {
         if(assignmentConfiguration != null) {
             riskPlan.setAssignTo(assignmentConfiguration.getRiskPlanAssignmentUser());
         }
+        
+        RiskPlan riskPlanUpdated=null;
         if(assessmentId != null){
             AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
             if(assessmentPlan == null) {
@@ -131,19 +133,19 @@ public class RiskPlanService {
             }
             assessmentPlan.setRiskPlan(riskPlan);
             riskPlan.setAssessmentPlan(assessmentPlan);
-            riskPlan = riskPlanRepository.save(riskPlan);
+            riskPlanUpdated = riskPlanRepository.save(riskPlan);
             assessmentPlanRepository.save(assessmentPlan);
         } else {
-            riskPlan = riskPlanRepository.save(riskPlan);
+        	riskPlanUpdated = riskPlanRepository.save(riskPlan);
         }
-        attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null, riskPlan.getFileMetadata());
-        if(!CollectionUtils.isEmpty(riskPlan.getSignalUrls())){
-        	for(SignalURL url:riskPlan.getSignalUrls()){
-        		url.setTopicId(riskPlan.getId());
+        attachmentService.addAttachments(riskPlanUpdated.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null, riskPlanUpdated.getFileMetadata());
+        if(!CollectionUtils.isEmpty(riskPlanUpdated.getSignalUrls())){
+        	for(SignalURL url:riskPlanUpdated.getSignalUrls()){
+        		url.setTopicId(riskPlanUpdated.getId());
         	}
-        	signalURLRepository.save(riskPlan.getSignalUrls());
+        	signalURLRepository.save(riskPlanUpdated.getSignalUrls());
         }
-        return riskPlan;
+        return riskPlanUpdated;
     }
 
 	public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
@@ -155,7 +157,7 @@ public class RiskPlanService {
 		Join<AssessmentPlan, RiskPlan> assementRiskJoin = topicAssignmentJoin.join("riskPlan", JoinType.INNER);
 
 		if (null != searchDto) {
-			List<Predicate> predicates = new ArrayList<Predicate>(10);
+			List<Predicate> predicates = new ArrayList<>(10);
 
 			if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
 				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("status").in(searchDto.getStatuses())));
