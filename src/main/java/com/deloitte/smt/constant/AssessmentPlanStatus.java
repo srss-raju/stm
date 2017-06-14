@@ -11,12 +11,12 @@ public enum AssessmentPlanStatus {
 
 	private String status;
 
-	public String getStatus() {
-		return status;
-	}
-
 	AssessmentPlanStatus(String status) {
 		this.status = status;
+	}
+	
+	public String getStatus() {
+		return status;
 	}
 
 	public boolean isStatusAvailable(String status) {

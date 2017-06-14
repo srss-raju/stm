@@ -11,12 +11,12 @@ public enum SignalStatus {
 
 	private String status;
 
-	public String getStatus() {
-		return status;
-	}
-
 	SignalStatus(String status) {
 		this.status = status;
+	}
+	
+	public String getStatus() {
+		return status;
 	}
 
 	public boolean isStatusAvailable(String status) {

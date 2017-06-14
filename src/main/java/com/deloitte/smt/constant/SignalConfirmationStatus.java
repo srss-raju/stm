@@ -5,15 +5,13 @@ public enum SignalConfirmationStatus {
 	
 	private String confirmationStatus;
 	
-	public String getName() {
-		return confirmationStatus;
-	}
-
 	SignalConfirmationStatus(String confirmationStatus){
 		this.confirmationStatus=confirmationStatus;
 	}
 	
-	
+	public String getName() {
+		return confirmationStatus;
+	}
 	
 
 }

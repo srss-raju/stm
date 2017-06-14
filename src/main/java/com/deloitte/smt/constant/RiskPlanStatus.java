@@ -11,12 +11,12 @@ public enum RiskPlanStatus {
 
 	private String status;
 
-	public String getStatus() {
-		return status;
-	}
-
 	RiskPlanStatus(String status) {
 		this.status = status;
+	}
+	
+	public String getStatus() {
+		return status;
 	}
 
 	public boolean isStatusAvailable(String status) {

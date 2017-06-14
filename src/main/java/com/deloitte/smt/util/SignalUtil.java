@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class SignalUtil {
 	
+	private SignalUtil(){}
+	
 	public static String getCounts(Long validateCount, Long assesmentCount, Long riskCount){
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode node = mapper.createObjectNode();
