@@ -7,7 +7,9 @@ public class TopicDTO {
 	private String signalName;
 	private String signalStatus;
 	
-	public TopicDTO(){}
+	public TopicDTO(){
+		//Do Nothing
+	}
 	
 	public TopicDTO(Long topicId,String ingredientName, String signalName, String signalStatus) {
 		super();
