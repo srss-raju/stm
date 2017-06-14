@@ -236,8 +236,7 @@ public class AssessmentPlanService {
 		}
 
 		TypedQuery<AssessmentPlan> q = entityManager.createQuery(criteriaQuery);
-		List<AssessmentPlan> results = q.getResultList();
-		return results;
+		return q.getResultList();
 	}
 
     public void updateAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException, IOException {
