@@ -146,6 +146,7 @@ public class RiskPlanService {
         return riskPlanUpdated;
     }
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();

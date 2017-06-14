@@ -67,6 +67,7 @@ public class SignalMatchService {
 		return topicUpdated;
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<Topic> getMatchingSignals(Topic topic) {
 		StringBuilder ptBuilder = new StringBuilder();
 		String tempPt = null;
