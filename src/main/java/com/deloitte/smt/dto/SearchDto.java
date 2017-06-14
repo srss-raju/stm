@@ -18,13 +18,13 @@ public class SearchDto {
 	private List<String> products;
 	private List<String> licenses;
 	private List<String> socs;
-	private List<String> hlgts = new ArrayList<String>();
+	private List<String> hlgts = new ArrayList<>();
 	private List<String> hlts;
 	private List<String> pts;
 	private String description;
 	private List<String> signalConfirmations;
 	private List<String> signalNames;
-	private List<String> assignees = new ArrayList<String>();
+	private List<String> assignees = new ArrayList<>();
 	private List<String> frequency;
 	
 	private String dateKey;

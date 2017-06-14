@@ -62,8 +62,7 @@ public class SignalController {
 	public AssessmentPlan validateAndPrioritizeTopic(
 	        @PathVariable Long topicId,
 			@RequestBody AssessmentPlan assessmentPlan) throws TaskNotFoundException, TopicNotFoundException {
-		assessmentPlan = signalService.validateAndPrioritize(topicId, assessmentPlan);
-		return assessmentPlan;
+		return signalService.validateAndPrioritize(topicId, assessmentPlan);
 	}
 
 	

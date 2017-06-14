@@ -30,14 +30,12 @@ public class RiskPlanActionTypeController {
 
     @PostMapping
     public List<RiskPlanActionTaskType> createNewAssessmentActionType(@RequestBody List<RiskPlanActionTaskType> riskPlanActionTaskTypes) {
-    	riskPlanActionTaskTypes = riskPlanActionTypeService.insert(riskPlanActionTaskTypes);
-        return riskPlanActionTaskTypes;
+    	return riskPlanActionTypeService.insert(riskPlanActionTaskTypes);
     }
 
     @PutMapping
     public RiskPlanActionTaskType updateAssessmentActionType(@RequestBody RiskPlanActionTaskType riskPlanActionTaskType) throws UpdateFailedException {
-        riskPlanActionTaskType = riskPlanActionTypeService.update(riskPlanActionTaskType);
-        return riskPlanActionTaskType;
+        return riskPlanActionTypeService.update(riskPlanActionTaskType);
     }
 
     @DeleteMapping(value = "/{riskPlanActionTypeId}")

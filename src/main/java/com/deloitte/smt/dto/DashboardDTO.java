@@ -16,13 +16,13 @@ public class DashboardDTO implements Serializable{
 	private static final long serialVersionUID = -6678141117765723101L;
 
 	@JsonProperty("topic")
-	private List<Map<String, Map<String, Long>>> topicMetrics=new ArrayList<Map<String, Map<String, Long>>>();
+	private List<Map<String, Map<String, Long>>> topicMetrics=new ArrayList<>();
 	
 	@JsonProperty("assessment")
-	private List<Map<String, Map<String, Long>>> assessmentMetrics=new ArrayList<Map<String, Map<String, Long>>>();
+	private List<Map<String, Map<String, Long>>> assessmentMetrics=new ArrayList<>();
 	
 	@JsonProperty("risk")
-	private List<Map<String, Map<String, Long>>> riskMetrics=new ArrayList<Map<String, Map<String, Long>>>();
+	private List<Map<String, Map<String, Long>>> riskMetrics=new ArrayList<>();
 	
 	
 	public  List<Map<String, Map<String, Long>>> getTopicMetrics() {

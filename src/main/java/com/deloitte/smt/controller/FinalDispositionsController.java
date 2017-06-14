@@ -30,14 +30,12 @@ public class FinalDispositionsController {
 
     @PostMapping
     public List<FinalDispositions> createNewAssessmentActionType(@RequestBody List<FinalDispositions> finalDispositions) {
-        finalDispositions = finalDispositionService.insert(finalDispositions);
-        return finalDispositions;
+        return finalDispositionService.insert(finalDispositions);
     }
 
     @PutMapping
     public FinalDispositions updateAssessmentActionType(@RequestBody FinalDispositions finalDisposition) throws UpdateFailedException {
-        finalDisposition = finalDispositionService.update(finalDisposition);
-        return finalDisposition;
+        return finalDispositionService.update(finalDisposition);
     }
 
     @DeleteMapping(value = "/{finalDispositionId}")

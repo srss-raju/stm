@@ -35,8 +35,7 @@ public class SMUserController {
 
     @PutMapping
     public SMUser updateUser(@RequestBody SMUser smUser) throws UpdateFailedException {
-        smUser = smUserService.update(smUser);
-        return smUser;
+        return smUserService.update(smUser);
     }
 
     @DeleteMapping(value = "/{userId}")

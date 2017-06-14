@@ -30,14 +30,12 @@ public class SignalConfirmationsController {
 
     @PostMapping
     public List<SignalConfirmations> createNewAssessmentActionType(@RequestBody List<SignalConfirmations> signalConfirmations) {
-    	signalConfirmations = signalConfirmationsService.insert(signalConfirmations);
-        return signalConfirmations;
+    	return signalConfirmationsService.insert(signalConfirmations);
     }
 
     @PutMapping
     public SignalConfirmations updateAssessmentActionType(@RequestBody SignalConfirmations signalConfirmation) throws UpdateFailedException {
-        signalConfirmation = signalConfirmationsService.update(signalConfirmation);
-        return signalConfirmation;
+        return signalConfirmationsService.update(signalConfirmation);
     }
 
     @DeleteMapping(value = "/{signalConfirmationId}")

@@ -31,8 +31,7 @@ public class DenominationForPoissionController {
 
     @PostMapping
     public List<DenominatorForPoisson> createNewAssessmentActionType(@RequestBody List<DenominatorForPoisson> denominationForPoissions) {
-    	denominationForPoissions = denominationForPoissionService.insert(denominationForPoissions);
-        return denominationForPoissions;
+    	return denominationForPoissionService.insert(denominationForPoissions);
     }
 
     @PutMapping

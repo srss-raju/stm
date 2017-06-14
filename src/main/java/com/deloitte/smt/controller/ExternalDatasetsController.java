@@ -31,14 +31,12 @@ public class ExternalDatasetsController {
 
     @PostMapping
     public List<ExternalDatasets> createNewAssessmentActionType(@RequestBody List<ExternalDatasets> externalDatasets) {
-    	externalDatasets = externalDatasetsService.insert(externalDatasets);
-        return externalDatasets;
+    	return externalDatasetsService.insert(externalDatasets);
     }
 
     @PutMapping
     public ExternalDatasets updateAssessmentActionType(@RequestBody ExternalDatasets externalDatasets) throws UpdateFailedException {
-    	externalDatasets = externalDatasetsService.update(externalDatasets);
-        return externalDatasets;
+    	return externalDatasetsService.update(externalDatasets);
     }
 
     @DeleteMapping(value = "/{externalDatasetsId}")

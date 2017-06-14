@@ -37,8 +37,7 @@ public class AssignmentConfigurationController {
 
     @PutMapping
     public AssignmentConfiguration updateAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws UpdateFailedException {
-        assignmentConfiguration = assignmentConfigurationService.update(assignmentConfiguration);
-        return assignmentConfiguration;
+        return assignmentConfigurationService.update(assignmentConfiguration);
     }
 
     @DeleteMapping(value = "/{assignmentConfigurationId}")

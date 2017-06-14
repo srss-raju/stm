@@ -76,11 +76,6 @@ public class RiskController {
     	return new ResponseEntity<>(HttpStatus.OK);
     }
     
-    /*@PutMapping(value = "/task/updateRiskTask")
-    public ResponseEntity<Void> updateRiskTask(@RequestBody RiskTask riskTask) throws UpdateFailedException {
-    	riskPlanService.updateRiskTask(riskTask);
-    	return new ResponseEntity<>(HttpStatus.OK);
-    }*/
     
     @PostMapping(value = "/task/updateRiskTask")
     public ResponseEntity<Void> updateRiskTask(@RequestParam("data") String riskTaskString,
