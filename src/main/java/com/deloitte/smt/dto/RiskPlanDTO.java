@@ -15,7 +15,9 @@ public class RiskPlanDTO {
 		this.riskPlanStatus = riskPlanStatus;
 	}
 	
-	public RiskPlanDTO(){}
+	public RiskPlanDTO(){
+		//Do Nothing
+	}
 	
 	public Long getRiskPlanId() {
 		return riskPlanId;

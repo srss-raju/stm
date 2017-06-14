@@ -14,7 +14,9 @@ public class AssessmentPlanDTO {
 		this.assessmentPlanStatus = assessmentPlanStatus;
 	}
 	
-	public AssessmentPlanDTO(){}
+	public AssessmentPlanDTO(){
+		//Do Nothing
+	}
 	
 	public Long getPlanId() {
 		return planId;
