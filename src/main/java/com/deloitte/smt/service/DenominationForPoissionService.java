@@ -38,8 +38,7 @@ public class DenominationForPoissionService {
             throw new UpdateFailedException("Required field Id is no present in the given request.");
         }
         denominationForPoission.setLastModifiedDate(new Date());
-        denominationForPoission = denominationForPoissionRespository.save(denominationForPoission);
-        return denominationForPoission;
+        return denominationForPoissionRespository.save(denominationForPoission);
     }
 
     public void delete(Long denominationForPoissionId) throws EntityNotFoundException {

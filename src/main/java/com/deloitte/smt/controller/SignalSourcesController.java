@@ -35,8 +35,7 @@ public class SignalSourcesController {
 
     @PutMapping
     public SignalSources updateAssessmentActionType(@RequestBody SignalSources signalSource) throws UpdateFailedException {
-        signalSource = signalSourcesService.update(signalSource);
-        return signalSource;
+        return  signalSourcesService.update(signalSource);
     }
 
     @DeleteMapping(value = "/{signalSourceId}")

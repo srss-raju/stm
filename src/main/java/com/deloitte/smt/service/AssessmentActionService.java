@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
+import com.deloitte.smt.constant.SignalStatus;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
@@ -51,7 +52,7 @@ public class AssessmentActionService {
     SignalURLRepository signalURLRepository;
 
     public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
-        if(signalAction.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(signalAction.getActionStatus())){
+        if(signalAction.getCaseInstanceId() != null && SignalStatus.COMPLETED.name().equalsIgnoreCase(signalAction.getActionStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
         }
@@ -72,15 +73,15 @@ public class AssessmentActionService {
         signalAction.setCreatedDate(d);
         signalAction.setLastModifiedDate(d);
         signalAction.setActionStatus("New");
-        signalAction = assessmentActionRepository.save(signalAction);
-        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
-        if(!CollectionUtils.isEmpty(signalAction.getSignalUrls())){
-        	for(SignalURL url:signalAction.getSignalUrls()){
-        		url.setTopicId(signalAction.getId());
+        SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
+        attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata());
+        if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
+        	for(SignalURL url:signalActionUpdated.getSignalUrls()){
+        		url.setTopicId(signalActionUpdated.getId());
         	}
-        	signalURLRepository.save(signalAction.getSignalUrls());
+        	signalURLRepository.save(signalActionUpdated.getSignalUrls());
         }
-        return signalAction;
+        return signalActionUpdated;
     }
 
     public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws UpdateFailedException, IOException {
@@ -146,15 +147,15 @@ public class AssessmentActionService {
         signalAction.setCreatedDate(d);
         signalAction.setDueDate(SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate()));
         signalAction.setActionStatus("New");
-        signalAction = assessmentActionRepository.save(signalAction);
-    	attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalAction.getFileMetadata());
-    	if(!CollectionUtils.isEmpty(signalAction.getSignalUrls())){
-        	for(SignalURL url:signalAction.getSignalUrls()){
-        		url.setTopicId(signalAction.getId());
+        SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
+    	attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata());
+    	if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
+        	for(SignalURL url:signalActionUpdated.getSignalUrls()){
+        		url.setTopicId(signalActionUpdated.getId());
         	}
-        	signalURLRepository.save(signalAction.getSignalUrls());
+        	signalURLRepository.save(signalActionUpdated.getSignalUrls());
         }
-    	return signalAction;
+    	return signalActionUpdated;
     }
     
 }

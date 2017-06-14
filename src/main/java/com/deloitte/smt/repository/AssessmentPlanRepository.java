@@ -35,7 +35,4 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	@Query(value = "UPDATE AssessmentPlan o SET o.assessmentTaskStatus=:assessmentTaskStatus WHERE id= :id")
 	void updateAssessmentTaskStatus(@Param("assessmentTaskStatus") String assessmentTaskStatus, @Param("id") Long id);
 	
-//	@Query(value="select NEW com.deloitte.smt.dto.AssessmentPlanDTO(i.ingredientName,a.assessmentName.a.assessmentPlanStatus) from Topic t , AssessmentPlan a , Ingredient i where t.assessmentPlan.id=a.id and  i.topicId=t.id order by i.ingredientName",nativeQuery=false)
-//	List<AssessmentPlanDTO> getAssessmentPlansByIngredientName();
-//	
 }

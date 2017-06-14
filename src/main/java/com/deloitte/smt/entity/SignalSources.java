@@ -15,7 +15,12 @@ import java.util.Date;
 @Table(name = "sm_signal_sources")
 public class SignalSources implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Date createdDate;

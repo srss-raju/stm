@@ -5,7 +5,6 @@ import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.DeleteFailedException;
 import com.deloitte.smt.exception.EntityNotFoundException;
-import com.deloitte.smt.exception.UpdateFailedException;
 import com.deloitte.smt.service.SignalDetectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class SignalDetectionController {
     }
 	
 	@PostMapping(value = "/updateSignalDetection")
-	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString) throws IOException, UpdateFailedException,ApplicationException {
+	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString) throws IOException,ApplicationException {
 		SignalDetection signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
 		signalDetectionService.createOrUpdateSignalDetection(signalDetection);
 		return new ResponseEntity<>(HttpStatus.OK);

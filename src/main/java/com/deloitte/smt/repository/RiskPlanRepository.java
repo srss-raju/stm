@@ -43,6 +43,4 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	void updateRiskTaskStatus(@Param("riskTaskStatus") String riskTaskStatus, @Param("id") Long id);
 	
 	
-//	@Query(value="select risk.* from sm_topic t inner join sm_assessment_plan a on t.assessment_plan_id=a.id inner join sm_ingredient i on i.topic_id=t.id inner join sm_risk_plan risk on risk.id=a.risk_plan_id ",nativeQuery=true)
-//	List<RiskPlan> findByIngredientName();
 }

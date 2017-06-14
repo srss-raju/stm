@@ -37,8 +37,7 @@ public class FinalDispositionService {
             throw new UpdateFailedException("Required field Id is no present in the given request.");
         }
         finalDisposition.setLastModifiedDate(new Date());
-        finalDisposition = finalDispositionRepository.save(finalDisposition);
-        return finalDisposition;
+        return finalDispositionRepository.save(finalDisposition);
     }
 
     public void delete(Long finalDispositionId) throws EntityNotFoundException {

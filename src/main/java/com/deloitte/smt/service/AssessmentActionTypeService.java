@@ -37,8 +37,7 @@ public class AssessmentActionTypeService {
             throw new UpdateFailedException("Required field Id is no present in the given request.");
         }
         assessmentActionType.setLastModifiedDate(new Date());
-        assessmentActionType = assessmentActionTypeRepository.save(assessmentActionType);
-        return assessmentActionType;
+        return assessmentActionTypeRepository.save(assessmentActionType);
     }
 
     public void delete(Long assessmentActionTypeId) throws EntityNotFoundException {

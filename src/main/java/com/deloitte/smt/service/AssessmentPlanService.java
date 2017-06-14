@@ -124,7 +124,7 @@ public class AssessmentPlanService {
 		
 
 		if (null != searchDto) {
-			List<Predicate> predicates = new ArrayList<Predicate>(10);
+			List<Predicate> predicates = new ArrayList<>(10);
 			
 			if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
 				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("riskTaskStatus").in(searchDto.getRiskTaskStatus())));

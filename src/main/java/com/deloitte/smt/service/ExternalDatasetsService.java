@@ -32,8 +32,7 @@ public class ExternalDatasetsService {
         if(externalDatasets.getId() == null) {
             throw new UpdateFailedException("Required field Id is no present in the given request.");
         }
-        externalDatasets = externalDatasetsRepository.save(externalDatasets);
-        return externalDatasets;
+        return externalDatasetsRepository.save(externalDatasets);
     }
 
     public void delete(Long externalDatasetsId) throws EntityNotFoundException {

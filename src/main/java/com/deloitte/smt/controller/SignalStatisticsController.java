@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.entity.SignalStatistics;
-import com.deloitte.smt.exception.EntityAlreadyExistsException;
-import com.deloitte.smt.exception.EntityNotFoundException;
 import com.deloitte.smt.service.SignalStatisticsService;
 
 @RestController
@@ -22,12 +20,12 @@ public class SignalStatisticsController {
 	SignalStatisticsService signalStatisticsService;
 	
 	@PostMapping
-    public List<SignalStatistics> createSignalStatistics(@RequestBody List<SignalStatistics> signalStatistics) throws EntityAlreadyExistsException {
+    public List<SignalStatistics> createSignalStatistics(@RequestBody List<SignalStatistics> signalStatistics) {
         return signalStatisticsService.insert(signalStatistics);
     }
 
     @GetMapping(value = "/{runInstanceId}")
-    public List<SignalStatistics> findSignalStatisticsByRunInstanceId(@PathVariable Long runInstanceId) throws EntityNotFoundException {
+    public List<SignalStatistics> findSignalStatisticsByRunInstanceId(@PathVariable Long runInstanceId) {
         return signalStatisticsService.findSignalStatisticsByRunInstanceId(runInstanceId);
     }
 }

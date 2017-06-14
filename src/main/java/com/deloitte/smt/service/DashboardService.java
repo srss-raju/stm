@@ -110,7 +110,6 @@ public class DashboardService {
 			smtComplianceList.add(dto);
 		}
 
-		System.out.println(unAddedTypes);
 	}
 
 	public DashboardDTO getDashboardData() {
@@ -125,8 +124,7 @@ public class DashboardService {
 	}
 
 	private List<TopicDTO> getSignalsDTO() {
-		List<TopicDTO> topics = topicRepository.findByIngredientName();
-		return topics;
+		return topicRepository.findByIngredientName();
 	}
 
 	private Map<String, Map<String, Long>> calculateTopicMetrics(List<TopicDTO> topics) {
@@ -195,7 +193,7 @@ public class DashboardService {
 		Root<Ingredient> ingredient = criteriaQuery.from(Ingredient.class);
 		Join<Topic, AssessmentPlan> topicAssignmentJoin = topic.join("assessmentPlan", JoinType.INNER);
 
-		List<Predicate> predicates = new ArrayList<Predicate>(10);
+		List<Predicate> predicates = new ArrayList<>(10);
 		predicates.add(cb.equal(ingredient.get("topicId"), topic.get("id")));
 
 		Predicate andPredicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -218,7 +216,7 @@ public class DashboardService {
 		Root<Ingredient> ingredient2 = criteriaQuery2.from(Ingredient.class);
 		Join<Topic, AssessmentPlan> topicAssignmentJoin2 = topic2.join("assessmentPlan", JoinType.INNER);
 		Join<AssessmentPlan, RiskPlan> assementRiskJoin = topicAssignmentJoin2.join("riskPlan", JoinType.INNER);
-		List<Predicate> predicates2 = new ArrayList<Predicate>(10);
+		List<Predicate> predicates2 = new ArrayList<>(10);
 		predicates2.add(cb.equal(ingredient2.get("topicId"), topic2.get("id")));
 
 		Predicate andPredicate2 = cb.and(predicates2.toArray(new Predicate[predicates2.size()]));
@@ -232,7 +230,7 @@ public class DashboardService {
 	}
 
 	public List<ValidationOutComesDTO> generateDataForValidateOutcomesChart() {
-		List<ValidationOutComesDTO> validateOutComesList = new ArrayList<ValidationOutComesDTO>();
+		List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
 
 		Query validatedSignalsWithOutRisk = entityManager.createNativeQuery(
 				"select count(*) from sm_assessment_plan a  inner join sm_topic t on a.id=t.assessment_plan_id where t.created_date >= (now() - interval '1 month') and a.risk_plan_id is null and t.signal_confirmation='"
