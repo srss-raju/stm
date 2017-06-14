@@ -461,17 +461,14 @@ public class SignalService {
 
     public Long getValidateAndPrioritizeCount(String assignTo){
         return topicRepository.countByAssignToAndSignalStatusNotLikeIgnoreCase(assignTo, "Completed");
-    	//return taskInstRepository.countByTaskDefKeyInAndDeleteReasonNot(Arrays.asList("validateTopic"), "completed");
     }
     
     public Long getAssessmentCount(String assignTo){
-    	///return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("assessment"));
         return assessmentPlanRepository.countByAssignToAndAssessmentPlanStatusNotLikeIgnoreCase(assignTo, "Completed");
     }
     
     public Long getRiskCount(String assignTo){
     	return riskPlanRepository.countByAssignToAndStatusNotLikeIgnoreCase(assignTo, "Completed");
-    	//return taskInstRepository.countByTaskDefKeyIn(Arrays.asList("risk"));
     }
 
     public String getCountsByFilter(String ingredientName, String assignTo) {
@@ -484,44 +481,6 @@ public class SignalService {
         return SignalUtil.getCounts(Long.valueOf(signals.size()), Long.valueOf(assessmentPlanList.size()), Long.valueOf(riskPlanList.size()));
     }
 
-    /*public List<SignalAction> attachTasksToAssessment(AssessmentPlan assessmentPlan) throws TaskNotFoundException{
-    	List<SignalAction> signalActionList = new ArrayList<>();
-    	TaskTemplateIngrediant taskTemplateIngrediant = taskTemplateIngrediantRepository.findByName(assessmentPlan.getIngrediantName());
-		if (taskTemplateIngrediant != null) {
-			List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(taskTemplateIngrediant.getId());
-			if (!CollectionUtils.isEmpty(actions)) {
-				for (SignalAction action : actions) {
-					SignalAction signalAction = new SignalAction();
-					signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
-					signalAction.setActionName(action.getActionName());
-					signalAction.setCreatedDate(new Date());
-					signalAction.setLastModifiedDate(action.getLastModifiedDate());
-					signalAction.setActionStatus(action.getActionStatus());
-					signalAction.setDueDate(action.getDueDate());
-					signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
-					signalAction.setActionType(action.getActionType());
-					signalAction.setDueDate(SignalUtil.getDueDate(action.getInDays(), signalAction.getCreatedDate()));
-					signalAction.setInDays(action.getInDays());
-
-					Task task = taskService.newTask();
-					task.setCaseInstanceId(signalAction.getCaseInstanceId());
-					task.setName(signalAction.getActionName());
-					taskService.saveTask(task);
-					List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
-					TaskInst taskInstance = new TaskInst();
-					taskInstance.setId(list.get(list.size() - 1).getId());
-					taskInstance.setCaseDefKey("assessment");
-					taskInstance.setTaskDefKey("assessment");
-					taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
-					taskInstance.setStartTime(new Date());
-					signalAction.setTaskId(taskInstance.getId());
-					signalActionList.add(signalAction);
-				}
-			}
-		}
-    	return signalActionList;
-    }*/
-    
     public List<TaskTemplate> getTaskTamplatesOfIngrediant(String ingrediantName){
     	List<Long> templateIds = taskTemplateIngrediantRepository.findByIngrediantName(ingrediantName);
     	return taskTemplateRepository.findByIdIn(templateIds);
@@ -536,46 +495,57 @@ public class SignalService {
 				signalActionList = new ArrayList<>();
 				if (!CollectionUtils.isEmpty(actions)) {
 					for (SignalAction action : actions) {
-						SignalAction signalAction = new SignalAction();
-						signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
-						signalAction.setActionName(action.getActionName());
-						signalAction.setCreatedDate(new Date());
-						signalAction.setLastModifiedDate(action.getLastModifiedDate());
-						signalAction.setActionStatus(action.getActionStatus());
-						signalAction.setDueDate(action.getDueDate());
-						signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
-						signalAction.setActionType(action.getActionType());
-						signalAction.setDueDate(SignalUtil.getDueDate(action.getInDays(),signalAction.getCreatedDate()));
-						signalAction.setInDays(action.getInDays());
-						signalAction.setActionDescription(action.getActionDescription());
-						signalAction.setActionNotes(action.getActionNotes());
-                        if(action.getAssignTo() == null) {
-                            signalAction.setAssignTo(assessmentPlan.getAssignTo());
-                        }else{
-                        	signalAction.setAssignTo(action.getAssignTo());
-                        }
-                        signalAction.setOwner(assessmentPlan.getAssignTo());
-						Task task = taskService.newTask();
-						task.setCaseInstanceId(signalAction.getCaseInstanceId());
-						task.setName(signalAction.getActionName());
-						taskService.saveTask(task);
-						List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
-						TaskInst taskInstance = new TaskInst();
-						taskInstance.setId(list.get(list.size() - 1).getId());
-						taskInstance.setCaseDefKey("assessment");
-						taskInstance.setTaskDefKey("assessment");
-						taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
-						taskInstance.setStartTime(new Date());
-						signalAction.setTaskId(taskInstance.getId());
-						signalAction = assessmentActionRepository.save(signalAction);
-						signalActionList.add(signalAction);
-						associateTemplateAttachments(sort, action, signalAction);
-						associateTemplateURLs(action, signalAction);
+						createAssessmentAction(assessmentPlan, sort,signalActionList, action);
 					}
 				}
 			}
 		}
 		return signalActionList;
+	}
+
+	/**
+	 * @param assessmentPlan
+	 * @param sort
+	 * @param signalActionList
+	 * @param action
+	 */
+	private void createAssessmentAction(AssessmentPlan assessmentPlan,
+			Sort sort, List<SignalAction> signalActionList, SignalAction action) {
+		SignalAction signalAction = new SignalAction();
+		signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
+		signalAction.setActionName(action.getActionName());
+		signalAction.setCreatedDate(new Date());
+		signalAction.setLastModifiedDate(action.getLastModifiedDate());
+		signalAction.setActionStatus(action.getActionStatus());
+		signalAction.setDueDate(action.getDueDate());
+		signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
+		signalAction.setActionType(action.getActionType());
+		signalAction.setDueDate(SignalUtil.getDueDate(action.getInDays(),signalAction.getCreatedDate()));
+		signalAction.setInDays(action.getInDays());
+		signalAction.setActionDescription(action.getActionDescription());
+		signalAction.setActionNotes(action.getActionNotes());
+		if(action.getAssignTo() == null) {
+		    signalAction.setAssignTo(assessmentPlan.getAssignTo());
+		}else{
+			signalAction.setAssignTo(action.getAssignTo());
+		}
+		signalAction.setOwner(assessmentPlan.getAssignTo());
+		Task task = taskService.newTask();
+		task.setCaseInstanceId(signalAction.getCaseInstanceId());
+		task.setName(signalAction.getActionName());
+		taskService.saveTask(task);
+		List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
+		TaskInst taskInstance = new TaskInst();
+		taskInstance.setId(list.get(list.size() - 1).getId());
+		taskInstance.setCaseDefKey("assessment");
+		taskInstance.setTaskDefKey("assessment");
+		taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
+		taskInstance.setStartTime(new Date());
+		signalAction.setTaskId(taskInstance.getId());
+		signalAction = assessmentActionRepository.save(signalAction);
+		signalActionList.add(signalAction);
+		associateTemplateAttachments(sort, action, signalAction);
+		associateTemplateURLs(action, signalAction);
 	}
 
 	/**
@@ -637,18 +607,25 @@ public class SignalService {
 		            ingredient.setLicenses(licenses);
 		            topic.setIngredient(ingredient);
 		        }
-		        List<Soc> socs  = socRepository.findByTopicId(topic.getId());
-		        if(!CollectionUtils.isEmpty(socs)) {
-		        	for(Soc soc:socs){
-		        		soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
-		        		soc.setHlts(hltRepository.findBySocId(soc.getId()));
-		        		soc.setPts(ptRepository.findBySocId(soc.getId()));
-		        	}
-		        }
-		        topic.setSocs(socs);
+		        setSoc(topic);
 			}
 		}
 		return topics;
+	}
+
+	/**
+	 * @param topic
+	 */
+	private void setSoc(Topic topic) {
+		List<Soc> socs  = socRepository.findByTopicId(topic.getId());
+		if(!CollectionUtils.isEmpty(socs)) {
+			for(Soc soc:socs){
+				soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
+				soc.setHlts(hltRepository.findBySocId(soc.getId()));
+				soc.setPts(ptRepository.findBySocId(soc.getId()));
+			}
+		}
+		topic.setSocs(socs);
 	}
 
 	public void deleteSignalURL(Long signalUrlId) throws ApplicationException {
