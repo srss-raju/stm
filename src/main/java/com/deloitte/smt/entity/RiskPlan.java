@@ -47,7 +47,9 @@ public class RiskPlan implements Serializable {
 
  	@Transient
     private List<SignalURL> signalUrls;
-    public RiskPlan(){}
+    public RiskPlan(){
+    	//Do Nothing
+    }
     
     public RiskPlan(Long id, String name, String description, int inDays, Date createdDate, String createdBy,
 			Date lastModifiedDate, String summary, String caseInstanceId, String status, String ingredient,
