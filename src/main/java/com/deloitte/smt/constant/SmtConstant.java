@@ -9,10 +9,12 @@ public enum SmtConstant {
 	ASSESSMENT_PLAN_STATUS("assessmentPlanStatus"),
 	ASSIGN_TO("assignTo"),
     TOPIC_ID("topicId"),
+    DETECTION_ID("detectionId"),
     ASSESSMENT_DUE_DATE("assessmentDueDate"),
     CREATED_DATE("createdDate"),
     COMPLETED("Completed"),
     INGREDIENT_NAME("ingredientName"),
+    IN_PROGRESS("In Progress"),
     ASSESSMENT_TASK_STATUS("assessmentTaskStatus");
     private String description;
 

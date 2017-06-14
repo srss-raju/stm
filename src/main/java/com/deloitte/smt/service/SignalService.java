@@ -30,6 +30,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
@@ -149,10 +150,10 @@ public class SignalService {
             throw new ApplicationException("Signal not found with the given Id :"+topicId);
         }
         if(null == topic.getSignalValidation()) {
-            topic.setSignalValidation("In Progress");
+            topic.setSignalValidation(SmtConstant.IN_PROGRESS.getDescription());
         }
         if("New".equalsIgnoreCase(topic.getSignalStatus())) {
-            topic.setSignalStatus("In Progress");
+            topic.setSignalStatus(SmtConstant.IN_PROGRESS.getDescription());
             topic = topicRepository.save(topic);
         }
         Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
@@ -188,7 +189,7 @@ public class SignalService {
             topic.setId(null);
         }
         if(null == topic.getSignalValidation()) {
-            topic.setSignalValidation("In Progress");
+            topic.setSignalValidation(SmtConstant.IN_PROGRESS.getDescription());
         }
         Calendar c = Calendar.getInstance();
         topic.setCreatedDate(c.getTime());
@@ -366,7 +367,7 @@ public class SignalService {
 			
 			if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
 				Root<Product> rootProduct = query.from(Product.class);
-				Predicate productEquals = criteriaBuilder.equal(rootTopic.get("id"), rootProduct.get("topicId"));
+				Predicate productEquals = criteriaBuilder.equal(rootTopic.get("id"), rootProduct.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate producNameEquals = criteriaBuilder.isTrue(rootProduct.get("productName").in(searchDto.getProducts()));
 				predicates.add(productEquals);
 				predicates.add(producNameEquals);
@@ -374,7 +375,7 @@ public class SignalService {
 			
 			if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
 				Root<License> rootLicense = query.from(License.class);
-				Predicate licenseEquals = criteriaBuilder.equal(rootTopic.get("id"), rootLicense.get("topicId"));
+				Predicate licenseEquals = criteriaBuilder.equal(rootTopic.get("id"), rootLicense.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate licenseNameEquals = criteriaBuilder.isTrue(rootLicense.get("licenseName").in(searchDto.getLicenses()));
 				predicates.add(licenseEquals);
 				predicates.add(licenseNameEquals);
@@ -382,7 +383,7 @@ public class SignalService {
 			
 			if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
 				Root<Ingredient> rootIngredient = query.from(Ingredient.class);
-				Predicate ingredientEquals = criteriaBuilder.equal(rootTopic.get("id"), rootIngredient.get("topicId"));
+				Predicate ingredientEquals = criteriaBuilder.equal(rootTopic.get("id"), rootIngredient.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate ingredientNameEquals = criteriaBuilder.isTrue(rootIngredient.get("ingredientName").in(searchDto.getIngredients()));
 				predicates.add(ingredientEquals);
 				predicates.add(ingredientNameEquals);
@@ -391,7 +392,7 @@ public class SignalService {
 			
 			if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
 				Root<Hlt> rootHlt = query.from(Hlt.class);
-				Predicate hltTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlt.get("topicId"));
+				Predicate hltTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlt.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate hltNameEquals = criteriaBuilder.isTrue(rootHlt.get("hltName").in(searchDto.getHlts()));
 				predicates.add(hltTopicEquals);
 				predicates.add(hltNameEquals);
@@ -399,7 +400,7 @@ public class SignalService {
 
 			if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
 				Root<Hlgt> rootHlgt = query.from(Hlgt.class);
-				Predicate hlgtTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlgt.get("topicId"));
+				Predicate hlgtTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootHlgt.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate hlgtNameEquals = criteriaBuilder.isTrue(rootHlgt.get("hlgtName").in(searchDto.getHlgts()));
 				predicates.add(hlgtTopicEquals);
 				predicates.add(hlgtNameEquals);
@@ -407,14 +408,14 @@ public class SignalService {
 
 			if (!CollectionUtils.isEmpty(searchDto.getPts())) {
 				Root<Pt> rootPt = query.from(Pt.class);
-				Predicate ptTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootPt.get("topicId"));
+				Predicate ptTopicEquals = criteriaBuilder.equal(rootTopic.get("id"), rootPt.get(SmtConstant.TOPIC_ID.getDescription()));
 				Predicate ptNameEquals = criteriaBuilder.isTrue(rootPt.get("ptName").in(searchDto.getPts()));
 				predicates.add(ptTopicEquals);
 				predicates.add(ptNameEquals);
 			}
 
 			if (null != searchDto.getCreatedDate()) {
-				predicates.add(criteriaBuilder.equal(rootTopic.get("createdDate"), searchDto.getCreatedDate()));
+				predicates.add(criteriaBuilder.equal(rootTopic.get(SmtConstant.CREATED_DATE.getDescription()), searchDto.getCreatedDate()));
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
@@ -435,10 +436,10 @@ public class SignalService {
 							criteriaBuilder.greaterThanOrEqualTo(rootTopic.get("dueDate"), searchDto.getStartDate()));
 					predicates.add(criteriaBuilder.lessThanOrEqualTo(rootTopic.get("dueDate"), searchDto.getEndDate()));
 				} else {
-					predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootTopic.get("createdDate"),
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootTopic.get(SmtConstant.CREATED_DATE.getDescription()),
 							searchDto.getStartDate()));
 					predicates.add(
-							criteriaBuilder.lessThanOrEqualTo(rootTopic.get("createdDate"), searchDto.getEndDate()));
+							criteriaBuilder.lessThanOrEqualTo(rootTopic.get(SmtConstant.CREATED_DATE.getDescription()), searchDto.getEndDate()));
 				}
 
 			}
@@ -449,10 +450,10 @@ public class SignalService {
 			}
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-			query.select(rootTopic).where(andPredicate).orderBy(criteriaBuilder.desc(rootTopic.get("createdDate")))
+			query.select(rootTopic).where(andPredicate).orderBy(criteriaBuilder.desc(rootTopic.get(SmtConstant.CREATED_DATE.getDescription())))
 					.distinct(true);
 		} else {
-			query.select(rootTopic).orderBy(criteriaBuilder.desc(rootTopic.get("createdDate")));
+			query.select(rootTopic).orderBy(criteriaBuilder.desc(rootTopic.get(SmtConstant.CREATED_DATE.getDescription())));
 		}
 		
 		TypedQuery<Topic> q = entityManager.createQuery(query);
@@ -487,7 +488,7 @@ public class SignalService {
     }
 
 	public List<SignalAction> associateTemplateTasks(AssessmentPlan assessmentPlan) {
-		Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+		Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
 		List<SignalAction> signalActionList = null;
 		if (!CollectionUtils.isEmpty(assessmentPlan.getTemplateIds())) {
 			for (Long id : assessmentPlan.getTemplateIds()) {

@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 import com.deloitte.smt.constant.AssessmentTaskStatusType;
 import com.deloitte.smt.constant.RiskTaskStatusType;
 import com.deloitte.smt.constant.RunFrequency;
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.HlgtRepository;
@@ -52,7 +53,7 @@ public class SearchService {
 
     public SearchDto getFiltersForSignal(){
         SearchDto dto = new SearchDto();
-        dto.setStatuses(Arrays.asList("New", "In Progress", "Completed", "Overdue"));
+        dto.setStatuses(Arrays.asList("New", SmtConstant.IN_PROGRESS.getDescription(), SmtConstant.COMPLETED.getDescription(), "Overdue"));
         dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignal());
         dto.setProducts(productRepository.findDistinctProductNameForSignal());
         dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignal());
@@ -69,7 +70,7 @@ public class SearchService {
 
     public SearchDto getFiltersForSignalDetection(){
         SearchDto dto = new SearchDto();
-        dto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));
+        dto.setStatuses(Arrays.asList("New", SmtConstant.IN_PROGRESS.getDescription(), SmtConstant.COMPLETED.getDescription()));
         dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignalDetection());
         dto.setProducts(productRepository.findDistinctProductNameForSignalDetection());
         dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignalDetection());
@@ -103,7 +104,7 @@ public class SearchService {
 
     private SearchDto getFilters(Set<Long> topicIds) {
         SearchDto searchDto = new SearchDto();
-        searchDto.setStatuses(Arrays.asList("New", "In Progress", "Completed"));
+        searchDto.setStatuses(Arrays.asList("New", SmtConstant.IN_PROGRESS.getDescription(), SmtConstant.COMPLETED.getDescription()));
         if(!CollectionUtils.isEmpty(topicIds)) {
             searchDto.setProducts(productRepository.findDistinctProductNamesTopicIdsIn(topicIds));
             searchDto.setIngredients(ingredientRepository.findDistinctIngredientNamesTopicIdsIn(topicIds));

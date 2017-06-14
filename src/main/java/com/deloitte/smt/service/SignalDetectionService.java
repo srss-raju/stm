@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.DateKeyType;
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.entity.Hlgt;
@@ -305,7 +306,7 @@ public class SignalDetectionService {
 		if (null != searchDto) {
 			Root<Ingredient> rootIngredient = criteriaQuery.from(Ingredient.class);
 			List<Predicate> predicates = new ArrayList<Predicate>(10);
-			predicates.add(criteriaBuilder.equal(rootSignalDetection.get("id"), rootIngredient.get("detectionId")));
+			predicates.add(criteriaBuilder.equal(rootSignalDetection.get("id"), rootIngredient.get(SmtConstant.DETECTION_ID.getDescription())));
 
 			if (StringUtils.isNotBlank(searchDto.getDescription())) {
 				predicates.add(
@@ -350,7 +351,7 @@ public class SignalDetectionService {
 			if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
 				Root<Soc> rootSoc = criteriaQuery.from(Soc.class);
 				Predicate signalDetectionSocEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
-						rootSoc.get("detectionId"));
+						rootSoc.get(SmtConstant.DETECTION_ID.getDescription()));
 
 				Predicate socNameIn = criteriaBuilder.isTrue(rootSoc.get("socName").in(searchDto.getSocs()));
 
@@ -361,7 +362,7 @@ public class SignalDetectionService {
 			if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
 				Root<Hlt> rootHlt = criteriaQuery.from(Hlt.class);
 				Predicate signalDetectionHltEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
-						rootHlt.get("detectionId"));
+						rootHlt.get(SmtConstant.DETECTION_ID.getDescription()));
 
 				Predicate hltNameIn = criteriaBuilder.isTrue(rootHlt.get("hltName").in(searchDto.getHlts()));
 
@@ -372,7 +373,7 @@ public class SignalDetectionService {
 			if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
 				Root<Hlgt> rootHlgt = criteriaQuery.from(Hlgt.class);
 				Predicate signalDetectionHlgtEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
-						rootHlgt.get("detectionId"));
+						rootHlgt.get(SmtConstant.DETECTION_ID.getDescription()));
 
 				Predicate hlgtNameIn = criteriaBuilder.isTrue(rootHlgt.get("hlgtName").in(searchDto.getHlgts()));
 
@@ -383,7 +384,7 @@ public class SignalDetectionService {
 			if (!CollectionUtils.isEmpty(searchDto.getPts())) {
 				Root<Pt> rootPt = criteriaQuery.from(Pt.class);
 				Predicate signalDetectionPtEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
-						rootPt.get("detectionId"));
+						rootPt.get(SmtConstant.DETECTION_ID.getDescription()));
 
 				Predicate hlgtNameIn = criteriaBuilder.isTrue(rootPt.get("ptName").in(searchDto.getPts()));
 
@@ -393,11 +394,11 @@ public class SignalDetectionService {
 
 			if (DateKeyType.searchIn(searchDto.getDateKey())) {
 				if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.CREATED.name())) {
-					predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootSignalDetection.get("createdDate"),
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()),
 							searchDto.getStartDate()));
 
 					if (null != searchDto.getEndDate()) {
-						predicates.add(criteriaBuilder.lessThanOrEqualTo(rootSignalDetection.get("createdDate"),
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()),
 								searchDto.getEndDate()));
 					}
 				} else if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.LASTRUN.name())) {
@@ -423,11 +424,11 @@ public class SignalDetectionService {
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			criteriaQuery.multiselect(rootSignalDetection).where(andPredicate)
-					.orderBy(criteriaBuilder.desc(rootSignalDetection.get("createdDate")));
+					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription())));
 
 		} else {
 			criteriaQuery.multiselect(rootSignalDetection)
-					.orderBy(criteriaBuilder.desc(rootSignalDetection.get("createdDate")));
+					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription())));
 		}
 
 		TypedQuery<SignalDetection> q = entityManager.createQuery(criteriaQuery);
