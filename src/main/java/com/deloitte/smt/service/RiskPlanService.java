@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
@@ -159,31 +160,31 @@ public class RiskPlanService {
 			List<Predicate> predicates = new ArrayList<>(10);
 
 			if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("status").in(searchDto.getStatuses())));
+				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.STATUS.getDescription()).in(searchDto.getStatuses())));
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("assignTo").in(searchDto.getAssignees())));
+				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.ASSIGN_TO.getDescription()).in(searchDto.getAssignees())));
 			}
 
 			if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
-				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get("riskTaskStatus").in(searchDto.getRiskTaskStatus())));
+				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.RISK_TASK_STATUS.getDescription()).in(searchDto.getRiskTaskStatus())));
 			}
 
 			if (null != searchDto.getStartDate()) {
 				if (searchDto.isDueDate()) {
-					predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get("riskDueDate"),
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()),
 							searchDto.getStartDate()));
 					if (null != searchDto.getEndDate()) {
-						predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get("riskDueDate"),
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()),
 								searchDto.getEndDate()));
 					}
 
 				} else {
-					predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get("createdDate"),
+					predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
 							searchDto.getStartDate()));
 					if (null != searchDto.getEndDate()) {
-						predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get("createdDate"),
+						predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
 								searchDto.getEndDate()));
 					}
 				}
@@ -194,25 +195,25 @@ public class RiskPlanService {
 			criteriaQuery
 					.multiselect(criteriaBuilder.construct(RiskPlan.class, assementRiskJoin.get("id"),
 							assementRiskJoin.get("name"), assementRiskJoin.get("description"),
-							assementRiskJoin.get("inDays"), assementRiskJoin.get("createdDate"),
+							assementRiskJoin.get("inDays"), assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
 							assementRiskJoin.get("createdBy"), assementRiskJoin.get("lastModifiedDate"),
 							assementRiskJoin.get("summary"), assementRiskJoin.get("caseInstanceId"),
-							assementRiskJoin.get("status"), assementRiskJoin.get("ingredient"),
-							assementRiskJoin.get("source"), assementRiskJoin.get("assignTo"),
-							assementRiskJoin.get("riskDueDate"), assementRiskJoin.get("riskTaskStatus")))
-					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("createdDate")));
+							assementRiskJoin.get(SmtConstant.STATUS.getDescription()), assementRiskJoin.get("ingredient"),
+							assementRiskJoin.get("source"), assementRiskJoin.get(SmtConstant.ASSIGN_TO.getDescription()),
+							assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()), assementRiskJoin.get(SmtConstant.RISK_TASK_STATUS.getDescription())))
+					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));
 
 		} else {
 			criteriaQuery
 					.multiselect(criteriaBuilder.construct(RiskPlan.class, assementRiskJoin.get("id"),
 							assementRiskJoin.get("name"), assementRiskJoin.get("description"),
-							assementRiskJoin.get("inDays"), assementRiskJoin.get("createdDate"),
+							assementRiskJoin.get("inDays"), assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
 							assementRiskJoin.get("createdBy"), assementRiskJoin.get("lastModifiedDate"),
 							assementRiskJoin.get("summary"), assementRiskJoin.get("caseInstanceId"),
-							assementRiskJoin.get("status"), assementRiskJoin.get("ingredient"),
-							assementRiskJoin.get("source"), assementRiskJoin.get("assignTo"),
-							assementRiskJoin.get("riskDueDate"), assementRiskJoin.get("riskTaskStatus")))
-					.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("createdDate")));
+							assementRiskJoin.get(SmtConstant.STATUS.getDescription()), assementRiskJoin.get("ingredient"),
+							assementRiskJoin.get("source"), assementRiskJoin.get(SmtConstant.ASSIGN_TO.getDescription()),
+							assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()), assementRiskJoin.get(SmtConstant.RISK_TASK_STATUS.getDescription())))
+					.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));
 		}
 
 		TypedQuery<RiskPlan> q = entityManager.createQuery(criteriaQuery);
@@ -220,7 +221,7 @@ public class RiskPlanService {
 	}
 
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {
-		if(riskTask.getCaseInstanceId() != null && "Completed".equalsIgnoreCase(riskTask.getStatus())){
+		if(riskTask.getCaseInstanceId() != null && SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
         }
@@ -285,7 +286,7 @@ public class RiskPlanService {
         if(riskTask.getId() == null) {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
-        if("completed".equalsIgnoreCase(riskTask.getStatus())) {
+        if(SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())) {
             taskService.complete(riskTask.getTaskId());
         }
         riskTask.setLastUpdatedDate(new Date());
@@ -295,7 +296,7 @@ public class RiskPlanService {
         boolean allTasksCompletedFlag = true;
         if(!CollectionUtils.isEmpty(risks)){
         	for(RiskTask risk:risks){
-        		if(!"Completed".equals(risk.getStatus())){
+        		if(!SmtConstant.COMPLETED.getDescription().equals(risk.getStatus())){
         			allTasksCompletedFlag = false;
         		}
         	}
@@ -307,7 +308,7 @@ public class RiskPlanService {
         	signalURLRepository.save(riskTask.getSignalUrls());
         }
         if(allTasksCompletedFlag){
-        	riskPlanRepository.updateRiskTaskStatus("Completed", Long.valueOf(riskTask.getRiskId()));
+        	riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
         }
     }
 
@@ -330,7 +331,7 @@ public class RiskPlanService {
             throw new ApplicationException("Failed to update Risk. Invalid Id received");
         }
 		riskPlan.setLastModifiedDate(new Date());
-		riskPlan.setStatus("Completed");
+		riskPlan.setStatus(SmtConstant.COMPLETED.getDescription());
         attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata());
         riskPlanRepository.save(riskPlan);
 	}

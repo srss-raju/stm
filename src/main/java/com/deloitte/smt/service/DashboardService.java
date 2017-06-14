@@ -32,6 +32,7 @@ import com.deloitte.smt.constant.ExecutionType;
 import com.deloitte.smt.constant.RiskPlanStatus;
 import com.deloitte.smt.constant.SignalConfirmationStatus;
 import com.deloitte.smt.constant.SignalStatus;
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.constant.ValidationOutComesLabelTypes;
 import com.deloitte.smt.dto.AssessmentPlanDTO;
 import com.deloitte.smt.dto.DashboardDTO;
@@ -199,9 +200,9 @@ public class DashboardService {
 		Predicate andPredicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 		criteriaQuery
 				.select(cb.construct(AssessmentPlanDTO.class, topicAssignmentJoin.get("id"),
-						ingredient.get("ingredientName"), topicAssignmentJoin.get("assessmentName"),
+						ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription()), topicAssignmentJoin.get("assessmentName"),
 						topicAssignmentJoin.get("assessmentPlanStatus")))
-				.where(andPredicate).orderBy(cb.desc(ingredient.get("ingredientName")));
+				.where(andPredicate).orderBy(cb.desc(ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription())));
 
 		TypedQuery<AssessmentPlanDTO> q = entityManager.createQuery(criteriaQuery);
 		return q.getResultList();
@@ -221,9 +222,9 @@ public class DashboardService {
 
 		Predicate andPredicate2 = cb.and(predicates2.toArray(new Predicate[predicates2.size()]));
 		criteriaQuery2
-				.select(cb.construct(RiskPlanDTO.class, assementRiskJoin.get("id"), ingredient2.get("ingredientName"),
+				.select(cb.construct(RiskPlanDTO.class, assementRiskJoin.get("id"), ingredient2.get(SmtConstant.INGREDIENT_NAME.getDescription()),
 						assementRiskJoin.get("name"), assementRiskJoin.get("status")))
-				.where(andPredicate2).orderBy(cb.desc(ingredient.get("ingredientName")));
+				.where(andPredicate2).orderBy(cb.desc(ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription())));
 
 		TypedQuery<RiskPlanDTO> q2 = entityManager.createQuery(criteriaQuery2);
 		return q2.getResultList();
