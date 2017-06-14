@@ -280,7 +280,7 @@ public class DashboardService {
 	@SuppressWarnings("unchecked")
 	public List<SignalDetectDTO> getDetectedSignalDetails() {
 		LOG.info("Method Start getDetectedSignalDetails");
-		Query signalQuery = entityManager.createNativeQuery("select to_char(created_date,'Mon-yy') cd, signal_status, count(signal_status), sum(cases_count) cases_count from sm_topic group by cd,signal_status order by to_date(to_char(created_date,'Mon-yy'),'Mon-yy')");
+		Query signalQuery = entityManager.createNativeQuery("select to_date(to_char(created_date,'Mon-yy'),'Mon-yy') cd, signal_status, count(signal_status), sum(cases_count) cases_count from sm_topic group by cd,signal_status order by to_date(to_char(created_date,'Mon-yy'),'Mon-yy')");
 		List<Object[]> signals = signalQuery.getResultList();
 		String prevMonth = null;
 		SignalDetectDTO previousDto = null;
