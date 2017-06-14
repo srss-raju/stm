@@ -123,7 +123,7 @@ public class RiskPlanService {
             riskPlan.setAssignTo(assignmentConfiguration.getRiskPlanAssignmentUser());
         }
         
-        RiskPlan riskPlanUpdated=null;
+        RiskPlan riskPlanUpdated;
         if(assessmentId != null){
             AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
             if(assessmentPlan == null) {
