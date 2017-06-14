@@ -1,18 +1,19 @@
 package com.deloitte.smt.dto;
 
+import java.sql.Timestamp;
+
 public class SignalDetectDTO {
 	
-	private String month;
+	private Timestamp month;
 	private Long casesCount;
 	private Long signalCount;
+	private Long recurringCount;
 	private Long totalSignalCount;
-	private Long totalCasesCount;
-	private String status;
 	
-	public String getMonth() {
+	public Timestamp getMonth() {
 		return month;
 	}
-	public void setMonth(String month) {
+	public void setMonth(Timestamp month) {
 		this.month = month;
 	}
 	public Long getCasesCount() {
@@ -33,16 +34,11 @@ public class SignalDetectDTO {
 	public void setTotalSignalCount(Long totalSignalCount) {
 		this.totalSignalCount = totalSignalCount;
 	}
-	public Long getTotalCasesCount() {
-		return totalCasesCount;
+	public Long getRecurringCount() {
+		return recurringCount;
 	}
-	public void setTotalCasesCount(Long totalCasesCount) {
-		this.totalCasesCount = totalCasesCount;
+	public void setRecurringCount(Long recurringCount) {
+		this.recurringCount = recurringCount;
 	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
+	
 }
