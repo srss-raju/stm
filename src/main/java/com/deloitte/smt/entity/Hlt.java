@@ -19,7 +19,6 @@ public class Hlt implements Serializable {
     private Long id;
 	private String hltName;
 	private Long topicId;
-	private Long socId;
 	private Long detectionId;
 
 	public Long getId() {
@@ -39,12 +38,6 @@ public class Hlt implements Serializable {
 	}
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
-	}
-	public Long getSocId() {
-		return socId;
-	}
-	public void setSocId(Long socId) {
-		this.socId = socId;
 	}
 
 	public Long getDetectionId() {

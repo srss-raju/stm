@@ -20,7 +20,6 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.SignalURL;
-import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.MeetingRepository;
@@ -71,21 +70,16 @@ public class SignalMatchService {
 		StringBuilder ptBuilder = new StringBuilder();
 		String tempPt = null;
 		
-		List<Soc> socs = topic.getSocs();
-		if (!CollectionUtils.isEmpty(socs)) {
-			List<Pt> pts;
-			for (Soc soc : socs) {
-				pts = soc.getPts();
-				if (!CollectionUtils.isEmpty(pts)) {
-					for (Pt pt : pts) {
-							ptBuilder.append('\'');
-							ptBuilder.append(pt.getPtName().replaceAll("'", "''"));
-							ptBuilder.append('\'');
-							ptBuilder.append(",");
-					}
-					tempPt=ptBuilder.toString().substring(0, ptBuilder.lastIndexOf(","));
-				}
+		List<Pt> pts = topic.getPts();
+		if (!CollectionUtils.isEmpty(pts)) {
+			for (Pt pt : pts) {
+				ptBuilder.append('\'');
+				ptBuilder.append(pt.getPtName().replaceAll("'", "''"));
+				ptBuilder.append('\'');
+				ptBuilder.append(",");
 			}
+			tempPt = ptBuilder.toString().substring(0,
+					ptBuilder.lastIndexOf(","));
 		}
 		StringBuilder queryBuilder = new StringBuilder(
 				"select distinct signal.* from sm_topic signal INNER JOIN sm_ingredient ing ON  (signal.id = ing.topic_id) LEFT OUTER JOIN  sm_pt pt ON (signal.id = pt.topic_id )  where signal.created_date < ?  and ing.ingredient_name=? ");

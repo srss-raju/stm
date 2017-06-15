@@ -23,7 +23,7 @@ public interface PtRepository  extends JpaRepository<Pt, Long> {
     @Query(value = "SELECT DISTINCT(o.ptName) FROM Pt o WHERE o.ptName IS NOT NULL and o.topicId is not null and o.topicId in :topicIds")
     List<String> findDistinctPtNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);
 
-	List<Pt> findBySocId(Long socId);
+	List<Pt> findByTopicId(Long topicId);
     @Transactional
     Long deleteByDetectionId(Long detectionId);
 }

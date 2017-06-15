@@ -23,7 +23,7 @@ public interface HlgtRepository  extends JpaRepository<Hlgt, Long> {
     List<String> findDistinctHlgtNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);
 
     List<Hlgt> findByDetectionId(Long detectionId);
-	List<Hlgt> findBySocId(Long socId);
+	List<Hlgt> findByTopicId(Long topicId);
     @Transactional
     Long deleteByDetectionId(Long detectionId);
 }

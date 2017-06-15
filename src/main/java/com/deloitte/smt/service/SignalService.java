@@ -164,17 +164,12 @@ public class SignalService {
             ingredient.setLicenses(licenses);
             topic.setIngredient(ingredient);
         }
-        List<Soc> socs  = socRepository.findByTopicId(topic.getId());
-        if(!CollectionUtils.isEmpty(socs)) {
-        	for(Soc soc:socs){
-        		soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
-        		soc.setHlts(hltRepository.findBySocId(soc.getId()));
-        		soc.setPts(ptRepository.findBySocId(soc.getId()));
-        	}
-        }
         topic.setSignalUrls(signalURLRepository.findByTopicId(topicId));
-        
-        topic.setSocs(socs);
+        topic.setSocs(socRepository.findByTopicId(topic.getId()));
+        topic.setHlgts(hlgtRepository.findByTopicId(topic.getId()));
+        topic.setHlts(hltRepository.findByTopicId(topic.getId()));
+        topic.setPts(ptRepository.findByTopicId(topic.getId()));
+		
         if(!"Completed".equalsIgnoreCase(topic.getSignalStatus())){
         	topic = signalMatchService.findMatchingSignal(topic);
         }
@@ -249,37 +244,35 @@ public class SignalService {
                 soc.setTopicId(topicUpdated.getId());
             }
             socs = socRepository.save(socs);
-            List<Hlgt> hlgts;
-            List<Hlt> hlts;
-            List<Pt> pts;
-
-            for (Soc soc : socs) {
-                hlgts = soc.getHlgts();
-                hlts = soc.getHlts();
-                pts = soc.getPts();
-                if (!CollectionUtils.isEmpty(hlgts)) {
-                    for (Hlgt hlgt : hlgts) {
-                        hlgt.setSocId(soc.getId());
-                        hlgt.setTopicId(topicUpdated.getId());
-                    }
-                    hlgtRepository.save(hlgts);
-                }
-                if (!CollectionUtils.isEmpty(hlts)) {
-                    for (Hlt hlt : hlts) {
-                        hlt.setSocId(soc.getId());
-                        hlt.setTopicId(topicUpdated.getId());
-                    }
-                    hltRepository.save(hlts);
-                }
-                if (!CollectionUtils.isEmpty(pts)) {
-                    for (Pt pt : pts) {
-                        pt.setSocId(soc.getId());
-                        pt.setTopicId(topicUpdated.getId());
-                    }
-                    ptRepository.save(pts);
-                }
-            }
         }
+        
+
+        List<Hlgt> hlgts = topic.getHlgts();
+        
+        if (!CollectionUtils.isEmpty(hlgts)) {
+            for (Hlgt hlgt : hlgts) {
+                hlgt.setTopicId(topicUpdated.getId());
+            }
+            hlgtRepository.save(hlgts);
+        }
+        
+        List<Hlt>  hlts = topic.getHlts();
+        if (!CollectionUtils.isEmpty(hlts)) {
+            for (Hlt hlt : hlts) {
+                hlt.setTopicId(topicUpdated.getId());
+            }
+            hltRepository.save(hlts);
+        }
+        
+        List<Pt>  pts = topic.getPts();
+        if (!CollectionUtils.isEmpty(pts)) {
+            for (Pt pt : pts) {
+                pt.setTopicId(topicUpdated.getId());
+            }
+            ptRepository.save(pts);
+        }
+    
+        
         if(!CollectionUtils.isEmpty(topicUpdated.getSignalUrls())){
         	for(SignalURL url:topicUpdated.getSignalUrls()){
         		url.setTopicId(topicUpdated.getId());
@@ -618,15 +611,10 @@ public class SignalService {
 	 * @param topic
 	 */
 	private void setSoc(Topic topic) {
-		List<Soc> socs  = socRepository.findByTopicId(topic.getId());
-		if(!CollectionUtils.isEmpty(socs)) {
-			for(Soc soc:socs){
-				soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
-				soc.setHlts(hltRepository.findBySocId(soc.getId()));
-				soc.setPts(ptRepository.findBySocId(soc.getId()));
-			}
-		}
-		topic.setSocs(socs);
+		topic.setSocs(socRepository.findByTopicId(topic.getId()));
+		topic.setHlgts(hlgtRepository.findByTopicId(topic.getId()));
+		topic.setHlts(hltRepository.findByTopicId(topic.getId()));
+		topic.setPts(ptRepository.findByTopicId(topic.getId()));
 	}
 
 	public void deleteSignalURL(Long signalUrlId) throws ApplicationException {
