@@ -243,7 +243,7 @@ public class SignalService {
             for (Soc soc : socs) {
                 soc.setTopicId(topicUpdated.getId());
             }
-            socs = socRepository.save(socs);
+            socRepository.save(socs);
         }
         
 

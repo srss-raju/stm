@@ -310,18 +310,31 @@ public class SignalMatchService {
 	 * @param final95Signal
 	 * @return
 	 */
-	private Topic getLatestMatchingSignal(
-			List<Topic> cohort95PercentageSignals, Topic final95Signal) {
+	private Topic getLatestMatchingSignal(List<Topic> cohort95PercentageSignals, Topic final95Signal) {
+		Topic result = null;
 		if(cohort95PercentageSignals.size() > 1){
 			for(Topic cohort95PercentageSignal:cohort95PercentageSignals){
 				if(cohort95PercentageSignal.getCohortPercentage() == final95Signal.getCohortPercentage()){
-					if(final95Signal.getCreatedDate().compareTo(cohort95PercentageSignal.getCreatedDate()) < 0){
-						final95Signal = cohort95PercentageSignal;
-					}
+					result = getResult(final95Signal, cohort95PercentageSignal);
 				}
 			}
 		}
-		return final95Signal;
+		return result;
+	}
+
+	/**
+	 * @param final95Signal
+	 * @param cohort95PercentageSignal
+	 * @return
+	 */
+	private Topic getResult(Topic final95Signal, Topic cohort95PercentageSignal) {
+		Topic result;
+		if(final95Signal.getCreatedDate().compareTo(cohort95PercentageSignal.getCreatedDate()) < 0){
+			result = cohort95PercentageSignal;
+		}else{
+			result = final95Signal;
+		}
+		return result;
 	}
 
 }
