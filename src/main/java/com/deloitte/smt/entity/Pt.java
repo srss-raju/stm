@@ -21,7 +21,7 @@ public class Pt implements Serializable {
 	private Long topicId;
 	private Long socId;
 	private Long detectionId;
-	
+	 
 	public Long getId() {
 		return id;
 	}
