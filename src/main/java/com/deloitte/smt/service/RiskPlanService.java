@@ -160,30 +160,9 @@ public class RiskPlanService {
 			List<Predicate> predicates = new ArrayList<>(10);
 
 			addStatuses(searchDto, criteriaBuilder, assementRiskJoin, predicates);
-
 			addAssignTo(searchDto, criteriaBuilder, assementRiskJoin, predicates);
-
 			addRiskTaskStatus(searchDto, criteriaBuilder, assementRiskJoin, predicates);
-
-			if (null != searchDto.getStartDate()) {
-				if (searchDto.isDueDate()) {
-					predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()),
-							searchDto.getStartDate()));
-					if (null != searchDto.getEndDate()) {
-						predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()),
-								searchDto.getEndDate()));
-					}
-
-				} else {
-					predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
-							searchDto.getStartDate()));
-					if (null != searchDto.getEndDate()) {
-						predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
-								searchDto.getEndDate()));
-					}
-				}
-
-			}
+			addCreatedOrDueDate(searchDto, criteriaBuilder, assementRiskJoin, predicates);
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			criteriaQuery
@@ -212,6 +191,37 @@ public class RiskPlanService {
 
 		TypedQuery<RiskPlan> q = entityManager.createQuery(criteriaQuery);
 		return q.getResultList();
+	}
+
+	/**
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param assementRiskJoin
+	 * @param predicates
+	 */
+	private void addCreatedOrDueDate(SearchDto searchDto,
+			CriteriaBuilder criteriaBuilder,
+			Join<AssessmentPlan, RiskPlan> assementRiskJoin,
+			List<Predicate> predicates) {
+		if (null != searchDto.getStartDate()) {
+			if (searchDto.isDueDate()) {
+				predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()),
+						searchDto.getStartDate()));
+				if (null != searchDto.getEndDate()) {
+					predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()),
+							searchDto.getEndDate()));
+				}
+
+			} else {
+				predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
+						searchDto.getStartDate()));
+				if (null != searchDto.getEndDate()) {
+					predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
+							searchDto.getEndDate()));
+				}
+			}
+
+		}
 	}
 
 	/**

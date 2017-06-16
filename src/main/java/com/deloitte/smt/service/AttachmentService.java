@@ -60,10 +60,7 @@ public class AttachmentService {
                 if(!attachment.isEmpty() || StringUtils.isNotBlank(attachment.getOriginalFilename())) {
                     Attachment a = new Attachment();
                     a.setAttachmentType(attachmentType);
-                    if(metaData != null && StringUtils.isNotBlank(metaData.get(attachment.getOriginalFilename()).getDescription())) {
-                        a.setDescription(metaData.get(attachment.getOriginalFilename()).getDescription());
-                        a.setAttachmentsURL(metaData.get(attachment.getOriginalFilename()).getAttachmentsURL());
-                    }
+                    addDescriptionAndUrl(metaData, attachment, a);
                     a.setAttachmentResourceId(attachmentResourceId);
                     a.setContentType(attachment.getContentType());
                     a.setContent(attachment.getBytes());
@@ -77,6 +74,19 @@ public class AttachmentService {
         		metaData.forEach((k,v) -> attachmentRepository.updateDescriptionAndAttachmentsURL(k, v.getDescription(), v.getAttachmentsURL()));
         }
     }
+
+	/**
+	 * @param metaData
+	 * @param attachment
+	 * @param a
+	 */
+	private void addDescriptionAndUrl(Map<String, Attachment> metaData,
+			MultipartFile attachment, Attachment a) {
+		if(metaData != null && StringUtils.isNotBlank(metaData.get(attachment.getOriginalFilename()).getDescription())) {
+		    a.setDescription(metaData.get(attachment.getOriginalFilename()).getDescription());
+		    a.setAttachmentsURL(metaData.get(attachment.getOriginalFilename()).getAttachmentsURL());
+		}
+	}
 
 	/**
 	 * @param deletedAttachmentIds
