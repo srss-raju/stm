@@ -1,8 +1,6 @@
 package com.deloitte.smt.controller;
 
-import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.AssignmentConfigurationService;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.service.AssignmentConfigurationService;
 
 /**
  * Created by myelleswarapu on 04-05-2017.
