@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -29,13 +30,15 @@ public class AssignmentConfigurationController {
     AssignmentConfigurationService assignmentConfigurationService;
 
     @PostMapping
-    public AssignmentConfiguration createNewAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
-        return assignmentConfigurationService.insert(assignmentConfiguration);
+    public ResponseEntity<Void> createNewAssignmentConfiguration(@RequestBody List<AssignmentConfiguration> assignmentConfiguration) throws ApplicationException {
+         assignmentConfigurationService.insert(assignmentConfiguration);
+         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping
-    public AssignmentConfiguration updateAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
-        return assignmentConfigurationService.update(assignmentConfiguration);
+    public ResponseEntity<Void> updateAssignmentConfiguration(@RequestBody List<AssignmentConfiguration> assignmentConfiguration) throws ApplicationException {
+         assignmentConfigurationService.update(assignmentConfiguration);
+         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{assignmentConfigurationId}")
