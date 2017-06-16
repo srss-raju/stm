@@ -67,15 +67,6 @@ public class SignalDetection implements Serializable {
 	private List<Soc> socs;
 	
 	@Transient
-    private List<Hlgt> hlgts;
-	
-	@Transient
-    private List<Hlt> hlts;
-	
-	@Transient
-    private List<Pt> pts;
-
-	@Transient
 	private List<DenominatorForPoisson> denominatorForPoisson;
 
 	@Transient
@@ -260,23 +251,4 @@ public class SignalDetection implements Serializable {
 		this.casesCount = casesCount;
 	}
 	
-	public List<Hlgt> getHlgts() {
-		return hlgts;
-	}
-	public void setHlgts(List<Hlgt> hlgts) {
-		this.hlgts = hlgts;
-	}
-	public List<Hlt> getHlts() {
-		return hlts;
-	}
-	public void setHlts(List<Hlt> hlts) {
-		this.hlts = hlts;
-	}
-	public List<Pt> getPts() {
-		return pts;
-	}
-	public void setPts(List<Pt> pts) {
-		this.pts = pts;
-	}
-
 }

@@ -23,7 +23,7 @@ public interface HltRepository  extends JpaRepository<Hlt, Long> {
     @Query(value = "SELECT DISTINCT(o.hltName) FROM Hlt o WHERE o.hltName IS NOT NULL and o.topicId is not null and o.topicId in :topicIds")
     List<String> findDistinctHltNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);
 
-	List<Hlt> findByTopicId(Long topicId);
+	List<Hlt> findBySocId(Long socId);
     @Transactional
     Long deleteByDetectionId(Long detectionId);
 }

@@ -71,15 +71,6 @@ public class Topic implements Serializable{
     @Transient
     private List<Soc> socs;
     
-    @Transient
-    private List<Hlgt> hlgts;
-	
-	@Transient
-    private List<Hlt> hlts;
-	
-	@Transient
-    private List<Pt> pts;
-    
     @ManyToOne(fetch = FetchType.EAGER)
     private AssessmentPlan assessmentPlan;
 
@@ -368,23 +359,4 @@ public class Topic implements Serializable{
 		this.assessmentPlans = assessmentPlans;
 	}
 	
-	public List<Hlgt> getHlgts() {
-		return hlgts;
-	}
-	public void setHlgts(List<Hlgt> hlgts) {
-		this.hlgts = hlgts;
-	}
-	public List<Hlt> getHlts() {
-		return hlts;
-	}
-	public void setHlts(List<Hlt> hlts) {
-		this.hlts = hlts;
-	}
-	public List<Pt> getPts() {
-		return pts;
-	}
-	public void setPts(List<Pt> pts) {
-		this.pts = pts;
-	}
-
 }

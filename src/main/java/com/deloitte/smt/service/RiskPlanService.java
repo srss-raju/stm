@@ -159,17 +159,11 @@ public class RiskPlanService {
 		if (null != searchDto) {
 			List<Predicate> predicates = new ArrayList<>(10);
 
-			if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.STATUS.getDescription()).in(searchDto.getStatuses())));
-			}
+			addStatuses(searchDto, criteriaBuilder, assementRiskJoin, predicates);
 
-			if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.ASSIGN_TO.getDescription()).in(searchDto.getAssignees())));
-			}
+			addAssignTo(searchDto, criteriaBuilder, assementRiskJoin, predicates);
 
-			if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
-				predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.RISK_TASK_STATUS.getDescription()).in(searchDto.getRiskTaskStatus())));
-			}
+			addRiskTaskStatus(searchDto, criteriaBuilder, assementRiskJoin, predicates);
 
 			if (null != searchDto.getStartDate()) {
 				if (searchDto.isDueDate()) {
@@ -218,6 +212,51 @@ public class RiskPlanService {
 
 		TypedQuery<RiskPlan> q = entityManager.createQuery(criteriaQuery);
 		return q.getResultList();
+	}
+
+	/**
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param assementRiskJoin
+	 * @param predicates
+	 */
+	private void addRiskTaskStatus(SearchDto searchDto,
+			CriteriaBuilder criteriaBuilder,
+			Join<AssessmentPlan, RiskPlan> assementRiskJoin,
+			List<Predicate> predicates) {
+		if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
+			predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.RISK_TASK_STATUS.getDescription()).in(searchDto.getRiskTaskStatus())));
+		}
+	}
+
+	/**
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param assementRiskJoin
+	 * @param predicates
+	 */
+	private void addAssignTo(SearchDto searchDto,
+			CriteriaBuilder criteriaBuilder,
+			Join<AssessmentPlan, RiskPlan> assementRiskJoin,
+			List<Predicate> predicates) {
+		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+			predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.ASSIGN_TO.getDescription()).in(searchDto.getAssignees())));
+		}
+	}
+
+	/**
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param assementRiskJoin
+	 * @param predicates
+	 */
+	private void addStatuses(SearchDto searchDto,
+			CriteriaBuilder criteriaBuilder,
+			Join<AssessmentPlan, RiskPlan> assementRiskJoin,
+			List<Predicate> predicates) {
+		if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
+			predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.STATUS.getDescription()).in(searchDto.getStatuses())));
+		}
 	}
 
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {

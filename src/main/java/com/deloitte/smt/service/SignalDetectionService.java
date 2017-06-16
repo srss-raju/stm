@@ -119,9 +119,6 @@ public class SignalDetectionService {
 			}
 
 			saveSoc(signalDetection);
-			saveHlgt(signalDetection);
-			saveHlt(signalDetection);
-			savePt(signalDetection);
 			saveIncludeAE(signalDetection);
 			saveDenominatorForPoisson(signalDetection);
 			saveQueryBuilder(signalDetection);
@@ -142,7 +139,12 @@ public class SignalDetectionService {
 			for (Soc soc : socs) {
 				soc.setDetectionId(signalDetection.getId());
 			}
-			socRepository.save(socs);
+			socs = socRepository.save(socs);
+			for (Soc soc : socs) {
+				saveHlgt(signalDetection, soc);
+				saveHlt(signalDetection, soc);
+				savePt(signalDetection, soc);
+			}
 		}
 	}
 
@@ -151,10 +153,11 @@ public class SignalDetectionService {
 	 * @param signalDetection
 	 * @param soc
 	 */
-	private void savePt(SignalDetection signalDetection) {
-		List<Pt> pts = signalDetection.getPts();
+	private void savePt(SignalDetection signalDetection, Soc soc) {
+		List<Pt> pts = soc.getPts();
 		if (!CollectionUtils.isEmpty(pts)) {
 			for (Pt pt : pts) {
+				pt.setSocId(soc.getId());
 				pt.setDetectionId(signalDetection.getId());
 			}
 			ptRepository.save(pts);
@@ -166,10 +169,11 @@ public class SignalDetectionService {
 	 * @param signalDetection
 	 * @param soc
 	 */
-	private void saveHlt(SignalDetection signalDetection) {
-		List<Hlt> hlts = signalDetection.getHlts();
+	private void saveHlt(SignalDetection signalDetection, Soc soc) {
+		List<Hlt> hlts = soc.getHlts();
 		if (!CollectionUtils.isEmpty(hlts)) {
 			for (Hlt hlt : hlts) {
+				hlt.setSocId(soc.getId());
 				hlt.setDetectionId(signalDetection.getId());
 			}
 			hltRepository.save(hlts);
@@ -181,10 +185,11 @@ public class SignalDetectionService {
 	 * @param signalDetection
 	 * @param soc
 	 */
-	private void saveHlgt(SignalDetection signalDetection) {
-		List<Hlgt> hlgts = signalDetection.getHlgts();
+	private void saveHlgt(SignalDetection signalDetection, Soc soc) {
+		List<Hlgt> hlgts = soc.getHlgts();
 		if (!CollectionUtils.isEmpty(hlgts)) {
 			for (Hlgt hlgt : hlgts) {
+				hlgt.setSocId(soc.getId());
 				hlgt.setDetectionId(signalDetection.getId());
 			}
 			hlgtRepository.save(hlgts);
@@ -300,7 +305,7 @@ public class SignalDetectionService {
 
 		if (null != searchDto) {
 			Root<Ingredient> rootIngredient = criteriaQuery.from(Ingredient.class);
-			List<Predicate> predicates = new ArrayList<Predicate>(10);
+			List<Predicate> predicates = new ArrayList<>(10);
 			predicates.add(criteriaBuilder.equal(rootSignalDetection.get("id"), rootIngredient.get(SmtConstant.DETECTION_ID.getDescription())));
 
 			if (StringUtils.isNotBlank(searchDto.getDescription())) {
@@ -451,10 +456,17 @@ public class SignalDetectionService {
 				signalDetection.setIngredient(ingredient);
 			}
 
-			signalDetection.setSocs(socRepository.findByDetectionId(signalDetection.getId()));
-			signalDetection.setHlgts(hlgtRepository.findByDetectionId(signalDetection.getId()));
-			signalDetection.setHlts(hltRepository.findByDetectionId(signalDetection.getId()));
-			signalDetection.setPts(ptRepository.findByDetectionId(signalDetection.getId()));
+			List<Soc> socs;
+			socs = socRepository.findByDetectionId(signalDetection.getId());
+			if (!CollectionUtils.isEmpty(socs)) {
+				for (Soc soc : socs) {
+					soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
+
+					soc.setHlts(hltRepository.findBySocId(soc.getId()));
+					soc.setPts(ptRepository.findBySocId(soc.getId()));
+				}
+			}
+			signalDetection.setSocs(socs);
 
 			List<DenominatorForPoisson> denominatorForPoissonList = denominatorForPoissonRepository
 					.findByDetectionId(signalDetection.getId());

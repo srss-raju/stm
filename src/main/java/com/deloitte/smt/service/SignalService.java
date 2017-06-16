@@ -165,12 +165,8 @@ public class SignalService {
             topic.setIngredient(ingredient);
         }
         topic.setSignalUrls(signalURLRepository.findByTopicId(topicId));
-        topic.setSocs(socRepository.findByTopicId(topic.getId()));
-        topic.setHlgts(hlgtRepository.findByTopicId(topic.getId()));
-        topic.setHlts(hltRepository.findByTopicId(topic.getId()));
-        topic.setPts(ptRepository.findByTopicId(topic.getId()));
-		
-        if(!"Completed".equalsIgnoreCase(topic.getSignalStatus())){
+        findSoc(topic);
+        if(!SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(topic.getSignalStatus())){
         	topic = signalMatchService.findMatchingSignal(topic);
         }
         return topic;
@@ -193,11 +189,7 @@ public class SignalService {
         topic.setProcessId(processInstanceId);
         c.add(Calendar.DAY_OF_YEAR, 5);
         topic.setDueDate(c.getTime());
-        if(!CollectionUtils.isEmpty(topic.getSignalStatistics())) {
-            for (SignalStatistics signalStatistic : topic.getSignalStatistics()) {
-                signalStatistic.setTopic(topic);
-            }
-        }
+        setTopicIdForSignalStatistics(topic);
         topic.setConfidenceIndex(60l);
         Topic topicUpdated = topicRepository.save(topic);
 
@@ -217,72 +209,144 @@ public class SignalService {
                 topicUpdated.setAssignTo(assignmentConfiguration.getSignalValidationAssignmentUser());
                 topicUpdated = topicRepository.save(topicUpdated);
             }
-            List<Product> products = ingredient.getProducts();
-            List<License> licenses = ingredient.getLicenses();
+            
+            
             ingredient.setTopicId(topicUpdated.getId());
             ingredient = ingredientRepository.save(ingredient);
 
-            if(!CollectionUtils.isEmpty(products)){
-                for (Product singleProduct : products) {
-                    singleProduct.setIngredientId(ingredient.getId());
-                    singleProduct.setTopicId(topicUpdated.getId());
-                }
-                productRepository.save(products);
-            }
-            if(!CollectionUtils.isEmpty(licenses)) {
-                for (License singleLicense : licenses) {
-                    singleLicense.setIngredientId(ingredient.getId());
-                    singleLicense.setTopicId(topicUpdated.getId());
-                }
-                licenseRepository.save(licenses);
-            }
+            saveProducts(topicUpdated, ingredient);
+            
+            saveLicenses(topicUpdated, ingredient);
         }
-        
-        List<Soc> socs  = topicUpdated.getSocs();
-        if(!CollectionUtils.isEmpty(socs)) {
-            for (Soc soc : socs) {
-                soc.setTopicId(topicUpdated.getId());
-            }
-            socRepository.save(socs);
-        }
-        
+        saveSoc(topicUpdated);
+        saveSignalUrl(topicUpdated);
+        attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topicUpdated.getFileMetadata());
+        LOG.info("Start Algorithm for matching signal");
+        return signalMatchService.findMatchingSignal(topicUpdated);
+    }
 
-        List<Hlgt> hlgts = topic.getHlgts();
-        
-        if (!CollectionUtils.isEmpty(hlgts)) {
-            for (Hlgt hlgt : hlgts) {
-                hlgt.setTopicId(topicUpdated.getId());
-            }
-            hlgtRepository.save(hlgts);
-        }
-        
-        List<Hlt>  hlts = topic.getHlts();
-        if (!CollectionUtils.isEmpty(hlts)) {
-            for (Hlt hlt : hlts) {
-                hlt.setTopicId(topicUpdated.getId());
-            }
-            hltRepository.save(hlts);
-        }
-        
-        List<Pt>  pts = topic.getPts();
-        if (!CollectionUtils.isEmpty(pts)) {
-            for (Pt pt : pts) {
-                pt.setTopicId(topicUpdated.getId());
-            }
-            ptRepository.save(pts);
-        }
-    
-        
-        if(!CollectionUtils.isEmpty(topicUpdated.getSignalUrls())){
+	/**
+	 * @param topicUpdated
+	 */
+	private void saveSignalUrl(Topic topicUpdated) {
+		if(!CollectionUtils.isEmpty(topicUpdated.getSignalUrls())){
         	for(SignalURL url:topicUpdated.getSignalUrls()){
         		url.setTopicId(topicUpdated.getId());
         	}
         	signalURLRepository.save(topicUpdated.getSignalUrls());
         }
-        attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null, topicUpdated.getFileMetadata());
-        LOG.info("Start Algorithm for matching signal");
-        return signalMatchService.findMatchingSignal(topicUpdated);
-    }
+	}
+
+	/**
+	 * @param topicUpdated
+	 */
+	private void saveSoc(Topic topicUpdated) {
+		List<Soc> socs  = topicUpdated.getSocs();
+        if(!CollectionUtils.isEmpty(socs)) {
+            for (Soc soc : socs) {
+                soc.setTopicId(topicUpdated.getId());
+            }
+            socs = socRepository.save(socs);
+            List<Hlgt> hlgts;
+            List<Hlt> hlts;
+            List<Pt> pts;
+
+            for (Soc soc : socs) {
+                hlgts = soc.getHlgts();
+                hlts = soc.getHlts();
+                pts = soc.getPts();
+                saveHlgt(topicUpdated, hlgts, soc);
+                saveHlt(topicUpdated, hlts, soc);
+                savePt(topicUpdated, pts, soc);
+            }
+        }
+	}
+
+	/**
+	 * @param topicUpdated
+	 * @param pts
+	 * @param soc
+	 */
+	private void savePt(Topic topicUpdated, List<Pt> pts, Soc soc) {
+		if (!CollectionUtils.isEmpty(pts)) {
+		    for (Pt pt : pts) {
+		        pt.setSocId(soc.getId());
+		        pt.setTopicId(topicUpdated.getId());
+		    }
+		    ptRepository.save(pts);
+		}
+	}
+
+	/**
+	 * @param topicUpdated
+	 * @param hlts
+	 * @param soc
+	 */
+	private void saveHlt(Topic topicUpdated, List<Hlt> hlts, Soc soc) {
+		if (!CollectionUtils.isEmpty(hlts)) {
+		    for (Hlt hlt : hlts) {
+		        hlt.setSocId(soc.getId());
+		        hlt.setTopicId(topicUpdated.getId());
+		    }
+		    hltRepository.save(hlts);
+		}
+	}
+
+	/**
+	 * @param topicUpdated
+	 * @param hlgts
+	 * @param soc
+	 */
+	private void saveHlgt(Topic topicUpdated, List<Hlgt> hlgts, Soc soc) {
+		if (!CollectionUtils.isEmpty(hlgts)) {
+		    for (Hlgt hlgt : hlgts) {
+		        hlgt.setSocId(soc.getId());
+		        hlgt.setTopicId(topicUpdated.getId());
+		    }
+		    hlgtRepository.save(hlgts);
+		}
+	}
+
+	/**
+	 * @param topicUpdated
+	 * @param ingredient
+	 */
+	private void saveLicenses(Topic topicUpdated, Ingredient ingredient) {
+		List<License> licenses = ingredient.getLicenses();
+		if(!CollectionUtils.isEmpty(licenses)) {
+		    for (License singleLicense : licenses) {
+		        singleLicense.setIngredientId(ingredient.getId());
+		        singleLicense.setTopicId(topicUpdated.getId());
+		    }
+		    licenseRepository.save(licenses);
+		}
+	}
+
+	/**
+	 * @param topicUpdated
+	 * @param ingredient
+	 */
+	private void saveProducts(Topic topicUpdated, Ingredient ingredient) {
+		List<Product> products = ingredient.getProducts();
+		if(!CollectionUtils.isEmpty(products)){
+		    for (Product singleProduct : products) {
+		        singleProduct.setIngredientId(ingredient.getId());
+		        singleProduct.setTopicId(topicUpdated.getId());
+		    }
+		    productRepository.save(products);
+		}
+	}
+
+	/**
+	 * @param topic
+	 */
+	private void setTopicIdForSignalStatistics(Topic topic) {
+		if(!CollectionUtils.isEmpty(topic.getSignalStatistics())) {
+            for (SignalStatistics signalStatistic : topic.getSignalStatistics()) {
+                signalStatistic.setTopic(topic);
+            }
+        }
+	}
 
 	
 
@@ -291,19 +355,10 @@ public class SignalService {
             throw new ApplicationException("Update failed for Topic, since it does not have any valid Id field.");
         }
         topic.setLastModifiedDate(new Date());
-        if(!CollectionUtils.isEmpty(topic.getSignalStatistics())) {
-            for (SignalStatistics signalStatistic : topic.getSignalStatistics()) {
-                signalStatistic.setTopic(topic);
-            }
-        }
+        setTopicIdForSignalStatistics(topic);
         attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, topic.getDeletedAttachmentIds(), topic.getFileMetadata());
         topicRepository.save(topic);
-        if(!CollectionUtils.isEmpty(topic.getSignalUrls())){
-        	for(SignalURL url:topic.getSignalUrls()){
-        		url.setTopicId(topic.getId());
-        	}
-        	signalURLRepository.save(topic.getSignalUrls());
-        }
+        saveSignalUrl(topic);
         return "Update Success";
     }
 
@@ -342,8 +397,8 @@ public class SignalService {
         assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
         assessmentPlan.setAssessmentTaskStatus("Not Completed");
         topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
-        topic.setSignalStatus("Completed");
-        topic.setSignalValidation("Completed");
+        topic.setSignalStatus(SmtConstant.COMPLETED.getDescription());
+        topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());
         topic.setLastModifiedDate(new Date());
         topicRepository.save(topic);
 
@@ -454,24 +509,24 @@ public class SignalService {
 	}
 
     public Long getValidateAndPrioritizeCount(String assignTo){
-        return topicRepository.countByAssignToAndSignalStatusNotLikeIgnoreCase(assignTo, "Completed");
+        return topicRepository.countByAssignToAndSignalStatusNotLikeIgnoreCase(assignTo, SmtConstant.COMPLETED.getDescription());
     }
     
     public Long getAssessmentCount(String assignTo){
-        return assessmentPlanRepository.countByAssignToAndAssessmentPlanStatusNotLikeIgnoreCase(assignTo, "Completed");
+        return assessmentPlanRepository.countByAssignToAndAssessmentPlanStatusNotLikeIgnoreCase(assignTo, SmtConstant.COMPLETED.getDescription());
     }
     
     public Long getRiskCount(String assignTo){
-    	return riskPlanRepository.countByAssignToAndStatusNotLikeIgnoreCase(assignTo, "Completed");
+    	return riskPlanRepository.countByAssignToAndStatusNotLikeIgnoreCase(assignTo, SmtConstant.COMPLETED.getDescription());
     }
 
     public String getCountsByFilter(String ingredientName, String assignTo) {
         List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(Arrays.asList(ingredientName));
         List<Long> topicIds = new ArrayList<>();
         ingredients.parallelStream().forEach(ingredient -> topicIds.add(ingredient.getTopicId()));
-        List<Topic> signals = topicRepository.findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(topicIds, assignTo, "Completed");
-        List<AssessmentPlan> assessmentPlanList = signals.stream().map(signal -> signal.getAssessmentPlan()).filter(e -> e != null && !"Completed".equalsIgnoreCase(e.getAssessmentPlanStatus())).collect(Collectors.toList());
-        List<RiskPlan> riskPlanList = assessmentPlanList.stream().map(assessmentPlan -> assessmentPlan.getRiskPlan()).filter(e -> e != null && !"Completed".equalsIgnoreCase(e.getStatus())).collect(Collectors.toList());
+        List<Topic> signals = topicRepository.findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(topicIds, assignTo, SmtConstant.COMPLETED.getDescription());
+        List<AssessmentPlan> assessmentPlanList = signals.stream().map(signal -> signal.getAssessmentPlan()).filter(e -> e != null && !SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(e.getAssessmentPlanStatus())).collect(Collectors.toList());
+        List<RiskPlan> riskPlanList = assessmentPlanList.stream().map(assessmentPlan -> assessmentPlan.getRiskPlan()).filter(e -> e != null && !SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(e.getStatus())).collect(Collectors.toList());
         return SignalUtil.getCounts(Long.valueOf(signals.size()), Long.valueOf(assessmentPlanList.size()), Long.valueOf(riskPlanList.size()));
     }
 
@@ -601,7 +656,7 @@ public class SignalService {
 		            ingredient.setLicenses(licenses);
 		            topic.setIngredient(ingredient);
 		        }
-		        setSoc(topic);
+		        topic.setSocs(findSoc(topic));
 			}
 		}
 		return topics;
@@ -609,12 +664,18 @@ public class SignalService {
 
 	/**
 	 * @param topic
+	 * @return
 	 */
-	private void setSoc(Topic topic) {
-		topic.setSocs(socRepository.findByTopicId(topic.getId()));
-		topic.setHlgts(hlgtRepository.findByTopicId(topic.getId()));
-		topic.setHlts(hltRepository.findByTopicId(topic.getId()));
-		topic.setPts(ptRepository.findByTopicId(topic.getId()));
+	private List<Soc> findSoc(Topic topic) {
+		List<Soc> socs  = socRepository.findByTopicId(topic.getId());
+		if(!CollectionUtils.isEmpty(socs)) {
+			for(Soc soc:socs){
+				soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
+				soc.setHlts(hltRepository.findBySocId(soc.getId()));
+				soc.setPts(ptRepository.findBySocId(soc.getId()));
+			}
+		}
+		return socs;
 	}
 
 	public void deleteSignalURL(Long signalUrlId) throws ApplicationException {

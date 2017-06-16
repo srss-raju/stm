@@ -53,11 +53,7 @@ public class AttachmentService {
     public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds, Map<String, Attachment> metaData) throws IOException {
 	    boolean flag = false;
     	
-    	if(!CollectionUtils.isEmpty(deletedAttachmentIds)) {
-	        for(Long attachmentId : deletedAttachmentIds) {
-	            attachmentRepository.delete(attachmentId);
-	        }
-	    }
+    	deleteAttachments(deletedAttachmentIds);
         if(attachments != null) {
             for (MultipartFile attachment : attachments) {
             	flag = true;
@@ -81,4 +77,15 @@ public class AttachmentService {
         		metaData.forEach((k,v) -> attachmentRepository.updateDescriptionAndAttachmentsURL(k, v.getDescription(), v.getAttachmentsURL()));
         }
     }
+
+	/**
+	 * @param deletedAttachmentIds
+	 */
+	private void deleteAttachments(List<Long> deletedAttachmentIds) {
+		if(!CollectionUtils.isEmpty(deletedAttachmentIds)) {
+	        for(Long attachmentId : deletedAttachmentIds) {
+	            attachmentRepository.delete(attachmentId);
+	        }
+	    }
+	}
 }

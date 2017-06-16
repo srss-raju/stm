@@ -10,17 +10,16 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "sm_pt")
-public class Pt implements Serializable{
+public class Pt implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4173880300099804804L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String ptName;
 	private Long topicId;
+	private Long socId;
 	private Long detectionId;
 	
 	public Long getId() {
@@ -36,7 +35,12 @@ public class Pt implements Serializable{
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
 	}
-	
+	public Long getSocId() {
+		return socId;
+	}
+	public void setSocId(Long socId) {
+		this.socId = socId;
+	}
 	public String getPtName() {
 		return ptName;
 	}
