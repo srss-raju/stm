@@ -39,7 +39,7 @@ public class MeetingService {
         attachmentService.addAttachments(meetingUpdated.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null, meetingUpdated.getFileMetadata());
     }
 
-    public void update(Meeting meeting, MultipartFile[] attachments) throws ApplicationException, IOException {
+    public void update(Meeting meeting, MultipartFile[] attachments) throws ApplicationException {
         if(meeting.getId() == null) {
             throw new ApplicationException("Failed to update Meeting. Invalid Id received");
         }

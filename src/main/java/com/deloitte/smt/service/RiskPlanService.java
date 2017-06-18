@@ -101,7 +101,7 @@ public class RiskPlanService {
     @Autowired
     private AssignmentConfigurationRepository assignmentConfigurationRepository;
 
-    public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws IOException, ApplicationException {
+    public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId) throws ApplicationException {
         CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
         riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
         riskPlan.setStatus("New");
@@ -331,7 +331,7 @@ public class RiskPlanService {
         taskService.deleteTask(taskId);
     }
 
-    public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException, IOException {
+    public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
         if(riskTask.getId() == null) {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
@@ -375,7 +375,7 @@ public class RiskPlanService {
         return riskPlan;
     }
 
-	public void riskPlanSummary(RiskPlan riskPlan, MultipartFile[] attachments)  throws ApplicationException, IOException {
+	public void riskPlanSummary(RiskPlan riskPlan, MultipartFile[] attachments)  throws ApplicationException {
 		if(riskPlan.getId() == null) {
             throw new ApplicationException("Failed to update Risk. Invalid Id received");
         }
@@ -385,7 +385,7 @@ public class RiskPlanService {
         riskPlanRepository.save(riskPlan);
 	}
 	
-	public void updateRiskPlan(RiskPlan riskPlan, MultipartFile[] attachments)  throws ApplicationException, IOException {
+	public void updateRiskPlan(RiskPlan riskPlan, MultipartFile[] attachments)  throws ApplicationException {
 		if(riskPlan.getId() == null) {
             throw new ApplicationException("Failed to update Risk. Invalid Id received");
         }

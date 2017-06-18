@@ -1,26 +1,29 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.constant.AttachmentType;
-import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.repository.AttachmentRepository;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import com.deloitte.smt.constant.AttachmentType;
+import com.deloitte.smt.entity.Attachment;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.repository.AttachmentRepository;
 
 /**
  * Created by myelleswarapu on 06-04-2017.
  */
 @Service
 public class AttachmentService {
+	private static final Logger LOG = Logger.getLogger(AttachmentService.class);
 
     @Autowired
     AttachmentRepository attachmentRepository;
@@ -50,7 +53,7 @@ public class AttachmentService {
         return a;
     }
 
-    public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds, Map<String, Attachment> metaData) throws IOException {
+    public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds, Map<String, Attachment> metaData)  {
 	    boolean flag = false;
     	
     	deleteAttachments(deletedAttachmentIds);
@@ -63,7 +66,7 @@ public class AttachmentService {
                     addDescriptionAndUrl(metaData, attachment, a);
                     a.setAttachmentResourceId(attachmentResourceId);
                     a.setContentType(attachment.getContentType());
-                    a.setContent(attachment.getBytes());
+                    readBytes(attachment, a);
                     a.setFileName(attachment.getOriginalFilename());
                     a.setCreatedDate(new Date());
                     attachmentRepository.save(a);
@@ -74,6 +77,18 @@ public class AttachmentService {
         		metaData.forEach((k,v) -> attachmentRepository.updateDescriptionAndAttachmentsURL(k, v.getDescription(), v.getAttachmentsURL()));
         }
     }
+
+	/**
+	 * @param attachment
+	 * @param a
+	 */
+	private void readBytes(MultipartFile attachment, Attachment a) {
+		try {
+			a.setContent(attachment.getBytes());
+		} catch (IOException e) {
+			LOG.info("Exception occured while reading bytes "+e);
+		}
+	}
 
 	/**
 	 * @param metaData

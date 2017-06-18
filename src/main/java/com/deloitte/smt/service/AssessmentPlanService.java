@@ -1,6 +1,5 @@
 package com.deloitte.smt.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.Hlgt;
@@ -34,6 +32,7 @@ import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
+import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
@@ -376,7 +375,7 @@ public class AssessmentPlanService {
 		}
 	}
 
-    public void updateAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException, IOException {
+    public void updateAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException {
         if(assessmentPlan.getId() == null) {
             throw new ApplicationException("Failed to update Assessment. Invalid Id received");
         }
@@ -399,7 +398,7 @@ public class AssessmentPlanService {
         }
     }
 
-    public void finalAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException, IOException {
+    public void finalAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException {
         if(assessmentPlan.getId() == null) {
             throw new ApplicationException("Failed to update Assessment. Invalid Id received");
         }

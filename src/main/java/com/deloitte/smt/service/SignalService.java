@@ -350,7 +350,7 @@ public class SignalService {
 
 	
 
-    public String updateTopic(Topic topic, MultipartFile[] attachments) throws ApplicationException, IOException {
+    public String updateTopic(Topic topic, MultipartFile[] attachments) throws ApplicationException {
         if(topic.getId() == null) {
             throw new ApplicationException("Update failed for Topic, since it does not have any valid Id field.");
         }

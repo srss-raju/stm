@@ -26,7 +26,7 @@ import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
- * Created by myelleswarapu on 10-04-2017.
+ * Created by RajeshKumar on 10-04-2017.
  */
 @Transactional
 @Service
@@ -83,7 +83,7 @@ public class AssessmentActionService {
         return signalActionUpdated;
     }
 
-    public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws ApplicationException, IOException {
+    public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws ApplicationException {
         if(signalAction.getId() == null) {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
