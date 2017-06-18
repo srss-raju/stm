@@ -26,6 +26,7 @@
         <sonar.language>java</sonar.language>
         <sonar.java.source>8</sonar.java.source>
         <sonar.exclusions>
+        	**com/deloitte/smt/util/Constants.java,
          	**com/deloitte/smt/entity/*.java,
          	**com/deloitte/smt/dto/*.java
          </sonar.exclusions>
