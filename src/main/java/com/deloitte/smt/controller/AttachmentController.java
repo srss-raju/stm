@@ -1,9 +1,12 @@
 package com.deloitte.smt.controller;
 
-import com.deloitte.smt.constant.AttachmentType;
-import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.AttachmentService;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.List;
+import com.deloitte.smt.constant.AttachmentType;
+import com.deloitte.smt.entity.Attachment;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.service.AttachmentService;
 
 /**
  * Created by myelleswarapu on 11-04-2017.
@@ -25,6 +28,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/camunda/api/signal/attachment")
 public class AttachmentController {
+	
+	private static final Logger LOG = Logger.getLogger(AttachmentController.class);
 
     @Autowired
     AttachmentService attachmentService;
@@ -68,10 +73,14 @@ public class AttachmentController {
 
     @GetMapping(value = "/content/{attachmentId}")
     public void downloadContent(@PathVariable Long attachmentId,
-                                HttpServletResponse response) throws ApplicationException, IOException {
-        Attachment a = attachmentService.findById(attachmentId);
-        response.setContentType(a.getContentType());
-        response.setHeader("Content-Disposition", "attachment;filename=" + a.getFileName());
-        IOUtils.copyLarge(new ByteArrayInputStream(a.getContent()), response.getOutputStream());
+                                HttpServletResponse response) {
+        try {
+        	Attachment a = attachmentService.findById(attachmentId);
+            response.setContentType(a.getContentType());
+            response.setHeader("Content-Disposition", "attachment;filename=" + a.getFileName());
+			IOUtils.copyLarge(new ByteArrayInputStream(a.getContent()), response.getOutputStream());
+		} catch (IOException | ApplicationException e) {
+			LOG.info("Exception occured while downloadContent "+e);
+		}
     }
 }

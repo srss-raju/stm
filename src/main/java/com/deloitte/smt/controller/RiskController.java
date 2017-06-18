@@ -1,13 +1,9 @@
 package com.deloitte.smt.controller;
 
-import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskTask;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.RiskPlanService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
+import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.RiskPlan;
+import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.service.RiskPlanService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -30,6 +31,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/camunda/api/signal/risk")
 public class RiskController {
+	
+	private static final Logger LOG = Logger.getLogger(RiskController.class);
 
     @Autowired
     RiskPlanService riskPlanService;
@@ -37,9 +40,14 @@ public class RiskController {
     @PostMapping()
     public RiskPlan createRiskPlan(@RequestParam("data") String riskPlanString,
                                                @RequestParam(value = "assessmentId", required = false) Long assessmentId,
-                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
-        RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
-        riskPlan = riskPlanService.insert(riskPlan, attachments, assessmentId);
+                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+    	RiskPlan riskPlan = null;
+    	try {
+        	riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
+			riskPlan = riskPlanService.insert(riskPlan, attachments, assessmentId);
+		} catch (IOException | ApplicationException e) {
+			LOG.info("Exception occured while creating "+e);
+		}
         return riskPlan;
     }
     
@@ -77,9 +85,13 @@ public class RiskController {
     
     @PostMapping(value = "/task/updateRiskTask")
     public ResponseEntity<Void> updateRiskTask(@RequestParam("data") String riskTaskString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
-    	RiskTask riskTask = new ObjectMapper().readValue(riskTaskString, RiskTask.class);
-        riskPlanService.updateRiskTask(riskTask, attachments);
+                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+        try {
+        	RiskTask riskTask = new ObjectMapper().readValue(riskTaskString, RiskTask.class);
+			riskPlanService.updateRiskTask(riskTask, attachments);
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured while updating "+e);
+		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
@@ -91,17 +103,25 @@ public class RiskController {
     
     @PostMapping(value = "/updateRiskPlan")
     public ResponseEntity<Void> updateRiskPlan(@RequestParam("data") String riskPlanString,
-                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
-        RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
-        riskPlanService.updateRiskPlan(riskPlan, attachments);
+                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+        try {
+        	RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
+			riskPlanService.updateRiskPlan(riskPlan, attachments);
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured while updating "+e);
+		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @PostMapping(value = "/riskPlanSummary")
     public ResponseEntity<Void> riskPlanSummary(@RequestParam("data") String riskPlanString,
-                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
-        RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
-        riskPlanService.riskPlanSummary(riskPlan, attachments);
+                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+        try {
+        	RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
+			riskPlanService.riskPlanSummary(riskPlan, attachments);
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured in riskPlanSummary "+e);
+		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

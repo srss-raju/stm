@@ -1,10 +1,9 @@
 package com.deloitte.smt.controller;
 
-import com.deloitte.smt.constant.MeetingType;
-import com.deloitte.smt.entity.Meeting;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.MeetingService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
+import com.deloitte.smt.constant.MeetingType;
+import com.deloitte.smt.entity.Meeting;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.service.MeetingService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -26,6 +28,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/camunda/api/signal/meeting")
 public class MeetingController {
+	
+	private static final Logger LOG = Logger.getLogger(MeetingController.class);
 
     @Autowired
     MeetingService meetingService;
@@ -44,9 +48,13 @@ public class MeetingController {
     @PostMapping(value = "/update")
     public ResponseEntity<Void> updateMeeting(
             @RequestParam("data") String meetingString,
-            @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
-        Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
-        meetingService.update(meeting, attachments);
+            @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+        try {
+        	Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
+			meetingService.update(meeting, attachments);
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured while updating "+e);
+		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

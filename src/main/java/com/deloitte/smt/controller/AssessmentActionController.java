@@ -1,9 +1,9 @@
 package com.deloitte.smt.controller;
 
-import com.deloitte.smt.entity.SignalAction;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.AssessmentActionService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
+import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.service.AssessmentActionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -25,6 +27,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/camunda/api/signal")
 public class AssessmentActionController    {
+	
+	private static final Logger LOG = Logger.getLogger(AssessmentActionController.class);
 
     @Autowired
     AssessmentActionService assessmentActionService;
@@ -43,9 +47,14 @@ public class AssessmentActionController    {
 
     @PostMapping(value = "/updateAssessmentAction")
     public ResponseEntity<Void> updateAssessmentAction(@RequestParam("data") String signalActionString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
-        SignalAction signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
-        assessmentActionService.updateAssessmentAction(signalAction, attachments);
+                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+        SignalAction signalAction = null;
+        try {
+        	signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
+			assessmentActionService.updateAssessmentAction(signalAction, attachments);
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured while updating "+e);
+		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

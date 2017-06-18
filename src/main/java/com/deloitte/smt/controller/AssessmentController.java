@@ -1,12 +1,10 @@
 package com.deloitte.smt.controller;
 
-import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.AssessmentPlanService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +18,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
+import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.service.AssessmentPlanService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Created by myelleswarapu on 10-04-2017.
+ * Created by RajeshKumar on 10-04-2017.
  */
 @RestController
 @RequestMapping("/camunda/api/signal")
 public class AssessmentController {
+	
+	private static final Logger LOG = Logger.getLogger(AssessmentController.class);
 
     @Autowired
     AssessmentPlanService assessmentPlanService;
@@ -57,17 +60,27 @@ public class AssessmentController {
 
     @PostMapping(value = "/updateAssessment")
     public ResponseEntity<Void> updateAssessment(@RequestParam("data") String assessmentPlanString,
-                                   @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
-        AssessmentPlan assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
-        assessmentPlanService.updateAssessment(assessmentPlan, attachments);
+                                   @RequestParam(value = "attachments", required = false) MultipartFile[] attachments)  {
+        AssessmentPlan assessmentPlan = null;
+        try {
+        	assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
+			assessmentPlanService.updateAssessment(assessmentPlan, attachments);
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured while updating "+e);
+		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/finalAssessment")
     public ResponseEntity<Void> finalAssessment(@RequestParam("data") String assessmentPlanString,
-                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException, IOException {
-        AssessmentPlan assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
-        assessmentPlanService.finalAssessment(assessmentPlan, attachments);
+                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+        AssessmentPlan assessmentPlan = null;
+        try {
+        	assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
+			assessmentPlanService.finalAssessment(assessmentPlan, attachments);
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured in finalAssessment "+e);
+		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

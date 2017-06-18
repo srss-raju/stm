@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping(value = "/camunda/api/signal")
 public class SignalController {
+	private static final Logger LOG = Logger.getLogger(SignalController.class);
 
 	@Autowired
 	SignalService signalService;
@@ -44,9 +46,13 @@ public class SignalController {
 
 	@PostMapping(value = "/updateTopic")
 	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString,
-							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
-		Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
-		signalService.updateTopic(topic, attachments);
+							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+		try {
+			Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
+			signalService.updateTopic(topic, attachments);
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured while updating "+e);
+		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
