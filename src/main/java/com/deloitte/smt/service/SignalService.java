@@ -1,6 +1,7 @@
 package com.deloitte.smt.service;
 
 import java.io.IOException;
+import com.deloitte.smt.entity.SignalConfiguration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -30,6 +31,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
+import com.deloitte.smt.constant.SignalConfigurationType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
@@ -61,6 +63,7 @@ import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
+import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
@@ -140,6 +143,10 @@ public class SignalService {
     
     @Autowired
     AttachmentRepository attachmentRepository;
+    
+    @Autowired
+    SignalConfigurationRepository signalConfigurationRepository;
+    
 
     @Autowired
     private AssignmentConfigurationRepository assignmentConfigurationRepository;
@@ -173,9 +180,9 @@ public class SignalService {
     }
 
     public Topic createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
-    	String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
-        Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-        taskService.delegateTask(task.getId(), "Demo Demo");
+    	//String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
+      //  Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+       // taskService.delegateTask(task.getId(), "Demo Demo");
         if(topic.getId() != null) {
             topic.setId(null);
         }
@@ -186,11 +193,16 @@ public class SignalService {
         topic.setCreatedDate(c.getTime());
         topic.setLastModifiedDate(c.getTime());
         topic.setSignalStatus("New");
-        topic.setProcessId(processInstanceId);
+       // topic.setProcessId(processInstanceId);
         c.add(Calendar.DAY_OF_YEAR, 5);
         topic.setDueDate(c.getTime());
         setTopicIdForSignalStatistics(topic);
-        topic.setConfidenceIndex(60l);
+     
+        //  topic.setConfidenceIndex(60l);
+        SignalConfiguration  signalConfiguration= signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name());
+        topic.setCohortPercentage(Long.valueOf(signalConfiguration.getCohortPercentage()));
+        topic.setConfidenceIndex(Long.valueOf(signalConfiguration.getConfidenceIndex()));
+        
         Topic topicUpdated = topicRepository.save(topic);
 
         Ingredient ingredient = topicUpdated.getIngredient();
