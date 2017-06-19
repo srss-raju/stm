@@ -184,9 +184,9 @@ public class SignalService {
     }
 
     public Topic createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
-    	//String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
-      //  Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-       // taskService.delegateTask(task.getId(), "Demo Demo");
+    	String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+        taskService.delegateTask(task.getId(), "Demo Demo");
         if(topic.getId() != null) {
             topic.setId(null);
         }
@@ -197,16 +197,18 @@ public class SignalService {
         topic.setCreatedDate(c.getTime());
         topic.setLastModifiedDate(c.getTime());
         topic.setSignalStatus("New");
-       // topic.setProcessId(processInstanceId);
+       topic.setProcessId(processInstanceId);
         c.add(Calendar.DAY_OF_YEAR, 5);
         topic.setDueDate(c.getTime());
         setTopicIdForSignalStatistics(topic);
      
         //  topic.setConfidenceIndex(60l);
         SignalConfiguration  signalConfiguration= signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name());
-        topic.setCohortPercentage(Long.valueOf(signalConfiguration.getCohortPercentage()));
-        topic.setConfidenceIndex(Long.valueOf(signalConfiguration.getConfidenceIndex()));
-        
+        if(null!=signalConfiguration){
+            topic.setCohortPercentage(Long.valueOf(signalConfiguration.getCohortPercentage()));
+            topic.setConfidenceIndex(Long.valueOf(signalConfiguration.getConfidenceIndex()));
+        }
+                
         Topic topicUpdated = topicRepository.save(topic);
 
         Ingredient ingredient = topicUpdated.getIngredient();
