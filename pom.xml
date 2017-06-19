@@ -23,16 +23,56 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<camunda.springboot.version>2.0.0</camunda.springboot.version>
-        <sonar.language>java</sonar.language>
-        <sonar.java.source>8</sonar.java.source>
-        <sonar.exclusions>
-        	**com/deloitte/smt/util/Constants.java,
-         	**com/deloitte/smt/entity/*.java,
-         	**com/deloitte/smt/dto/*.java
-         </sonar.exclusions>
+		<sonar.language>java</sonar.language>
+		<sonar.java.source>8</sonar.java.source>
+<!-- 		<sonar.sources>src</sonar.sources> -->
+<!-- 		<sonar.binaries>build/classes</sonar.binaries> -->
+<!-- 		<sonar.tests>junit</sonar.tests> -->
+<!-- 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis> -->
+<!-- 		<sonar.junit.reportsPath>build/test-reports</sonar.junit.reportsPath> -->
+<!-- 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin> -->
+<!-- 		<sonar.jacoco.reportPath>build/test-reports/jacoco.exec</sonar.jacoco.reportPath> -->
+		<sonar.exclusions>
+			**com/deloitte/smt/util/Constants.java,
+			**com/deloitte/smt/entity/*.java,
+			**com/deloitte/smt/dto/*.java
+		</sonar.exclusions>
+		
+		 <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+    	<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    	<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+    
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.springtestdbunit</groupId>
+			<artifactId>spring-test-dbunit</artifactId>
+			<version>1.2.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+			<version>2.5.0</version>
+			<type>jar</type>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>junit</artifactId>
+					<groupId>junit</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -100,6 +140,23 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			
+			<plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.7.9</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <destFile>${sonar.jacoco.reportPath}</destFile>
+            </configuration>
+        </plugin>
+        
 		</plugins>
 	</build>
 

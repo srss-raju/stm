@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
@@ -75,6 +76,7 @@ import com.deloitte.smt.util.SignalUtil;
 /**
  * Created by RKB on 04-04-2017.
  */
+@Transactional
 @Service
 public class SignalService {
 
