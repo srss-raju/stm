@@ -168,10 +168,12 @@ public class SignalService {
         Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
         List<Product> products = productRepository.findByTopicId(topic.getId());
         List<License> licenses = licenseRepository.findByTopicId(topic.getId());
+        List<Soc> socs = socRepository.findByTopicId(topic.getId());
         if(ingredient != null) {
             ingredient.setProducts(products);
             ingredient.setLicenses(licenses);
             topic.setIngredient(ingredient);
+            topic.setSocs(socs);
         }
         topic.setSignalUrls(signalURLRepository.findByTopicId(topicId));
         findSoc(topic);
