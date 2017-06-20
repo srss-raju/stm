@@ -1,4 +1,4 @@
-package com.deloitte.smt.controllertest;
+/*package com.deloitte.smt.controllertest;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -41,4 +41,4 @@ public class AppDataControllerTest {
 	private String createURLWithPort(String uri) {
 		return "http://localhost:" + port + uri;
 	}
-}
+}*/
