@@ -17,9 +17,9 @@ import com.deloitte.smt.dto.AppDataDTO;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AppDataControllerIT {
+public class AppDataControllerTest {
 	
-	private static final Logger LOG = Logger.getLogger(AppDataControllerIT.class);
+	private static final Logger LOG = Logger.getLogger(AppDataControllerTest.class);
 
 	@LocalServerPort
 	private int port;
