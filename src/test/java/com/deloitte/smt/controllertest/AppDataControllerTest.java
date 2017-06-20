@@ -1,44 +1,35 @@
-/*package com.deloitte.smt.controllertest;
+package com.deloitte.smt.controllertest;
 
-import org.apache.log4j.Logger;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
-import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.dto.AppDataDTO;
+import com.deloitte.smt.controller.AppDataController;
+import com.deloitte.smt.util.TestUtil;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(AppDataController.class)
 public class AppDataControllerTest {
 	
-	private static final Logger LOG = Logger.getLogger(AppDataControllerTest.class);
-
-	@LocalServerPort
-	private int port;
-
-	TestRestTemplate restTemplate = new TestRestTemplate();
-
-	HttpHeaders headers = new HttpHeaders();
-
+	@Mock
+    private HttpServletRequest context;
+	
+	@Autowired
+	private MockMvc mockMvc;
+	
 	@Test
-	public void testGetAppData() {
-
-		HttpEntity<AppDataDTO> entity = new HttpEntity<AppDataDTO>(null, headers);
-
-		ResponseEntity<AppDataDTO> response = 
-				restTemplate.exchange(createURLWithPort("/camunda/api/appData/data"),HttpMethod.POST, entity, AppDataDTO.class);
-		LOG.info(response);
+	public void testGetAppData() throws Exception {
+		
+		mockMvc.perform(post("/camunda/api/appData/data").content(TestUtil.convertObjectToJsonBytes("")).contentType(MediaType.APPLICATION_JSON_VALUE));
+		
 	}
-
-	private String createURLWithPort(String uri) {
-		return "http://localhost:" + port + uri;
-	}
-}*/
+}
