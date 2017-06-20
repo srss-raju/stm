@@ -1,1 +1,0 @@
-INSERT INTO public.sm_signal_configuration(id, cohort_percentage, confidence_index, config_name)  VALUES (999997, 60, 40, 'DEFAULT_CONFIG');
