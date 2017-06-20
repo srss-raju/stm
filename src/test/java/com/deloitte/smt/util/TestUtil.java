@@ -19,9 +19,10 @@ public class TestUtil {
     }
     
     public static SignalAction buildSignalAction() {
-    	SignalAction action = new SignalAction();
-    	action.setInDays(5);
-    	return action;
+    	SignalAction signalAction = new SignalAction();
+    	signalAction.setInDays(5);
+    	signalAction.setCaseInstanceId("1111");
+    	return signalAction;
     	
     }
 }
