@@ -2,6 +2,9 @@ package com.deloitte.smt.servicetest;
 
 import static org.mockito.BDDMockito.given;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
@@ -20,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.service.AssessmentPlanService;
 
@@ -83,6 +87,20 @@ public class AssessmentPlanServiceTest {
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
+	}
+	
+	@Test
+	public void testUnlinkSignalToAssessment() throws Exception{
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		Set<Topic> topics = new HashSet<>();
+		Topic topic = new Topic();
+		topic.setId(100l);
+		topic.setName("Test Topic 1");
+		topics.add(topic);
+		assessmentPlan.setTopics(topics);
+		assessmentPlan.setAssessmentName("Test Assessment 1");
+		given(this.assessmentPlanRepository.findOne(121l)).willReturn(assessmentPlan);
+		assessmentPlanService.unlinkSignalToAssessment(121l,100l);
 	}
 
 }
