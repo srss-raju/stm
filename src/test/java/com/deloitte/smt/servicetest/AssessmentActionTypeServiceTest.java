@@ -56,4 +56,20 @@ public class AssessmentActionTypeServiceTest {
 		assessmentActionTypeService.update(TestUtil.buildAssessmentActionTypes().get(0));
 	}
 	
+	@Test
+	public void testDelete() throws Exception{
+		assessmentActionTypeService.insert(TestUtil.buildAssessmentActionTypes());
+		assessmentActionTypeService.delete(101l);
+	}
+	
+	@Test
+	public void testFindById() throws Exception{
+		assessmentActionTypeService.findById(101l);
+	}
+	
+	@Test
+	public void testFindAll() throws Exception{
+		assessmentActionTypeService.findAll();
+	}
+	
 }
