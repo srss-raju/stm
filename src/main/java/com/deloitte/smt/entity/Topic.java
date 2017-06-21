@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,7 +34,8 @@ public class Topic implements Serializable{
 
     private String name;
     private String description;
-
+    
+    @Column(nullable=false, columnDefinition="boolean default true")
     private boolean isSignal=true;
     
 
