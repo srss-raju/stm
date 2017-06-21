@@ -34,6 +34,9 @@ public class Topic implements Serializable{
     private String name;
     private String description;
 
+    private boolean isSignal=true;
+    
+
 	@Embedded
 	private Condition condition;
 	private String sourceName;
@@ -358,5 +361,14 @@ public class Topic implements Serializable{
 	public void setAssessmentPlans(List<AssessmentPlan> assessmentPlans) {
 		this.assessmentPlans = assessmentPlans;
 	}
+	
+	public boolean isSignal() {
+		return isSignal;
+	}
+
+	public void setSignal(boolean isSignal) {
+		this.isSignal = isSignal;
+	}
+
 	
 }

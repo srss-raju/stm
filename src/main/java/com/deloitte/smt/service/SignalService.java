@@ -152,7 +152,28 @@ public class SignalService {
 
     @Autowired
     private AssignmentConfigurationRepository assignmentConfigurationRepository;
+    
+   
+    
+    
+    public Topic createNonSignal(Topic nonSignal){
+    	Calendar c = Calendar.getInstance();
+    	nonSignal.setCreatedDate(c.getTime());
+    	nonSignal.setLastModifiedDate(c.getTime());
+    	Topic topicUpdated = topicRepository.save(nonSignal);
+    	 Ingredient ingredient = topicUpdated.getIngredient();
+    	 ingredient.setTopicId(topicUpdated.getId());
+         ingredient = ingredientRepository.save(ingredient);
 
+         saveProducts(topicUpdated, ingredient);
+         saveLicenses(topicUpdated, ingredient);
+         saveSoc(topicUpdated);
+    	return topicUpdated;
+    }
+
+    
+    
+    
     public Topic findById(Long topicId) throws ApplicationException {
         Topic topic = topicRepository.findOne(topicId);
         if(topic == null) {
