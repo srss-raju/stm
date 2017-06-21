@@ -18,10 +18,20 @@ import com.deloitte.smt.service.AssessmentActionService;
 import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.util.TestUtil;
 
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngineConfiguration;
+import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
+import org.camunda.bpm.engine.test.ProcessEngineRule;
+import org.camunda.bpm.engine.test.mock.MockExpressionManager;
+import org.junit.AfterClass;
+import org.junit.Rule;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SignalManagementApplication.class)
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class AssessmentActionServiceTest {
+	
+	
 	
 	@Autowired
 	private AssessmentActionService assessmentActionService;
@@ -43,6 +53,25 @@ public class AssessmentActionServiceTest {
     
 	@MockBean
     SignalURLRepository signalURLRepository;
+	
+	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
+	    {
+	      jobExecutorActivate = false;
+	      expressionManager = new MockExpressionManager();
+	      databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
+	    }
+	  };
+	  
+	  private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration.buildProcessEngine();
+	  
+	  @Rule
+	  public final ProcessEngineRule processEngine = new ProcessEngineRule(PROCESS_ENGINE_NEEDS_CLOSE);
+
+	  @AfterClass
+	  public static void shutdown() {
+	    PROCESS_ENGINE_NEEDS_CLOSE.close();
+	  }
+
     
 	@Test
 	public void testCreateAssessmentAction() throws Exception{
