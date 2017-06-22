@@ -124,7 +124,7 @@ public class SignalMatchService {
 		List<Topic> ciSignals = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(signals)) {
 			for (Topic matchingSignal : signals) {
-				if (createdTopic.getConfidenceIndex() > matchingSignal.getConfidenceIndex()) {
+				if (createdTopic.getConfidenceIndex() >= matchingSignal.getConfidenceIndex()) {
 					ciSignals.add(matchingSignal);
 				}
 			}
