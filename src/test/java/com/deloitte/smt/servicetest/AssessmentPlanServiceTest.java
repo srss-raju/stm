@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
@@ -30,6 +33,7 @@ import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.service.AssessmentPlanService;
+import com.deloitte.smt.util.TestUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SignalManagementApplication.class)
@@ -40,6 +44,9 @@ public class AssessmentPlanServiceTest {
 	
 	@Autowired
 	private AssessmentPlanService assessmentPlanService;
+	
+	@PersistenceContext
+    private EntityManager entityManager;
 	
 	@MockBean
     AssessmentPlanRepository assessmentPlanRepository;
@@ -72,7 +79,7 @@ public class AssessmentPlanServiceTest {
 	}
 	
 	@Test
-	public void testFindOneWithNewStatus() throws Exception{
+	public void testFindOneWithNewStatus() {
 		AssessmentPlan assessmentPlan = new AssessmentPlan();
 		assessmentPlan.setAssessmentName("Test Case 1");
 		assessmentPlan.setAssessmentPlanStatus("New");
@@ -85,7 +92,7 @@ public class AssessmentPlanServiceTest {
 	}
 	
 	@Test
-	public void testFindOneWithNull() throws Exception{
+	public void testFindOneWithNull() {
 		try{
 			assessmentPlanService.findById(121l);
 		}catch(Exception ex){
@@ -134,7 +141,7 @@ public class AssessmentPlanServiceTest {
 	}
 	
 	@Test
-	public void testUpdateAssessmentWithNull() throws Exception{
+	public void testUpdateAssessmentWithNull() {
 		AssessmentPlan assessmentPlan = new AssessmentPlan();
 		try{
 			assessmentPlanService.updateAssessment(assessmentPlan, null);
@@ -144,7 +151,7 @@ public class AssessmentPlanServiceTest {
 	}
 	
 	@Test
-	public void testFinalAssessmentWithNull() throws Exception{
+	public void testFinalAssessmentWithNull() {
 		AssessmentPlan assessmentPlan = new AssessmentPlan();
 		try{
 			assessmentPlanService.finalAssessment(assessmentPlan, null);
@@ -158,6 +165,42 @@ public class AssessmentPlanServiceTest {
 		AssessmentPlan assessmentPlan = new AssessmentPlan();
 		assessmentPlan.setId(1l);
 		assessmentPlanService.finalAssessment(assessmentPlan, null);
+	}
+	
+	@Test
+	public void testFindAllAssessmentPlansNoDueDateAndNoGantt() {
+		try{
+			assessmentPlanService.findAllAssessmentPlans(TestUtil.buildSearchDto(false, false));
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindAllAssessmentPlansWithDueDateAndNoGantt() {
+		try{
+			assessmentPlanService.findAllAssessmentPlans(TestUtil.buildSearchDto(true, false));
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindAllAssessmentPlansNoDueDateAndWithGantt() {
+		try{
+			assessmentPlanService.findAllAssessmentPlans(TestUtil.buildSearchDto(false, true));
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindAllAssessmentPlansWithDueDateAndWithGantt() {
+		try{
+			assessmentPlanService.findAllAssessmentPlans(TestUtil.buildSearchDto(true, true));
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
 	}
 
 }
