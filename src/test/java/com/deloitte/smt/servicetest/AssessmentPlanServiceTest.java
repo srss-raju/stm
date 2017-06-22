@@ -142,5 +142,22 @@ public class AssessmentPlanServiceTest {
 			LOG.info(ex);
 		}
 	}
+	
+	@Test
+	public void testFinalAssessmentWithNull() throws Exception{
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		try{
+			assessmentPlanService.finalAssessment(assessmentPlan, null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFinalAssessment() throws Exception{
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		assessmentPlan.setId(1l);
+		assessmentPlanService.finalAssessment(assessmentPlan, null);
+	}
 
 }
