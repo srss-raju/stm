@@ -132,5 +132,15 @@ public class AssessmentPlanServiceTest {
 		assessmentPlan.setId(11l);
 		assessmentPlanService.updateAssessment(assessmentPlan, null);
 	}
+	
+	@Test
+	public void testUpdateAssessmentWithNull() throws Exception{
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		try{
+			assessmentPlanService.updateAssessment(assessmentPlan, null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
 
 }
