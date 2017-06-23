@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,10 +34,6 @@ public class Topic implements Serializable{
     private String name;
     private String description;
     
-    @Column(nullable=false, columnDefinition="boolean default true")
-    private boolean isSignal=true;
-    
-
 	@Embedded
 	private Condition condition;
 	private String sourceName;
@@ -364,13 +359,5 @@ public class Topic implements Serializable{
 		this.assessmentPlans = assessmentPlans;
 	}
 	
-	public boolean isSignal() {
-		return isSignal;
-	}
-
-	public void setSignal(boolean isSignal) {
-		this.isSignal = isSignal;
-	}
-
 	
 }

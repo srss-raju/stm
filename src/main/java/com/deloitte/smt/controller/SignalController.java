@@ -1,7 +1,9 @@
 package com.deloitte.smt.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
@@ -94,10 +97,17 @@ public class SignalController {
         return signalService.associateTemplateTasks(assessmentPlan);
     }
 	
+	
 	@GetMapping(value = "/run/{runInstanceId}")
-    public List<Topic> findTopicsByRunInstanceId(@PathVariable Long runInstanceId) {
-        return signalService.findTopicsByRunInstanceId(runInstanceId);
-    }
+  public Map<String,Object> findTopicsByRunInstanceId(@PathVariable Long runInstanceId) {
+      List<Topic> signals= signalService.findTopicsByRunInstanceId(runInstanceId);
+      List<NonSignal> nonSignals=signalService.findNonSignalsByRunInstanceId(runInstanceId);
+      Map<String,Object> map=new HashMap();
+      map.put("SIGNALS",signals);
+      map.put("NON_SIGNALS", nonSignals);
+      return map;
+  }
+	
 	
 	@DeleteMapping(value = "/url/{signalUrlId}")
     public ResponseEntity<Void> deleteSignalURL(@PathVariable Long signalUrlId) throws ApplicationException {
