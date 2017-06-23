@@ -157,18 +157,26 @@ public class SignalService {
 	@Autowired
 	private AssignmentConfigurationRepository assignmentConfigurationRepository;
 
-	public NonSignal createNonSignal(NonSignal nonSignal) {
+	public NonSignal createOrupdateNonSignal(NonSignal nonSignal) {
 		Calendar c = Calendar.getInstance();
-		nonSignal.setCreatedDate(c.getTime());
+		
+		if(nonSignal.getId()==null){
+			nonSignal.setCreatedDate(c.getTime());
+		}
+		
 		nonSignal.setLastModifiedDate(c.getTime());
-		return nonSignalRepository.save(nonSignal);
+		List<NonSignal> nonSignals = nonSignalRepository.findAll();
+		boolean isNonSignalMatched = nonSignals.stream()
+				.anyMatch(ns -> ns.getProductKey().equals(nonSignal.getProductKey())
+						&& ns.getPtDesc().equals(nonSignal.getPtDesc())
+						&& ns.getName().equals(nonSignal.getName()));
 
-	}
-
-	public NonSignal updateNonSignal(NonSignal nonSignal) {
-		Calendar c = Calendar.getInstance();
-		nonSignal.setLastModifiedDate(c.getTime());
-		return nonSignalRepository.save(nonSignal);
+		if(isNonSignalMatched){
+			return null;	
+		}else{
+			return nonSignalRepository.save(nonSignal);
+		}
+		
 	}
 
 	public Topic findById(Long topicId) throws ApplicationException {
@@ -221,7 +229,7 @@ public class SignalService {
 		topic.setDueDate(c.getTime());
 		setTopicIdForSignalStatistics(topic);
 
-		 //topic.setConfidenceIndex(60l);
+		// topic.setConfidenceIndex(60l);
 		SignalConfiguration signalConfiguration = signalConfigurationRepository
 				.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name());
 		if (null != signalConfiguration) {

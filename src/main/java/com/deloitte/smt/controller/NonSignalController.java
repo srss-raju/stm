@@ -30,7 +30,7 @@ public class NonSignalController {
 			} catch (IOException e) {
 				LOG.error(e);
 			}
-			return signalService.createNonSignal(nonSignal);
+			return signalService.createOrupdateNonSignal(nonSignal);
 	}
 	
 	
@@ -42,7 +42,7 @@ public class NonSignalController {
 		} catch (IOException e) {
 			LOG.error(e);
 		}
-		return signalService.updateNonSignal(nonSignal);
+		return signalService.createOrupdateNonSignal(nonSignal);
     }
 
 }

@@ -42,6 +42,21 @@ public class NonSignal implements Serializable{
 	private String createdBy;
 	private Date lastModifiedDate;
 	private Integer casesCount;
+	private String productKey;
+	private String ptDesc;
+	
+	public String getPtDesc() {
+		return ptDesc;
+	}
+	public void setPtDesc(String ptDesc) {
+		this.ptDesc = ptDesc;
+	}
+	public String getProductKey() {
+		return productKey;
+	}
+	public void setProductKey(String productKey) {
+		this.productKey = productKey;
+	}
 	
 	
     public Integer getCasesCount() {

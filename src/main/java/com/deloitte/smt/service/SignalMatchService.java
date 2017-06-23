@@ -122,7 +122,7 @@ public class SignalMatchService {
 
 	public List<Topic> checkConfidenceIndex(List<Topic> signals, Topic createdTopic) {
 		List<Topic> ciSignals = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(signals)) {
+		if (!CollectionUtils.isEmpty(signals) && createdTopic!=null) {
 			for (Topic matchingSignal : signals) {
 				if (createdTopic.getConfidenceIndex() >= matchingSignal.getConfidenceIndex()) {
 					ciSignals.add(matchingSignal);
