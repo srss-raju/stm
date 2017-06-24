@@ -170,6 +170,7 @@ public class AssignmentConfigurationServiceTest {
 	
 	@Test
 	public void testFindAll() throws Exception{
+		assignmentConfigurationService.findAll();
 	}
 	
 }
