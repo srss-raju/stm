@@ -116,6 +116,28 @@ public class AssignmentConfigurationServiceTest {
 	@Test
 	public void testDelete() throws Exception{
 		try{
+			AssignmentConfiguration config = new AssignmentConfiguration();
+			config.setAssessmentAssignmentUser("Test User");
+			config.setIngredient("Test Ingredient");
+			config.setSignalSource("Test Source");
+			config.setId(1l);
+			given(this.assignmentConfigurationRepository.findOne(1l)).willReturn(config);
+			assignmentConfigurationService.delete(1l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testDeleteWithNull() throws Exception{
+		try{
+			AssignmentConfiguration config = new AssignmentConfiguration();
+			config.setAssessmentAssignmentUser("Test User");
+			config.setIngredient("Test Ingredient");
+			config.setSignalSource("Test Source");
+			config.setId(1l);
+			given(this.assignmentConfigurationRepository.findOne(11l)).willReturn(config);
+			assignmentConfigurationService.delete(1l);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
