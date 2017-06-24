@@ -80,12 +80,37 @@ public class AssignmentConfigurationServiceTest {
 			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource("Test Ingredient","Test Source")).willReturn(config);
 			assignmentConfigurationService.insert(assignmentConfigurationList);
 		}catch(Exception ex){
-			
+			LOG.info(ex);
 		}
 	}
 	
 	@Test
 	public void testUpdate() throws Exception{
+		List<AssignmentConfiguration> assignmentConfigurationList = new ArrayList<>();
+		AssignmentConfiguration config = new AssignmentConfiguration();
+		config.setAssessmentAssignmentUser("Test User");
+		config.setIngredient("Test Ingredient");
+		config.setSignalSource("Test Source");
+		config.setId(1l);
+		assignmentConfigurationList.add(config);
+		given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource("Test Ingredient","Test Source")).willReturn(config);
+		assignmentConfigurationService.update(assignmentConfigurationList);
+	}
+	
+	@Test
+	public void testUpdateWithNull() throws Exception{
+		List<AssignmentConfiguration> assignmentConfigurationList = new ArrayList<>();
+		AssignmentConfiguration config = new AssignmentConfiguration();
+		config.setAssessmentAssignmentUser("Test User");
+		config.setIngredient("Test Ingredient");
+		config.setSignalSource("Test Source");
+		assignmentConfigurationList.add(config);
+		try{
+			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource("Test Ingredient","Test Source")).willReturn(config);
+			assignmentConfigurationService.update(assignmentConfigurationList);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
 	}
 	
 	@Test
