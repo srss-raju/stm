@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -62,13 +63,6 @@ public class AttachmentServiceTest {
 		attachmentService.save(attachment);
 	}
 	
-	
-	
-	@Test
-	public void testUpdate() throws Exception{
-		
-	}
-	
 	@Test
 	public void testDelete() throws Exception{
 			Attachment attachment = new Attachment();
@@ -111,7 +105,6 @@ public class AttachmentServiceTest {
 	
 	@Test
 	public void testAddAttachments() throws Exception{
-		
 	}
 	
 }
