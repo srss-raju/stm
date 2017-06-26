@@ -110,4 +110,56 @@ public class TaskTemplateServiceTest {
 		taskTemplateService.updateTaskTemplate(taskTemplate);
 	}
 	
+	@Test
+	public void testDelete() throws Exception{
+		TaskTemplate taskTemplate = new TaskTemplate();
+		given(this.taskTemplateRepository.findOne(1l)).willReturn(taskTemplate);
+		taskTemplateService.delete(1l);
+	}
+	
+	@Test
+	public void testDeleteWithNull() throws Exception{
+		try{
+			TaskTemplate taskTemplate = new TaskTemplate();
+			given(this.taskTemplateRepository.findOne(11l)).willReturn(taskTemplate);
+			taskTemplateService.delete(1l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindAllByTemplateId() throws Exception{
+		taskTemplateService.findAllByTemplateId(1l);
+	}
+	
+	@Test
+	public void testFindAll() throws Exception{
+		TaskTemplate taskTemplate = new TaskTemplate();
+		List<TaskTemplate> taskTemplates = new ArrayList<>();
+		taskTemplates.add(taskTemplate);
+		given(this.taskTemplateRepository.findAllByOrderByCreatedDateDesc()).willReturn(taskTemplates);
+		taskTemplateService.findAll();
+	}
+	
+	@Test
+	public void testFindById() throws Exception{
+		TaskTemplate taskTemplate = new TaskTemplate();
+		taskTemplate.setId(1l);
+		given(this.taskTemplateRepository.findOne(1l)).willReturn(taskTemplate);
+		taskTemplateService.findById(1l);
+	}
+	
+	@Test
+	public void testFindByIdWithNull() throws Exception{
+		try{
+			TaskTemplate taskTemplate = new TaskTemplate();
+			taskTemplate.setId(12l);
+			given(this.taskTemplateRepository.findOne(1l)).willReturn(taskTemplate);
+			taskTemplateService.findById(11l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
 }
