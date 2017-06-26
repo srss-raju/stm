@@ -58,11 +58,16 @@ public class DashboardServiceTest {
 	    PROCESS_ENGINE_NEEDS_CLOSE.close();
 	  }
 	  
-	  @Test
-		public void testGetSmtComplianceDetails() throws Exception{
-		  LOG.info("testGetSmtComplianceDetails");
-		  dashboardService.getSmtComplianceDetails();
-		}
-
+	@Test
+	public void testGetSmtComplianceDetails() throws Exception {
+		LOG.info("testGetSmtComplianceDetails");
+		dashboardService.getSmtComplianceDetails();
+	}
 	
+	@Test
+	public void testGetDashboardData() throws Exception {
+		LOG.info("Test getDashboardData");
+		dashboardService.getDashboardData();
+	}
+
 }
