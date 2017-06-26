@@ -14,7 +14,7 @@ import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
 
 /**
- * Created by myelleswarapu on 02-05-2017.
+ * Created by RajeshKumar on 02-05-2017.
  */
 @Transactional
 @Service
