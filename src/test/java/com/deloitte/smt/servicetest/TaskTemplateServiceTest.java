@@ -81,6 +81,33 @@ public class TaskTemplateServiceTest {
 		taskTemplateService.createTaskTemplate(taskTemplate);
 	}
 	
+	@Test
+	public void testUpdateTaskTemplate() throws Exception{
+		LOG.info("testCreateTaskTemplate");
+		TaskTemplate taskTemplate = new TaskTemplate();
+		taskTemplate.setId(1l);
+		List<TaskTemplateIngrediant> ingradients = new ArrayList<>();
+		TaskTemplateIngrediant taskTemplateIngrediant = new TaskTemplateIngrediant();
+		ingradients.add(taskTemplateIngrediant);
+		taskTemplate.setTaskTemplateIngrediant(ingradients);
+		given(this.taskTemplateRepository.save(taskTemplate)).willReturn(taskTemplate);
+		taskTemplateService.updateTaskTemplate(taskTemplate);
+	}
 	
+	@Test
+	public void testUpdateTaskTemplateWithIngredients() throws Exception{
+		LOG.info("testCreateTaskTemplate");
+		TaskTemplate taskTemplate = new TaskTemplate();
+		taskTemplate.setId(1l);
+		List<TaskTemplateIngrediant> ingradients = new ArrayList<>();
+		List<Long> ids = new ArrayList<>();
+		ids.add(1l);
+		taskTemplate.setDeletedIngrediantIds(ids);
+		TaskTemplateIngrediant taskTemplateIngrediant = new TaskTemplateIngrediant();
+		ingradients.add(taskTemplateIngrediant);
+		taskTemplate.setTaskTemplateIngrediant(ingradients);
+		given(this.taskTemplateRepository.save(taskTemplate)).willReturn(taskTemplate);
+		taskTemplateService.updateTaskTemplate(taskTemplate);
+	}
 	
 }
