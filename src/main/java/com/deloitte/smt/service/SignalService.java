@@ -229,7 +229,6 @@ public class SignalService {
 		topic.setDueDate(c.getTime());
 		setTopicIdForSignalStatistics(topic);
 
-		// topic.setConfidenceIndex(60l);
 		SignalConfiguration signalConfiguration = signalConfigurationRepository
 				.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name());
 		if (null != signalConfiguration) {
