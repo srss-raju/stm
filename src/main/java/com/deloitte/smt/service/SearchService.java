@@ -1,8 +1,10 @@
 package com.deloitte.smt.service;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,9 @@ import com.deloitte.smt.constant.RiskTaskStatusType;
 import com.deloitte.smt.constant.RunFrequency;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.Ingredient;
+import com.deloitte.smt.entity.License;
+import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
@@ -116,5 +121,45 @@ public class SearchService {
            
         }
         return searchDto;
+    }
+    
+    
+    public boolean getSignalIdsForSearch(SearchDto searchDto, List<Long> topicIds, boolean searchAll) {
+        if(searchDto!=null && !CollectionUtils.isEmpty(searchDto.getLicenses())) {
+            searchAll = false;
+            List<License> licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
+            licenses.parallelStream().forEach(license -> {
+                if(license.getTopicId() != null) {
+                    topicIds.add(license.getTopicId());
+                }
+            });
+        }
+        if(searchDto!=null && !CollectionUtils.isEmpty(searchDto.getIngredients())) {
+            searchAll = false;
+            List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
+            ingredients.parallelStream().forEach(ingredient -> {
+                if(ingredient.getTopicId() != null) {
+                    topicIds.add(ingredient.getTopicId());
+                }
+            });
+        }
+        if(searchDto!=null && !CollectionUtils.isEmpty(searchDto.getProducts())) {
+            searchAll = false;
+            List<Product> products = productRepository.findAllByProductNameIn(searchDto.getProducts());
+            products.parallelStream().forEach(product -> {
+                if(product.getTopicId() != null) {
+                    topicIds.add(product.getTopicId());
+                }
+            });
+        }
+        Set<Long> allItems = new HashSet<>();
+        Set<Long> duplicates = topicIds.parallelStream()
+                .filter(n -> !allItems.add(n))
+                .collect(Collectors.toSet());
+        if(!CollectionUtils.isEmpty(duplicates)) {
+            topicIds.clear();
+            topicIds.addAll(duplicates);
+        }
+        return searchAll;
     }
 }
