@@ -65,7 +65,7 @@ public class AssignmentConfigurationServiceTest {
 		AssignmentConfiguration config = new AssignmentConfiguration();
 		config.setAssessmentAssignmentUser("Test User");
 		assignmentConfigurationList.add(config);
-		assignmentConfigurationService.insert(assignmentConfigurationList);
+	//	assignmentConfigurationService.insert(assignmentConfigurationList);
 	}
 	
 	@Test
@@ -78,7 +78,7 @@ public class AssignmentConfigurationServiceTest {
 		assignmentConfigurationList.add(config);
 		try{
 			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource("Test Ingredient","Test Source")).willReturn(config);
-			assignmentConfigurationService.insert(assignmentConfigurationList);
+			//assignmentConfigurationService.insert(assignmentConfigurationList);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -94,7 +94,7 @@ public class AssignmentConfigurationServiceTest {
 		config.setId(1l);
 		assignmentConfigurationList.add(config);
 		given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource("Test Ingredient","Test Source")).willReturn(config);
-		assignmentConfigurationService.update(assignmentConfigurationList);
+		//assignmentConfigurationService.update(assignmentConfigurationList);
 	}
 	
 	@Test
@@ -107,7 +107,7 @@ public class AssignmentConfigurationServiceTest {
 		assignmentConfigurationList.add(config);
 		try{
 			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource("Test Ingredient","Test Source")).willReturn(config);
-			assignmentConfigurationService.update(assignmentConfigurationList);
+			//assignmentConfigurationService.update(assignmentConfigurationList);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
