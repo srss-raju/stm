@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Query;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.camunda.bpm.engine.CaseService;
@@ -147,7 +144,7 @@ public class RiskPlanService {
         return riskPlanUpdated;
     }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
 	public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
 		List<Long> riskTopicIds = new ArrayList<>();
 		boolean searchAll = true;
@@ -197,82 +194,6 @@ public class RiskPlanService {
 			riskPlanList = q.getResultList();
 		}
 		return riskPlanList;
-	}
-
-	/**
-	 * @param searchDto
-	 * @param criteriaBuilder
-	 * @param assementRiskJoin
-	 * @param predicates
-	 */
-	private void addCreatedOrDueDate(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder,
-			Join<AssessmentPlan, RiskPlan> assementRiskJoin,
-			List<Predicate> predicates) {
-		if (null != searchDto.getStartDate()) {
-			if (searchDto.isDueDate()) {
-				predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()),
-						searchDto.getStartDate()));
-				if (null != searchDto.getEndDate()) {
-					predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get(SmtConstant.RISK_DUE_DATE.getDescription()),
-							searchDto.getEndDate()));
-				}
-
-			} else {
-				predicates.add(criteriaBuilder.greaterThanOrEqualTo(assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
-						searchDto.getStartDate()));
-				if (null != searchDto.getEndDate()) {
-					predicates.add(criteriaBuilder.lessThanOrEqualTo(assementRiskJoin.get(SmtConstant.CREATED_DATE.getDescription()),
-							searchDto.getEndDate()));
-				}
-			}
-
-		}
-	}
-
-	/**
-	 * @param searchDto
-	 * @param criteriaBuilder
-	 * @param assementRiskJoin
-	 * @param predicates
-	 */
-	private void addRiskTaskStatus(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder,
-			Join<AssessmentPlan, RiskPlan> assementRiskJoin,
-			List<Predicate> predicates) {
-		if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
-			predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.RISK_TASK_STATUS.getDescription()).in(searchDto.getRiskTaskStatus())));
-		}
-	}
-
-	/**
-	 * @param searchDto
-	 * @param criteriaBuilder
-	 * @param assementRiskJoin
-	 * @param predicates
-	 */
-	private void addAssignTo(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder,
-			Join<AssessmentPlan, RiskPlan> assementRiskJoin,
-			List<Predicate> predicates) {
-		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-			predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.ASSIGN_TO.getDescription()).in(searchDto.getAssignees())));
-		}
-	}
-
-	/**
-	 * @param searchDto
-	 * @param criteriaBuilder
-	 * @param assementRiskJoin
-	 * @param predicates
-	 */
-	private void addStatuses(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder,
-			Join<AssessmentPlan, RiskPlan> assementRiskJoin,
-			List<Predicate> predicates) {
-		if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-			predicates.add(criteriaBuilder.isTrue(assementRiskJoin.get(SmtConstant.STATUS.getDescription()).in(searchDto.getStatuses())));
-		}
 	}
 
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {
