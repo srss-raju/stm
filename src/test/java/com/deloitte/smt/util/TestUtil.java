@@ -105,9 +105,18 @@ public class TestUtil {
 	
 	public static List<Topic> buildmatchingSignals() {
 		List<Topic> signals = new ArrayList<>();
-		Topic signal = new Topic();
-		signal.setCohortPercentage(96l);
-		signal.setConfidenceIndex(40l);
+		Topic signal1 = new Topic();
+		signal1.setCohortPercentage(96l);
+		signal1.setConfidenceIndex(40l);
+		signals.add(signal1);
+		Topic signal2 = new Topic();
+		signal2.setCohortPercentage(80l);
+		signal2.setConfidenceIndex(40l);
+		signals.add(signal2);
+		Topic signal3 = new Topic();
+		signal3.setCohortPercentage(71l);
+		signal3.setConfidenceIndex(40l);
+		signals.add(signal3);
 		return signals;
 	}
 	

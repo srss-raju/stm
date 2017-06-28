@@ -110,5 +110,21 @@ public class SignalMatchServiceTest {
 		}
 	}
 	
+	@Test
+	public void testCheckConfidenceIndex() {
+		try{
+			signalMatchService.checkConfidenceIndex(TestUtil.buildmatchingSignals(),TestUtil.buildSignal());
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
 	
+	@Test
+	public void testCheckCohortPercentage() {
+		try{
+			signalMatchService.checkCohortPercentage(TestUtil.buildmatchingSignals(),TestUtil.buildSignal());
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
 }
