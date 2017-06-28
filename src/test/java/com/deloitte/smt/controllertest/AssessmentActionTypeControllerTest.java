@@ -81,12 +81,6 @@ public class AssessmentActionTypeControllerTest {
 
 	}
 	
-	public static byte[] convertObjectToJsonBytes(Object object) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-      //  mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return mapper.writeValueAsBytes(object);
-    }
-	
 	@Test
 	public void testCreateNewAssessmentActionType() throws Exception {
 		when(assessmentActionTypeServiceMock.insert(anyList())).thenReturn(anyList());
@@ -98,7 +92,7 @@ public class AssessmentActionTypeControllerTest {
 		this.mockMvc
 				.perform(post("/camunda/api/signal/assessmentActionType")
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(convertObjectToJsonBytes(typeList)))
+                .content(TestUtils.convertObjectToJsonBytes(typeList)))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 
@@ -116,7 +110,7 @@ public class AssessmentActionTypeControllerTest {
 		this.mockMvc
 				.perform(put("/camunda/api/signal/assessmentActionType")
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(convertObjectToJsonBytes(updateType)))
+                .content(TestUtils.convertObjectToJsonBytes(updateType)))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 
