@@ -20,26 +20,22 @@ public class AssignmentConfigurationService {
     @Autowired
     AssignmentConfigurationRepository assignmentConfigurationRepository;
 
-    public void insert(List<AssignmentConfiguration> assignmentConfigurationList) throws ApplicationException {
-    	for (AssignmentConfiguration assignmentConfiguration : assignmentConfigurationList) {
-    		assignmentConfiguration.setCreatedDate(new Date());
-            assignmentConfiguration.setLastModifiedDate(new Date());
-            AssignmentConfiguration assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIngredientAndSignalSource(assignmentConfiguration.getIngredient(), assignmentConfiguration.getSignalSource());
-            if(assignmentConfigurationFromDB != null){
-            	throw new ApplicationException("Configuration already exists");
-            }
-		}
-         assignmentConfigurationRepository.save(assignmentConfigurationList);
+    public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
+        assignmentConfiguration.setCreatedDate(new Date());
+        assignmentConfiguration.setLastModifiedDate(new Date());
+        AssignmentConfiguration assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIngredientAndSignalSource(assignmentConfiguration.getIngredient(), assignmentConfiguration.getSignalSource());
+        if(assignmentConfigurationFromDB != null){
+        	throw new ApplicationException("Configuration already exists");
+        }
+        return assignmentConfigurationRepository.save(assignmentConfiguration);
     }
 
-    public void update(List<AssignmentConfiguration> assignmentConfigurationList) throws ApplicationException {
-    	for (AssignmentConfiguration assignmentConfiguration : assignmentConfigurationList) {
-    		if(assignmentConfiguration.getId() == null) {
-                throw new ApplicationException("Required field Id is no present in the given request.");
-            }
-    		assignmentConfiguration.setLastModifiedDate(new Date());
-		}
-         assignmentConfigurationRepository.save(assignmentConfigurationList);
+    public AssignmentConfiguration update(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
+        if(assignmentConfiguration.getId() == null) {
+            throw new ApplicationException("Required field Id is no present in the given request.");
+        }
+        assignmentConfiguration.setLastModifiedDate(new Date());
+        return assignmentConfigurationRepository.save(assignmentConfiguration);
     }
 
     public void delete(Long assignmentConfigurationId) throws ApplicationException {

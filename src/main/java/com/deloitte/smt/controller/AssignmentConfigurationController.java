@@ -29,15 +29,13 @@ public class AssignmentConfigurationController {
     AssignmentConfigurationService assignmentConfigurationService;
 
     @PostMapping
-    public ResponseEntity<Void> createNewAssignmentConfiguration(@RequestBody List<AssignmentConfiguration> assignmentConfiguration) throws ApplicationException {
-         assignmentConfigurationService.insert(assignmentConfiguration);
-         return new ResponseEntity<>(HttpStatus.OK);
+    public AssignmentConfiguration createNewAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
+        return assignmentConfigurationService.insert(assignmentConfiguration);
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateAssignmentConfiguration(@RequestBody List<AssignmentConfiguration> assignmentConfiguration) throws ApplicationException {
-         assignmentConfigurationService.update(assignmentConfiguration);
-         return new ResponseEntity<>(HttpStatus.OK);
+    public AssignmentConfiguration updateAssignmentConfiguration(@RequestBody AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
+        return assignmentConfigurationService.update(assignmentConfiguration);
     }
 
     @DeleteMapping(value = "/{assignmentConfigurationId}")
