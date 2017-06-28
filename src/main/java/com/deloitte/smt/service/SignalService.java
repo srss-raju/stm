@@ -1,6 +1,5 @@
 package com.deloitte.smt.service;
 
-import java.io.IOException;
 import com.deloitte.smt.entity.SignalConfiguration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -210,7 +209,7 @@ public class SignalService {
 		return topic;
 	}
 
-	public Topic createTopic(Topic topic, MultipartFile[] attachments) throws IOException {
+	public Topic createTopic(Topic topic, MultipartFile[] attachments)  {
 		String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
 		Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
 		taskService.delegateTask(task.getId(), "Demo Demo");

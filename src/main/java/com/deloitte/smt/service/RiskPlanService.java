@@ -161,14 +161,15 @@ public class RiskPlanService {
 		StringBuilder queryString = new StringBuilder("SELECT o FROM RiskPlan o ");
 		boolean executeQuery = false;
 		if (!CollectionUtils.isEmpty(riskTopicIds)) {
-			if (searchDto != null && !CollectionUtils.isEmpty(searchDto.getProducts())
+			if (searchDto != null && ( !CollectionUtils.isEmpty(searchDto.getProducts())
 					|| !CollectionUtils.isEmpty(searchDto.getLicenses())
-					|| !CollectionUtils.isEmpty(searchDto.getIngredients())) {
+					|| !CollectionUtils.isEmpty(searchDto.getIngredients())) ) {
 				executeQuery = true;
 				queryString.append("INNER JOIN o.assessmentPlan a ");
 				queryString.append("INNER JOIN a.topics t WHERE t.id IN :topicIds ");
 			}
 		}
+		
 		if (searchDto != null && !CollectionUtils.isEmpty(searchDto.getStatuses())) {
 			executeQuery = true;
 			if (queryString.toString().contains(":topicIds")) {

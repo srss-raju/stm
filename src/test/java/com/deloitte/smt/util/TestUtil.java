@@ -125,4 +125,10 @@ public class TestUtil {
 		signal.setConfidenceIndex(50l);
 		return signal;
 	}
+	
+	public static String convertObjectToJsonString(Object object) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(object);
+    }
+	
 }

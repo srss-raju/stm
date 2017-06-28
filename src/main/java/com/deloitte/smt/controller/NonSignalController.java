@@ -23,7 +23,7 @@ public class NonSignalController {
 	private SignalService signalService;
 
 	@PostMapping(value = "/nonsignal")
-	public NonSignal createNonSignal(@RequestParam(value = "data") String nonSignalStr) throws ApplicationException{
+	public NonSignal createNonSignal(@RequestParam(value = "data") String nonSignalStr){
 		NonSignal nonSignal=null;
 			try {
 				nonSignal = new ObjectMapper().readValue(nonSignalStr,NonSignal.class);
@@ -35,7 +35,7 @@ public class NonSignalController {
 	
 	
 	@PostMapping(value="/nonsignal/update")
-    public NonSignal updateNonSignal(@RequestParam(value = "data") String nonSignalStr) throws ApplicationException{
+    public NonSignal updateNonSignal(@RequestParam(value = "data") String nonSignalStr) {
 		NonSignal nonSignal=null;
 		try {
 			nonSignal = new ObjectMapper().readValue(nonSignalStr,NonSignal.class);

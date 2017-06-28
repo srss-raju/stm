@@ -21,6 +21,8 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.service.AssessmentPlanService;
+import com.deloitte.smt.util.TestUtil;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +32,11 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+/**
+ * 
+ * @author cavula
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -60,7 +67,7 @@ public class AssessmentControllerTest {
 		this.mockMvc
 				.perform(post("/camunda/api/signal/allAssessmentPlans")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-						.content(TestUtils.convertObjectToJsonBytes(searchDTO)))
+						.content(TestUtil.convertObjectToJsonBytes(searchDTO)))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 
 	}
@@ -118,7 +125,7 @@ public class AssessmentControllerTest {
 		this.mockMvc
 				.perform(post("/camunda/api/signal/updateAssessment")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-						.param("data", TestUtils.convertObjectToJsonString(assessmentPlan)))
+						.param("data", TestUtil.convertObjectToJsonString(assessmentPlan)))
 						
 				.andExpect(status().isOk());
 
@@ -133,7 +140,7 @@ public class AssessmentControllerTest {
 			this.mockMvc
 					.perform(post("/camunda/api/signal/finalAssessment")
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-					.param("data", TestUtils.convertObjectToJsonString(assessmentPlan)))
+					.param("data", TestUtil.convertObjectToJsonString(assessmentPlan)))
 					.andExpect(status().isOk());
 
 		}

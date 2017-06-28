@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.AssessmentActionType;
 import com.deloitte.smt.service.AssessmentActionTypeService;
+import com.deloitte.smt.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -29,7 +30,11 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-
+/**
+ * 
+ * @author cavula
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -72,9 +77,7 @@ public class AssessmentActionTypeControllerTest {
 		this.mockMvc
 				.perform(delete("/camunda/api/signal/assessmentActionType/{assessmentActionTypeId}",1)
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-						//.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
 				.andExpect(status().isOk());
-				//.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 
 		verify(assessmentActionTypeServiceMock, times(1)).delete(anyLong());
 		verifyNoMoreInteractions(assessmentActionTypeServiceMock);
@@ -92,7 +95,7 @@ public class AssessmentActionTypeControllerTest {
 		this.mockMvc
 				.perform(post("/camunda/api/signal/assessmentActionType")
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(TestUtils.convertObjectToJsonBytes(typeList)))
+                .content(TestUtil.convertObjectToJsonBytes(typeList)))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 
@@ -110,7 +113,7 @@ public class AssessmentActionTypeControllerTest {
 		this.mockMvc
 				.perform(put("/camunda/api/signal/assessmentActionType")
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(TestUtils.convertObjectToJsonBytes(updateType)))
+                .content(TestUtil.convertObjectToJsonBytes(updateType)))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 
