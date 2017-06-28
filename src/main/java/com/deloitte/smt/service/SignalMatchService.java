@@ -106,7 +106,7 @@ public class SignalMatchService {
 	 * @param pts
 	 * @return
 	 */
-	private String buildPts(StringBuilder ptBuilder, List<Pt> pts) {
+	public String buildPts(StringBuilder ptBuilder, List<Pt> pts) {
 		String tempPt = null;
 		if (!CollectionUtils.isEmpty(pts)) {
 			for (Pt pt : pts) {

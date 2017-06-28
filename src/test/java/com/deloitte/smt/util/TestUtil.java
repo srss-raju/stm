@@ -8,6 +8,7 @@ import java.util.List;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentActionType;
 import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.Topic;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -101,4 +102,18 @@ public class TestUtil {
 		
     	return searchDto;
     }
+	
+	public static List<Topic> buildmatchingSignals() {
+		List<Topic> signals = new ArrayList<>();
+		Topic signal = new Topic();
+		signal.setCohortPercentage(96l);
+		signal.setConfidenceIndex(40l);
+		return signals;
+	}
+	
+	public static Topic buildSignal() {
+		Topic signal = new Topic();
+		signal.setConfidenceIndex(50l);
+		return signal;
+	}
 }
