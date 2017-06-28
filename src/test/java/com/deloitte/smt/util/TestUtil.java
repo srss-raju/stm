@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentActionType;
+import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.Topic;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -106,17 +107,26 @@ public class TestUtil {
 	public static List<Topic> buildmatchingSignals() {
 		List<Topic> signals = new ArrayList<>();
 		Topic signal1 = new Topic();
-		signal1.setCohortPercentage(96l);
+		signal1.setCohortPercentage(99l);
+		signal1.setCreatedDate(new Date());
 		signal1.setConfidenceIndex(40l);
 		signals.add(signal1);
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		assessmentPlan.setCohortPercentage(80l);
 		Topic signal2 = new Topic();
 		signal2.setCohortPercentage(80l);
 		signal2.setConfidenceIndex(40l);
+		signal2.setAssessmentPlan(assessmentPlan);
 		signals.add(signal2);
 		Topic signal3 = new Topic();
 		signal3.setCohortPercentage(71l);
 		signal3.setConfidenceIndex(40l);
 		signals.add(signal3);
+		Topic signal4 = new Topic();
+		signal4.setCohortPercentage(96l);
+		signal4.setConfidenceIndex(40l);
+		signal4.setCreatedDate(new Date());
+		signals.add(signal4);
 		return signals;
 	}
 	
