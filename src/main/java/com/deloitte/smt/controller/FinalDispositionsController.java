@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Created by myelleswarapu on 02-05-2017.
+ * Created by RajeshKumar on 02-05-2017.
  */
 @RestController
 @RequestMapping("/camunda/api/signal/finalDispositions")
@@ -28,23 +28,23 @@ public class FinalDispositionsController {
     FinalDispositionService finalDispositionService;
 
     @PostMapping
-    public List<FinalDispositions> createNewAssessmentActionType(@RequestBody List<FinalDispositions> finalDispositions) {
+    public List<FinalDispositions> createFinalDispositions(@RequestBody List<FinalDispositions> finalDispositions) {
         return finalDispositionService.insert(finalDispositions);
     }
 
     @PutMapping
-    public FinalDispositions updateAssessmentActionType(@RequestBody FinalDispositions finalDisposition) throws ApplicationException {
+    public FinalDispositions updateFinalDispositions(@RequestBody FinalDispositions finalDisposition) throws ApplicationException {
         return finalDispositionService.update(finalDisposition);
     }
 
     @DeleteMapping(value = "/{finalDispositionId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long finalDispositionId) throws ApplicationException {
+    public ResponseEntity<Void> deleteFinalDispositions(@PathVariable Long finalDispositionId) throws ApplicationException {
         finalDispositionService.delete(finalDispositionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{finalDispositionId}")
-    public FinalDispositions findAssessmentActionTypeById(@PathVariable Long finalDispositionId) throws ApplicationException {
+    public FinalDispositions findFinalDispositionsById(@PathVariable Long finalDispositionId) throws ApplicationException {
         return finalDispositionService.findById(finalDispositionId);
     }
 

@@ -60,7 +60,7 @@ public class FinalDispositionsControllerTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testCreateRiskPlanActionType() throws Exception {
+	public void testCreateFinalDispositions() throws Exception {
 		when(finalDispositionServiceMock.insert(anyList())).thenReturn(anyList());
 		
 		List<FinalDispositions> typeList=new ArrayList<>();
@@ -79,7 +79,7 @@ public class FinalDispositionsControllerTest {
 	}
 	
 	@Test
-	public void testUpdateUser() throws Exception {
+	public void testUpdateFinalDispositions() throws Exception {
 		FinalDispositions finalDispositions=new FinalDispositions();
 
 		when(finalDispositionServiceMock.update(Matchers.any(FinalDispositions.class))).thenReturn(finalDispositions);
@@ -92,7 +92,7 @@ public class FinalDispositionsControllerTest {
 	}
 	
 	@Test
-	public void testDeleteSignalSource() throws Exception {
+	public void testDeleteFinalDispositions() throws Exception {
 		
 		doNothing().when(finalDispositionServiceMock).delete(anyLong());
 		
@@ -106,7 +106,7 @@ public class FinalDispositionsControllerTest {
 	}
 	
 	@Test
-	public void testFindSignalSourceById() throws Exception {
+	public void testFindFinalDispositionsById() throws Exception {
 		FinalDispositions finalDispositions=new FinalDispositions();
 
 		when(finalDispositionServiceMock.findById(anyLong())).thenReturn(finalDispositions);
