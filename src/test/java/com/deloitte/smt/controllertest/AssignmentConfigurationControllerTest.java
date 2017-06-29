@@ -1,11 +1,20 @@
 package com.deloitte.smt.controllertest;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -36,14 +45,22 @@ public class AssignmentConfigurationControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	  AssignmentConfigurationService assignmentConfigurationServiceMock;
-	
+	AssignmentConfigurationService assignmentConfigurationServiceMock;
+
+	AssignmentConfigurationService assignmentConfigurationServiceMock1;
+
+	@Before
+	public void setUp() {
+		assignmentConfigurationServiceMock1 = mock(AssignmentConfigurationService.class);
+	}
+
 	@Test
 	public void testCreateNewAssignmentConfiguration() throws Exception {
-		AssignmentConfiguration assignConfiguration=new AssignmentConfiguration();
+		AssignmentConfiguration assignConfiguration = new AssignmentConfiguration();
 
-		when(assignmentConfigurationServiceMock.insert(Matchers.any(AssignmentConfiguration.class))).thenReturn(assignConfiguration);
-		
+		when(assignmentConfigurationServiceMock.insert(Matchers.any(AssignmentConfiguration.class)))
+				.thenReturn(assignConfiguration);
+
 		this.mockMvc
 				.perform(post("/camunda/api/signal/assignmentConfiguration")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -51,5 +68,31 @@ public class AssignmentConfigurationControllerTest {
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 
 	}
+
+	@Test
+	public void testUpdateAssignmentConfiguration() throws Exception {
+		AssignmentConfiguration assignConfiguration = new AssignmentConfiguration();
+
+		when(assignmentConfigurationServiceMock.update(Matchers.any(AssignmentConfiguration.class)))
+				.thenReturn(assignConfiguration);
+
+		this.mockMvc
+				.perform(put("/camunda/api/signal/assignmentConfiguration")
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+						.content(TestUtil.convertObjectToJsonBytes(assignConfiguration)))
+				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+	}
+
+	@Test
+	public void testDeleteAssignmentConfiguration() throws  Exception{
+		doNothing().when(assignmentConfigurationServiceMock1).delete(anyLong());
+		
+		this.mockMvc
+				.perform(delete("/camunda/api/signal/assignmentConfiguration/{assignmentConfigurationId}",1)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(status().isOk());
+		
+	}
+
 	
 }
