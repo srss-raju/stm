@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.entity.NonSignal;
-import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SignalService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

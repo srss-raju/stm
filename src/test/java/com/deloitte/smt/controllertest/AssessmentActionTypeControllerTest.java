@@ -20,10 +20,6 @@ import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.AssessmentActionType;
 import com.deloitte.smt.service.AssessmentActionTypeService;
 import com.deloitte.smt.util.TestUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
