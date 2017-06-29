@@ -45,7 +45,7 @@ import com.deloitte.smt.util.TestUtil;
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {"classpath:test.properties"})
-public class DenominationForPoissionTest {
+public class DenominationForPoissionControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
