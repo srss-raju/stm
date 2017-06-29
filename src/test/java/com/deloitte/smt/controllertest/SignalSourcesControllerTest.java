@@ -79,7 +79,7 @@ public class SignalSourcesControllerTest {
 	}
 	
 	@Test
-	public void testUpdateUser() throws Exception {
+	public void testUpdateSignalSource() throws Exception {
 		SignalSources signalSource=new SignalSources();
 
 		when(signalSourcesServiceMock.update(Matchers.any(SignalSources.class))).thenReturn(signalSource);
