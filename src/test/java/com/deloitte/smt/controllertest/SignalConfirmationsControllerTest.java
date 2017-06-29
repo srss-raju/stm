@@ -79,7 +79,7 @@ public class SignalConfirmationsControllerTest {
 	}
 	
 	@Test
-	public void testUpdateUser() throws Exception {
+	public void testUpdateSignalConfirmations() throws Exception {
 		SignalConfirmations signalConfirmations=new SignalConfirmations();
 
 		when(signalConfirmationsServiceMock.update(Matchers.any(SignalConfirmations.class))).thenReturn(signalConfirmations);
@@ -92,7 +92,7 @@ public class SignalConfirmationsControllerTest {
 	}
 	
 	@Test
-	public void testDeleteSignalSource() throws Exception {
+	public void testDeleteSignalConfirmations() throws Exception {
 		
 		doNothing().when(signalConfirmationsServiceMock).delete(anyLong());
 		
@@ -106,7 +106,7 @@ public class SignalConfirmationsControllerTest {
 	}
 	
 	@Test
-	public void testFindSignalSourceById() throws Exception {
+	public void testFindSignalConfirmationsById() throws Exception {
 		SignalConfirmations signalConfirmations=new SignalConfirmations();
 
 		when(signalConfirmationsServiceMock.findById(anyLong())).thenReturn(signalConfirmations);
