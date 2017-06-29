@@ -28,23 +28,23 @@ public class SignalSourcesController {
     SignalSourcesService signalSourcesService;
 
     @PostMapping
-    public List<SignalSources> createNewAssessmentActionType(@RequestBody List<SignalSources> signalSources) {
+    public List<SignalSources> createSignalSources(@RequestBody List<SignalSources> signalSources) {
         return signalSourcesService.insert(signalSources);
     }
 
     @PutMapping
-    public SignalSources updateAssessmentActionType(@RequestBody SignalSources signalSource) throws ApplicationException {
+    public SignalSources updateSignalSource(@RequestBody SignalSources signalSource) throws ApplicationException {
         return  signalSourcesService.update(signalSource);
     }
 
     @DeleteMapping(value = "/{signalSourceId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long signalSourceId) throws ApplicationException {
+    public ResponseEntity<Void> deleteSignalSource(@PathVariable Long signalSourceId) throws ApplicationException {
         signalSourcesService.delete(signalSourceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{signalSourceId}")
-    public SignalSources findAssessmentActionTypeById(@PathVariable Long signalSourceId) throws ApplicationException {
+    public SignalSources findSignalSourceById(@PathVariable Long signalSourceId) throws ApplicationException {
         return signalSourcesService.findById(signalSourceId);
     }
 
