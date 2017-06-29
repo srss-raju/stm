@@ -19,7 +19,7 @@ import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.ExternalDatasetsService;
 
 /**
- * Created by myelleswarapu on 02-05-2017.
+ * Created by RajeshKumar on 02-05-2017.
  */
 @RestController
 @RequestMapping("/camunda/api/signal/ae")
@@ -29,24 +29,24 @@ public class ExternalDatasetsController {
     ExternalDatasetsService externalDatasetsService;
 
     @PostMapping
-    public List<ExternalDatasets> createNewAssessmentActionType(@RequestBody List<ExternalDatasets> externalDatasets) {
+    public List<ExternalDatasets> createExternalDatasets(@RequestBody List<ExternalDatasets> externalDatasets) {
     	return externalDatasetsService.insert(externalDatasets);
     }
 
     @PutMapping
-    public ExternalDatasets updateAssessmentActionType(@RequestBody ExternalDatasets externalDatasets) throws ApplicationException {
+    public ExternalDatasets updateExternalDatasets(@RequestBody ExternalDatasets externalDatasets) throws ApplicationException {
     	return externalDatasetsService.update(externalDatasets);
     }
 
     @DeleteMapping(value = "/{externalDatasetsId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long externalDatasetsId) throws ApplicationException {
+    public ResponseEntity<Void> deleteExternalDatasets(@PathVariable Long externalDatasetsId) throws ApplicationException {
     	externalDatasetsService.delete(externalDatasetsId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{includeAEId}")
-    public ExternalDatasets findAssessmentActionTypeById(@PathVariable Long externalDatasetsId) throws ApplicationException {
-        return externalDatasetsService.findById(externalDatasetsId);
+    public ExternalDatasets findExternalDatasetsById(@PathVariable Long includeAEId) throws ApplicationException {
+        return externalDatasetsService.findById(includeAEId);
     }
 
     @GetMapping
