@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Created by myelleswarapu on 02-05-2017.
+ * Created by RajeshKumar on 02-05-2017.
  */
 @RestController
 @RequestMapping("/camunda/api/signal/confirmations")
@@ -28,23 +28,23 @@ public class SignalConfirmationsController {
     SignalConfirmationsService signalConfirmationsService;
 
     @PostMapping
-    public List<SignalConfirmations> createNewAssessmentActionType(@RequestBody List<SignalConfirmations> signalConfirmations) {
+    public List<SignalConfirmations> createSignalConfirmations(@RequestBody List<SignalConfirmations> signalConfirmations) {
     	return signalConfirmationsService.insert(signalConfirmations);
     }
 
     @PutMapping
-    public SignalConfirmations updateAssessmentActionType(@RequestBody SignalConfirmations signalConfirmation) throws ApplicationException {
+    public SignalConfirmations updateSignalConfirmations(@RequestBody SignalConfirmations signalConfirmation) throws ApplicationException {
         return signalConfirmationsService.update(signalConfirmation);
     }
 
     @DeleteMapping(value = "/{signalConfirmationId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long signalConfirmationId) throws ApplicationException {
+    public ResponseEntity<Void> deleteSignalConfirmations(@PathVariable Long signalConfirmationId) throws ApplicationException {
         signalConfirmationsService.delete(signalConfirmationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{signalConfirmationId}")
-    public SignalConfirmations findAssessmentActionTypeById(@PathVariable Long signalConfirmationId) throws ApplicationException {
+    public SignalConfirmations findSignalConfirmationsById(@PathVariable Long signalConfirmationId) throws ApplicationException {
         return signalConfirmationsService.findById(signalConfirmationId);
     }
 
