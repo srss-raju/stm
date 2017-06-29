@@ -79,7 +79,7 @@ public class RiskPlanActionTypeControllerTest {
 	}
 	
 	@Test
-	public void testUpdateUser() throws Exception {
+	public void testUpdateRiskPlanActionType() throws Exception {
 		RiskPlanActionTaskType riskPlanActionTaskType=new RiskPlanActionTaskType();
 
 		when(riskPlanActionTypeServiceMock.update(Matchers.any(RiskPlanActionTaskType.class))).thenReturn(riskPlanActionTaskType);
@@ -92,7 +92,7 @@ public class RiskPlanActionTypeControllerTest {
 	}
 	
 	@Test
-	public void testDeleteSignalSource() throws Exception {
+	public void testDeleteRiskPlanActionType() throws Exception {
 		
 		doNothing().when(riskPlanActionTypeServiceMock).delete(anyLong());
 		
@@ -106,7 +106,7 @@ public class RiskPlanActionTypeControllerTest {
 	}
 	
 	@Test
-	public void testFindSignalSourceById() throws Exception {
+	public void testFindRiskPlanActionTypeById() throws Exception {
 		RiskPlanActionTaskType riskPlanActionTaskType=new RiskPlanActionTaskType();
 
 		when(riskPlanActionTypeServiceMock.findById(anyLong())).thenReturn(riskPlanActionTaskType);
