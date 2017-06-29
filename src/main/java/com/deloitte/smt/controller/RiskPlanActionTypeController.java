@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Created by myelleswarapu on 02-05-2017.
+ * Created by RajeshKumar on 02-05-2017.
  */
 @RestController
 @RequestMapping("/camunda/api/signal/riskPlanActionType")
@@ -28,23 +28,23 @@ public class RiskPlanActionTypeController {
     RiskPlanActionTypeService riskPlanActionTypeService;
 
     @PostMapping
-    public List<RiskPlanActionTaskType> createNewAssessmentActionType(@RequestBody List<RiskPlanActionTaskType> riskPlanActionTaskTypes) {
+    public List<RiskPlanActionTaskType> createRiskPlanActionType(@RequestBody List<RiskPlanActionTaskType> riskPlanActionTaskTypes) {
     	return riskPlanActionTypeService.insert(riskPlanActionTaskTypes);
     }
 
     @PutMapping
-    public RiskPlanActionTaskType updateAssessmentActionType(@RequestBody RiskPlanActionTaskType riskPlanActionTaskType) throws ApplicationException {
+    public RiskPlanActionTaskType updateRiskPlanActionType(@RequestBody RiskPlanActionTaskType riskPlanActionTaskType) throws ApplicationException {
         return riskPlanActionTypeService.update(riskPlanActionTaskType);
     }
 
     @DeleteMapping(value = "/{riskPlanActionTypeId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long riskPlanActionTypeId) throws ApplicationException {
+    public ResponseEntity<Void> deleteRiskPlanActionType(@PathVariable Long riskPlanActionTypeId) throws ApplicationException {
         riskPlanActionTypeService.delete(riskPlanActionTypeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{riskPlanActionTypeId}")
-    public RiskPlanActionTaskType findAssessmentActionTypeById(@PathVariable Long riskPlanActionTypeId) throws ApplicationException {
+    public RiskPlanActionTaskType findRiskPlanActionTypeById(@PathVariable Long riskPlanActionTypeId) throws ApplicationException {
         return riskPlanActionTypeService.findById(riskPlanActionTypeId);
     }
 
