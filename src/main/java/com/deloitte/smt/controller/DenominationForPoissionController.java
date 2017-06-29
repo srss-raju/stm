@@ -19,7 +19,7 @@ import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.DenominationForPoissionService;
 
 /**
- * Created by myelleswarapu on 02-05-2017.
+ * Created by RajeshKumar on 02-05-2017.
  */
 @RestController
 @RequestMapping("/camunda/api/signal/denomination")
@@ -29,23 +29,23 @@ public class DenominationForPoissionController {
     DenominationForPoissionService denominationForPoissionService;
 
     @PostMapping
-    public List<DenominatorForPoisson> createNewAssessmentActionType(@RequestBody List<DenominatorForPoisson> denominationForPoissions) {
+    public List<DenominatorForPoisson> createDenominationForPoission(@RequestBody List<DenominatorForPoisson> denominationForPoissions) {
     	return denominationForPoissionService.insert(denominationForPoissions);
     }
 
     @PutMapping
-    public DenominatorForPoisson updateAssessmentActionType(@RequestBody DenominatorForPoisson denominationForPoission) throws ApplicationException {
+    public DenominatorForPoisson updateDenominationForPoission(@RequestBody DenominatorForPoisson denominationForPoission) throws ApplicationException {
     	return denominationForPoissionService.update(denominationForPoission);
     }
 
     @DeleteMapping(value = "/{denominationForPoissionId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long denominationForPoissionId) throws ApplicationException {
+    public ResponseEntity<Void> deleteDenominationForPoission(@PathVariable Long denominationForPoissionId) throws ApplicationException {
     	denominationForPoissionService.delete(denominationForPoissionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{denominationForPoissionId}")
-    public DenominatorForPoisson findAssessmentActionTypeById(@PathVariable Long denominationForPoissionId) throws ApplicationException {
+    public DenominatorForPoisson findDenominationForPoissionById(@PathVariable Long denominationForPoissionId) throws ApplicationException {
         return denominationForPoissionService.findById(denominationForPoissionId);
     }
 
