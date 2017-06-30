@@ -46,7 +46,7 @@ import com.deloitte.smt.repository.TaskInstRepository;
 
 
 /**
- * Created by myelleswarapu on 12-04-2017.
+ * Created by RajeshKumar on 12-04-2017.
  */
 @Transactional
 @Service
@@ -161,9 +161,10 @@ public class RiskPlanService {
 	 * @param searchDto
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<RiskPlan> findAllRiskPlansForSearch2(SearchDto searchDto) {
 		StringBuilder queryBuilder = new StringBuilder();
-		List<String> whereClauses = new ArrayList();
+		List<String> whereClauses = new ArrayList<>();
 
 		boolean searchAll=false;
 		
