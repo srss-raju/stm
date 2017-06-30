@@ -44,7 +44,6 @@ import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 
-
 /**
  * Created by RajeshKumar on 12-04-2017.
  */
@@ -148,16 +147,6 @@ public class RiskPlanService {
 	}
 
 	/**
-	 * select r.id from sm_risk_plan r left join sm_assessment_plan a on
-	 * r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id
-	 * inner join sm_product p on p.topic_id=t.id inner join sm_ingredient i on
-	 * i.topic_id=t.id inner join sm_license l on l.topic_id=t.id where r.status
-	 * in ('Completed') and r.assign_to in ('448945') and r.risk_task_status in
-	 * ('Not Completed') and r.created_date > '2017-05-03' and r.created_date <
-	 * '2017-08-08' and r.risk_due_date and p.product_name in ('SURJAVIL,
-	 * Injection') and i.ingredient_name in ('IBUPROFEN') and l.license_name in
-	 * ('Test') ORDER BY r.created_date DESC
-	 * 
 	 * @param searchDto
 	 * @return
 	 */
@@ -166,10 +155,10 @@ public class RiskPlanService {
 		StringBuilder queryBuilder = new StringBuilder();
 		List<String> whereClauses = new ArrayList<>();
 
-		boolean searchAll=false;
-		
+		boolean searchAll = false;
+
 		if (searchDto == null) {
-			searchAll=true;
+			searchAll = true;
 		} else if (!CollectionUtils.isEmpty(searchDto.getProducts())
 				|| !CollectionUtils.isEmpty(searchDto.getLicenses())
 				|| !CollectionUtils.isEmpty(searchDto.getIngredients())) {
@@ -192,23 +181,23 @@ public class RiskPlanService {
 			}
 
 		}
-		
-		if(searchAll){
+
+		if (searchAll) {
 			queryBuilder.append("SELECT r.* FROM sm_risk_plan r ");
 		}
 
 		buildWhereConditions(searchDto, whereClauses);
-		appendWhereClause(whereClauses,queryBuilder);
-	
+		appendWhereClause(whereClauses, queryBuilder);
+
 		queryBuilder.append(" order by created_date DESC");
 		String queryStr = queryBuilder.toString();
 		Query query = entityManager.createNativeQuery(queryStr, RiskPlan.class);
-		setParameters(queryStr,searchDto,query);
+		setParameters(queryStr, searchDto, query);
 
 		return query.getResultList();
 	}
-	
-	private void appendWhereClause(List<String> whereClauses,StringBuilder queryBuilder){
+
+	private void appendWhereClause(List<String> whereClauses, StringBuilder queryBuilder) {
 		if (!whereClauses.isEmpty()) {
 			int i = 1;
 			queryBuilder.append(" where ");
@@ -221,8 +210,8 @@ public class RiskPlanService {
 			}
 		}
 	}
-	
-	private void buildWhereConditions(SearchDto searchDto,List<String> whereClauses){
+
+	private void buildWhereConditions(SearchDto searchDto, List<String> whereClauses) {
 		if (searchDto != null) {
 			addStatus(searchDto, whereClauses);
 			addAssignees(searchDto, whereClauses);
@@ -268,8 +257,7 @@ public class RiskPlanService {
 	 * @param searchDto
 	 * @param whereClauses
 	 */
-	private void addRiskTaskStatus(SearchDto searchDto,
-			List<String> whereClauses) {
+	private void addRiskTaskStatus(SearchDto searchDto, List<String> whereClauses) {
 		if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
 			whereClauses.add(" r.risk_task_status in :riskTaskStatus");
 		}
@@ -294,8 +282,8 @@ public class RiskPlanService {
 			whereClauses.add(" r.status in :statuses");
 		}
 	}
-	
-	private void setParameters(String queryStr,SearchDto searchDto,Query query){
+
+	private void setParameters(String queryStr, SearchDto searchDto, Query query) {
 		if (queryStr.contains(":statuses")) {
 			query.setParameter("statuses", searchDto.getStatuses());
 		}
@@ -345,10 +333,10 @@ public class RiskPlanService {
 		List<RiskPlan> riskPlanList = new ArrayList<>();
 		StringBuilder queryString = new StringBuilder("SELECT o FROM RiskPlan o ");
 		boolean executeQuery = false;
-		
-		executeQuery = appendAssessmentPlan(searchDto, riskTopicIds,queryString, executeQuery);
+
+		executeQuery = appendAssessmentPlan(searchDto, riskTopicIds, queryString, executeQuery);
 		executeQuery = appendRiskPlanStatus(searchDto, queryString, executeQuery);
-		
+
 		queryString.append(" ORDER BY o.createdDate DESC");
 		Query q = entityManager.createQuery(queryString.toString(), RiskPlan.class);
 
@@ -394,10 +382,11 @@ public class RiskPlanService {
 	 * @param executeQuery
 	 * @return
 	 */
-	private boolean appendAssessmentPlan(SearchDto searchDto, List<Long> riskTopicIds, StringBuilder queryString, boolean executeQuery) {
+	private boolean appendAssessmentPlan(SearchDto searchDto, List<Long> riskTopicIds, StringBuilder queryString,
+			boolean executeQuery) {
 		boolean assessmentPlanFlag = executeQuery;
 		if (!CollectionUtils.isEmpty(riskTopicIds) && searchDto != null) {
-				assessmentPlanFlag = appendQueryString(searchDto, queryString, assessmentPlanFlag);
+			assessmentPlanFlag = appendQueryString(searchDto, queryString, assessmentPlanFlag);
 		}
 		return assessmentPlanFlag;
 	}
@@ -410,7 +399,8 @@ public class RiskPlanService {
 	 */
 	private boolean appendQueryString(SearchDto searchDto, StringBuilder queryString, boolean assessmentPlanFlag) {
 		boolean executeQuery = assessmentPlanFlag;
-		if (!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())) {
+		if (!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses())
+				|| !CollectionUtils.isEmpty(searchDto.getIngredients())) {
 			executeQuery = true;
 			queryString.append("INNER JOIN o.assessmentPlan a ");
 			queryString.append("INNER JOIN a.topics t WHERE t.id IN :topicIds ");
