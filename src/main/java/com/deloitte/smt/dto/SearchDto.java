@@ -3,9 +3,8 @@ package com.deloitte.smt.dto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by myelleswarapu on 14-04-2017.

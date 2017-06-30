@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -36,6 +37,7 @@ import com.deloitte.smt.service.DashboardService;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@TestPropertySource(locations = {"classpath:test.properties"})
 public class DashboardControllerTest {
 	
 	@Autowired
@@ -46,7 +48,7 @@ public class DashboardControllerTest {
 	
 	@Test
 	public void testGetSmtComplianceDetails() throws Exception{
-		Map<String, List<SmtComplianceDto>> map=new HashMap();
+		Map<String, List<SmtComplianceDto>> map=new HashMap<>();
 		when(dashboardServiceMock.getSmtComplianceDetails()).thenReturn(map);
 				
 
@@ -70,7 +72,7 @@ public class DashboardControllerTest {
 	
 	@Test
 	public void testGetValidationOutcomes() throws Exception{
-		List<ValidationOutComesDTO> list=new ArrayList();
+		List<ValidationOutComesDTO> list=new ArrayList<>();
 		ValidationOutComesDTO dto=new ValidationOutComesDTO();
 		list.add(dto);
 		
@@ -84,7 +86,7 @@ public class DashboardControllerTest {
 	
 	@Test
 	public void testGetDetectedSignalDetails() throws Exception{
-		List<SignalDetectDTO> list=new ArrayList();
+		List<SignalDetectDTO> list=new ArrayList<>();
 		when(dashboardServiceMock.getDetectedSignalDetails()).thenReturn(list);
 		
 		this.mockMvc

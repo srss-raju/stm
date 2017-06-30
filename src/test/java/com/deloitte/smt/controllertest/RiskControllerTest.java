@@ -25,6 +25,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +45,7 @@ import com.deloitte.smt.util.TestUtil;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@TestPropertySource(locations = {"classpath:test.properties"})
 public class RiskControllerTest {
 
 	@Autowired
@@ -77,7 +79,7 @@ public class RiskControllerTest {
 	@Test
 	public void testGetAllRiskPlans() throws IOException, Exception{
 		
-		List<RiskPlan> riskPlans=new ArrayList();
+		List<RiskPlan> riskPlans=new ArrayList<>();
 		SearchDto searchDto=new SearchDto();
 		when(riskPlanServiceMock.findAllRiskPlansForSearch(Matchers.any(SearchDto.class))).thenReturn(riskPlans);
 		
@@ -121,7 +123,7 @@ public class RiskControllerTest {
 	@Test
 	public void testGetAllByRiskId() throws Exception{
 		
-		List<RiskTask> list=new ArrayList();
+		List<RiskTask> list=new ArrayList<>();
 		when(riskPlanServiceMock.findAllByRiskId(anyString(), anyString())).thenReturn(list);
 		
 		this.mockMvc
