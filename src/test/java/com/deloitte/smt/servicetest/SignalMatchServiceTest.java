@@ -29,7 +29,6 @@ import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.AttachmentService;
-import com.deloitte.smt.service.MeetingService;
 import com.deloitte.smt.service.SignalMatchService;
 import com.deloitte.smt.util.TestUtil;
 
@@ -43,8 +42,6 @@ public class SignalMatchServiceTest {
 	@Autowired
 	private SignalMatchService signalMatchService;
 	
-	@Autowired
-	private MeetingService meetingService;
 	
 	@MockBean
 	MeetingRepository meetingRepository;
