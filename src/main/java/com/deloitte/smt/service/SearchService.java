@@ -125,33 +125,10 @@ public class SearchService {
     
     
     public boolean getSignalIdsForSearch(SearchDto searchDto, List<Long> topicIds, boolean searchAll) {
-        if(searchDto!=null && !CollectionUtils.isEmpty(searchDto.getLicenses())) {
-            searchAll = false;
-            List<License> licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
-            licenses.parallelStream().forEach(license -> {
-                if(license.getTopicId() != null) {
-                    topicIds.add(license.getTopicId());
-                }
-            });
-        }
-        if(searchDto!=null && !CollectionUtils.isEmpty(searchDto.getIngredients())) {
-            searchAll = false;
-            List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
-            ingredients.parallelStream().forEach(ingredient -> {
-                if(ingredient.getTopicId() != null) {
-                    topicIds.add(ingredient.getTopicId());
-                }
-            });
-        }
-        if(searchDto!=null && !CollectionUtils.isEmpty(searchDto.getProducts())) {
-            searchAll = false;
-            List<Product> products = productRepository.findAllByProductNameIn(searchDto.getProducts());
-            products.parallelStream().forEach(product -> {
-                if(product.getTopicId() != null) {
-                    topicIds.add(product.getTopicId());
-                }
-            });
-        }
+    	boolean searchAllFlag = searchAll;
+    	searchAllFlag = addLicenses(searchDto, topicIds, searchAllFlag);
+    	searchAllFlag = addIngredients(searchDto, topicIds, searchAllFlag);
+    	searchAllFlag = addProducts(searchDto, topicIds, searchAllFlag);
         Set<Long> allItems = new HashSet<>();
         Set<Long> duplicates = topicIds.parallelStream()
                 .filter(n -> !allItems.add(n))
@@ -160,6 +137,66 @@ public class SearchService {
             topicIds.clear();
             topicIds.addAll(duplicates);
         }
-        return searchAll;
+        return searchAllFlag;
     }
+
+	/**
+	 * @param searchDto
+	 * @param topicIds
+	 * @param searchAll
+	 * @return
+	 */
+	private boolean addProducts(SearchDto searchDto, List<Long> topicIds, boolean searchAll) {
+		boolean searchAllFlag = searchAll;
+		if(searchDto!=null && !CollectionUtils.isEmpty(searchDto.getProducts())) {
+			searchAllFlag = false;
+            List<Product> products = productRepository.findAllByProductNameIn(searchDto.getProducts());
+            products.parallelStream().forEach(product -> {
+                if(product.getTopicId() != null) {
+                    topicIds.add(product.getTopicId());
+                }
+            });
+        }
+		return searchAllFlag;
+	}
+
+	/**
+	 * @param searchDto
+	 * @param topicIds
+	 * @param searchAll
+	 * @return
+	 */
+	private boolean addIngredients(SearchDto searchDto, List<Long> topicIds, boolean searchAll) {
+		boolean searchAllFlag = searchAll;
+		if(searchDto!=null && !CollectionUtils.isEmpty(searchDto.getIngredients())) {
+			searchAllFlag = false;
+            List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(searchDto.getIngredients());
+            ingredients.parallelStream().forEach(ingredient -> {
+                if(ingredient.getTopicId() != null) {
+                    topicIds.add(ingredient.getTopicId());
+                }
+            });
+        }
+		return searchAllFlag;
+	}
+
+	/**
+	 * @param searchDto
+	 * @param topicIds
+	 * @param searchAll
+	 * @return
+	 */
+	private boolean addLicenses(SearchDto searchDto, List<Long> topicIds, boolean searchAll) {
+		boolean searchAllFlag = searchAll;
+		if(searchDto!=null && !CollectionUtils.isEmpty(searchDto.getLicenses())) {
+			searchAllFlag = false;
+            List<License> licenses = licenseRepository.findAllByLicenseNameIn(searchDto.getLicenses());
+            licenses.parallelStream().forEach(license -> {
+                if(license.getTopicId() != null) {
+                    topicIds.add(license.getTopicId());
+                }
+            });
+        }
+		return searchAllFlag;
+	}
 }
