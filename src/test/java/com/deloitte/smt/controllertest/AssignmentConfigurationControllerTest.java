@@ -1,6 +1,5 @@
 package com.deloitte.smt.controllertest;
 
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -31,7 +30,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.AssignmentConfigurationService;
 import com.deloitte.smt.util.TestUtil;
 
