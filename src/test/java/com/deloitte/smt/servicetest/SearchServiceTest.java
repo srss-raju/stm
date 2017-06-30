@@ -167,5 +167,4 @@ public class SearchServiceTest {
 		given(this.productRepository.findAllByProductNameIn(products)).willReturn(productList);
 		searchService.getSignalIdsForSearch(searchDto, topicIds, false);
 	}
-	
 }
