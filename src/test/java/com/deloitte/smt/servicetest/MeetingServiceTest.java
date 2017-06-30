@@ -61,7 +61,7 @@ public class MeetingServiceTest {
 
     
 	@Test
-	public void testInsert() throws Exception{
+	public void testInsert() {
 		try{
 			Meeting meeting = new Meeting();
 			meeting.setId(1l);
@@ -72,7 +72,7 @@ public class MeetingServiceTest {
 	}
 	
 	@Test
-	public void testInsertWithNull() throws Exception{
+	public void testInsertWithNull() {
 		try{
 			Meeting meeting = new Meeting();
 			meetingService.insert(meeting, null);
@@ -82,7 +82,7 @@ public class MeetingServiceTest {
 	}
 	
 	@Test
-	public void testUpdate() throws Exception{
+	public void testUpdate() {
 		try{
 			Meeting meeting = new Meeting();
 			meeting.setId(1l);
@@ -93,7 +93,7 @@ public class MeetingServiceTest {
 	}
 	
 	@Test
-	public void testUpdateWithNull() throws Exception{
+	public void testUpdateWithNull() {
 		try{
 			Meeting meeting = new Meeting();
 			meetingService.update(meeting, null);
@@ -110,7 +110,7 @@ public class MeetingServiceTest {
 	}
 	
 	@Test
-	public void testDeleteWithNull() throws Exception{
+	public void testDeleteWithNull() {
 		try{
 			meetingService.delete(1l);
 		}catch(Exception ex){
@@ -124,7 +124,7 @@ public class MeetingServiceTest {
 	}
 	
 	@Test
-	public void testFindAllyByResourceIdAndMeetingType() throws Exception{
+	public void testFindAllyByResourceIdAndMeetingType() {
 		try{
 			meetingService.findAllyByResourceIdAndMeetingType(1l, null);
 		}catch(Exception ex){
