@@ -191,8 +191,6 @@ public class RiskPlanService {
 				whereClauses.add("l.license_name in :licenseNames");
 			}
 
-		}else{
-			searchAll=true;
 		}
 		
 		if(searchAll){
@@ -226,38 +224,74 @@ public class RiskPlanService {
 	
 	private void buildWhereConditions(SearchDto searchDto,List<String> whereClauses){
 		if (searchDto != null) {
-			if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-				whereClauses.add(" r.status in :statuses");
+			addStatus(searchDto, whereClauses);
+			addAssignees(searchDto, whereClauses);
+			addRiskTaskStatus(searchDto, whereClauses);
+			addStartDate(searchDto, whereClauses);
+			addEndDate(searchDto, whereClauses);
+		}
+	}
+
+	/**
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addEndDate(SearchDto searchDto, List<String> whereClauses) {
+		if (null != searchDto.getEndDate()) {
+			if (DateKeyType.DUEDATE.name().equalsIgnoreCase(searchDto.getDateKey())) {
+				whereClauses.add("r.risk_due_date<= :endDate");
+
+			} else if (DateKeyType.CREATED.name().equalsIgnoreCase(searchDto.getDateKey())) {
+				whereClauses.add("r.created_date<= :endDate");
+			}
+		}
+	}
+
+	/**
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addStartDate(SearchDto searchDto, List<String> whereClauses) {
+		if (null != searchDto.getStartDate()) {
+			if (DateKeyType.DUEDATE.name().equalsIgnoreCase(searchDto.getDateKey())) {
+				whereClauses.add(" r.risk_due_date>= :startDate ");
+
+			} else if (DateKeyType.CREATED.name().equalsIgnoreCase(searchDto.getDateKey())) {
+				whereClauses.add(" r.created_date>= :startDate");
+
 			}
 
-			if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-				whereClauses.add(" r.assign_to in :assignTo");
-			}
+		}
+	}
 
-			if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
-				whereClauses.add(" r.risk_task_status in :riskTaskStatus");
-			}
+	/**
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addRiskTaskStatus(SearchDto searchDto,
+			List<String> whereClauses) {
+		if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
+			whereClauses.add(" r.risk_task_status in :riskTaskStatus");
+		}
+	}
 
-			if (null != searchDto.getStartDate()) {
-				if (DateKeyType.DUEDATE.name().equalsIgnoreCase(searchDto.getDateKey())) {
-					whereClauses.add(" r.risk_due_date>= :startDate ");
+	/**
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addAssignees(SearchDto searchDto, List<String> whereClauses) {
+		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+			whereClauses.add(" r.assign_to in :assignTo");
+		}
+	}
 
-				} else if (DateKeyType.CREATED.name().equalsIgnoreCase(searchDto.getDateKey())) {
-					whereClauses.add(" r.created_date>= :startDate");
-
-				}
-
-			}
-
-			if (null != searchDto.getEndDate()) {
-				if (DateKeyType.DUEDATE.name().equalsIgnoreCase(searchDto.getDateKey())) {
-					whereClauses.add("r.risk_due_date<= :endDate");
-
-				} else if (DateKeyType.CREATED.name().equalsIgnoreCase(searchDto.getDateKey())) {
-					whereClauses.add("r.created_date<= :endDate");
-				}
-			}
-
+	/**
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addStatus(SearchDto searchDto, List<String> whereClauses) {
+		if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
+			whereClauses.add(" r.status in :statuses");
 		}
 	}
 	
@@ -311,24 +345,10 @@ public class RiskPlanService {
 		List<RiskPlan> riskPlanList = new ArrayList<>();
 		StringBuilder queryString = new StringBuilder("SELECT o FROM RiskPlan o ");
 		boolean executeQuery = false;
-		if (!CollectionUtils.isEmpty(riskTopicIds)) {
-			if (searchDto != null && (!CollectionUtils.isEmpty(searchDto.getProducts())
-					|| !CollectionUtils.isEmpty(searchDto.getLicenses())
-					|| !CollectionUtils.isEmpty(searchDto.getIngredients()))) {
-				executeQuery = true;
-				queryString.append("INNER JOIN o.assessmentPlan a ");
-				queryString.append("INNER JOIN a.topics t WHERE t.id IN :topicIds ");
-			}
-		}
-
-		if (searchDto != null && !CollectionUtils.isEmpty(searchDto.getStatuses())) {
-			executeQuery = true;
-			if (queryString.toString().contains(":topicIds")) {
-				queryString.append(" AND o.status IN :riskPlanStatus ");
-			} else {
-				queryString.append(" WHERE o.status IN :riskPlanStatus ");
-			}
-		}
+		
+		executeQuery = appendAssessmentPlan(searchDto, riskTopicIds,queryString, executeQuery);
+		executeQuery = appendRiskPlanStatus(searchDto, queryString, executeQuery);
+		
 		queryString.append(" ORDER BY o.createdDate DESC");
 		Query q = entityManager.createQuery(queryString.toString(), RiskPlan.class);
 
@@ -346,6 +366,56 @@ public class RiskPlanService {
 			riskPlanList = q.getResultList();
 		}
 		return riskPlanList;
+	}
+
+	/**
+	 * @param searchDto
+	 * @param queryString
+	 * @param executeQuery
+	 * @return
+	 */
+	private boolean appendRiskPlanStatus(SearchDto searchDto, StringBuilder queryString, boolean executeQuery) {
+		boolean riskPlanStatusFlag = executeQuery;
+		if (searchDto != null && !CollectionUtils.isEmpty(searchDto.getStatuses())) {
+			riskPlanStatusFlag = true;
+			if (queryString.toString().contains(":topicIds")) {
+				queryString.append(" AND o.status IN :riskPlanStatus ");
+			} else {
+				queryString.append(" WHERE o.status IN :riskPlanStatus ");
+			}
+		}
+		return riskPlanStatusFlag;
+	}
+
+	/**
+	 * @param searchDto
+	 * @param riskTopicIds
+	 * @param queryString
+	 * @param executeQuery
+	 * @return
+	 */
+	private boolean appendAssessmentPlan(SearchDto searchDto, List<Long> riskTopicIds, StringBuilder queryString, boolean executeQuery) {
+		boolean assessmentPlanFlag = executeQuery;
+		if (!CollectionUtils.isEmpty(riskTopicIds) && searchDto != null) {
+				assessmentPlanFlag = appendQueryString(searchDto, queryString, assessmentPlanFlag);
+		}
+		return assessmentPlanFlag;
+	}
+
+	/**
+	 * @param searchDto
+	 * @param queryString
+	 * @param assessmentPlanFlag
+	 * @return
+	 */
+	private boolean appendQueryString(SearchDto searchDto, StringBuilder queryString, boolean assessmentPlanFlag) {
+		boolean executeQuery = assessmentPlanFlag;
+		if (!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses()) || !CollectionUtils.isEmpty(searchDto.getIngredients())) {
+			executeQuery = true;
+			queryString.append("INNER JOIN o.assessmentPlan a ");
+			queryString.append("INNER JOIN a.topics t WHERE t.id IN :topicIds ");
+		}
+		return executeQuery;
 	}
 
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {

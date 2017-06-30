@@ -115,7 +115,7 @@ public class SignalDetectionControllerTest {
 		SearchDto searchDto=new SearchDto();
 		searchDto.setGantt(true);
 		
-		List<SignalDetection> detectionList=new ArrayList();
+		List<SignalDetection> detectionList=new ArrayList<>();
 		SignalDetection signalDection = new SignalDetection();
 		detectionList.add(signalDection);
 		

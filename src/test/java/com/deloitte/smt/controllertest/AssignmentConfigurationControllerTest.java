@@ -108,7 +108,7 @@ public class AssignmentConfigurationControllerTest {
 	
 	@Test
 	public void testFindAll() throws IOException, Exception {
-		List<AssignmentConfiguration> list=new ArrayList();
+		List<AssignmentConfiguration> list=new ArrayList<>();
 		AssignmentConfiguration config=new AssignmentConfiguration();
 		list.add(config);
 		
