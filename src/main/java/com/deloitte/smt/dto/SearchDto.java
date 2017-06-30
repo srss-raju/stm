@@ -12,13 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class SearchDto {
 
-	public static void main(String[] args) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        //mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        SearchDto dto=new SearchDto();
-        System.out.println(mapper.writeValueAsString(dto));
-
-	}
+	
 	private List<String> statuses;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
