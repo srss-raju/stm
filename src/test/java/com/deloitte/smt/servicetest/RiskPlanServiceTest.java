@@ -104,7 +104,6 @@ public class RiskPlanServiceTest {
 	@MockBean
 	AssignmentConfigurationRepository assignmentConfigurationRepository;
 	
-		
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
 	    {
 	      jobExecutorActivate = false;
