@@ -4,12 +4,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by myelleswarapu on 14-04-2017.
  */
 public class SearchDto {
 
+	public static void main(String[] args) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        //mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        SearchDto dto=new SearchDto();
+        System.out.println(mapper.writeValueAsString(dto));
+
+	}
 	private List<String> statuses;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
