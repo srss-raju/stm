@@ -28,7 +28,8 @@
         <sonar.exclusions>
         	**com/deloitte/smt/util/Constants.java,
          	**com/deloitte/smt/entity/*.java,
-         	**com/deloitte/smt/dto/*.java
+         	**com/deloitte/smt/dto/*.java,
+         	**com/deloitte/smt/constant/*.java
          </sonar.exclusions>
 	</properties>
 
