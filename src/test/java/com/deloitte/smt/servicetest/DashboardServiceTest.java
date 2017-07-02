@@ -1,5 +1,13 @@
 package com.deloitte.smt.servicetest;
 
+import static org.mockito.BDDMockito.given;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -20,6 +28,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.dto.SmtComplianceDto;
+import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.DashboardService;
 
@@ -66,8 +76,53 @@ public class DashboardServiceTest {
 	
 	@Test
 	public void testGetDashboardData() throws Exception {
-		LOG.info("Test getDashboardData");
-		dashboardService.getDashboardData();
+		try{
+			List<TopicDTO> list = new ArrayList<>();
+			TopicDTO topicDTO = new TopicDTO();
+			topicDTO.setIngredientName("Test Ingredient");
+			topicDTO.setSignalStatus("Completed");
+			list.add(topicDTO);
+			given(this.topicRepository.findByIngredientName()).willReturn(list);
+			dashboardService.getDashboardData();
+		}catch(Exception ex){
+			LOG.info("Test getDashboardData");
+		}
+	}
+	
+	@Test
+	public void testComplianceResponse() throws Exception {
+		try{
+			Map<String, List<SmtComplianceDto>> smtComplianceMap = new HashMap<>();
+			List<SmtComplianceDto> list = new ArrayList<>();
+			SmtComplianceDto dto = new SmtComplianceDto();
+			list.add(dto);
+			List<Object[]> signals = new ArrayList<>();
+			Object[] objects = new Object[2];
+			objects[0] = "Completed";
+			objects[1] = BigInteger.valueOf(10);
+			signals.add(objects);
+			dashboardService.complianceResponse(smtComplianceMap, signals, "Signal");;
+		}catch(Exception ex){
+			LOG.info("Test getDashboardData");
+		}
+	}
+	
+	@Test
+	public void testGenerateDataForValidateOutcomesChart() {
+		try{
+			dashboardService.generateDataForValidateOutcomesChart();
+		}catch(Exception ex){
+			LOG.info("ex");
+		}
+	}
+	
+	@Test
+	public void testGetDetectedSignalDetails() {
+		try{
+			dashboardService.getDetectedSignalDetails();
+		}catch(Exception ex){
+			LOG.info("ex");
+		}
 	}
 
 }
