@@ -233,7 +233,7 @@ public class SignalDetectionServiceTest {
 	}
 	
 	@Test
-	public void testGanttDetections() {
+	public void testGanttDetectionsDaily() {
 		try{
 			List<SignalDetection> detections = new ArrayList<>();
 			SignalDetection signalDetection = new SignalDetection();
@@ -247,8 +247,65 @@ public class SignalDetectionServiceTest {
 		}
 	}
 	
+	@Test
+	public void testGanttDetectionsWeekly() {
+		try{
+			List<SignalDetection> detections = new ArrayList<>();
+			SignalDetection signalDetection = new SignalDetection();
+			signalDetection.setCreatedDate(new Date());
+			signalDetection.setWindowType("1");
+			signalDetection.setRunFrequency("Weekly");
+			detections.add(signalDetection);
+			signalDetectionService.ganttDetections(detections);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
 	
+	@Test
+	public void testGanttDetectionsMonthly() {
+		try{
+			List<SignalDetection> detections = new ArrayList<>();
+			SignalDetection signalDetection = new SignalDetection();
+			signalDetection.setCreatedDate(new Date());
+			signalDetection.setWindowType("1");
+			signalDetection.setRunFrequency("Monthly");
+			detections.add(signalDetection);
+			signalDetectionService.ganttDetections(detections);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
 	
+	@Test
+	public void testGanttDetectionsQuarterly() {
+		try{
+			List<SignalDetection> detections = new ArrayList<>();
+			SignalDetection signalDetection = new SignalDetection();
+			signalDetection.setCreatedDate(new Date());
+			signalDetection.setWindowType("1");
+			signalDetection.setRunFrequency("Quarterly");
+			detections.add(signalDetection);
+			signalDetectionService.ganttDetections(detections);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testGanttDetectionsYearly() {
+		try{
+			List<SignalDetection> detections = new ArrayList<>();
+			SignalDetection signalDetection = new SignalDetection();
+			signalDetection.setCreatedDate(new Date());
+			signalDetection.setWindowType("1");
+			signalDetection.setRunFrequency("Yearly");
+			detections.add(signalDetection);
+			signalDetectionService.ganttDetections(detections);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
 	private void setOthers(SignalDetection signalDetection, Ingredient ingredient) {
 		List<IncludeAE> includeAEs = new ArrayList<>();
 		IncludeAE includeAE = new IncludeAE();
