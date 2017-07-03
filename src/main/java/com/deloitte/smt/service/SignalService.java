@@ -808,7 +808,7 @@ public class SignalService {
 	 * @param action
 	 * @param signalAction
 	 */
-	private void associateTemplateURLs(SignalAction action, SignalAction signalAction) {
+	public void associateTemplateURLs(SignalAction action, SignalAction signalAction) {
 		List<SignalURL> templateTaskUrls = signalURLRepository.findByTopicId(action.getId());
 		if (!CollectionUtils.isEmpty(templateTaskUrls)) {
 			List<SignalURL> assessmentActionSignalURLs = new ArrayList<>();
@@ -829,7 +829,7 @@ public class SignalService {
 	 * @param action
 	 * @param signalAction
 	 */
-	private void associateTemplateAttachments(Sort sort, SignalAction action, SignalAction signalAction) {
+	public void associateTemplateAttachments(Sort sort, SignalAction action, SignalAction signalAction) {
 		List<Attachment> attachments = attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(
 				action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort);
 		if (!CollectionUtils.isEmpty(attachments)) {

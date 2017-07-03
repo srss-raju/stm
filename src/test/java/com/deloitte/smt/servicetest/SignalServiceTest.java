@@ -401,6 +401,44 @@ public class SignalServiceTest {
 	}
 	
 	@Test
+	public void testAssociateTemplateAttachments() {
+		try{
+			Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
+			List<Attachment> attachments = new ArrayList<>(); 
+			Attachment attachment = new Attachment();
+			attachments.add(attachment);
+			
+			SignalAction action = new SignalAction();
+			action.setId(1l);
+			SignalAction signalAction = new SignalAction();
+			signalAction.setId(1l);
+			 given(this.attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(
+						action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort)).willReturn(attachments);
+			 signalService.associateTemplateAttachments(sort, action, signalAction);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testAssociateTemplateURLs() {
+		try{
+			SignalAction action = new SignalAction();
+			action.setId(1l);
+			SignalAction signalAction = new SignalAction();
+			signalAction.setId(1l);
+			List<SignalURL> templateTaskUrls = new ArrayList<>(); 
+			SignalURL url = new SignalURL();
+			templateTaskUrls.add(url);
+			
+			 given(this.signalURLRepository.findByTopicId(action.getId())).willReturn(templateTaskUrls);
+			 signalService.associateTemplateURLs(action, signalAction);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
 	public void testDeleteSignalURL() {
 		try{
 			SignalURL signalURL = new SignalURL();
