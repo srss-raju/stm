@@ -2,6 +2,7 @@ package com.deloitte.smt.servicetest;
 
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.dto.SmtComplianceDto;
 import com.deloitte.smt.dto.TopicDTO;
+import com.deloitte.smt.dto.ValidationOutComesDTO;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.DashboardService;
 
@@ -111,6 +113,64 @@ public class DashboardServiceTest {
 	public void testGenerateDataForValidateOutcomesChart() {
 		try{
 			dashboardService.generateDataForValidateOutcomesChart();
+		}catch(Exception ex){
+			LOG.info("ex");
+		}
+	}
+	
+	@Test
+	public void testContinueToMontior() {
+		try{
+			List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
+			dashboardService.continueToMontior(validateOutComesList, BigInteger.valueOf(1l));
+		}catch(Exception ex){
+			LOG.info("ex");
+		}
+	}
+	
+	@Test
+	public void testNonSignal() {
+		try{
+			List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
+			dashboardService.nonSignal(validateOutComesList, BigInteger.valueOf(1l));
+		}catch(Exception ex){
+			LOG.info("ex");
+		}
+	}
+	
+	@Test
+	public void testDetectedSignals() {
+		try{
+			java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf("2007-09-23 10:10:10.0");
+			List<Object[]> signals = new ArrayList<>();
+			Object[] objects = new Object[5];
+			objects[0] = timestamp;
+			objects[1] = BigInteger.valueOf(1l);
+			objects[2] = BigInteger.valueOf(1l);
+			objects[3] = BigInteger.valueOf(1l);
+			objects[4] = BigDecimal.valueOf(1l);
+			signals.add(objects);
+			dashboardService.detectedSignals(signals);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testValidatedSignalWithRisk() {
+		try{
+			List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
+			dashboardService.validatedSignalWithRisk(validateOutComesList, BigInteger.valueOf(1l));
+		}catch(Exception ex){
+			LOG.info("ex");
+		}
+	}
+	
+	@Test
+	public void testValiatedSignalWithoutRisk() {
+		try{
+			List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
+			dashboardService.valiatedSignalWithoutRisk(validateOutComesList, BigInteger.valueOf(1l));
 		}catch(Exception ex){
 			LOG.info("ex");
 		}

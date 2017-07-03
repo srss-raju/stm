@@ -237,44 +237,76 @@ public class DashboardService {
 				"select count(*) from sm_assessment_plan a  inner join sm_topic t on a.id=t.assessment_plan_id where t.created_date >= (now() - interval '1 month') and a.risk_plan_id is null and t.signal_confirmation='"
 						+ SignalConfirmationStatus.VALIDATED_SIGNAL.getName() + "'");
 		Object validatedSignalsWithOutRiskResults = validatedSignalsWithOutRisk.getSingleResult();
-		ValidationOutComesDTO validationOutComeDTO1 = new ValidationOutComesDTO();
-		validationOutComeDTO1.setLabel(ValidationOutComesLabelTypes.VALIDATED_SIGNAL_WITHOUT_RISK);
-		validationOutComeDTO1.setCount(((BigInteger) validatedSignalsWithOutRiskResults).longValue());
-		validationOutComeDTO1.setColor("#E55757");
-		validateOutComesList.add(validationOutComeDTO1);
+		valiatedSignalWithoutRisk(validateOutComesList,validatedSignalsWithOutRiskResults);
 
 		Query validatedSignalsWithRisk = entityManager.createNativeQuery(
 				"select count(*) from sm_assessment_plan a  inner join sm_topic t on a.id=t.assessment_plan_id where t.created_date >= (now() - interval '1 month') and ( a.risk_plan_id>0 and t.signal_confirmation='"
 						+ SignalConfirmationStatus.VALIDATED_SIGNAL.getName() + "')");
 		Object validatedSignalsWithRiskResults = validatedSignalsWithRisk.getSingleResult();
-		ValidationOutComesDTO validationOutComeDTO2 = new ValidationOutComesDTO();
-		validationOutComeDTO2.setLabel(ValidationOutComesLabelTypes.VALIDATED_SIGNAL_WITH_RISK);
-		validationOutComeDTO2.setCount(((BigInteger) validatedSignalsWithRiskResults).longValue());
-		validationOutComeDTO2.setColor("#F69632");
-		validateOutComesList.add(validationOutComeDTO2);
+		validatedSignalWithRisk(validateOutComesList, validatedSignalsWithRiskResults);
 
 		Query nonSignals = entityManager.createNativeQuery(
 				"select count(*) from sm_topic t where t.created_date >= (now() - interval '1 month') and (t.signal_confirmation='"
 						+ SignalConfirmationStatus.NON_SIGNAL + "' or t.signal_confirmation='"
 						+ SignalConfirmationStatus.NOT_YET_DETERMINED + "')");
 		Object nonSignalsResults = nonSignals.getSingleResult();
-		ValidationOutComesDTO validationOutComeDTO3 = new ValidationOutComesDTO();
-		validationOutComeDTO3.setLabel(ValidationOutComesLabelTypes.NON_SIGNAL);
-		validationOutComeDTO3.setCount(((BigInteger) nonSignalsResults).longValue());
-		validationOutComeDTO3.setColor("#18A634");
-		validateOutComesList.add(validationOutComeDTO3);
+		nonSignal(validateOutComesList, nonSignalsResults);
 
 		Query continueToMonitor = entityManager.createNativeQuery(
 				"select count(*) from sm_topic t where  t.created_date >= (now() - interval '1 month') and t.signal_confirmation='"
 						+ SignalConfirmationStatus.CONTINUE_TO_MONITOR + "'");
 		Object continueToMonitorResults = continueToMonitor.getSingleResult();
+		continueToMontior(validateOutComesList, continueToMonitorResults);
+
+		return validateOutComesList;
+	}
+
+	/**
+	 * @param validateOutComesList
+	 * @param continueToMonitorResults
+	 */
+	public void continueToMontior(List<ValidationOutComesDTO> validateOutComesList, Object continueToMonitorResults) {
 		ValidationOutComesDTO validationOutComeDTO4 = new ValidationOutComesDTO();
 		validationOutComeDTO4.setLabel(ValidationOutComesLabelTypes.CONTINUE_TO_MONTOR);
 		validationOutComeDTO4.setCount(((BigInteger) continueToMonitorResults).longValue());
 		validationOutComeDTO4.setColor("#017CAB");
 		validateOutComesList.add(validationOutComeDTO4);
+	}
 
-		return validateOutComesList;
+	/**
+	 * @param validateOutComesList
+	 * @param nonSignalsResults
+	 */
+	public void nonSignal(List<ValidationOutComesDTO> validateOutComesList, Object nonSignalsResults) {
+		ValidationOutComesDTO validationOutComeDTO3 = new ValidationOutComesDTO();
+		validationOutComeDTO3.setLabel(ValidationOutComesLabelTypes.NON_SIGNAL);
+		validationOutComeDTO3.setCount(((BigInteger) nonSignalsResults).longValue());
+		validationOutComeDTO3.setColor("#18A634");
+		validateOutComesList.add(validationOutComeDTO3);
+	}
+
+	/**
+	 * @param validateOutComesList
+	 * @param validatedSignalsWithRiskResults
+	 */
+	public void validatedSignalWithRisk(List<ValidationOutComesDTO> validateOutComesList, Object validatedSignalsWithRiskResults) {
+		ValidationOutComesDTO validationOutComeDTO2 = new ValidationOutComesDTO();
+		validationOutComeDTO2.setLabel(ValidationOutComesLabelTypes.VALIDATED_SIGNAL_WITH_RISK);
+		validationOutComeDTO2.setCount(((BigInteger) validatedSignalsWithRiskResults).longValue());
+		validationOutComeDTO2.setColor("#F69632");
+		validateOutComesList.add(validationOutComeDTO2);
+	}
+
+	/**
+	 * @param validateOutComesList
+	 * @param validatedSignalsWithOutRiskResults
+	 */
+	public void valiatedSignalWithoutRisk(List<ValidationOutComesDTO> validateOutComesList, Object validatedSignalsWithOutRiskResults) {
+		ValidationOutComesDTO validationOutComeDTO1 = new ValidationOutComesDTO();
+		validationOutComeDTO1.setLabel(ValidationOutComesLabelTypes.VALIDATED_SIGNAL_WITHOUT_RISK);
+		validationOutComeDTO1.setCount(((BigInteger) validatedSignalsWithOutRiskResults).longValue());
+		validationOutComeDTO1.setColor("#E55757");
+		validateOutComesList.add(validationOutComeDTO1);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -282,6 +314,14 @@ public class DashboardService {
 		LOG.info("Method Start getDetectedSignalDetails");
 		Query signalQuery = entityManager.createNativeQuery("select to_timestamp(to_char(created_date,'Mon-yy'),'Mon-yy') \\:\\: timestamp without time zone cd, sum(case when signal_status='New' then 1 else 0 end) as signalcount,sum(case when signal_status<>'New' then 1 else 0 end) as recurringcount,count(signal_status) as totalsignalcount,sum(cases_count) as casesCount from sm_topic group by cd order by to_timestamp(to_char(created_date,'Mon-yy'),'Mon-yy') \\:\\: timestamp without time zone");
 		List<Object[]> signals = signalQuery.getResultList();
+		return detectedSignals(signals);
+	}
+
+	/**
+	 * @param signals
+	 * @return
+	 */
+	public List<SignalDetectDTO> detectedSignals(List<Object[]> signals) {
 		List<SignalDetectDTO> signalDetectDTOs = null;
 		
 		if(!CollectionUtils.isEmpty(signals)){
