@@ -28,6 +28,12 @@ import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.service.DetectionRunService;
 import com.deloitte.smt.util.TestUtil;
 
+
+/**
+ * 
+ * @author cavula
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc

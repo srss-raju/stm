@@ -26,6 +26,12 @@ import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.service.AttachmentService;
 
+
+/**
+ * 
+ * @author cavula
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc

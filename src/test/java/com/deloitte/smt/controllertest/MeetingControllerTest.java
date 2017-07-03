@@ -34,6 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 import com.deloitte.smt.entity.Meeting;
 
+
+/**
+ * 
+ * @author cavula
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
