@@ -1,5 +1,7 @@
 package com.deloitte.smt.servicetest;
 
+import static org.mockito.BDDMockito.given;
+
 import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
@@ -12,10 +14,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.entity.AssessmentActionType;
+import com.deloitte.smt.repository.AssessmentActionTypeRepository;
 import com.deloitte.smt.service.AssessmentActionTypeService;
 import com.deloitte.smt.util.TestUtil;
 
@@ -28,6 +33,9 @@ public class AssessmentActionTypeServiceTest {
 	
 	@Autowired
 	private AssessmentActionTypeService assessmentActionTypeService;
+	
+	@MockBean
+    AssessmentActionTypeRepository assessmentActionTypeRepository;
 	
 		
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
@@ -55,24 +63,52 @@ public class AssessmentActionTypeServiceTest {
 	}
 	
 	@Test
-	public void testUpdate() throws Exception{
-		assessmentActionTypeService.update(TestUtil.buildAssessmentActionTypes().get(0));
-	}
-	
-	@Test
-	public void testDelete() throws Exception{
+	public void testUpdateWithNull() {
 		try{
-			assessmentActionTypeService.insert(TestUtil.buildAssessmentActionTypes());
-			assessmentActionTypeService.delete(101l);
+			AssessmentActionType assessmentActionType = new AssessmentActionType();
+			assessmentActionTypeService.update(assessmentActionType);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
 	}
 	
 	@Test
-	public void testFindById() throws Exception{
+	public void testUpdate() throws Exception{
+		assessmentActionTypeService.update(TestUtil.buildAssessmentActionTypes().get(0));
+	}
+	
+	@Test
+	public void testDeleteWithNull() {
+		try{
+			assessmentActionTypeService.delete(1l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testDelete() throws Exception{
+		AssessmentActionType assessmentActionType = new AssessmentActionType();
+		given(this.assessmentActionTypeRepository.findOne(1l)).willReturn(assessmentActionType);
+		assessmentActionTypeService.delete(1l);
+	}
+	
+	@Test
+	public void testFindByIdWithNull() throws Exception{
 		try{
 			assessmentActionTypeService.findById(101l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testFindById() throws Exception{
+		try{
+			AssessmentActionType assessmentActionType = new AssessmentActionType();
+			given(this.assessmentActionTypeRepository.findOne(1l)).willReturn(assessmentActionType);
+			assessmentActionTypeService.findById(1l);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}

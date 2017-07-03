@@ -15,6 +15,7 @@ import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
+import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.engine.test.mock.MockExpressionManager;
 import org.junit.AfterClass;
@@ -256,6 +257,30 @@ public class RiskPlanServiceTest {
 			RiskTask riskTask = new RiskTask();
 			riskTask.setCaseInstanceId("11");
 			riskTask.setStatus("Completed1");
+			riskTask.setId(1l);
+			riskTask.setRiskId("1");
+			given(this. riskPlanRepository.findOne(1l)).willReturn(riskPlan);
+			RiskTask riskTaskUpdated = new RiskTask();
+			List<SignalURL> urls = new ArrayList<>();
+			SignalURL url = new SignalURL();
+			urls.add(url);
+			riskTaskUpdated.setSignalUrls(urls);
+			given(this. riskTaskRepository.save(riskTask)).willReturn(riskTaskUpdated);
+			riskPlanService.createRiskTask(riskTask, null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testCreateRiskTaskCompleted() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			RiskTask riskTask = new RiskTask();
+			CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
+			riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
+			riskTask.setCaseInstanceId(instance.getCaseInstanceId());
+			riskTask.setStatus("Completed");
 			riskTask.setId(1l);
 			riskTask.setRiskId("1");
 			given(this. riskPlanRepository.findOne(1l)).willReturn(riskPlan);

@@ -59,12 +59,10 @@ public class MeetingServiceTest {
 	    PROCESS_ENGINE_NEEDS_CLOSE.close();
 	  }
 
-    
 	@Test
-	public void testInsert() {
+	public void testInsertWithNull() {
 		try{
 			Meeting meeting = new Meeting();
-			meeting.setId(1l);
 			meetingService.insert(meeting, null);
 		}catch(Exception ex){
 			LOG.info(ex);
@@ -72,9 +70,10 @@ public class MeetingServiceTest {
 	}
 	
 	@Test
-	public void testInsertWithNull() {
+	public void testInsert() {
 		try{
 			Meeting meeting = new Meeting();
+			meeting.setId(1l);
 			meetingService.insert(meeting, null);
 		}catch(Exception ex){
 			LOG.info(ex);
