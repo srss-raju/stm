@@ -41,7 +41,7 @@ import com.deloitte.smt.util.TestUtil;
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class SignalDetectionControllerTest {
-
+	
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -69,7 +69,7 @@ public class SignalDetectionControllerTest {
 								TestUtil.convertObjectToJsonString(signalDection)))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 	}
-
+	
 	@Test
 	public void testGetSignalDetectionById() throws IOException, Exception {
 		SignalDetection signalDection = new SignalDetection();
@@ -114,6 +114,26 @@ public class SignalDetectionControllerTest {
 		
 		SearchDto searchDto=new SearchDto();
 		searchDto.setGantt(true);
+		
+		List<SignalDetection> detectionList=new ArrayList<>();
+		SignalDetection signalDection = new SignalDetection();
+		detectionList.add(signalDection);
+		
+		when(signalDetectionServiceMock.ganttDetections(detectionList)).thenReturn(detectionList);
+		
+		this.mockMvc
+		.perform(post("/camunda/api/signal/detect/all")
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				.content(TestUtil.convertObjectToJsonBytes(searchDto)))
+		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		
+	}
+	
+	@Test
+	public void testGetAllByStatusFalse() throws IOException, Exception{
+		
+		SearchDto searchDto=new SearchDto();
+		searchDto.setGantt(false);
 		
 		List<SignalDetection> detectionList=new ArrayList<>();
 		SignalDetection signalDection = new SignalDetection();

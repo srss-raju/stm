@@ -80,23 +80,6 @@ public class RiskControllerTest {
 	}
 	
 	@Test
-	public void testCreateRiskPlanWithNull() throws Exception {
-		try{
-			RiskPlan riskPlan=new RiskPlan();
-			when(riskPlanServiceMock.insert(Matchers.any(RiskPlan.class), Mockito.any(MultipartFile[].class), anyLong())).thenReturn(riskPlan);
-			
-			this.mockMvc
-			.perform(post("/camunda/api/signal/risk")
-					.param("data","test")
-					.param("assessmentId","1")
-					.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-			.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
 	public void testGetAllRiskPlans() throws IOException, Exception{
 		
 		List<RiskPlan> riskPlans=new ArrayList<>();
