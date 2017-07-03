@@ -15,7 +15,6 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -151,7 +150,7 @@ public class RiskPlanService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<RiskPlan> findAllRiskPlansForSearch2(SearchDto searchDto) {
+	public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
 		StringBuilder queryBuilder = new StringBuilder();
 		List<String> whereClauses = new ArrayList<>();
 
@@ -317,96 +316,10 @@ public class RiskPlanService {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
-		List<Long> riskTopicIds = new ArrayList<>();
-		boolean searchAll = true;
+	
 
-		if (searchDto != null && !CollectionUtils.isEmpty(searchDto.getStatuses())) {
-			searchAll = false;
-		}
-		searchAll = searchService.getSignalIdsForSearch(searchDto, riskTopicIds, searchAll);
-		if (searchAll) {
-			Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-			return riskPlanRepository.findAll(sort);
-		}
-		List<RiskPlan> riskPlanList = new ArrayList<>();
-		StringBuilder queryString = new StringBuilder("SELECT o FROM RiskPlan o ");
-		boolean executeQuery = false;
 
-		executeQuery = appendAssessmentPlan(searchDto, riskTopicIds, queryString, executeQuery);
-		executeQuery = appendRiskPlanStatus(searchDto, queryString, executeQuery);
 
-		queryString.append(" ORDER BY o.createdDate DESC");
-		Query q = entityManager.createQuery(queryString.toString(), RiskPlan.class);
-
-		if (queryString.toString().contains(":topicIds")) {
-			if (CollectionUtils.isEmpty(riskTopicIds)) {
-				q.setParameter("topicIds", null);
-			} else {
-				q.setParameter("topicIds", riskTopicIds);
-			}
-		}
-		if (searchDto != null && queryString.toString().contains(":riskPlanStatus")) {
-			q.setParameter("riskPlanStatus", searchDto.getStatuses());
-		}
-		if (executeQuery) {
-			riskPlanList = q.getResultList();
-		}
-		return riskPlanList;
-	}
-
-	/**
-	 * @param searchDto
-	 * @param queryString
-	 * @param executeQuery
-	 * @return
-	 */
-	private boolean appendRiskPlanStatus(SearchDto searchDto, StringBuilder queryString, boolean executeQuery) {
-		boolean riskPlanStatusFlag = executeQuery;
-		if (searchDto != null && !CollectionUtils.isEmpty(searchDto.getStatuses())) {
-			riskPlanStatusFlag = true;
-			if (queryString.toString().contains(":topicIds")) {
-				queryString.append(" AND o.status IN :riskPlanStatus ");
-			} else {
-				queryString.append(" WHERE o.status IN :riskPlanStatus ");
-			}
-		}
-		return riskPlanStatusFlag;
-	}
-
-	/**
-	 * @param searchDto
-	 * @param riskTopicIds
-	 * @param queryString
-	 * @param executeQuery
-	 * @return
-	 */
-	private boolean appendAssessmentPlan(SearchDto searchDto, List<Long> riskTopicIds, StringBuilder queryString,
-			boolean executeQuery) {
-		boolean assessmentPlanFlag = executeQuery;
-		if (!CollectionUtils.isEmpty(riskTopicIds) && searchDto != null) {
-			assessmentPlanFlag = appendQueryString(searchDto, queryString, assessmentPlanFlag);
-		}
-		return assessmentPlanFlag;
-	}
-
-	/**
-	 * @param searchDto
-	 * @param queryString
-	 * @param assessmentPlanFlag
-	 * @return
-	 */
-	private boolean appendQueryString(SearchDto searchDto, StringBuilder queryString, boolean assessmentPlanFlag) {
-		boolean executeQuery = assessmentPlanFlag;
-		if (!CollectionUtils.isEmpty(searchDto.getProducts()) || !CollectionUtils.isEmpty(searchDto.getLicenses())
-				|| !CollectionUtils.isEmpty(searchDto.getIngredients())) {
-			executeQuery = true;
-			queryString.append("INNER JOIN o.assessmentPlan a ");
-			queryString.append("INNER JOIN a.topics t WHERE t.id IN :topicIds ");
-		}
-		return executeQuery;
-	}
 
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {
 		if (riskTask.getCaseInstanceId() != null

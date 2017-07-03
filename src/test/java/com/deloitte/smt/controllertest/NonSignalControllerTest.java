@@ -21,6 +21,12 @@ import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.TestUtil;
 import org.junit.Test;
 
+
+/**
+ * 
+ * @author cavula
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc

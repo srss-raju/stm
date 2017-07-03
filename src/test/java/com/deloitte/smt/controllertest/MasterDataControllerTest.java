@@ -23,7 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.*;
 
-
+/**
+ * 
+ * @author cavula
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc

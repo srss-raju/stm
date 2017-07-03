@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
@@ -77,8 +76,6 @@ public class RiskPlanServiceTest {
 	@MockBean
 	RiskTaskRepository riskTaskRepository;
 
-	@Autowired
-	private TaskService taskService;
 
 	@MockBean
 	TaskInstRepository taskInstRepository;
@@ -217,7 +214,7 @@ public class RiskPlanServiceTest {
 			SearchDto searchDto = new SearchDto();
 			getSearchDto(searchDto);
 			searchDto.setDateKey(DateKeyType.DUEDATE.name());
-			riskPlanService.findAllRiskPlansForSearch2(searchDto);
+			riskPlanService.findAllRiskPlansForSearch(searchDto);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -229,7 +226,7 @@ public class RiskPlanServiceTest {
 			SearchDto searchDto = new SearchDto();
 			getSearchDto(searchDto);
 			searchDto.setDateKey(DateKeyType.CREATED.name());
-			riskPlanService.findAllRiskPlansForSearch2(searchDto);
+			riskPlanService.findAllRiskPlansForSearch(searchDto);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}

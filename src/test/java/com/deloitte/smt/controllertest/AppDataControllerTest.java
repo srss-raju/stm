@@ -24,6 +24,11 @@ import org.springframework.util.MultiValueMap;
 
 import com.deloitte.smt.SignalManagementApplication;
 
+/**
+ * 
+ * @author cavula
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = {"classpath:test.properties"})

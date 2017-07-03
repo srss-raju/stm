@@ -1,6 +1,5 @@
 package com.deloitte.smt.servicetest;
 
-import org.camunda.bpm.engine.TaskService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +35,6 @@ public class AssessmentActionServiceTest {
 	@Autowired
 	private AssessmentActionService assessmentActionService;
 	
-	@Autowired
-    private TaskService taskService;
-
 	@MockBean
     TaskInstRepository taskInstRepository;
 
