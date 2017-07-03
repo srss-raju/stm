@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +48,8 @@ import com.deloitte.smt.util.TestUtil;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class RiskControllerTest {
+	
+	private static final Logger LOG = Logger.getLogger(RiskControllerTest.class);
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -61,6 +64,7 @@ public class RiskControllerTest {
 	public void setU(){
 		riskPlanServiceMock1=mock(RiskPlanService.class);
 	}
+	
 	@Test
 	public void testCreateRiskPlan() throws Exception {
 		RiskPlan riskPlan=new RiskPlan();
@@ -75,6 +79,22 @@ public class RiskControllerTest {
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 	}
 	
+	@Test
+	public void testCreateRiskPlanWithNull() throws Exception {
+		try{
+			RiskPlan riskPlan=new RiskPlan();
+			when(riskPlanServiceMock.insert(Matchers.any(RiskPlan.class), Mockito.any(MultipartFile[].class), anyLong())).thenReturn(riskPlan);
+			
+			this.mockMvc
+			.perform(post("/camunda/api/signal/risk")
+					.param("data","test")
+					.param("assessmentId","1")
+					.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+			.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
 	
 	@Test
 	public void testGetAllRiskPlans() throws IOException, Exception{
@@ -142,6 +162,113 @@ public class RiskControllerTest {
 		.perform(delete("/camunda/api/signal/risk/task/{riskTaskId}/{taskId}",1,1)
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(status().isOk());
-		
 	}
+	
+	@Test
+	public void testUpdateRiskTask() throws Exception{
+		try{
+			doNothing().when(riskPlanServiceMock).updateRiskTask(Matchers.any(RiskTask.class), Mockito.any(MultipartFile[].class));
+			RiskTask riskTask=new RiskTask();
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/task/updateRiskTask")
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+							.param("data", TestUtil.convertObjectToJsonString(riskTask)))
+					.andExpect(status().isOk());
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskPlan() throws Exception{
+		try{
+			doNothing().when(riskPlanServiceMock).updateRiskPlan(Matchers.any(RiskPlan.class), Mockito.any(MultipartFile[].class));
+			RiskPlan riskPlan=new RiskPlan();
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/updateRiskPlan")
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+							.param("data", TestUtil.convertObjectToJsonString(riskPlan)))
+					.andExpect(status().isOk());
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testRiskPlanSummary() throws Exception{
+		try{
+			doNothing().when(riskPlanServiceMock).riskPlanSummary(Matchers.any(RiskPlan.class), Mockito.any(MultipartFile[].class));
+			RiskPlan riskPlan=new RiskPlan();
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/riskPlanSummary")
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+							.param("data", TestUtil.convertObjectToJsonString(riskPlan)))
+					.andExpect(status().isOk());
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskTaskWithNull() throws Exception{
+		try{
+			doNothing().when(riskPlanServiceMock).updateRiskTask(Matchers.any(RiskTask.class), Mockito.any(MultipartFile[].class));
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/task/updateRiskTask")
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+							.param("data", "test"))
+					.andExpect(status().isOk());
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskPlanWithNull() throws Exception{
+		try{
+			doNothing().when(riskPlanServiceMock).updateRiskPlan(Matchers.any(RiskPlan.class), Mockito.any(MultipartFile[].class));
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/updateRiskPlan")
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+							.param("data", "test"))
+					.andExpect(status().isOk());
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testRiskPlanSummaryWithNull() throws Exception{
+		try{
+			doNothing().when(riskPlanServiceMock).riskPlanSummary(Matchers.any(RiskPlan.class), Mockito.any(MultipartFile[].class));
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/riskPlanSummary")
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+							.param("data", "test"))
+					.andExpect(status().isOk());
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindByRiskId() throws Exception{
+		RiskPlan riskPlan=new RiskPlan();
+		when(riskPlanServiceMock.findByRiskId(anyLong())).thenReturn(riskPlan);
+		this.mockMvc
+		.perform(get("/camunda/api/signal/risk/{id}",1)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testGetAssessmentPlanByRiskId() throws Exception{
+		RiskPlan  riskPlan =new RiskPlan ();
+		when(riskPlanServiceMock.findByRiskId(anyLong())).thenReturn(riskPlan);
+		this.mockMvc
+		.perform(get("/camunda/api/signal/risk/{riskId}/assessmentPlan",1)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(status().isOk());
+	}
+	
 }
