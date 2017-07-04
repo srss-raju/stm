@@ -154,13 +154,15 @@ public class RiskPlanService {
 		StringBuilder queryBuilder = new StringBuilder();
 		List<String> whereClauses = new ArrayList<>();
 
-		boolean searchAll = false;
+		boolean searchOnTableDirectly = true;
 
 		if (searchDto == null) {
-			searchAll = true;
+			searchOnTableDirectly = true;
 		} else if (!CollectionUtils.isEmpty(searchDto.getProducts())
 				|| !CollectionUtils.isEmpty(searchDto.getLicenses())
 				|| !CollectionUtils.isEmpty(searchDto.getIngredients())) {
+			
+			searchOnTableDirectly=false;
 			queryBuilder.append(
 					"SELECT r.* FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id");
 
@@ -181,7 +183,7 @@ public class RiskPlanService {
 
 		}
 
-		if (searchAll) {
+		if (searchOnTableDirectly) {
 			queryBuilder.append("SELECT r.* FROM sm_risk_plan r ");
 		}
 
