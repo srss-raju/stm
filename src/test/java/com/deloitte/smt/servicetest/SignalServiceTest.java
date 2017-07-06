@@ -306,6 +306,41 @@ public class SignalServiceTest {
 	}
 	
 	@Test
+	public void testValidateAndPrioritizeAssignNull() {
+		try{
+			Topic topic = new Topic();
+			topic.setIngredient(setIngredient(topic));
+			topic.setSourceName("Test Source");
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setSource(topic.getSourceName());
+			assessmentPlan.setIngrediantName(topic.getIngredient().getIngredientName());
+			given(this.topicRepository.findOne(1l)).willReturn(topic);
+			String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
+			topic.setProcessId(processInstanceId);
+			signalService.validateAndPrioritize(1l, assessmentPlan);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testValidateAndPrioritizeTaskNull() {
+		try{
+			Topic topic = new Topic();
+			topic.setIngredient(setIngredient(topic));
+			topic.setSourceName("Test Source");
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setSource(topic.getSourceName());
+			assessmentPlan.setIngrediantName(topic.getIngredient().getIngredientName());
+			given(this.topicRepository.findOne(1l)).willReturn(topic);
+			topic.setProcessId("1");
+			signalService.validateAndPrioritize(1l, assessmentPlan);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
 	public void testValidateAndPrioritizeNull() {
 		try{
 			signalService.validateAndPrioritize(1l, null);
@@ -320,6 +355,26 @@ public class SignalServiceTest {
 			SearchDto searchDto = TestUtil.buildSearchDto(false, true);
 			searchDto.setDateKey(DateKeyType.CREATED.name());
 			signalService.findTopics(searchDto);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindTopicsWithDueDate() {
+		try{
+			SearchDto searchDto = TestUtil.buildSearchDto(false, true);
+			searchDto.setDateKey(DateKeyType.DUEDATE.name());
+			signalService.findTopics(searchDto);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindTopicsWithNull() {
+		try{
+			signalService.findTopics(null);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}

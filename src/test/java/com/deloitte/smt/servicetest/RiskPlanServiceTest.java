@@ -233,6 +233,15 @@ public class RiskPlanServiceTest {
 	}
 	
 	@Test
+	public void testFindAllRiskPlansForSearchNull() {
+		try{
+			riskPlanService.findAllRiskPlansForSearch(null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
 	public void testFindAllRiskPlansForSearchAllFalse() {
 		try{
 			SearchDto searchDto = new SearchDto();
@@ -477,13 +486,13 @@ public class RiskPlanServiceTest {
 		List<String> riskTaskStatus = new ArrayList<>();
 		riskTaskStatus.add("Test RiskTaskStatus");
 		List<String> hlgts = new ArrayList<>();
-		statuses.add("Test hlgts");
+		hlgts.add("Test hlgts");
 		List<String> hlts = new ArrayList<>();
-		statuses.add("Test hlts");
+		hlts.add("Test hlts");
 		List<String> pts = new ArrayList<>();
-		statuses.add("Test pts");
+		pts.add("Test pts");
 		List<String> socs = new ArrayList<>();
-		statuses.add("Test socs");
+		socs.add("Test socs");
 		Date startDate = new Date();
 		Date endDate = new Date();
 		
