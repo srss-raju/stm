@@ -29,6 +29,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.dto.AssessmentPlanDTO;
+import com.deloitte.smt.dto.RiskPlanDTO;
 import com.deloitte.smt.dto.SmtComplianceDto;
 import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.dto.ValidationOutComesDTO;
@@ -182,6 +184,34 @@ public class DashboardServiceTest {
 			dashboardService.getDetectedSignalDetails();
 		}catch(Exception ex){
 			LOG.info("ex");
+		}
+	}
+	
+	@Test
+	public void testCalculateAssessmentMetrics()  {
+		try{
+			List<AssessmentPlanDTO> plans = new ArrayList<>();
+			AssessmentPlanDTO assessmentPlanDTO = new AssessmentPlanDTO();
+			assessmentPlanDTO.setIngredientName("test");
+			assessmentPlanDTO.setAssessmentPlanStatus("Completed");
+			plans.add(assessmentPlanDTO);
+			dashboardService.calculateAssessmentMetrics(plans);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testCalculatRiskMetrics()  {
+		try{
+			List<RiskPlanDTO> risks = new ArrayList<>();
+			RiskPlanDTO riskPlanDTO = new RiskPlanDTO();
+			riskPlanDTO.setIngredientName("test");
+			riskPlanDTO.setRiskPlanStatus("Completed");
+			risks.add(riskPlanDTO);
+			dashboardService.calculatRiskMetrics(risks);
+		}catch(Exception ex){
+			LOG.info(ex);
 		}
 	}
 

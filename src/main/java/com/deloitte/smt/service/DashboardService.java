@@ -146,7 +146,7 @@ public class DashboardService {
 
 	}
 
-	private Map<String, Map<String, Long>> calculateAssessmentMetrics(List<AssessmentPlanDTO> topics) {
+	public Map<String, Map<String, Long>> calculateAssessmentMetrics(List<AssessmentPlanDTO> topics) {
 		Map<String, Map<String, Long>> metrics = topics.stream()
 				.collect(Collectors.groupingBy(AssessmentPlanDTO::getIngredientName,
 						Collectors.groupingBy(AssessmentPlanDTO::getAssessmentPlanStatus, Collectors.counting())));
@@ -166,7 +166,7 @@ public class DashboardService {
 
 	}
 
-	private Map<String, Map<String, Long>> calculatRiskMetrics(List<RiskPlanDTO> topics) {
+	public Map<String, Map<String, Long>> calculatRiskMetrics(List<RiskPlanDTO> topics) {
 		Map<String, Map<String, Long>> metrics = topics.stream()
 				.collect(Collectors.groupingBy(RiskPlanDTO::getIngredientName,
 						Collectors.groupingBy(RiskPlanDTO::getRiskPlanStatus, Collectors.counting())));

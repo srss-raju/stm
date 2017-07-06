@@ -363,7 +363,7 @@ public class SignalServiceTest {
 	@Test
 	public void testFindTopicsWithDueDate() {
 		try{
-			SearchDto searchDto = TestUtil.buildSearchDto(false, true);
+			SearchDto searchDto = TestUtil.buildSearchDto(true, true);
 			searchDto.setDateKey(DateKeyType.DUEDATE.name());
 			signalService.findTopics(searchDto);
 		}catch(Exception ex){
@@ -457,6 +457,39 @@ public class SignalServiceTest {
 			action.setId(1l);
 			action.setInDays(1);
 			action.setDueDate(new Date());
+			CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
+			actions.add(action);
+			assessmentPlan.setTemplateIds(templateIds);
+			assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
+			List<Attachment> attachments = new ArrayList<>(); 
+			Attachment attachment = new Attachment();
+			attachments.add(attachment);
+			List<SignalURL> templateTaskUrls = new ArrayList<>(); 
+			SignalURL url = new SignalURL();
+			templateTaskUrls.add(url);
+			given(this.assessmentActionRepository.findAllByTemplateId(1l)).willReturn(actions);
+			given(this.assessmentActionRepository.save(action)).willReturn(action);
+			given(this.attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort)).willReturn(attachments);
+			given(this.signalURLRepository.findByTopicId(action.getId())).willReturn(templateTaskUrls);
+			signalService.associateTemplateTasks(assessmentPlan);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testAssociateTemplateTasksWithAssignee() {
+		try{
+			Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			List<Long> templateIds = new ArrayList<>();
+			templateIds.add(1l);
+			List<SignalAction> actions = new ArrayList<>();
+			SignalAction action = new SignalAction();
+			action.setId(1l);
+			action.setInDays(1);
+			action.setDueDate(new Date());
+			action.setAssignTo("test");
 			CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
 			actions.add(action);
 			assessmentPlan.setTemplateIds(templateIds);
