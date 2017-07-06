@@ -306,6 +306,15 @@ public class SignalServiceTest {
 	}
 	
 	@Test
+	public void testValidateAndPrioritizeNull() {
+		try{
+			signalService.validateAndPrioritize(1l, null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
 	public void testFindTopicsWithCreatedDate() {
 		try{
 			SearchDto searchDto = TestUtil.buildSearchDto(false, true);
