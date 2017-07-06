@@ -89,6 +89,11 @@ public class AssessmentActionServiceTest {
 			CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
 			signalAction.setCaseInstanceId(instance.getCaseInstanceId());
 			signalAction.setActionStatus("Completed");
+			List<SignalURL> urls = new ArrayList<>();
+			SignalURL url = new SignalURL();
+			urls.add(url);
+			signalAction.setSignalUrls(urls);
+			given(this.assessmentActionRepository.save(signalAction)).willReturn(signalAction);
 			assessmentActionService.createAssessmentAction(signalAction, null);
 		}catch(Exception ex){
 			LOG.info(ex);
@@ -121,6 +126,7 @@ public class AssessmentActionServiceTest {
 			signalAction.setAssessmentId("1");
 			signalAction.setTaskId("1");
 			list.add(signalAction);
+			given(this.assessmentActionRepository.findAllByAssessmentId("1")).willReturn(list);
 			assessmentActionService.updateAssessmentAction(signalAction, null);
 		}catch(Exception ex){
 			LOG.info(ex);
@@ -133,7 +139,12 @@ public class AssessmentActionServiceTest {
 			SignalAction signalAction = new SignalAction();
 			signalAction.setActionStatus("New");
 			signalAction.setId(1l);
-			given(this.assessmentActionRepository.findOne(1l)).willReturn(signalAction);
+			List<SignalURL> urls = new ArrayList<>();
+			SignalURL url = new SignalURL();
+			urls.add(url);
+			given(this.assessmentActionRepository.findOne(signalAction.getId())).willReturn(signalAction);
+			given(this.assessmentActionRepository.save(signalAction)).willReturn(signalAction);
+			given(this.signalURLRepository.findByTopicId(signalAction.getId())).willReturn(urls);
 			assessmentActionService.findById(1l);
 		}catch(Exception ex){
 			LOG.info(ex);
@@ -150,6 +161,21 @@ public class AssessmentActionServiceTest {
 			list.add(signalAction);
 			given(this.assessmentActionRepository.findAllByAssessmentId("1")).willReturn(list);
 			assessmentActionService.findAllByAssessmentId("1",null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindAllByAssessmentIdWithStatus() {
+		try{
+			SignalAction signalAction = new SignalAction();
+			signalAction.setActionStatus("New");
+			signalAction.setId(1l);
+			List<SignalAction> list = new ArrayList<>();
+			list.add(signalAction);
+			given(this.assessmentActionRepository.findAllByAssessmentIdAndActionStatus("1","completed")).willReturn(list);
+			assessmentActionService.findAllByAssessmentId("1","completed");
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
