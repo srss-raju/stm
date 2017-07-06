@@ -274,7 +274,7 @@ public class SignalMatchService {
 	 * @param final95Signal
 	 * @return
 	 */
-	private List<Attachment> applyMatchingSignalAttachments(Topic createdTopic,
+	public List<Attachment> applyMatchingSignalAttachments(Topic createdTopic,
 			Topic final95Signal) {
 		List<Attachment> matchingTopicAttachments = attachmentService.findByResourceIdAndAttachmentType(final95Signal.getId(), AttachmentType.TOPIC_ATTACHMENT);
 		if (!CollectionUtils.isEmpty(matchingTopicAttachments)) {
@@ -289,7 +289,7 @@ public class SignalMatchService {
 	 * @param createdTopic
 	 * @param final95Signal
 	 */
-	private void applyMatchingSignalUrls(Topic createdTopic, Topic final95Signal) {
+	public void applyMatchingSignalUrls(Topic createdTopic, Topic final95Signal) {
 		List<SignalURL> matchingTopicSignalUrls = signalURLRepository.findByTopicId(final95Signal.getId());
 		if (!CollectionUtils.isEmpty(matchingTopicSignalUrls)) {
 			for (SignalURL url : matchingTopicSignalUrls) {
@@ -302,7 +302,7 @@ public class SignalMatchService {
 	/**
 	 * @param final95Signal
 	 */
-	private void applyMatchingSignalMeetings(Topic final95Signal) {
+	public void applyMatchingSignalMeetings(Topic final95Signal) {
 		List<Meeting> meetings = meetingService.findAllyByResourceIdAndMeetingType(final95Signal.getId(), MeetingType.getByDescription("Signal Meeting"));
 		if(!CollectionUtils.isEmpty(meetings)){
 			List<Meeting> matchingMeetings = new ArrayList<>();

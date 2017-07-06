@@ -130,6 +130,84 @@ public class TestUtil {
 		return signals;
 	}
 	
+	public static List<Topic> build95matchingSignals() {
+		List<Topic> signals = new ArrayList<>();
+		Topic signal1 = new Topic();
+		signal1.setCohortPercentage(99l);
+		signal1.setCreatedDate(new Date());
+		signal1.setConfidenceIndex(40l);
+		signals.add(signal1);
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		assessmentPlan.setCohortPercentage(80l);
+		Topic signal2 = new Topic();
+		signal2.setCohortPercentage(98l);
+		signal2.setConfidenceIndex(40l);
+		signal2.setAssessmentPlan(assessmentPlan);
+		signals.add(signal2);
+		Topic signal3 = new Topic();
+		signal3.setCohortPercentage(97l);
+		signal3.setConfidenceIndex(40l);
+		signals.add(signal3);
+		Topic signal4 = new Topic();
+		signal4.setCohortPercentage(96l);
+		signal4.setConfidenceIndex(40l);
+		signal4.setCreatedDate(new Date());
+		signals.add(signal4);
+		return signals;
+	}
+	
+	public static List<Topic> build7595matchingSignals() {
+		List<Topic> signals = new ArrayList<>();
+		Topic signal1 = new Topic();
+		signal1.setCohortPercentage(76l);
+		signal1.setCreatedDate(new Date());
+		signal1.setConfidenceIndex(40l);
+		signals.add(signal1);
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		assessmentPlan.setCohortPercentage(80l);
+		Topic signal2 = new Topic();
+		signal2.setCohortPercentage(77l);
+		signal2.setConfidenceIndex(40l);
+		signal2.setAssessmentPlan(assessmentPlan);
+		signals.add(signal2);
+		Topic signal3 = new Topic();
+		signal3.setCohortPercentage(78l);
+		signal3.setConfidenceIndex(40l);
+		signals.add(signal3);
+		Topic signal4 = new Topic();
+		signal4.setCohortPercentage(79l);
+		signal4.setConfidenceIndex(40l);
+		signal4.setCreatedDate(new Date());
+		signals.add(signal4);
+		return signals;
+	}
+	
+	public static List<Topic> build75matchingSignals() {
+		List<Topic> signals = new ArrayList<>();
+		Topic signal1 = new Topic();
+		signal1.setCohortPercentage(66l);
+		signal1.setCreatedDate(new Date());
+		signal1.setConfidenceIndex(40l);
+		signals.add(signal1);
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		assessmentPlan.setCohortPercentage(80l);
+		Topic signal2 = new Topic();
+		signal2.setCohortPercentage(67l);
+		signal2.setConfidenceIndex(40l);
+		signal2.setAssessmentPlan(assessmentPlan);
+		signals.add(signal2);
+		Topic signal3 = new Topic();
+		signal3.setCohortPercentage(68l);
+		signal3.setConfidenceIndex(40l);
+		signals.add(signal3);
+		Topic signal4 = new Topic();
+		signal4.setCohortPercentage(69l);
+		signal4.setConfidenceIndex(40l);
+		signal4.setCreatedDate(new Date());
+		signals.add(signal4);
+		return signals;
+	}
+	
 	public static Topic buildSignal() {
 		Topic signal = new Topic();
 		signal.setConfidenceIndex(50l);
