@@ -164,60 +164,11 @@ public class RiskPlanService {
 		List<String> whereClauses = new ArrayList<>();
 
 
-		if (searchDto == null) {
-			queryBuilder.append("SELECT r.* FROM sm_risk_plan r ");
-		} else if (!CollectionUtils.isEmpty(searchDto.getProducts())
-				|| !CollectionUtils.isEmpty(searchDto.getLicenses())
-				|| !CollectionUtils.isEmpty(searchDto.getSocs())
-				|| !CollectionUtils.isEmpty(searchDto.getHlgts())
-				|| !CollectionUtils.isEmpty(searchDto.getHlts())
-				|| !CollectionUtils.isEmpty(searchDto.getPts())
-				|| !CollectionUtils.isEmpty(searchDto.getIngredients())) {
-			
-			queryBuilder.append(
-					"SELECT r.* FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id");
-
-			if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
-				queryBuilder.append(" inner join sm_product p on p.topic_id=t.id ");
-				whereClauses.add(" p.product_name in :productNames");
-			}
-
-			if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
-				queryBuilder.append(" inner join sm_ingredient i on i.topic_id=t.id ");
-				whereClauses.add("i.ingredient_name in :ingredientNames");
-			}
-
-			if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
-				queryBuilder.append(" inner join sm_license l on l.topic_id=t.id ");
-				whereClauses.add("l.license_name in :licenseNames");
-			}
-			
-			if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
-				queryBuilder.append(" inner join sm_hlt hlt on hlt.topic_id=t.id ");
-				whereClauses.add(" hlt.hlt_name in :hltNames");
-			}
-			
-			if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
-				queryBuilder.append(" inner join sm_hlgt hlgt on hlgt.topic_id=t.id ");
-				whereClauses.add(" hlgt.hlgt_name in :hlgtNames");
-			}
-			
-			if (!CollectionUtils.isEmpty(searchDto.getPts())) {
-				queryBuilder.append(" inner join sm_pt pt on pt.topic_id=t.id ");
-				whereClauses.add(" pt.pt_name in :ptNames");
-			}
-			
-			if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
-				queryBuilder.append(" inner join sm_soc soc on soc.topic_id=t.id ");
-				whereClauses.add(" soc.soc_name in :socNames");
-			}
-			
-			
-
+		if (searchDto != null) {
+			buildQuery(searchDto, queryBuilder, whereClauses);
 		}else{
 			queryBuilder.append("SELECT r.* FROM sm_risk_plan r ");
 		}
-
 		buildWhereConditions(searchDto, whereClauses);
 		appendWhereClause(whereClauses, queryBuilder);
 
@@ -227,6 +178,52 @@ public class RiskPlanService {
 		setParameters(queryStr, searchDto, query);
 
 		return query.getResultList();
+	}
+
+	/**
+	 * @param searchDto
+	 * @param queryBuilder
+	 * @param whereClauses
+	 */
+	private void buildQuery(SearchDto searchDto, StringBuilder queryBuilder,
+			List<String> whereClauses) {
+		queryBuilder.append(
+				"SELECT r.* FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id");
+
+		if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
+			queryBuilder.append(" inner join sm_product p on p.topic_id=t.id ");
+			whereClauses.add(" p.product_name in :productNames");
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
+			queryBuilder.append(" inner join sm_ingredient i on i.topic_id=t.id ");
+			whereClauses.add("i.ingredient_name in :ingredientNames");
+		}
+
+		if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
+			queryBuilder.append(" inner join sm_license l on l.topic_id=t.id ");
+			whereClauses.add("l.license_name in :licenseNames");
+		}
+		
+		if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
+			queryBuilder.append(" inner join sm_hlt hlt on hlt.topic_id=t.id ");
+			whereClauses.add(" hlt.hlt_name in :hltNames");
+		}
+		
+		if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
+			queryBuilder.append(" inner join sm_hlgt hlgt on hlgt.topic_id=t.id ");
+			whereClauses.add(" hlgt.hlgt_name in :hlgtNames");
+		}
+		
+		if (!CollectionUtils.isEmpty(searchDto.getPts())) {
+			queryBuilder.append(" inner join sm_pt pt on pt.topic_id=t.id ");
+			whereClauses.add(" pt.pt_name in :ptNames");
+		}
+		
+		if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
+			queryBuilder.append(" inner join sm_soc soc on soc.topic_id=t.id ");
+			whereClauses.add(" soc.soc_name in :socNames");
+		}
 	}
 
 	/**
@@ -526,26 +523,17 @@ public class RiskPlanService {
 	}
 
 	private void setParameters(String queryStr, SearchDto searchDto, Query query) {
-		if (queryStr.contains(":statuses")) {
-			query.setParameter("statuses", searchDto.getStatuses());
-		}
+		setInitialParameters(queryStr, searchDto, query);
+		setSecondaryParameters(queryStr, searchDto, query);
+	}
 
-		if (queryStr.contains(":riskTaskStatus")) {
-			query.setParameter("riskTaskStatus", searchDto.getRiskTaskStatus());
-		}
-
-		if (queryStr.contains(":assignTo")) {
-			query.setParameter("assignTo", searchDto.getAssignees());
-		}
-
-		if (queryStr.contains(":startDate")) {
-			query.setParameter("startDate", searchDto.getStartDate());
-		}
-
-		if (queryStr.contains(":endDate")) {
-			query.setParameter("endDate", searchDto.getEndDate());
-		}
-
+	/**
+	 * @param queryStr
+	 * @param searchDto
+	 * @param query
+	 */
+	private void setSecondaryParameters(String queryStr, SearchDto searchDto,
+			Query query) {
 		if (queryStr.contains(":productNames")) {
 			query.setParameter("productNames", searchDto.getProducts());
 		}
@@ -572,6 +560,34 @@ public class RiskPlanService {
 		
 		if (queryStr.contains(":socNames")) {
 			query.setParameter("socNames", searchDto.getSocs());
+		}
+	}
+
+	/**
+	 * @param queryStr
+	 * @param searchDto
+	 * @param query
+	 */
+	private void setInitialParameters(String queryStr, SearchDto searchDto,
+			Query query) {
+		if (queryStr.contains(":statuses")) {
+			query.setParameter("statuses", searchDto.getStatuses());
+		}
+
+		if (queryStr.contains(":riskTaskStatus")) {
+			query.setParameter("riskTaskStatus", searchDto.getRiskTaskStatus());
+		}
+
+		if (queryStr.contains(":assignTo")) {
+			query.setParameter("assignTo", searchDto.getAssignees());
+		}
+
+		if (queryStr.contains(":startDate")) {
+			query.setParameter("startDate", searchDto.getStartDate());
+		}
+
+		if (queryStr.contains(":endDate")) {
+			query.setParameter("endDate", searchDto.getEndDate());
 		}
 	}
 

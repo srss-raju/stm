@@ -46,7 +46,7 @@ public class AttachmentControllerTest {
 
 	@Test
 	public void testFindAllBySignalId() throws Exception {
-		List<Attachment> attachmentList=new ArrayList();
+		List<Attachment> attachmentList=new ArrayList<>();
 	
 		when(attachmentServiceMock.findByResourceIdAndAttachmentType(anyLong(),Matchers.any(AttachmentType.TOPIC_ATTACHMENT.getClass()))).thenReturn(attachmentList);
 		
@@ -59,7 +59,7 @@ public class AttachmentControllerTest {
 	
 	@Test
 	public void testFindAllByAssessmentId() throws Exception {
-		List<Attachment> attachmentList=new ArrayList();
+		List<Attachment> attachmentList=new ArrayList<>();
 	
 		when(attachmentServiceMock.findByResourceIdAndAttachmentType(anyLong(),Matchers.any(AttachmentType.ASSESSMENT_ATTACHMENT.getClass()))).thenReturn(attachmentList);
 		
@@ -72,7 +72,7 @@ public class AttachmentControllerTest {
 	
 	@Test
 	public void testFindAllByAssessmentActionId() throws Exception {
-		List<Attachment> attachmentList=new ArrayList();
+		List<Attachment> attachmentList=new ArrayList<>();
 	
 		when(attachmentServiceMock.findByResourceIdAndAttachmentType(anyLong(),Matchers.any(AttachmentType.ASSESSMENT_ACTION_ATTACHMENT.getClass()))).thenReturn(attachmentList);
 		
@@ -98,7 +98,7 @@ public class AttachmentControllerTest {
 	
 	@Test
 	public void testFindAllByRiskId() throws Exception {
-		List<Attachment> attachmentList=new ArrayList();
+		List<Attachment> attachmentList=new ArrayList<>();
 		when(attachmentServiceMock.findByResourceIdAndAttachmentType(anyLong(),Matchers.any(AttachmentType.RISK_ASSESSMENT.getClass()))).thenReturn(attachmentList);
 
 		
@@ -111,7 +111,7 @@ public class AttachmentControllerTest {
 	
 	@Test
 	public void testFindAllByRiskTaskId() throws Exception {
-		List<Attachment> attachmentList=new ArrayList();
+		List<Attachment> attachmentList=new ArrayList<>();
 		when(attachmentServiceMock.findByResourceIdAndAttachmentType(anyLong(),Matchers.any(AttachmentType.RISK_TASK_ASSESSMENT.getClass()))).thenReturn(attachmentList);
 
 		
@@ -124,7 +124,7 @@ public class AttachmentControllerTest {
 	
 	@Test
 	public void testFindAllByMeetingId() throws Exception {
-		List<Attachment> attachmentList=new ArrayList();
+		List<Attachment> attachmentList=new ArrayList<>();
 		when(attachmentServiceMock.findByResourceIdAndAttachmentType(anyLong(),Matchers.any(AttachmentType.MEETING_ATTACHMENT.getClass()))).thenReturn(attachmentList);
 
 		
@@ -137,7 +137,6 @@ public class AttachmentControllerTest {
 	
 	@Test
 	public void testDownloadContent() throws Exception {
-		List<Attachment> attachmentList=new ArrayList();
 		
 		Attachment attachment=new Attachment();
 		String msg="Test Message";

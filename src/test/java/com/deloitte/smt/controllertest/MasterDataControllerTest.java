@@ -102,7 +102,7 @@ public class MasterDataControllerTest {
 	
 	@Test
 	public void testGetIngredientFilters()throws Exception{
-		List<String> values=new ArrayList();
+		List<String> values=new ArrayList<>();
 		
 		when(searchService.getIngredients()).thenReturn(values);
 		this.mockMvc

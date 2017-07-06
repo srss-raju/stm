@@ -33,6 +33,7 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
@@ -129,6 +130,7 @@ public class AssessmentPlanService {
 			addAssessmentPlanStatus(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			addAssessmentTaskStatus(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			addAssignTo(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
+			addSocs(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
 			addProducts(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
 			addLicenses(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
 			addIngredients(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
@@ -146,7 +148,7 @@ public class AssessmentPlanService {
 					topicAssignmentJoin.get(SmtConstant.ASSESSMENT_DUE_DATE.getDescription()), topicAssignmentJoin.get("finalAssessmentSummary"),
 					topicAssignmentJoin.get(SmtConstant.RISK_PLAN.getDescription()), topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription()),
 					topicAssignmentJoin.get("createdBy"), topicAssignmentJoin.get("lastModifiedDate"),
-					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription())))
+					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription()))).distinct(true)
 					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));
 		} else {
 			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
@@ -157,12 +159,25 @@ public class AssessmentPlanService {
 					topicAssignmentJoin.get(SmtConstant.ASSESSMENT_DUE_DATE.getDescription()), topicAssignmentJoin.get("finalAssessmentSummary"),
 					topicAssignmentJoin.get(SmtConstant.RISK_PLAN.getDescription()), topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription()),
 					topicAssignmentJoin.get("createdBy"), topicAssignmentJoin.get("lastModifiedDate"),
-					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription())))
+					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription()))).distinct(true)
 			.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));
 		}
 
 		TypedQuery<AssessmentPlan> q = entityManager.createQuery(criteriaQuery);
 		return q.getResultList();
+	}
+
+	private void addSocs(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
+			CriteriaQuery<AssessmentPlan> criteriaQuery, Root<Topic> topic,
+			List<Predicate> predicates) {
+		if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
+			Root<Soc> rootSocs = criteriaQuery.from(Soc.class);
+			Predicate socEquals = criteriaBuilder.equal(topic.get("id"), rootSocs.get(SmtConstant.TOPIC_ID.getDescription()));
+			Predicate socNameEquals = criteriaBuilder.isTrue(rootSocs.get("socName").in(searchDto.getSocs()));
+			predicates.add(socEquals);
+			predicates.add(socNameEquals);
+		}
+		
 	}
 
 	/**

@@ -101,7 +101,7 @@ public class MeetingControllerTest {
 	
 	@Test
 	public void testGetAllMeetings() throws IOException, Exception{
-		List<Meeting> meetingList=new ArrayList();
+		List<Meeting> meetingList=new ArrayList<>();
 		Meeting meeting = new Meeting();
 		meetingList.add(meeting);
 		
@@ -118,7 +118,7 @@ public class MeetingControllerTest {
 	@Test
 	public void testDeleteMeeting() throws IOException, Exception{
 		
-		List<Meeting> meetingList=new ArrayList();
+		List<Meeting> meetingList=new ArrayList<>();
 		Meeting meeting = new Meeting();
 		meetingList.add(meeting);
 		

@@ -104,6 +104,10 @@ public class AttachmentServiceTest {
 	
 	@Test
 	public void testAddAttachments() throws Exception{
+		try{
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
 	}
 	
 }
