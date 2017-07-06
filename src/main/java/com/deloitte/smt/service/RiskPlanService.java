@@ -8,6 +8,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.camunda.bpm.engine.CaseService;
@@ -23,56 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.DateKeyType;
-import com.deloitte.smt.constant.SmtConstant;
-import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.entity.Comments;
-import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskTask;
-import com.deloitte.smt.entity.SignalURL;
-import com.deloitte.smt.entity.TaskInst;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.AssignmentConfigurationRepository;
-import com.deloitte.smt.repository.CommentsRepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
-import com.deloitte.smt.repository.ProductRepository;
-import com.deloitte.smt.repository.RiskPlanRepository;
-import com.deloitte.smt.repository.RiskTaskRepository;
-import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
-
-
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
-
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
@@ -211,6 +168,10 @@ public class RiskPlanService {
 			queryBuilder.append("SELECT r.* FROM sm_risk_plan r ");
 		} else if (!CollectionUtils.isEmpty(searchDto.getProducts())
 				|| !CollectionUtils.isEmpty(searchDto.getLicenses())
+				|| !CollectionUtils.isEmpty(searchDto.getSocs())
+				|| !CollectionUtils.isEmpty(searchDto.getHlgts())
+				|| !CollectionUtils.isEmpty(searchDto.getHlts())
+				|| !CollectionUtils.isEmpty(searchDto.getPts())
 				|| !CollectionUtils.isEmpty(searchDto.getIngredients())) {
 			
 			queryBuilder.append(
