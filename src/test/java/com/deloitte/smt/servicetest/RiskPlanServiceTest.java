@@ -476,6 +476,14 @@ public class RiskPlanServiceTest {
 		assignees.add("Test Assignees");
 		List<String> riskTaskStatus = new ArrayList<>();
 		riskTaskStatus.add("Test RiskTaskStatus");
+		List<String> hlgts = new ArrayList<>();
+		statuses.add("Test hlgts");
+		List<String> hlts = new ArrayList<>();
+		statuses.add("Test hlts");
+		List<String> pts = new ArrayList<>();
+		statuses.add("Test pts");
+		List<String> socs = new ArrayList<>();
+		statuses.add("Test socs");
 		Date startDate = new Date();
 		Date endDate = new Date();
 		
@@ -487,5 +495,10 @@ public class RiskPlanServiceTest {
 		searchDto.setRiskTaskStatus(riskTaskStatus);
 		searchDto.setStartDate(startDate);
 		searchDto.setEndDate(endDate);
+		searchDto.setHlgts(hlgts);
+		searchDto.setHlts(hlts);
+		searchDto.setPts(pts);
+		searchDto.setSocs(socs);
+		
 	}
 }
