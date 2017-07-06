@@ -217,6 +217,38 @@ public class SignalServiceTest {
 			LOG.info(ex);
 		}
 	}
+	
+	@Test
+	public void testCreateTopicAssignNull() {
+		try {
+			Topic topic = new Topic();
+			topic.setSignalStatus("New");
+			topic.setIngredient(setIngredient(topic));
+			setSoc(topic);
+			topic.setSourceName("Test Source");
+			List<SignalURL> urls = new ArrayList<>();
+			SignalURL url = new SignalURL();
+			url.setUrl("Test Url");
+			urls.add(url);
+			topic.setSignalUrls(urls);
+			Set<SignalStatistics> stats = new HashSet<>();
+			SignalStatistics signalStatistics = new SignalStatistics();
+			signalStatistics.setScore(1);
+			stats.add(signalStatistics);
+			topic.setSignalStatistics(stats);
+			SignalConfiguration signalConfiguration = new SignalConfiguration();
+			signalConfiguration.setCohortPercentage(95);
+			signalConfiguration.setConfidenceIndex(45);
+			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
+			given(this.topicRepository.save(topic)).willReturn(topic);
+			given(this.ingredientRepository.save(topic.getIngredient())).willReturn(topic.getIngredient());
+			given(this.socRepository.save(topic.getSocs())).willReturn(topic.getSocs());
+
+			signalService.createTopic(topic, null);
+		} catch (Exception ex) {
+			LOG.info(ex);
+		}
+	}
 
 	@Test
 	public void testUpdateTopic() {
