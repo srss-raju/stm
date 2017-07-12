@@ -363,9 +363,11 @@ public class DashboardService {
 		return signalDetectDTOs;
 	}
 
-	public Map<Integer, SignalStrengthOverTimeDTO> getSignalStrength(Long topicId) throws ApplicationException {
+	public Map<String, Object> getSignalStrength(Long topicId) throws ApplicationException {
+		Map<String, Object> dataMap=new HashMap();
+		AlgorithmType[] algorithmTypes=AlgorithmType.values();
+		dataMap.put("algorithms",algorithmTypes);
 		
-	//	AlgorithmType.values();
 		Topic topic = signalService.findById(topicId);
 		Ingredient ingredient=ingredientRepository.findByTopicId(topic.getId());
 		topic.setIngredient(ingredient);
@@ -387,49 +389,21 @@ public class DashboardService {
 				.findStatisticsByTopicsIds(matchingSignalsMap.keySet());
 		
 
-		Map<Integer, List<SignalStatistics>> statMap = new HashMap();
-		Calendar cal = Calendar.getInstance();
-
+		List<SignalStrengthOverTimeDTO> dtoList=new ArrayList();
+		
 		//Prepare map by Key Month
 		for (SignalStatistics signalStatistics2 : signalStatistics) {
-			cal.setTime(signalStatistics2.getTopic().getCreatedDate());
-			if (statMap.get(cal.get(Calendar.MONTH) + 1) != null) {
-				List<SignalStatistics> list = statMap.get(cal.get(Calendar.MONTH) + 1);
-				list.add(signalStatistics2);
-				statMap.put(cal.get(Calendar.MONTH) + 1, list);
-			} else {
-				List<SignalStatistics> list = new ArrayList();
-				list.add(signalStatistics2);
-				statMap.put(cal.get(Calendar.MONTH) + 1, list);
-			}
-
+			SignalStrengthOverTimeDTO dto = new SignalStrengthOverTimeDTO();
+			dto.setAlgorithm(signalStatistics2.getAlgorithm());
+			dto.setLb(signalStatistics2.getLb());
+			dto.setUb(signalStatistics2.getUb());
+			dto.setSignalStatus(signalStatistics2.getTopic().getSignalStatus());
+			dto.setTimestamp(signalStatistics2.getTopic().getCreatedDate().getTime());
+			dtoList.add(dto);
 		}
 
-		//Aggregate values for each month
-		Map<Integer, SignalStrengthOverTimeDTO> dtoMap = new HashMap();
-		List<Long> closed=new ArrayList();
-		List<Long> opened=new ArrayList();
-		
-		
-		statMap.forEach((k, v) -> {
-			SignalStrengthOverTimeDTO dto = new SignalStrengthOverTimeDTO();
-			v.forEach(x -> {
-				dto.setLow(Double.min(x.getLb(), dto.getLow()));
-				dto.setHigh(Double.max(x.getUb(), dto.getHigh()));
-				if ("Completed".equalsIgnoreCase(x.getTopic().getSignalStatus()) && !closed.contains(x.getTopic().getId())) {
-					closed.add(x.getTopic().getId());
-					dto.setClosed(dto.getClosed() + 1);
-				} else if (!"Completed".equalsIgnoreCase(x.getTopic().getSignalStatus()) && !opened.contains(x.getTopic().getId())) {
-					dto.setOpened(dto.getOpened() + 1);
-					opened.add(x.getTopic().getId());
-				}
-
-			});
-
-			dtoMap.put(k, dto);
-		});
-
-		return dtoMap;
+		dataMap.put("chartData",dtoList);
+		return dataMap;
 
 	}
 

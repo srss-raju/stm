@@ -48,7 +48,7 @@ public class DashboardController {
 
 	
 	@GetMapping(value = "/signalStrength")
-	public Map<Integer, SignalStrengthOverTimeDTO> getSignalStrength(@RequestParam("topicId") Long topicId) throws ApplicationException {
+	public Map<String, Object> getSignalStrength(@RequestParam("topicId") Long topicId) throws ApplicationException {
 		return dashboardService.getSignalStrength(topicId);
 	}
 

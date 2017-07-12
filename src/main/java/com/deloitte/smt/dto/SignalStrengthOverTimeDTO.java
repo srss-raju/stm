@@ -2,46 +2,60 @@ package com.deloitte.smt.dto;
 
 public class SignalStrengthOverTimeDTO {
 	
-	private Double low=0.0;
-	private Double high=0.0;
-	private int closed;
-	private int opened;
-	private String month;
-	
-	public Double getLow() {
-		return low;
-	}
-	public void setLow(Double low) {
-		this.low = low;
-	}
-	public Double getHigh() {
-		return high;
-	}
-	public void setHigh(Double high) {
-		this.high = high;
-	}
-	
-	public String getMonth() {
-		return month;
-	}
-	public void setMonth(String month) {
-		this.month = month;
-	}
 	
 
-	public int getClosed() {
-		return closed;
+//	private int closed;
+//	private int opened;
+	
+	private String signalStatus;
+	public String getSignalStatus() {
+		return signalStatus;
 	}
-	public void setClosed(int closed) {
-		this.closed = closed;
+	public void setSignalStatus(String signalStatus) {
+		this.signalStatus = signalStatus;
 	}
-	public int getOpened() {
-		return opened;
+	public long getTimestamp() {
+		return timestamp;
 	}
-	public void setOpened(int opened) {
-		this.opened = opened;
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+	public long getTopicId() {
+		return topicId;
+	}
+	public void setTopicId(long topicId) {
+		this.topicId = topicId;
+	}
+	
+	public String getAlgorithm() {
+		return algorithm;
+	}
+	public void setAlgorithm(String algorithm) {
+		this.algorithm = algorithm;
+	}
+	
+	
+	public Double getLb() {
+		return lb;
+	}
+	public void setLb(Double lb) {
+		this.lb = lb;
+	}
+	public Double getUb() {
+		return ub;
+	}
+	public void setUb(Double ub) {
+		this.ub = ub;
 	}
 
+	
+	private String algorithm;
+	private long timestamp;
+	private long topicId;
+	private Double lb=0.0;
+	private Double ub=0.0;
+	
+	
 
 	
 }
