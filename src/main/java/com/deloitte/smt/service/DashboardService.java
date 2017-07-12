@@ -394,6 +394,7 @@ public class DashboardService {
 		//Prepare map by Key Month
 		for (SignalStatistics signalStatistics2 : signalStatistics) {
 			SignalStrengthOverTimeDTO dto = new SignalStrengthOverTimeDTO();
+			dto.setTopicId(signalStatistics2.getTopic().getId());
 			dto.setAlgorithm(signalStatistics2.getAlgorithm());
 			dto.setLb(signalStatistics2.getLb());
 			dto.setUb(signalStatistics2.getUb());
