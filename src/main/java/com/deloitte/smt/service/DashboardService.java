@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.deloitte.smt.constant.AlgorithmType;
 import com.deloitte.smt.constant.AssessmentPlanStatus;
 import com.deloitte.smt.constant.ExecutionType;
 import com.deloitte.smt.constant.RiskPlanStatus;
@@ -38,13 +40,18 @@ import com.deloitte.smt.dto.AssessmentPlanDTO;
 import com.deloitte.smt.dto.DashboardDTO;
 import com.deloitte.smt.dto.RiskPlanDTO;
 import com.deloitte.smt.dto.SignalDetectDTO;
+import com.deloitte.smt.dto.SignalStrengthOverTimeDTO;
 import com.deloitte.smt.dto.SmtComplianceDto;
 import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.dto.ValidationOutComesDTO;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.RiskPlan;
+import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.repository.IngredientRepository;
+import com.deloitte.smt.repository.SignalStatisticsRepository;
 import com.deloitte.smt.repository.TopicRepository;
 
 @Service
@@ -57,6 +64,19 @@ public class DashboardService {
 
 	@Autowired
 	private TopicRepository topicRepository;
+
+	@Autowired
+	private SignalService signalService;
+
+	@Autowired
+	private SignalMatchService signalMatchService;
+
+	@Autowired
+	private SignalStatisticsRepository signalStatisticsRepository;
+	
+	@Autowired
+	private IngredientRepository ingredientRepository;
+	
 
 	@SuppressWarnings("unchecked")
 	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
@@ -87,7 +107,7 @@ public class DashboardService {
 	public void complianceResponse(Map<String, List<SmtComplianceDto>> smtComplianceMap, List<Object[]> results,
 			String type) {
 		List<SmtComplianceDto> smtComplianceList = new ArrayList<>();
-		if (results!=null) {
+		if (results != null) {
 			smtComplianceList = new ArrayList<>();
 			for (Object[] row : results) {
 				SmtComplianceDto dto = new SmtComplianceDto();
@@ -200,8 +220,8 @@ public class DashboardService {
 		Predicate andPredicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 		criteriaQuery
 				.select(cb.construct(AssessmentPlanDTO.class, topicAssignmentJoin.get("id"),
-						ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription()), topicAssignmentJoin.get("assessmentName"),
-						topicAssignmentJoin.get("assessmentPlanStatus")))
+						ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription()),
+						topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("assessmentPlanStatus")))
 				.where(andPredicate).orderBy(cb.desc(ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription())));
 
 		TypedQuery<AssessmentPlanDTO> q = entityManager.createQuery(criteriaQuery);
@@ -222,8 +242,9 @@ public class DashboardService {
 
 		Predicate andPredicate2 = cb.and(predicates2.toArray(new Predicate[predicates2.size()]));
 		criteriaQuery2
-				.select(cb.construct(RiskPlanDTO.class, assementRiskJoin.get("id"), ingredient2.get(SmtConstant.INGREDIENT_NAME.getDescription()),
-						assementRiskJoin.get("name"), assementRiskJoin.get("status")))
+				.select(cb.construct(RiskPlanDTO.class, assementRiskJoin.get("id"),
+						ingredient2.get(SmtConstant.INGREDIENT_NAME.getDescription()), assementRiskJoin.get("name"),
+						assementRiskJoin.get("status")))
 				.where(andPredicate2).orderBy(cb.desc(ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription())));
 
 		TypedQuery<RiskPlanDTO> q2 = entityManager.createQuery(criteriaQuery2);
@@ -237,7 +258,7 @@ public class DashboardService {
 				"select count(*) from sm_assessment_plan a  inner join sm_topic t on a.id=t.assessment_plan_id where t.created_date >= (now() - interval '1 month') and a.risk_plan_id is null and t.signal_confirmation='"
 						+ SignalConfirmationStatus.VALIDATED_SIGNAL.getName() + "'");
 		Object validatedSignalsWithOutRiskResults = validatedSignalsWithOutRisk.getSingleResult();
-		valiatedSignalWithoutRisk(validateOutComesList,validatedSignalsWithOutRiskResults);
+		valiatedSignalWithoutRisk(validateOutComesList, validatedSignalsWithOutRiskResults);
 
 		Query validatedSignalsWithRisk = entityManager.createNativeQuery(
 				"select count(*) from sm_assessment_plan a  inner join sm_topic t on a.id=t.assessment_plan_id where t.created_date >= (now() - interval '1 month') and ( a.risk_plan_id>0 and t.signal_confirmation='"
@@ -289,7 +310,8 @@ public class DashboardService {
 	 * @param validateOutComesList
 	 * @param validatedSignalsWithRiskResults
 	 */
-	public void validatedSignalWithRisk(List<ValidationOutComesDTO> validateOutComesList, Object validatedSignalsWithRiskResults) {
+	public void validatedSignalWithRisk(List<ValidationOutComesDTO> validateOutComesList,
+			Object validatedSignalsWithRiskResults) {
 		ValidationOutComesDTO validationOutComeDTO2 = new ValidationOutComesDTO();
 		validationOutComeDTO2.setLabel(ValidationOutComesLabelTypes.VALIDATED_SIGNAL_WITH_RISK);
 		validationOutComeDTO2.setCount(((BigInteger) validatedSignalsWithRiskResults).longValue());
@@ -301,18 +323,20 @@ public class DashboardService {
 	 * @param validateOutComesList
 	 * @param validatedSignalsWithOutRiskResults
 	 */
-	public void valiatedSignalWithoutRisk(List<ValidationOutComesDTO> validateOutComesList, Object validatedSignalsWithOutRiskResults) {
+	public void valiatedSignalWithoutRisk(List<ValidationOutComesDTO> validateOutComesList,
+			Object validatedSignalsWithOutRiskResults) {
 		ValidationOutComesDTO validationOutComeDTO1 = new ValidationOutComesDTO();
 		validationOutComeDTO1.setLabel(ValidationOutComesLabelTypes.VALIDATED_SIGNAL_WITHOUT_RISK);
 		validationOutComeDTO1.setCount(((BigInteger) validatedSignalsWithOutRiskResults).longValue());
 		validationOutComeDTO1.setColor("#E55757");
 		validateOutComesList.add(validationOutComeDTO1);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<SignalDetectDTO> getDetectedSignalDetails() {
 		LOG.info("Method Start getDetectedSignalDetails");
-		Query signalQuery = entityManager.createNativeQuery("select to_timestamp(to_char(created_date,'Mon-yy'),'Mon-yy') \\:\\: timestamp without time zone cd, sum(case when signal_status='New' then 1 else 0 end) as signalcount,sum(case when signal_status<>'New' then 1 else 0 end) as recurringcount,count(signal_status) as totalsignalcount,sum(cases_count) as casesCount from sm_topic group by cd order by to_timestamp(to_char(created_date,'Mon-yy'),'Mon-yy') \\:\\: timestamp without time zone");
+		Query signalQuery = entityManager.createNativeQuery(
+				"select to_timestamp(to_char(created_date,'Mon-yy'),'Mon-yy') \\:\\: timestamp without time zone cd, sum(case when signal_status='New' then 1 else 0 end) as signalcount,sum(case when signal_status<>'New' then 1 else 0 end) as recurringcount,count(signal_status) as totalsignalcount,sum(cases_count) as casesCount from sm_topic group by cd order by to_timestamp(to_char(created_date,'Mon-yy'),'Mon-yy') \\:\\: timestamp without time zone");
 		List<Object[]> signals = signalQuery.getResultList();
 		return detectedSignals(signals);
 	}
@@ -323,20 +347,90 @@ public class DashboardService {
 	 */
 	public List<SignalDetectDTO> detectedSignals(List<Object[]> signals) {
 		List<SignalDetectDTO> signalDetectDTOs = null;
-		
-		if(!CollectionUtils.isEmpty(signals)){
-			 signalDetectDTOs = new ArrayList<>();
-			for(Object[] signal:signals){
+
+		if (!CollectionUtils.isEmpty(signals)) {
+			signalDetectDTOs = new ArrayList<>();
+			for (Object[] signal : signals) {
 				SignalDetectDTO dto = new SignalDetectDTO();
-				dto.setMonth((Timestamp)signal[0]);
-				dto.setSignalCount(((BigInteger)signal[1]).longValue());
-				dto.setRecurringCount(((BigInteger)signal[2]).longValue());
-				dto.setTotalSignalCount(((BigInteger)signal[3]).longValue());
-				dto.setCasesCount(((BigDecimal)signal[4]).longValue());
+				dto.setMonth((Timestamp) signal[0]);
+				dto.setSignalCount(((BigInteger) signal[1]).longValue());
+				dto.setRecurringCount(((BigInteger) signal[2]).longValue());
+				dto.setTotalSignalCount(((BigInteger) signal[3]).longValue());
+				dto.setCasesCount(((BigDecimal) signal[4]).longValue());
 				signalDetectDTOs.add(dto);
 			}
 		}
 		return signalDetectDTOs;
+	}
+
+	public Map<Integer, SignalStrengthOverTimeDTO> getSignalStrength(Long topicId) throws ApplicationException {
+		
+	//	AlgorithmType.values();
+		Topic topic = signalService.findById(topicId);
+		Ingredient ingredient=ingredientRepository.findByTopicId(topic.getId());
+		topic.setIngredient(ingredient);
+		
+		List<Topic> matchingSignals = signalMatchService.getMatchingSignals(topic);
+
+		Calendar calendarYearOld = Calendar.getInstance();
+		calendarYearOld.add(Calendar.YEAR, -1);
+
+		Calendar calendarNow = Calendar.getInstance();
+
+		// Accept only one year old data
+		Map<Long, Topic> matchingSignalsMap = matchingSignals
+				.stream().filter(item -> calendarNow.getTimeInMillis()
+						- item.getCreatedDate().getTime() <= calendarYearOld.getTimeInMillis())
+				.collect(Collectors.toMap(x -> x.getId(), x -> x));
+
+		List<SignalStatistics> signalStatistics = signalStatisticsRepository
+				.findStatisticsByTopicsIds(matchingSignalsMap.keySet());
+		
+
+		Map<Integer, List<SignalStatistics>> statMap = new HashMap();
+		Calendar cal = Calendar.getInstance();
+
+		//Prepare map by Key Month
+		for (SignalStatistics signalStatistics2 : signalStatistics) {
+			cal.setTime(signalStatistics2.getTopic().getCreatedDate());
+			if (statMap.get(cal.get(Calendar.MONTH) + 1) != null) {
+				List<SignalStatistics> list = statMap.get(cal.get(Calendar.MONTH) + 1);
+				list.add(signalStatistics2);
+				statMap.put(cal.get(Calendar.MONTH) + 1, list);
+			} else {
+				List<SignalStatistics> list = new ArrayList();
+				list.add(signalStatistics2);
+				statMap.put(cal.get(Calendar.MONTH) + 1, list);
+			}
+
+		}
+
+		//Aggregate values for each month
+		Map<Integer, SignalStrengthOverTimeDTO> dtoMap = new HashMap();
+		List<Long> closed=new ArrayList();
+		List<Long> opened=new ArrayList();
+		
+		
+		statMap.forEach((k, v) -> {
+			SignalStrengthOverTimeDTO dto = new SignalStrengthOverTimeDTO();
+			v.forEach(x -> {
+				dto.setLow(Double.min(x.getLb(), dto.getLow()));
+				dto.setHigh(Double.max(x.getUb(), dto.getHigh()));
+				if ("Completed".equalsIgnoreCase(x.getTopic().getSignalStatus()) && !closed.contains(x.getTopic().getId())) {
+					closed.add(x.getTopic().getId());
+					dto.setClosed(dto.getClosed() + 1);
+				} else if (!"Completed".equalsIgnoreCase(x.getTopic().getSignalStatus()) && !opened.contains(x.getTopic().getId())) {
+					dto.setOpened(dto.getOpened() + 1);
+					opened.add(x.getTopic().getId());
+				}
+
+			});
+
+			dtoMap.put(k, dto);
+		});
+
+		return dtoMap;
+
 	}
 
 }
