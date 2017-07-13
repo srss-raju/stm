@@ -1,13 +1,18 @@
 package com.deloitte.smt.servicetest;
 
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,8 +39,20 @@ import com.deloitte.smt.dto.RiskPlanDTO;
 import com.deloitte.smt.dto.SmtComplianceDto;
 import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.dto.ValidationOutComesDTO;
+import com.deloitte.smt.entity.Ingredient;
+import com.deloitte.smt.entity.License;
+import com.deloitte.smt.entity.Product;
+import com.deloitte.smt.entity.SignalConfiguration;
+import com.deloitte.smt.entity.SignalStatistics;
+import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.repository.IngredientRepository;
+import com.deloitte.smt.repository.SignalStatisticsRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.DashboardService;
+import com.deloitte.smt.service.SignalMatchService;
+import com.deloitte.smt.service.SignalService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SignalManagementApplication.class)
@@ -52,6 +69,19 @@ public class DashboardServiceTest {
 	
 	@MockBean
 	TopicRepository topicRepository;
+	
+	@MockBean
+	SignalService signalService;
+	
+	@MockBean
+	private IngredientRepository ingredientRepository;
+	
+	@MockBean
+	private SignalMatchService signalMatchService;
+	
+	
+	@MockBean
+	private SignalStatisticsRepository signalStatisticsRepository;
 	
 		
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
@@ -213,6 +243,69 @@ public class DashboardServiceTest {
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
+	}
+	
+	@Test
+	public void testGetSignalStrength() throws ApplicationException{
+		
+		Calendar calendarMonthOld = Calendar.getInstance();
+		calendarMonthOld.add(Calendar.MONTH, -1);
+
+		
+		Topic topic = new Topic();
+		topic.setId(1L);
+		topic.setSignalStatus("Completed");
+		topic.setIngredient(setIngredient(topic));
+		topic.setSourceName("Test Source");
+		topic.setCreatedDate(calendarMonthOld.getTime());
+		List<SignalURL> urls = new ArrayList<>();
+		SignalURL url = new SignalURL();
+		url.setUrl("Test Url");
+		urls.add(url);
+		topic.setSignalUrls(urls);
+		Set<SignalStatistics> stats = new HashSet<>();
+		SignalStatistics signalStatistics = new SignalStatistics();
+		signalStatistics.setScore(1);
+		signalStatistics.setLb(1.0);
+		signalStatistics.setUb(10.0);
+		signalStatistics.setAlgorithm("ROR");
+		signalStatistics.setTopic(topic);
+		stats.add(signalStatistics);
+		topic.setSignalStatistics(stats);
+		
+		given(this.signalService.findById(1L)).willReturn(topic);
+		given(this.ingredientRepository.findByTopicId(topic.getId())).willReturn(topic.getIngredient());
+		
+		List<Topic> list=new ArrayList();
+		given(this.signalMatchService.getMatchingSignals(topic)).willReturn(list);
+		Set set=new HashSet();
+		
+		List<SignalStatistics> statList = stats.stream().collect(Collectors.toList());
+		
+		given(this.signalStatisticsRepository.findStatisticsByTopicsIds(set)).willReturn(statList);
+		
+		Map<String, Object> map=dashboardService.getSignalStrength(1L);
+		assertNotNull(map);
+	}
+	
+	private Ingredient setIngredient(Topic topic) {
+		topic.setId(1l);
+		Ingredient ingredient = new Ingredient();
+		ingredient.setIngredientName("Test Ingredient");
+
+		List<Product> products = new ArrayList<>();
+		Product product = new Product();
+		product.setProductName("Test Product");
+		products.add(product);
+		ingredient.setProducts(products);
+
+		List<License> licenses = new ArrayList<>();
+		License license = new License();
+		license.setLicenseName("Test License");
+		licenses.add(license);
+		ingredient.setLicenses(licenses);
+		ingredient.setTopicId(1l);
+		return ingredient;
 	}
 
 }
