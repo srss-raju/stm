@@ -373,6 +373,7 @@ public class DashboardService {
 		topic.setIngredient(ingredient);
 		
 		List<Topic> matchingSignals = signalMatchService.getMatchingSignals(topic);
+		matchingSignals.add(topic);
 
 		Calendar calendarYearOld = Calendar.getInstance();
 		calendarYearOld.add(Calendar.YEAR, -1);
