@@ -50,7 +50,7 @@ public class AssessmentActionService {
     @Autowired
     SignalURLRepository signalURLRepository;
 
-    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
+    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
         if(signalAction.getCaseInstanceId() != null && SignalStatus.COMPLETED.name().equalsIgnoreCase(signalAction.getActionStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
@@ -72,6 +72,11 @@ public class AssessmentActionService {
         signalAction.setCreatedDate(d);
         signalAction.setLastModifiedDate(d);
         signalAction.setActionStatus("New");
+        
+        Long actionsExist=assessmentActionRepository.countByActionNameIgnoreCaseAndAssessmentId(signalAction.getActionName(), signalAction.getAssessmentId());
+        if(actionsExist>0){
+        	throw new ApplicationException("Assessment Action with Same Name Exist");
+        }
         SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
         attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata());
         if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){

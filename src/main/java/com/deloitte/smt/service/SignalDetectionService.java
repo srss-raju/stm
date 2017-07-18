@@ -95,6 +95,12 @@ public class SignalDetectionService {
 
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
+			
+			Long signalDetectionExist=signalDetectionRepository.countByNameIgnoreCase(signalDetection.getName());
+			if(signalDetectionExist>0){
+				throw new ApplicationException("Detection Configuration with Same Name found");
+			}
+			
 			Calendar c = Calendar.getInstance();
 			if (signalDetection.getId() == null) {
 				signalDetection.setCreatedDate(c.getTime());

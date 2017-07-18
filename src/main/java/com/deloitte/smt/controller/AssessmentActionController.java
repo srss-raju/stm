@@ -35,7 +35,7 @@ public class AssessmentActionController    {
 
     @PostMapping(value = "/createAssessmentAction")
     public SignalAction createAssessmentAction(@RequestParam("data") String signalActionString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
         SignalAction signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
         if(signalAction.getTemplateId() != 0){
         	signalAction = assessmentActionService.createOrphanAssessmentAction(signalAction, attachments);

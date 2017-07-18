@@ -158,24 +158,23 @@ public class SignalService {
 
 	public NonSignal createOrupdateNonSignal(NonSignal nonSignal) {
 		Calendar c = Calendar.getInstance();
-		
-		if(nonSignal.getId()==null){
+
+		if (nonSignal.getId() == null) {
 			nonSignal.setCreatedDate(c.getTime());
 		}
-		
+
 		nonSignal.setLastModifiedDate(c.getTime());
 		List<NonSignal> nonSignals = nonSignalRepository.findAll();
 		boolean isNonSignalMatched = nonSignals.stream()
 				.anyMatch(ns -> ns.getProductKey().equals(nonSignal.getProductKey())
-						&& ns.getPtDesc().equals(nonSignal.getPtDesc())
-						&& ns.getName().equals(nonSignal.getName()));
+						&& ns.getPtDesc().equals(nonSignal.getPtDesc()) && ns.getName().equals(nonSignal.getName()));
 
-		if(isNonSignalMatched){
-			return null;	
-		}else{
+		if (isNonSignalMatched) {
+			return null;
+		} else {
 			return nonSignalRepository.save(nonSignal);
 		}
-		
+
 	}
 
 	public Topic findById(Long topicId) throws ApplicationException {
@@ -209,7 +208,7 @@ public class SignalService {
 		return topic;
 	}
 
-	public Topic createTopic(Topic topic, MultipartFile[] attachments)  {
+	public Topic createTopic(Topic topic, MultipartFile[] attachments) throws ApplicationException {
 		String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
 		Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
 		taskService.delegateTask(task.getId(), "Demo Demo");
@@ -235,8 +234,12 @@ public class SignalService {
 			topic.setConfidenceIndex(Long.valueOf(signalConfiguration.getConfidenceIndex()));
 		}
 
+		Long topicExist = topicRepository.countByNameIgnoreCase(topic.getName());
+		if (topicExist>0) {
+			throw new ApplicationException("Duplicate Signal");
+		}
+		
 		Topic topicUpdated = topicRepository.save(topic);
-
 		Ingredient ingredient = topicUpdated.getIngredient();
 		if (ingredient != null) {
 			AssignmentConfiguration assignmentConfiguration = null;
@@ -244,7 +247,8 @@ public class SignalService {
 				assignmentConfiguration = assignmentConfigurationRepository
 						.findByIngredientAndSignalSource(ingredient.getIngredientName(), topicUpdated.getSourceName());
 			}
-			// If Source is null and combination not available we have to fetch
+			// If Source is null and combination not available we have to
+			// fetch
 			// with Ingredient
 			if (assignmentConfiguration == null) {
 				assignmentConfiguration = assignmentConfigurationRepository
@@ -445,6 +449,7 @@ public class SignalService {
 		}
 		assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
 		assessmentPlan.setAssessmentTaskStatus("Not Completed");
+		
 		topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
 		topic.setSignalStatus(SmtConstant.COMPLETED.getDescription());
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());

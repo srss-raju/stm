@@ -9,4 +9,7 @@ public interface RiskTaskRepository extends JpaRepository<RiskTask, Long> {
 
 	List<RiskTask> findAllByRiskIdAndStatusOrderByCreatedDateDesc(String riskId, String status);
 	List<RiskTask> findAllByRiskIdOrderByCreatedDateDesc(String riskId);
+	
+	Long countByNameIgnoreCaseAndRiskId(String risName,String riskId);
+	
 }

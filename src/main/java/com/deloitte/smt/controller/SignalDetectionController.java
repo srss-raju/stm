@@ -32,14 +32,14 @@ public class SignalDetectionController {
 	SignalDetectionService signalDetectionService;
 
 	@PostMapping(value = "/createSignalDetection")
-	public SignalDetection  createSignalDetection(@RequestParam(value = "data") String topicString) {
+	public SignalDetection  createSignalDetection(@RequestParam(value = "data") String topicString) throws Exception {
 		try {
 			SignalDetection signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
 			return signalDetectionService.createOrUpdateSignalDetection(signalDetection);
 		} catch (ApplicationException | IOException e) {
 			LOG.info("Exception occured while creating "+e);
+			throw e;
 		}
-		return null;
 	}
 	
 	@GetMapping(value = "/{signalDetectionId}")

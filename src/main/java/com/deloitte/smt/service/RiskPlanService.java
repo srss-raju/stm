@@ -378,7 +378,7 @@ public class RiskPlanService {
 
 
 
-	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException {
+	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException, ApplicationException {
 		if (riskTask.getCaseInstanceId() != null
 				&& SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())) {
 			Task task = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).singleResult();
@@ -405,6 +405,11 @@ public class RiskPlanService {
 		riskTask.setOwner(riskPlan.getAssignTo());
 
 		taskInstRepository.save(taskInstance);
+		
+		Long riskTaskExists=riskTaskRepository.countByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
+		if(riskTaskExists>0){
+			throw new ApplicationException("Risk Action with Same Name Exists");
+		}
 		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
 		attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
 				null, riskTaskUpdated.getFileMetadata());

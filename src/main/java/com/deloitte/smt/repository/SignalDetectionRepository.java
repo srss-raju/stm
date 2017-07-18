@@ -6,4 +6,6 @@ import com.deloitte.smt.entity.SignalDetection;
 
 public interface SignalDetectionRepository extends JpaRepository<SignalDetection, Long> {
 	
+	Long countByNameIgnoreCase(String detectionName);
+	
 }
