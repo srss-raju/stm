@@ -1,6 +1,6 @@
 package com.deloitte.smt.controllertest;
 
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -101,7 +101,7 @@ public class DashboardControllerTest {
 	@Test
 	public void testGetSignalStrength() throws Exception{
 		Map map=new HashMap();
-		when(dashboardServiceMock.getSignalStrength(anyLong())).thenReturn(map);
+		when(dashboardServiceMock.getSignalStrength(anyList())).thenReturn(map);
 		
 		this.mockMvc
 		.perform(get("/camunda/api/dashboard/signalStrength")

@@ -73,10 +73,9 @@ public class DashboardService {
 
 	@Autowired
 	private SignalStatisticsRepository signalStatisticsRepository;
-	
+
 	@Autowired
 	private IngredientRepository ingredientRepository;
-	
 
 	@SuppressWarnings("unchecked")
 	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
@@ -363,48 +362,56 @@ public class DashboardService {
 		return signalDetectDTOs;
 	}
 
-	public Map<String, Object> getSignalStrength(Long topicId) throws ApplicationException {
-		Map<String, Object> dataMap=new HashMap();
-		AlgorithmType[] algorithmTypes=AlgorithmType.values();
-		dataMap.put("algorithms",algorithmTypes);
-		
-		Topic topic = signalService.findById(topicId);
-		Ingredient ingredient=ingredientRepository.findByTopicId(topic.getId());
-		topic.setIngredient(ingredient);
-		
-		List<Topic> matchingSignals = signalMatchService.getMatchingSignals(topic);
-		matchingSignals.add(topic);
+	public Map<String, Object> getSignalStrength(List<Long> topicList) throws ApplicationException {
+		Map<String, Object> dataMap = new HashMap();
+		AlgorithmType[] algorithmTypes = AlgorithmType.values();
+		dataMap.put("algorithms", algorithmTypes);
 
 		Calendar calendarYearOld = Calendar.getInstance();
 		calendarYearOld.add(Calendar.YEAR, -1);
 
 		Calendar calendarNow = Calendar.getInstance();
+		Map<Long, List<SignalStrengthOverTimeDTO>> map = new HashMap();
 
-		// Accept only one year old data
-		Map<Long, Topic> matchingSignalsMap = matchingSignals
-				.stream().filter(item -> calendarNow.getTimeInMillis()
-						- item.getCreatedDate().getTime() <= calendarYearOld.getTimeInMillis())
-				.collect(Collectors.toMap(x -> x.getId(), x -> x));
+		for (Long topicId : topicList) {
+			try {
+				Topic topic = signalService.findById(topicId);
+				Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
+				topic.setIngredient(ingredient);
 
-		List<SignalStatistics> signalStatistics = signalStatisticsRepository
-				.findStatisticsByTopicsIds(matchingSignalsMap.keySet());
-		
+				List<Topic> matchingSignals = signalMatchService.getMatchingSignals(topic);
+				matchingSignals.add(topic);
 
-		List<SignalStrengthOverTimeDTO> dtoList=new ArrayList();
-		
-		//Prepare map by Key Month
-		for (SignalStatistics signalStatistics2 : signalStatistics) {
-			SignalStrengthOverTimeDTO dto = new SignalStrengthOverTimeDTO();
-			dto.setTopicId(signalStatistics2.getTopic().getId());
-			dto.setAlgorithm(signalStatistics2.getAlgorithm());
-			dto.setLb(signalStatistics2.getLb());
-			dto.setUb(signalStatistics2.getUb());
-			dto.setSignalStatus(signalStatistics2.getTopic().getSignalStatus());
-			dto.setTimestamp(signalStatistics2.getTopic().getCreatedDate().getTime());
-			dtoList.add(dto);
+				// Accept only one year old data
+				Map<Long, Topic> matchingSignalsMap = matchingSignals.stream()
+						.filter(item -> calendarNow.getTimeInMillis()
+								- item.getCreatedDate().getTime() <= calendarYearOld.getTimeInMillis())
+						.collect(Collectors.toMap(x -> x.getId(), x -> x));
+
+				List<SignalStatistics> signalStatistics = signalStatisticsRepository
+						.findStatisticsByTopicsIds(matchingSignalsMap.keySet());
+
+				List<SignalStrengthOverTimeDTO> dtoList = new ArrayList();
+
+				// Prepare map by Key Month
+				for (SignalStatistics signalStatistics2 : signalStatistics) {
+					SignalStrengthOverTimeDTO dto = new SignalStrengthOverTimeDTO();
+					dto.setTopicId(signalStatistics2.getTopic().getId());
+					dto.setAlgorithm(signalStatistics2.getAlgorithm());
+					dto.setLb(signalStatistics2.getLb());
+					dto.setUb(signalStatistics2.getUb());
+					dto.setSignalStatus(signalStatistics2.getTopic().getSignalStatus());
+					dto.setTimestamp(signalStatistics2.getTopic().getCreatedDate().getTime());
+					dtoList.add(dto);
+				}
+
+				map.put(topicId, dtoList);
+			} catch (ApplicationException ex) {
+
+			}
 		}
 
-		dataMap.put("chartData",dtoList);
+		dataMap.put("chartData", map);
 		return dataMap;
 
 	}
