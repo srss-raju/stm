@@ -450,6 +450,10 @@ public class SignalService {
 		assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
 		assessmentPlan.setAssessmentTaskStatus("Not Completed");
 		
+		Long assessmentPlanExist=assessmentPlanRepository.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());
+		if(assessmentPlanExist>0){
+			throw new ApplicationException("Assessment Plan with Same Name Exist");
+		}
 		topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
 		topic.setSignalStatus(SmtConstant.COMPLETED.getDescription());
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());
