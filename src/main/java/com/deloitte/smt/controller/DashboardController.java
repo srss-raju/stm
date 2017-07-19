@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.dto.DashboardDTO;
 import com.deloitte.smt.dto.SignalDetectDTO;
-import com.deloitte.smt.dto.SignalStrengthOverTimeDTO;
 import com.deloitte.smt.dto.SmtComplianceDto;
 import com.deloitte.smt.dto.ValidationOutComesDTO;
 import com.deloitte.smt.exception.ApplicationException;

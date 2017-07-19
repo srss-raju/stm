@@ -98,6 +98,7 @@ public class DashboardControllerTest {
 		
 	} 
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testGetSignalStrength() throws Exception{
 		Map map=new HashMap();
@@ -105,7 +106,7 @@ public class DashboardControllerTest {
 		
 		this.mockMvc
 		.perform(get("/camunda/api/dashboard/signalStrength")
-				.param("topicId","1")
+				.param("topicIds","1")
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		
