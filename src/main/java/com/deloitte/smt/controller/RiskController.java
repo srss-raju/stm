@@ -59,9 +59,13 @@ public class RiskController {
     
     @PostMapping(value = "/task/create")
     public ResponseEntity<Void> createRiskAction(@RequestParam("data") String riskPlanActionString,
-                                                 @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
-        RiskTask riskTask = new ObjectMapper().readValue(riskPlanActionString, RiskTask.class);
-    	riskPlanService.createRiskTask(riskTask, attachments);
+                                                 @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
+    	try {
+    		RiskTask riskTask = new ObjectMapper().readValue(riskPlanActionString, RiskTask.class);
+        	riskPlanService.createRiskTask(riskTask, attachments);
+		} catch (IOException | ApplicationException e) {
+			LOG.info("Exception occured while creating "+e);
+		}
     	return new ResponseEntity<>(HttpStatus.OK);
     }
     

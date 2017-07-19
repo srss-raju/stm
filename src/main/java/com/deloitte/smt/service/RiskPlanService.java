@@ -1,6 +1,5 @@
 package com.deloitte.smt.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -385,7 +384,7 @@ public class RiskPlanService {
 
 
 
-	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException, ApplicationException {
+	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
 		if (riskTask.getCaseInstanceId() != null
 				&& SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())) {
 			Task task = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).singleResult();

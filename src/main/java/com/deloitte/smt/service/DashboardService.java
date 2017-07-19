@@ -374,7 +374,6 @@ public class DashboardService {
 		Map<Long, List<SignalStrengthOverTimeDTO>> map = new HashMap();
 
 		for (Long topicId : topicList) {
-			try {
 				Topic topic = signalService.findById(topicId);
 				Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
 				topic.setIngredient(ingredient);
@@ -406,9 +405,6 @@ public class DashboardService {
 				}
 
 				map.put(topicId, dtoList);
-			} catch (ApplicationException ex) {
-
-			}
 		}
 
 		dataMap.put("chartData", map);
