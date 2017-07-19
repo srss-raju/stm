@@ -129,6 +129,13 @@ public class RiskPlanService {
 			}
 			assessmentPlan.setRiskPlan(riskPlan);
 			riskPlan.setAssessmentPlan(assessmentPlan);
+			
+			
+			Long riskPlanExist = riskPlanRepository.countByNameIgnoreCase(riskPlan.getName());
+			if (riskPlanExist>0) {
+				throw new ApplicationException("Risk Plan with same name exist");
+			}
+			
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 			assessmentPlanRepository.save(assessmentPlan);
 		} else {

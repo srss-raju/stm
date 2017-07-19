@@ -42,5 +42,5 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	@Query(value = "UPDATE RiskPlan o SET o.riskTaskStatus=:riskTaskStatus WHERE id= :id")
 	void updateRiskTaskStatus(@Param("riskTaskStatus") String riskTaskStatus, @Param("id") Long id);
 	
-	
+	Long countByNameIgnoreCase(String topicName);
 }

@@ -236,7 +236,7 @@ public class SignalService {
 
 		Long topicExist = topicRepository.countByNameIgnoreCase(topic.getName());
 		if (topicExist>0) {
-			throw new ApplicationException("Duplicate Signal");
+			throw new ApplicationException("Signal with Same Name Exist");
 		}
 		
 		Topic topicUpdated = topicRepository.save(topic);
