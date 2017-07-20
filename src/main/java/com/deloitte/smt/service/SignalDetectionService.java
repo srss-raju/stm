@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -35,6 +36,8 @@ import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.exception.ErrorType;
+import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
@@ -57,6 +60,12 @@ public class SignalDetectionService {
 
 	private static final Logger LOG = Logger.getLogger(SignalDetectionService.class);
 
+	@Autowired
+	MessageSource messageSource;
+	
+	@Autowired
+	ExceptionBuilder exceptionBuilder;
+	
 	@Autowired
 	private IngredientRepository ingredientRepository;
 
@@ -97,8 +106,8 @@ public class SignalDetectionService {
 		try {
 			
 			Long signalDetectionExist=signalDetectionRepository.countByNameIgnoreCase(signalDetection.getName());
-			if(signalDetectionExist>0){
-				throw new ApplicationException("Detection Configuration with Same Name found");
+			if (signalDetectionExist > 0) {
+				throw exceptionBuilder.buildException(ErrorType.DETECTION_NAME_DUPLICATE, null);
 			}
 			
 			Calendar c = Calendar.getInstance();

@@ -24,6 +24,7 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -53,6 +54,8 @@ import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.exception.ErrorType;
+import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
@@ -82,6 +85,12 @@ import com.deloitte.smt.util.SignalUtil;
 public class SignalService {
 
 	private static final Logger LOG = Logger.getLogger(SignalService.class);
+
+	@Autowired
+	MessageSource messageSource;
+	
+	@Autowired
+	ExceptionBuilder exceptionBuilder;
 
 	@Autowired
 	private TaskService taskService;
@@ -235,10 +244,10 @@ public class SignalService {
 		}
 
 		Long topicExist = topicRepository.countByNameIgnoreCase(topic.getName());
-		if (topicExist>0) {
-			throw new ApplicationException("Signal with Same Name Exist");
+		if (topicExist > 0) {
+			throw exceptionBuilder.buildException(ErrorType.SIGNAL_NAME_DUPLICATE, null);
 		}
-		
+
 		Topic topicUpdated = topicRepository.save(topic);
 		Ingredient ingredient = topicUpdated.getIngredient();
 		if (ingredient != null) {
@@ -449,11 +458,14 @@ public class SignalService {
 		}
 		assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
 		assessmentPlan.setAssessmentTaskStatus("Not Completed");
-		
-		Long assessmentPlanExist=assessmentPlanRepository.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());
-		if(assessmentPlanExist>0){
-			throw new ApplicationException("Assessment Plan with Same Name Exist");
+
+		Long assessmentPlanExist = assessmentPlanRepository
+				.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());
+		if (assessmentPlanExist > 0) {
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE, null);
 		}
+
+    	
 		topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
 		topic.setSignalStatus(SmtConstant.COMPLETED.getDescription());
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());

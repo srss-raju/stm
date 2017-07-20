@@ -1,5 +1,6 @@
 package com.deloitte.smt.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -31,6 +33,8 @@ import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.exception.ErrorType;
+import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.CommentsRepository;
@@ -48,6 +52,12 @@ import com.deloitte.smt.repository.TaskInstRepository;
 @Transactional
 @Service
 public class RiskPlanService {
+	
+	@Autowired
+	MessageSource messageSource;
+	
+	@Autowired
+	ExceptionBuilder  exceptionBuilder;
 
 	@Autowired
 	AssessmentPlanRepository assessmentPlanRepository;
@@ -132,7 +142,7 @@ public class RiskPlanService {
 			
 			Long riskPlanExist = riskPlanRepository.countByNameIgnoreCase(riskPlan.getName());
 			if (riskPlanExist>0) {
-				throw new ApplicationException("Risk Plan with same name exist");
+				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
 			}
 			
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
@@ -384,7 +394,7 @@ public class RiskPlanService {
 
 
 
-	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
+	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException, ApplicationException {
 		if (riskTask.getCaseInstanceId() != null
 				&& SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())) {
 			Task task = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).singleResult();
@@ -413,9 +423,12 @@ public class RiskPlanService {
 		taskInstRepository.save(taskInstance);
 		
 		Long riskTaskExists=riskTaskRepository.countByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
-		if(riskTaskExists>0){
-			throw new ApplicationException("Risk Action with Same Name Exists");
+		if (riskTaskExists > 0) {
+			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
 		}
+
+    	
+		
 		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
 		attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
 				null, riskTaskUpdated.getFileMetadata());

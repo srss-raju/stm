@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,8 @@ import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.exception.ErrorType;
+import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
@@ -32,6 +35,12 @@ import com.deloitte.smt.util.SignalUtil;
 @Service
 public class AssessmentActionService {
 
+	@Autowired
+	MessageSource messageSource;
+	
+	@Autowired
+	ExceptionBuilder  exceptionBuilder;
+	
     @Autowired
     private TaskService taskService;
 
@@ -50,7 +59,7 @@ public class AssessmentActionService {
     @Autowired
     SignalURLRepository signalURLRepository;
 
-    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws ApplicationException {
+    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
         if(signalAction.getCaseInstanceId() != null && SignalStatus.COMPLETED.name().equalsIgnoreCase(signalAction.getActionStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
@@ -74,9 +83,11 @@ public class AssessmentActionService {
         signalAction.setActionStatus("New");
         
         Long actionsExist=assessmentActionRepository.countByActionNameIgnoreCaseAndAssessmentId(signalAction.getActionName(), signalAction.getAssessmentId());
-        if(actionsExist>0){
-        	throw new ApplicationException("Assessment Action with Same Name Exist");
-        }
+    	if (actionsExist > 0) {
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
+		}
+
+    	
         SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
         attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata());
         if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
