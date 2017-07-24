@@ -131,6 +131,8 @@ public class RiskPlanService {
 		}
 
 		RiskPlan riskPlanUpdated;
+		Long riskPlanExist = riskPlanRepository.countByNameIgnoreCase(riskPlan.getName());
+		
 		if (assessmentId != null) {
 			AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
 			if (assessmentPlan == null) {
@@ -138,16 +140,15 @@ public class RiskPlanService {
 			}
 			assessmentPlan.setRiskPlan(riskPlan);
 			riskPlan.setAssessmentPlan(assessmentPlan);
-			
-			
-			Long riskPlanExist = riskPlanRepository.countByNameIgnoreCase(riskPlan.getName());
 			if (riskPlanExist>0) {
 				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
 			}
-			
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 			assessmentPlanRepository.save(assessmentPlan);
 		} else {
+			if (riskPlanExist>0) {
+				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
+			}
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 		}
 		attachmentService.addAttachments(riskPlanUpdated.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null,

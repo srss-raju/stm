@@ -40,13 +40,14 @@ public class RiskController {
     @PostMapping()
     public RiskPlan createRiskPlan(@RequestParam("data") String riskPlanString,
                                                @RequestParam(value = "assessmentId", required = false) Long assessmentId,
-                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments)throws Exception {
     	RiskPlan riskPlan = null;
     	try {
         	riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
 			riskPlan = riskPlanService.insert(riskPlan, attachments, assessmentId);
 		} catch (IOException | ApplicationException e) {
 			LOG.info("Exception occured while creating "+e);
+			throw e;
 		}
         return riskPlan;
     }
