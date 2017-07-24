@@ -7,12 +7,22 @@ public class ApplicationException extends Exception {
 
 	private static final long serialVersionUID = -7514043640207755571L;
 
-	private Exception exception;
-	private Integer errorCode;
+	private final Integer errorCode;
 
 	
 	public ApplicationException(String message) {
 		super(message);
+		errorCode=null;
+	}
+	
+	public ApplicationException(String message,ApplicationException exception) {
+		super(message,exception);
+		errorCode=exception.getErrorCode();
+	}
+	
+	public ApplicationException(String message,Throwable exception) {
+		super(message,exception);
+		errorCode=null;
 	}
 
 	public ApplicationException(Integer errorCode, String message, Throwable throwable) {
@@ -20,21 +30,9 @@ public class ApplicationException extends Exception {
 		this.errorCode = errorCode;
 	}
 
-	public Exception getException() {
-		return exception;
-	}
-
-	public void setException(Exception exception) {
-		this.exception = exception;
-	}
 
 	public Integer getErrorCode() {
 		return errorCode;
 	}
-
-	public void setErrorCode(Integer errorCode) {
-		this.errorCode = errorCode;
-	}
-
 
 }

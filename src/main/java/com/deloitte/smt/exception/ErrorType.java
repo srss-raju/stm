@@ -14,7 +14,7 @@ public enum ErrorType {
 	RISKPACTION_NAME_DUPLICATE(104,"error.riskaction.task.name.duplicate","Risk Action with Same Name Existed"),
 	DETECTION_NAME_DUPLICATE(105,"error.detection.name.duplicate","Detection with Same Name Existed");
 
-	private final int code;
+	private final Integer code;
 	private final String label;
 	private final String defaultMessage;
 
@@ -22,7 +22,7 @@ public enum ErrorType {
 		return defaultMessage;
 	}
 
-	private ErrorType(int code, String label, String defaultMessage) {
+	private ErrorType(Integer code, String label, String defaultMessage) {
 		this.code = code;
 		this.label = label;
 		this.defaultMessage = defaultMessage;
@@ -32,7 +32,7 @@ public enum ErrorType {
 		return label;
 	}
 
-	public int getCode() {
+	public Integer getCode() {
 		return code;
 	}
 

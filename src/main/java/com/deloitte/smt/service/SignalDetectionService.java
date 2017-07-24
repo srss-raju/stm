@@ -62,10 +62,10 @@ public class SignalDetectionService {
 
 	@Autowired
 	MessageSource messageSource;
-	
+
 	@Autowired
 	ExceptionBuilder exceptionBuilder;
-	
+
 	@Autowired
 	private IngredientRepository ingredientRepository;
 
@@ -95,7 +95,7 @@ public class SignalDetectionService {
 
 	@Autowired
 	private IncludeAERepository includeAERepository;
-	
+
 	@Autowired
 	private QueryBuilderRepository queryBuilderRepository;
 
@@ -104,12 +104,12 @@ public class SignalDetectionService {
 
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
-			
-			Long signalDetectionExist=signalDetectionRepository.countByNameIgnoreCase(signalDetection.getName());
+
+			Long signalDetectionExist = signalDetectionRepository.countByNameIgnoreCase(signalDetection.getName());
 			if (signalDetectionExist > 0) {
 				throw exceptionBuilder.buildException(ErrorType.DETECTION_NAME_DUPLICATE, null);
 			}
-			
+
 			Calendar c = Calendar.getInstance();
 			if (signalDetection.getId() == null) {
 				signalDetection.setCreatedDate(c.getTime());
@@ -128,7 +128,7 @@ public class SignalDetectionService {
 				ingredient.setDetectionId(signalDetection.getId());
 				ingredientRepository.deleteByDetectionId(signalDetection.getId());
 				ingredient = ingredientRepository.save(ingredient);
-				
+
 				saveProduct(signalDetection, ingredient);
 				saveLicense(signalDetection, ingredient);
 			}
@@ -137,13 +137,14 @@ public class SignalDetectionService {
 			saveIncludeAE(signalDetection);
 			saveDenominatorForPoisson(signalDetection);
 			saveQueryBuilder(signalDetection);
-			
+
 			return signalDetection;
-		} catch (Exception ex) {
-			throw new ApplicationException("Problem Creating Signal Detection"+ex);
+		} catch (ApplicationException ex) {
+				throw new ApplicationException("Problem Creating Signal Detection",  ex);
+		}catch(Exception ex){
+			throw new ApplicationException("Problem Creating Signal Detection", ex);
 		}
 	}
-
 
 	/**
 	 * @param signalDetection
@@ -163,7 +164,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param signalDetection
 	 * @param soc
@@ -178,7 +178,6 @@ public class SignalDetectionService {
 			ptRepository.save(pts);
 		}
 	}
-
 
 	/**
 	 * @param signalDetection
@@ -195,7 +194,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param signalDetection
 	 * @param soc
@@ -211,13 +209,11 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param signalDetection
 	 * @param ingredient
 	 */
-	private void saveProduct(SignalDetection signalDetection,
-			Ingredient ingredient) {
+	private void saveProduct(SignalDetection signalDetection, Ingredient ingredient) {
 		List<Product> products = ingredient.getProducts();
 		if (!CollectionUtils.isEmpty(products)) {
 			for (Product singleProduct : products) {
@@ -229,13 +225,11 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param signalDetection
 	 * @param ingredient
 	 */
-	private void saveLicense(SignalDetection signalDetection,
-			Ingredient ingredient) {
+	private void saveLicense(SignalDetection signalDetection, Ingredient ingredient) {
 		List<License> licenses = ingredient.getLicenses();
 		if (!CollectionUtils.isEmpty(licenses)) {
 			for (License singleLicense : licenses) {
@@ -246,7 +240,6 @@ public class SignalDetectionService {
 			licenseRepository.save(licenses);
 		}
 	}
-
 
 	/**
 	 * @param signalDetection
@@ -262,7 +255,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param signalDetection
 	 */
@@ -277,7 +269,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param signalDetection
 	 */
@@ -291,7 +282,6 @@ public class SignalDetectionService {
 			queryBuilderRepository.save(queryBuilder);
 		}
 	}
-
 
 	public void delete(Long signalDetectionId) throws ApplicationException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(signalDetectionId);
@@ -316,12 +306,12 @@ public class SignalDetectionService {
 		CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
 
 		Root<SignalDetection> rootSignalDetection = criteriaQuery.from(SignalDetection.class);
-		
 
 		if (null != searchDto) {
 			Root<Ingredient> rootIngredient = criteriaQuery.from(Ingredient.class);
 			List<Predicate> predicates = new ArrayList<>(10);
-			predicates.add(criteriaBuilder.equal(rootSignalDetection.get("id"), rootIngredient.get(SmtConstant.DETECTION_ID.getDescription())));
+			predicates.add(criteriaBuilder.equal(rootSignalDetection.get("id"),
+					rootIngredient.get(SmtConstant.DETECTION_ID.getDescription())));
 
 			addDescription(searchDto, criteriaBuilder, rootSignalDetection, predicates);
 			addFrequency(searchDto, criteriaBuilder, rootSignalDetection, predicates);
@@ -346,13 +336,13 @@ public class SignalDetectionService {
 		TypedQuery<SignalDetection> q = entityManager.createQuery(criteriaQuery);
 		List<SignalDetection> results = q.getResultList();
 		if (!CollectionUtils.isEmpty(results)) {
-			for(SignalDetection signalDetection:results){
-				signalDetection.setDenominatorForPoisson(denominatorForPoissonRepository.findByDetectionId(signalDetection.getId()));
+			for (SignalDetection signalDetection : results) {
+				signalDetection.setDenominatorForPoisson(
+						denominatorForPoissonRepository.findByDetectionId(signalDetection.getId()));
 			}
 		}
 		return results;
 	}
-
 
 	/**
 	 * @param searchDto
@@ -360,17 +350,16 @@ public class SignalDetectionService {
 	 * @param rootSignalDetection
 	 * @param predicates
 	 */
-	private void addCreatedOrLastRunDate(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder,
-			Root<SignalDetection> rootSignalDetection,
-			List<Predicate> predicates) {
+	private void addCreatedOrLastRunDate(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
+			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (DateKeyType.searchIn(searchDto.getDateKey())) {
 			if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.CREATED.name())) {
-				predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()),
-						searchDto.getStartDate()));
+				predicates.add(criteriaBuilder.greaterThanOrEqualTo(
+						rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()), searchDto.getStartDate()));
 
 				if (null != searchDto.getEndDate()) {
-					predicates.add(criteriaBuilder.lessThanOrEqualTo(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()),
+					predicates.add(criteriaBuilder.lessThanOrEqualTo(
+							rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()),
 							searchDto.getEndDate()));
 				}
 			} else if (searchDto.getDateKey().equalsIgnoreCase(DateKeyType.LASTRUN.name())) {
@@ -395,7 +384,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder
@@ -404,10 +392,8 @@ public class SignalDetectionService {
 	 * @param predicates
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void addPts(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
-			CriteriaQuery criteriaQuery,
-			Root<SignalDetection> rootSignalDetection,
-			List<Predicate> predicates) {
+	private void addPts(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
+			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getPts())) {
 			Root<Pt> rootPt = criteriaQuery.from(Pt.class);
 			Predicate signalDetectionPtEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
@@ -420,7 +406,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder
@@ -429,10 +414,8 @@ public class SignalDetectionService {
 	 * @param predicates
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void addHlgts(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
-			CriteriaQuery criteriaQuery,
-			Root<SignalDetection> rootSignalDetection,
-			List<Predicate> predicates) {
+	private void addHlgts(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
+			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
 			Root<Hlgt> rootHlgt = criteriaQuery.from(Hlgt.class);
 			Predicate signalDetectionHlgtEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
@@ -445,7 +428,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder
@@ -454,10 +436,8 @@ public class SignalDetectionService {
 	 * @param predicates
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void addHlts(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
-			CriteriaQuery criteriaQuery,
-			Root<SignalDetection> rootSignalDetection,
-			List<Predicate> predicates) {
+	private void addHlts(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
+			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
 			Root<Hlt> rootHlt = criteriaQuery.from(Hlt.class);
 			Predicate signalDetectionHltEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
@@ -470,7 +450,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder
@@ -479,10 +458,8 @@ public class SignalDetectionService {
 	 * @param predicates
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void addSocs(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
-			CriteriaQuery criteriaQuery,
-			Root<SignalDetection> rootSignalDetection,
-			List<Predicate> predicates) {
+	private void addSocs(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
+			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
 			Root<Soc> rootSoc = criteriaQuery.from(Soc.class);
 			Predicate signalDetectionSocEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
@@ -495,7 +472,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder
@@ -504,8 +480,7 @@ public class SignalDetectionService {
 	 * @param predicates
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void addLicenses(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
+	private void addLicenses(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
 			Root<Ingredient> rootIngredient, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
 			Root<License> rootLicense = criteriaQuery.from(License.class);
@@ -520,7 +495,6 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder
@@ -529,8 +503,7 @@ public class SignalDetectionService {
 	 * @param predicates
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void addProducts(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
+	private void addProducts(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
 			Root<Ingredient> rootIngredient, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
 			Root<Product> rootProduct = criteriaQuery.from(Product.class);
@@ -545,15 +518,13 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder
 	 * @param rootIngredient
 	 * @param predicates
 	 */
-	private void addIngredients(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder, Root<Ingredient> rootIngredient,
+	private void addIngredients(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Ingredient> rootIngredient,
 			List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
 			Predicate ingredientNameEquals = criteriaBuilder
@@ -562,73 +533,67 @@ public class SignalDetectionService {
 		}
 	}
 
-
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder
 	 * @param rootSignalDetection
 	 * @param predicates
 	 */
-	private void addFrequency(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder,
-			Root<SignalDetection> rootSignalDetection,
-			List<Predicate> predicates) {
+	private void addFrequency(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
+			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getFrequency())) {
-			predicates.add(
-					criteriaBuilder.isTrue(rootSignalDetection.get("runFrequency").in(searchDto.getFrequency())));
+			predicates
+					.add(criteriaBuilder.isTrue(rootSignalDetection.get("runFrequency").in(searchDto.getFrequency())));
 		}
 	}
 
-
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder
 	 * @param rootSignalDetection
 	 * @param predicates
 	 */
-	private void addDescription(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder,
-			Root<SignalDetection> rootSignalDetection,
-			List<Predicate> predicates) {
+	private void addDescription(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
+			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (StringUtils.isNotBlank(searchDto.getDescription())) {
-			predicates.add(
-					criteriaBuilder.isTrue(rootSignalDetection.get("description").in(searchDto.getDescription())));
+			predicates
+					.add(criteriaBuilder.isTrue(rootSignalDetection.get("description").in(searchDto.getDescription())));
 		}
-	} 
+	}
 
 	private void addOtherInfoToSignalDetection(SignalDetection signalDetection) {
-			Ingredient ingredient;
-			ingredient = ingredientRepository.findByDetectionId(signalDetection.getId());
-			List<Product> products;
-			products = productRepository.findByDetectionId(signalDetection.getId());
+		Ingredient ingredient;
+		ingredient = ingredientRepository.findByDetectionId(signalDetection.getId());
+		List<Product> products;
+		products = productRepository.findByDetectionId(signalDetection.getId());
 
-			List<License> licenses;
-			licenses = licenseRepository.findByDetectionId(signalDetection.getId());
+		List<License> licenses;
+		licenses = licenseRepository.findByDetectionId(signalDetection.getId());
 
-			if (ingredient != null) {
-				ingredient.setProducts(products);
-				ingredient.setLicenses(licenses);
-				signalDetection.setIngredient(ingredient);
+		if (ingredient != null) {
+			ingredient.setProducts(products);
+			ingredient.setLicenses(licenses);
+			signalDetection.setIngredient(ingredient);
+		}
+
+		List<Soc> socs;
+		socs = socRepository.findByDetectionId(signalDetection.getId());
+		if (!CollectionUtils.isEmpty(socs)) {
+			for (Soc soc : socs) {
+				soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
+
+				soc.setHlts(hltRepository.findBySocId(soc.getId()));
+				soc.setPts(ptRepository.findBySocId(soc.getId()));
 			}
+		}
+		signalDetection.setSocs(socs);
 
-			List<Soc> socs;
-			socs = socRepository.findByDetectionId(signalDetection.getId());
-			if (!CollectionUtils.isEmpty(socs)) {
-				for (Soc soc : socs) {
-					soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
-
-					soc.setHlts(hltRepository.findBySocId(soc.getId()));
-					soc.setPts(ptRepository.findBySocId(soc.getId()));
-				}
-			}
-			signalDetection.setSocs(socs);
-
-			List<DenominatorForPoisson> denominatorForPoissonList = denominatorForPoissonRepository
-					.findByDetectionId(signalDetection.getId());
-			List<IncludeAE> includeAEList = includeAERepository.findByDetectionId(signalDetection.getId());
-			signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
-			signalDetection.setIncludeAEs(includeAEList);
-			signalDetection.setQueryBuilder(queryBuilderRepository.findByDetectionId(signalDetection.getId()));
+		List<DenominatorForPoisson> denominatorForPoissonList = denominatorForPoissonRepository
+				.findByDetectionId(signalDetection.getId());
+		List<IncludeAE> includeAEList = includeAERepository.findByDetectionId(signalDetection.getId());
+		signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
+		signalDetection.setIncludeAEs(includeAEList);
+		signalDetection.setQueryBuilder(queryBuilderRepository.findByDetectionId(signalDetection.getId()));
 	}
 
 	public List<SignalDetection> ganttDetections(List<SignalDetection> detections) {
