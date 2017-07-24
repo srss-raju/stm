@@ -105,9 +105,12 @@ public class SignalDetectionService {
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
 
-			Long signalDetectionExist = signalDetectionRepository.countByNameIgnoreCase(signalDetection.getName());
-			if (signalDetectionExist > 0) {
-				throw exceptionBuilder.buildException(ErrorType.DETECTION_NAME_DUPLICATE, null);
+			
+			if(signalDetection.getId()==null && signalDetection.getId()==0){
+				Long signalDetectionExist = signalDetectionRepository.countByNameIgnoreCase(signalDetection.getName());
+				if (signalDetectionExist > 0) {
+					throw exceptionBuilder.buildException(ErrorType.DETECTION_NAME_DUPLICATE, null);
+				}
 			}
 
 			Calendar c = Calendar.getInstance();
