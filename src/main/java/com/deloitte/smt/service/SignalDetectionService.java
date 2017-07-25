@@ -106,7 +106,7 @@ public class SignalDetectionService {
 		try {
 
 			
-			if(signalDetection.getId()==null && signalDetection.getId()==0){
+			if(signalDetection.getId()==null){
 				Long signalDetectionExist = signalDetectionRepository.countByNameIgnoreCase(signalDetection.getName());
 				if (signalDetectionExist > 0) {
 					throw exceptionBuilder.buildException(ErrorType.DETECTION_NAME_DUPLICATE, null);
