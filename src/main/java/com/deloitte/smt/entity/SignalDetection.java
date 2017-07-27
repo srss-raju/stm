@@ -44,6 +44,7 @@ public class SignalDetection implements Serializable {
 	private Long signalDetected;
 	private String caselistId;
 	private Long casesCount;
+	private Long minCases;
 	
 	@Transient
 	private List<QueryBuilder> queryBuilder;
@@ -249,6 +250,14 @@ public class SignalDetection implements Serializable {
 
 	public void setCasesCount(Long casesCount) {
 		this.casesCount = casesCount;
+	}
+
+	public Long getMinCases() {
+		return minCases;
+	}
+
+	public void setMinCases(Long minCases) {
+		this.minCases = minCases;
 	}
 	
 }
