@@ -56,6 +56,8 @@ public class RiskTask {
 
 	private String assignTo;
 	private String owner;
+	
+	private Long templateId;
 
 	public Long getId() {
 		return id;
@@ -215,5 +217,13 @@ public class RiskTask {
 
 	public void setSignalUrls(List<SignalURL> signalUrls) {
 		this.signalUrls = signalUrls;
+	}
+
+	public Long getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(Long templateId) {
+		this.templateId = templateId;
 	}
 }

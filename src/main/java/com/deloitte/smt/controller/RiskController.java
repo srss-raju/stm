@@ -130,4 +130,9 @@ public class RiskController {
     public AssessmentPlan getAssessmentPlanByRiskId(@PathVariable Long riskId) throws ApplicationException {
         return riskPlanService.findByRiskId(riskId).getAssessmentPlan();
     }
+    
+    @PostMapping(value = "/associateRiskTemplateTasks")
+    public List<RiskTask> associateRiskTemplateTasks(@RequestBody RiskPlan riskPlan) {
+        return riskPlanService.associateRiskTemplateTasks(riskPlan);
+    }
 }

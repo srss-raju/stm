@@ -47,6 +47,10 @@ public class RiskPlan implements Serializable {
 
  	@Transient
     private List<SignalURL> signalUrls;
+ 	
+ 	@Transient
+	private List<Long> riskTemplateIds;
+ 	
     public RiskPlan(){
     	//Do Nothing
     }
@@ -239,5 +243,13 @@ public class RiskPlan implements Serializable {
 
 	public void setSignalUrls(List<SignalURL> signalUrls) {
 		this.signalUrls = signalUrls;
+	}
+
+	public List<Long> getRiskTemplateIds() {
+		return riskTemplateIds;
+	}
+
+	public void setRiskTemplateIds(List<Long> riskTemplateIds) {
+		this.riskTemplateIds = riskTemplateIds;
 	}
 }

@@ -16,6 +16,7 @@ import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -27,6 +28,7 @@ import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
@@ -37,6 +39,7 @@ import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
+import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
@@ -100,6 +103,9 @@ public class RiskPlanService {
 
 	@Autowired
 	SignalURLRepository signalURLRepository;
+	
+	@Autowired
+	AttachmentRepository attachmentRepository;
 
 	@Autowired
 	private AssignmentConfigurationRepository assignmentConfigurationRepository;
@@ -160,6 +166,107 @@ public class RiskPlanService {
 			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
 		}
 		return riskPlanUpdated;
+	}
+	
+	public List<RiskTask> associateRiskTasks(RiskPlan riskPlan){
+		List<RiskTask> tasks = null;
+		if(!CollectionUtils.isEmpty(riskPlan.getRiskTemplateIds())){
+			List<RiskTask> riskTaskList = new ArrayList<>();
+			for(Long id:riskPlan.getRiskTemplateIds()){
+				List<RiskTask> riskTasks = riskTaskRepository.findAllByTemplateId(id);
+				tasks = createRiskTask(riskTaskList, riskTasks, riskPlan);
+			}
+		}
+		return tasks;
+	}
+
+	private List<RiskTask> createRiskTask(List<RiskTask> riskTaskList, List<RiskTask> templateRiskTasks, RiskPlan riskPlan) {
+		if(!CollectionUtils.isEmpty(templateRiskTasks)){
+			for(RiskTask templateTask:templateRiskTasks){
+				RiskTask riskTask = new RiskTask();
+				riskTask.setActionType(templateTask.getActionType());
+				riskTask.setAssignTo(templateTask.getAssignTo());
+				if (templateTask.getAssignTo() == null) {
+					riskTask.setAssignTo(riskPlan.getAssignTo());
+				} else {
+					riskTask.setAssignTo(templateTask.getAssignTo());
+				}
+				
+				Task task = taskService.newTask();
+				task.setCaseInstanceId(riskPlan.getCaseInstanceId());
+				task.setName(riskTask.getName());
+				taskService.saveTask(task);
+				List<Task> list = taskService.createTaskQuery().caseInstanceId(riskPlan.getCaseInstanceId()).list();
+				TaskInst taskInstance = new TaskInst();
+				taskInstance.setId(list.get(list.size() - 1).getId());
+				taskInstance.setCaseDefKey("risk");
+				taskInstance.setTaskDefKey("risk");
+				taskInstance.setCaseInstId(riskTask.getCaseInstanceId());
+				taskInstance.setStartTime(new Date());
+				riskTask.setTaskId(taskInstance.getId());
+				riskTask.setCreatedBy(templateTask.getCreatedBy());
+				riskTask.setCreatedDate(new Date());
+				riskTask.setDescription(templateTask.getDescription());
+				riskTask.setDueDate(templateTask.getDueDate());
+				riskTask.setName(templateTask.getName());
+				riskTask.setNotes(templateTask.getNotes());
+				riskTask.setStatus("New");
+				riskTask.setOwner(riskPlan.getAssignTo());
+				riskTask.setRecipients(templateTask.getRecipients());
+				riskTask.setRiskId(String.valueOf(riskPlan.getId()));
+				riskTask = riskTaskRepository.save(riskTask);
+				riskTaskList.add(riskTask);
+			}
+		}
+		return riskTaskList;
+	}
+	
+	/**
+	 * @param sort
+	 * @param action
+	 * @param signalAction
+	 */
+	public void associateTemplateAttachments(RiskTask riskTask, RiskTask templateRiskTask) {
+		Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
+		List<Attachment> attachments = attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(templateRiskTask.getId(), AttachmentType.RISK_TASK_ASSESSMENT, sort);
+		if (!CollectionUtils.isEmpty(attachments)) {
+			List<Attachment> riskTaskAttachments = new ArrayList<>();
+			for (Attachment attachment : attachments) {
+				Attachment riskTaskAttachment = new Attachment();
+
+				riskTaskAttachment.setDescription(attachment.getDescription());
+				riskTaskAttachment.setAttachmentsURL(attachment.getAttachmentsURL());
+				riskTaskAttachment.setAttachmentResourceId(riskTask.getId());
+				riskTaskAttachment.setContentType(attachment.getContentType());
+				riskTaskAttachment.setContent(attachment.getContent());
+				riskTaskAttachment.setFileName(attachment.getFileName());
+				riskTaskAttachment.setCreatedDate(new Date());
+				riskTaskAttachment.setAttachmentType(attachment.getAttachmentType());
+
+				riskTaskAttachments.add(riskTaskAttachment);
+			}
+			attachmentRepository.save(riskTaskAttachments);
+		}
+	}
+	
+	/**
+	 * @param riskTask
+	 * @param templateTask
+	 */
+	public void associateTemplateURLs(RiskTask riskTask, RiskTask templateRiskTask) {
+		List<SignalURL> riskTemplateTaskUrls = signalURLRepository.findByTopicId(templateRiskTask.getId());
+		if (!CollectionUtils.isEmpty(riskTemplateTaskUrls)) {
+			List<SignalURL> riskTaskURLs = new ArrayList<>();
+			for (SignalURL url : riskTemplateTaskUrls) {
+				SignalURL riskTaskURL = new SignalURL();
+				riskTaskURL.setDescription(url.getDescription());
+				riskTaskURL.setTopicId(riskTask.getId());
+				riskTaskURL.setUrl(url.getUrl());
+				riskTaskURL.setModifiedDate(new Date());
+				riskTaskURLs.add(riskTaskURL);
+			}
+			signalURLRepository.save(riskTaskURLs);
+		}
 	}
 
 	/**
@@ -417,9 +524,11 @@ public class RiskPlanService {
 		riskTask.setCreatedDate(d);
 		riskTask.setLastUpdatedDate(d);
 		riskTask.setStatus("New");
-		RiskPlan riskPlan = riskPlanRepository.findOne(Long.valueOf(riskTask.getRiskId()));
-		riskTask.setAssignTo(riskPlan.getAssignTo());
-		riskTask.setOwner(riskPlan.getAssignTo());
+		if(riskTask.getRiskId() != null){
+			RiskPlan riskPlan = riskPlanRepository.findOne(Long.valueOf(riskTask.getRiskId()));
+			riskTask.setAssignTo(riskPlan.getAssignTo());
+			riskTask.setOwner(riskPlan.getAssignTo());
+		}
 
 		taskInstRepository.save(taskInstance);
 		
@@ -547,5 +656,9 @@ public class RiskPlanService {
 			}
 			signalURLRepository.save(riskPlan.getSignalUrls());
 		}
+	}
+
+	public List<RiskTask> associateRiskTemplateTasks(RiskPlan riskPlan) {
+		return associateRiskTasks(riskPlan);
 	}
 }
