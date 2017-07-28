@@ -21,6 +21,7 @@ public class Comments  implements Serializable {
 	private String createdBy;
 	private Date modifiedDate;
 	private String userComments;
+	private Long topicId;
 	private Long assessmentId;
 	private Long riskPlanId;
 	
@@ -59,5 +60,11 @@ public class Comments  implements Serializable {
 	}
 	public void setUserComments(String userComments) {
 		this.userComments = userComments;
+	}
+	public Long getTopicId() {
+		return topicId;
+	}
+	public void setTopicId(Long topicId) {
+		this.topicId = topicId;
 	}
 }

@@ -1,6 +1,7 @@
 package com.deloitte.smt.service;
 
 import com.deloitte.smt.entity.SignalConfiguration;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -38,6 +39,7 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
+import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
 import com.deloitte.smt.entity.Ingredient;
@@ -60,6 +62,7 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
+import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
 import com.deloitte.smt.repository.IngredientRepository;
@@ -164,6 +167,9 @@ public class SignalService {
 
 	@Autowired
 	private AssignmentConfigurationRepository assignmentConfigurationRepository;
+	
+	@Autowired
+	CommentsRepository commentsRepository;
 
 	public NonSignal createOrupdateNonSignal(NonSignal nonSignal) {
 		Calendar c = Calendar.getInstance();
@@ -215,6 +221,10 @@ public class SignalService {
 			topic = signalMatchService.findMatchingSignal(topic);
 		}
 		return topic;
+	}
+	
+	public List<Comments> getTopicComments(Long topicId){
+		return commentsRepository.findByTopicId(topicId);
 	}
 
 	public Topic createTopic(Topic topic, MultipartFile[] attachments) throws ApplicationException {
@@ -282,6 +292,18 @@ public class SignalService {
 				topicUpdated.getFileMetadata());
 		LOG.info("Start Algorithm for matching signal");
 		return signalMatchService.findMatchingSignal(topicUpdated);
+	}
+	
+	public List<Comments> updateComments(Topic topic){
+		List<Comments> list = topic.getComments();
+		if (!CollectionUtils.isEmpty(list)) {
+			for (Comments comment : list) {
+				comment.setTopicId(topic.getId());
+				comment.setModifiedDate(new Date());
+				comment.setCreatedBy(topic.getOwner());
+			}
+		}
+		return commentsRepository.save(topic.getComments());
 	}
 
 	/**

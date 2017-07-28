@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
@@ -114,5 +115,22 @@ public class SignalController {
 		signalService.deleteSignalURL(signalUrlId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+	
+	@PostMapping(value = "/updateComments")
+	public List<Comments> updateComments(@RequestParam(value = "data") String topicString) {
+		List<Comments> list = null;
+		try {
+			Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
+			list = signalService.updateComments(topic);
+		} catch (IOException e) {
+			LOG.info("Exception occured while updating "+e);
+		}
+		return list;
+	}
+	
+	@GetMapping(value = "/getTopicComments/{topicId}")
+	public List<Comments> getTopicComments(@PathVariable Long topicId){
+		return signalService.getTopicComments(topicId);
+	}
 	
 }

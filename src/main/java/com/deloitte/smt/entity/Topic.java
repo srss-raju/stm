@@ -59,7 +59,10 @@ public class Topic implements Serializable{
 	private List<SignalURL> signalUrls;
 	private Long confidenceIndex;
 	private Long cohortPercentage;
+	private String owner;
 
+	@Transient
+	private List<Comments> comments;
 	
     private Long casesCount;
     
@@ -358,6 +361,22 @@ public class Topic implements Serializable{
 
 	public void setAssessmentPlans(List<AssessmentPlan> assessmentPlans) {
 		this.assessmentPlans = assessmentPlans;
+	}
+
+	public List<Comments> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comments> comments) {
+		this.comments = comments;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 	
 	
