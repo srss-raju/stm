@@ -133,4 +133,10 @@ public class SignalController {
 		return signalService.getTopicComments(topicId);
 	}
 	
+	@DeleteMapping(value = "/comments/{commentsId}")
+    public ResponseEntity<Void> deleteTopicComments(@PathVariable Long commentsId) throws ApplicationException {
+		signalService.deleteTopicComments(commentsId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+	
 }

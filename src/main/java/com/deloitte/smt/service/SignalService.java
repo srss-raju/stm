@@ -941,4 +941,13 @@ public class SignalService {
 		return nonSignalRepository.findNonSignalByRunInstanceIdOrderByCreatedDateAsc(runInstanceId);
 	}
 
+	public void deleteTopicComments(Long commentsId) throws ApplicationException {
+		Comments comments = commentsRepository.findOne(commentsId);
+		if (comments == null) {
+			throw new ApplicationException("Risk Plan Action Type not found with the given Id : " + commentsId);
+		}
+		commentsRepository.delete(comments);
+		
+	}
+
 }
