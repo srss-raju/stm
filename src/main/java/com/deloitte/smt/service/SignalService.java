@@ -313,6 +313,7 @@ public class SignalService {
 		if (!CollectionUtils.isEmpty(topicUpdated.getSignalUrls())) {
 			for (SignalURL url : topicUpdated.getSignalUrls()) {
 				url.setTopicId(topicUpdated.getId());
+				url.setModifiedDate(new Date());
 			}
 			signalURLRepository.save(topicUpdated.getSignalUrls());
 		}

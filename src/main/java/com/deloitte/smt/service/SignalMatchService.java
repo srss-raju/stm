@@ -294,6 +294,7 @@ public class SignalMatchService {
 		if (!CollectionUtils.isEmpty(matchingTopicSignalUrls)) {
 			for (SignalURL url : matchingTopicSignalUrls) {
 				url.setTopicId(createdTopic.getId());
+				url.setModifiedDate(new Date());
 			}
 		}
 		signalURLRepository.save(matchingTopicSignalUrls);

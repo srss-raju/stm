@@ -162,6 +162,7 @@ public class RiskPlanService {
 		if (!CollectionUtils.isEmpty(riskPlanUpdated.getSignalUrls())) {
 			for (SignalURL url : riskPlanUpdated.getSignalUrls()) {
 				url.setTopicId(riskPlanUpdated.getId());
+				url.setModifiedDate(new Date());
 			}
 			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
 		}
@@ -545,6 +546,7 @@ public class RiskPlanService {
 		if (!CollectionUtils.isEmpty(riskTaskUpdated.getSignalUrls())) {
 			for (SignalURL url : riskTaskUpdated.getSignalUrls()) {
 				url.setTopicId(riskTaskUpdated.getId());
+				url.setModifiedDate(new Date());
 			}
 			signalURLRepository.save(riskTaskUpdated.getSignalUrls());
 		}
@@ -599,6 +601,7 @@ public class RiskPlanService {
 		if (!CollectionUtils.isEmpty(riskTask.getSignalUrls())) {
 			for (SignalURL url : riskTask.getSignalUrls()) {
 				url.setTopicId(riskTask.getId());
+				url.setModifiedDate(new Date());
 			}
 			signalURLRepository.save(riskTask.getSignalUrls());
 		}

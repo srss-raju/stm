@@ -93,6 +93,7 @@ public class AssessmentActionService {
         if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
         	for(SignalURL url:signalActionUpdated.getSignalUrls()){
         		url.setTopicId(signalActionUpdated.getId());
+        		url.setModifiedDate(new Date());
         	}
         	signalURLRepository.save(signalActionUpdated.getSignalUrls());
         }
@@ -121,6 +122,7 @@ public class AssessmentActionService {
         if(!CollectionUtils.isEmpty(signalAction.getSignalUrls())){
         	for(SignalURL url:signalAction.getSignalUrls()){
         		url.setTopicId(signalAction.getId());
+        		url.setModifiedDate(new Date());
         	}
         	signalURLRepository.save(signalAction.getSignalUrls());
         }
@@ -167,6 +169,7 @@ public class AssessmentActionService {
     	if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
         	for(SignalURL url:signalActionUpdated.getSignalUrls()){
         		url.setTopicId(signalActionUpdated.getId());
+        		url.setModifiedDate(new Date());
         	}
         	signalURLRepository.save(signalActionUpdated.getSignalUrls());
         }
