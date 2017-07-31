@@ -58,6 +58,8 @@ public class RiskTask {
 	private String owner;
 	
 	private Long templateId;
+	
+	private Long inDays;
 
 	public Long getId() {
 		return id;
@@ -225,5 +227,13 @@ public class RiskTask {
 
 	public void setTemplateId(Long templateId) {
 		this.templateId = templateId;
+	}
+
+	public Long getInDays() {
+		return inDays;
+	}
+
+	public void setInDays(Long inDays) {
+		this.inDays = inDays;
 	}
 }
