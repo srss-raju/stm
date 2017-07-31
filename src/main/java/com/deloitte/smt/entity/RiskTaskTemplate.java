@@ -24,7 +24,7 @@ public class RiskTaskTemplate {
 	private List<Long> deletedIngrediantIds;
 	@Transient
 	private List<TaskTemplateIngrediant> taskTemplateIngrediant;
-	private int dueDays;
+	private Long dueDays;
 
 	public Long getId() {
 		return id;
@@ -63,10 +63,10 @@ public class RiskTaskTemplate {
 	public void setDeletedIngrediantIds(List<Long> deletedIngrediantIds) {
 		this.deletedIngrediantIds = deletedIngrediantIds;
 	}
-	public int getDueDays() {
+	public Long getDueDays() {
 		return dueDays;
 	}
-	public void setDueDays(int dueDays) {
+	public void setDueDays(Long dueDays) {
 		this.dueDays = dueDays;
 	}
 }
