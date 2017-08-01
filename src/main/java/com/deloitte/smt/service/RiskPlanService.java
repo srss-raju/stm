@@ -48,6 +48,7 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.util.SignalUtil;
 
 /**
  * Created by RajeshKumar on 12-04-2017.
@@ -192,7 +193,6 @@ public class RiskPlanService {
 				} else {
 					riskTask.setAssignTo(templateTask.getAssignTo());
 				}
-				riskTask.setInDays(templateTask.getInDays());
 				Task task = taskService.newTask();
 				task.setCaseInstanceId(riskPlan.getCaseInstanceId());
 				task.setName(riskTask.getName());
@@ -214,6 +214,10 @@ public class RiskPlanService {
 				riskTask.setStatus("New");
 				riskTask.setOwner(riskPlan.getAssignTo());
 				riskTask.setRecipients(templateTask.getRecipients());
+				riskTask.setInDays(templateTask.getInDays());
+				if(templateTask.getInDays() != null){
+					riskTask.setDueDate(SignalUtil.getDueDate(templateTask.getInDays().intValue(), riskTask.getCreatedDate()));
+				}
 				riskTask.setRiskId(String.valueOf(riskPlan.getId()));
 				riskTask = riskTaskRepository.save(riskTask);
 				riskTaskList.add(riskTask);
