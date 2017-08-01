@@ -192,7 +192,7 @@ public class RiskPlanService {
 				} else {
 					riskTask.setAssignTo(templateTask.getAssignTo());
 				}
-				
+				riskTask.setInDays(templateTask.getInDays());
 				Task task = taskService.newTask();
 				task.setCaseInstanceId(riskPlan.getCaseInstanceId());
 				task.setName(riskTask.getName());
