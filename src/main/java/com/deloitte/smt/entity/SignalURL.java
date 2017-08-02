@@ -23,6 +23,8 @@ public class SignalURL  implements Serializable {
 	private String description;
 	private String url;
 	private Long topicId;
+	private String modifiedBy;
+	private Date createdDate;
 	
 	public Long getId() {
 		return id;
@@ -59,5 +61,17 @@ public class SignalURL  implements Serializable {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 }

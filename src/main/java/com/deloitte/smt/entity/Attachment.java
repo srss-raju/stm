@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -39,6 +40,8 @@ public class Attachment implements Serializable {
 
     private Date createdDate;
     private Date lastModifiedDate;
+    private String modifiedBy;
+    private String createdBy;
 
     public Long getId() {
         return id;
@@ -118,5 +121,21 @@ public class Attachment implements Serializable {
 
 	public void setAttachmentsURL(String attachmentsURL) {
 		this.attachmentsURL = attachmentsURL;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }
