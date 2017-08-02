@@ -1,0 +1,29 @@
+INSERT INTO public.sm_assessment_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (1, 'Rajesh', null, null, null, 'Meeting');
+INSERT INTO public.sm_assessment_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (2, 'Rajesh', null, null, null, 'Task');
+INSERT INTO public.sm_assessment_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (3, 'Rajesh', null, null, null, 'Awaiting Further Action');
+				     
+INSERT INTO public.sm_denominator_for_poisson(id, created_by, created_date, detection_id, last_modified_date, name) VALUES (4, 'Rajesh', null, null, null, 'AE Volume');
+INSERT INTO public.sm_denominator_for_poisson(id, created_by, created_date, detection_id, last_modified_date, name) VALUES (5, 'Rajesh', null, null, null, 'Claims');
+INSERT INTO public.sm_denominator_for_poisson(id, created_by, created_date, detection_id, last_modified_date, name) VALUES (6, 'Rajesh', null, null, null, 'Medication');
+				      
+INSERT INTO public.sm_external_datasets(id, created_by, created_date, last_modified_date, name) VALUES (7, 'Rajesh', null, null, 'FAERS');
+				
+INSERT INTO public.sm_final_dispositions(id, created_by, created_date, description, last_modified_date, name) VALUES (8, 'Rajesh', null, null, null, 'Risk');
+INSERT INTO public.sm_final_dispositions(id, created_by, created_date, description, last_modified_date, name) VALUES (9, 'Rajesh', null, null, null, 'No Risk');
+
+
+INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (10, 'Rajesh', null, 'Efficacy Study', null, 'Efficacy Study');
+INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (11, 'Rajesh', null, 'HCP Letter', null, 'HCP Letter');
+INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (12, 'Rajesh', null, 'Labeling Update', null, 'Labeling Update');
+INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (13, 'Rajesh', null, 'Patient Information Update', null, 'Patient Information Update');
+INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (14, 'Rajesh', null, 'Post-Marketing Study', null, 'Post-Marketing Study');
+				
+INSERT INTO public.sm_signal_configuration(id, cohort_percentage, confidence_index, config_name) VALUES (15, 60, 95, 'DEFAULT_CONFIG');
+
+INSERT INTO public.sm_signal_confirmations(id, created_by, created_date, description, last_modified_date, name) VALUES (15, 'Rajesh', null, 'Continue To Monitor', null, 'Continue To Monitor');
+INSERT INTO public.sm_signal_confirmations(id, created_by, created_date, description, last_modified_date, name) VALUES (16, 'Rajesh', null, 'Validated Signal', null, 'Validated Signal');
+INSERT INTO public.sm_signal_confirmations(id, created_by, created_date, description, last_modified_date, name) VALUES (17, 'Rajesh', null, 'Non-Signal', null, 'Non-Signal');
+				
+INSERT INTO public.sm_signal_sources(id, created_by, created_date, description, last_modified_date, name) VALUES (18, 'Rajesh', null, 'Detection Run', null, 'Detection Run');
+INSERT INTO public.sm_signal_sources(id, created_by, created_date, description, last_modified_date, name) VALUES (19, 'Rajesh', null, 'Literature', null, 'Literature');
+INSERT INTO public.sm_signal_sources(id, created_by, created_date, description, last_modified_date, name) VALUES (20, 'Rajesh', null, 'Social media', null, 'Social media');				
