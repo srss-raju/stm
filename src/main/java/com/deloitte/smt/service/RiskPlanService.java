@@ -163,7 +163,10 @@ public class RiskPlanService {
 		if (!CollectionUtils.isEmpty(riskPlanUpdated.getSignalUrls())) {
 			for (SignalURL url : riskPlanUpdated.getSignalUrls()) {
 				url.setTopicId(riskPlanUpdated.getId());
-				url.setModifiedDate(new Date());
+				url.setCreatedDate(riskPlanUpdated.getCreatedDate());
+				url.setCreatedBy(riskPlanUpdated.getCreatedBy());
+				url.setModifiedBy(riskPlanUpdated.getModifiedBy());
+				url.setModifiedDate(riskPlanUpdated.getLastModifiedDate());
 			}
 			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
 		}

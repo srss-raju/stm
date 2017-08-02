@@ -408,7 +408,10 @@ public class AssessmentPlanService {
         if(!CollectionUtils.isEmpty(assessmentPlan.getSignalUrls())){
         	for(SignalURL url:assessmentPlan.getSignalUrls()){
         		url.setTopicId(assessmentPlan.getId());
-        		url.setModifiedDate(new Date());
+        		url.setCreatedDate(assessmentPlan.getCreatedDate());
+				url.setCreatedBy(assessmentPlan.getCreatedBy());
+				url.setModifiedBy(assessmentPlan.getModifiedBy());
+				url.setModifiedDate(assessmentPlan.getLastModifiedDate());
         	}
         	signalURLRepository.save(assessmentPlan.getSignalUrls());
         }

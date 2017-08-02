@@ -51,6 +51,7 @@ public class AssessmentPlan  implements Serializable {
 
 	private Date createdDate;
 	private String createdBy;
+	private String modifiedBy;
 	private Date lastModifiedDate;
 	@Transient
 	private Map<String, Attachment> fileMetadata;
@@ -275,5 +276,13 @@ public class AssessmentPlan  implements Serializable {
 
 	public void setCohortPercentage(Long cohortPercentage) {
 		this.cohortPercentage = cohortPercentage;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 }

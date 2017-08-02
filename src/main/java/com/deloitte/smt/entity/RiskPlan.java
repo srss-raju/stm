@@ -33,6 +33,7 @@ public class RiskPlan implements Serializable {
     private int inDays;
     private Date createdDate;
     private String createdBy;
+    private String modifiedBy;
     private Date lastModifiedDate;
     private String summary;
     private String caseInstanceId;
@@ -251,5 +252,13 @@ public class RiskPlan implements Serializable {
 
 	public void setRiskTemplateIds(List<Long> riskTemplateIds) {
 		this.riskTemplateIds = riskTemplateIds;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 }

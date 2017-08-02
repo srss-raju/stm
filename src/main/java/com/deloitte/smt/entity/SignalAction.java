@@ -41,6 +41,7 @@ public class SignalAction implements Serializable{
 	private String createdBy;
 	private Long templateId;
 	private Integer inDays;
+	private String modifiedBy;
 
 	@Transient
 	private Map<String, Attachment> fileMetadata;
@@ -231,5 +232,13 @@ public class SignalAction implements Serializable{
 
 	public void setSignalUrls(List<SignalURL> signalUrls) {
 		this.signalUrls = signalUrls;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 }

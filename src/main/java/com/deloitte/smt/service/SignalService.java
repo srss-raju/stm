@@ -313,7 +313,10 @@ public class SignalService {
 		if (!CollectionUtils.isEmpty(topicUpdated.getSignalUrls())) {
 			for (SignalURL url : topicUpdated.getSignalUrls()) {
 				url.setTopicId(topicUpdated.getId());
-				url.setModifiedDate(new Date());
+				url.setCreatedDate(topicUpdated.getCreatedDate());
+				url.setCreatedBy(topicUpdated.getCreatedBy());
+				url.setModifiedBy(topicUpdated.getModifiedBy());
+				url.setModifiedDate(topicUpdated.getLastModifiedDate());
 			}
 			signalURLRepository.save(topicUpdated.getSignalUrls());
 		}
@@ -861,7 +864,10 @@ public class SignalService {
 				assessmentActionSignalURL.setDescription(url.getDescription());
 				assessmentActionSignalURL.setTopicId(signalAction.getId());
 				assessmentActionSignalURL.setUrl(url.getUrl());
+				assessmentActionSignalURL.setCreatedDate(new Date());
 				assessmentActionSignalURL.setModifiedDate(new Date());
+				assessmentActionSignalURL.setCreatedBy(signalAction.getCreatedBy());
+				assessmentActionSignalURL.setModifiedBy(signalAction.getModifiedBy());
 				assessmentActionSignalURLs.add(assessmentActionSignalURL);
 			}
 			signalURLRepository.save(assessmentActionSignalURLs);

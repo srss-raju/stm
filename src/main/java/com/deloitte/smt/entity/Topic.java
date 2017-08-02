@@ -55,6 +55,7 @@ public class Topic implements Serializable{
 	private Long runInstanceId;
 	private String cases;
 	private String caselistId;
+	private String modifiedBy;
 	@Transient
 	private List<SignalURL> signalUrls;
 	private Long confidenceIndex;
@@ -377,6 +378,14 @@ public class Topic implements Serializable{
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 	
 	

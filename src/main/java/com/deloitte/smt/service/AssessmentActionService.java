@@ -93,7 +93,10 @@ public class AssessmentActionService {
         if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
         	for(SignalURL url:signalActionUpdated.getSignalUrls()){
         		url.setTopicId(signalActionUpdated.getId());
-        		url.setModifiedDate(new Date());
+        		url.setCreatedDate(signalAction.getCreatedDate());
+				url.setCreatedBy(signalAction.getCreatedBy());
+				url.setModifiedBy(signalAction.getModifiedBy());
+				url.setModifiedDate(signalAction.getLastModifiedDate());
         	}
         	signalURLRepository.save(signalActionUpdated.getSignalUrls());
         }
