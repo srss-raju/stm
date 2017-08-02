@@ -22,7 +22,7 @@ public class Soc implements Serializable {
 	private String socName;
 	private Long topicId;
 	private Long detectionId;
-	private Long hanaSocId;
+	private String hanaSocId;
 	
 	@Transient
     private List<Hlgt> hlgts;
@@ -78,10 +78,10 @@ public class Soc implements Serializable {
 	public void setPts(List<Pt> pts) {
 		this.pts = pts;
 	}
-	public Long getHanaSocId() {
+	public String getHanaSocId() {
 		return hanaSocId;
 	}
-	public void setHanaSocId(Long hanaSocId) {
+	public void setHanaSocId(String hanaSocId) {
 		this.hanaSocId = hanaSocId;
 	}
 
