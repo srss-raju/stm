@@ -663,6 +663,10 @@ public class RiskPlanService {
 		if (!CollectionUtils.isEmpty(riskPlan.getSignalUrls())) {
 			for (SignalURL url : riskPlan.getSignalUrls()) {
 				url.setTopicId(riskPlan.getId());
+				url.setCreatedDate(riskPlan.getCreatedDate());
+				url.setCreatedBy(riskPlan.getCreatedBy());
+				url.setModifiedBy(riskPlan.getModifiedBy());
+				url.setModifiedDate(riskPlan.getLastModifiedDate());
 			}
 			signalURLRepository.save(riskPlan.getSignalUrls());
 		}
