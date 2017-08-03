@@ -19,7 +19,9 @@ public class Comments  implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String createdBy;
+	private Date createdDate;
 	private Date modifiedDate;
+	private String modifiedBy;
 	private String userComments;
 	private Long topicId;
 	private Long assessmentId;
@@ -66,5 +68,17 @@ public class Comments  implements Serializable {
 	}
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 }
