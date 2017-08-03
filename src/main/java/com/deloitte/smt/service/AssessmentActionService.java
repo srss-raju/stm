@@ -89,7 +89,7 @@ public class AssessmentActionService {
 
     	
         SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
-        attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata());
+        attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata(), signalActionUpdated.getCreatedBy());
         if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
         	for(SignalURL url:signalActionUpdated.getSignalUrls()){
         		url.setTopicId(signalActionUpdated.getId());
@@ -112,7 +112,7 @@ public class AssessmentActionService {
         }
         signalAction.setLastModifiedDate(new Date());
         assessmentActionRepository.save(signalAction);
-        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, signalAction.getDeletedAttachmentIds(), signalAction.getFileMetadata());
+        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, signalAction.getDeletedAttachmentIds(), signalAction.getFileMetadata(), signalAction.getCreatedBy());
         List<SignalAction> actions = findAllByAssessmentId(signalAction.getAssessmentId(), null);
         boolean allTasksCompletedFlag = true;
         if(!CollectionUtils.isEmpty(actions)){
@@ -171,7 +171,7 @@ public class AssessmentActionService {
         signalAction.setDueDate(SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate()));
         signalAction.setActionStatus("New");
         SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
-    	attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata());
+    	attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata(), signalActionUpdated.getCreatedBy());
     	if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
         	for(SignalURL url:signalActionUpdated.getSignalUrls()){
         		url.setTopicId(signalActionUpdated.getId());

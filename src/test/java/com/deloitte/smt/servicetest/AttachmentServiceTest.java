@@ -134,7 +134,7 @@ public class AttachmentServiceTest {
 			 attachment.setDescription("test");
 			 metaData.put("test.properties", attachment);
 			 given(this.attachmentRepository.save(attachment)).willReturn(attachment);
-			 attachmentService.addAttachments(attachmentResourceId, attachments, AttachmentType.TOPIC_ATTACHMENT, deletedAttachmentIds, metaData);
+			 attachmentService.addAttachments(attachmentResourceId, attachments, AttachmentType.TOPIC_ATTACHMENT, deletedAttachmentIds, metaData,"Rajesh");
 			 LOG.info(multipartFile);
 		}catch(Exception ex){
 			LOG.info(ex);

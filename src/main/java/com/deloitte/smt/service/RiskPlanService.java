@@ -159,7 +159,7 @@ public class RiskPlanService {
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 		}
 		attachmentService.addAttachments(riskPlanUpdated.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null,
-				riskPlanUpdated.getFileMetadata());
+				riskPlanUpdated.getFileMetadata(), riskPlanUpdated.getCreatedBy());
 		if (!CollectionUtils.isEmpty(riskPlanUpdated.getSignalUrls())) {
 			for (SignalURL url : riskPlanUpdated.getSignalUrls()) {
 				url.setTopicId(riskPlanUpdated.getId());
@@ -549,7 +549,7 @@ public class RiskPlanService {
 		
 		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
 		attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
-				null, riskTaskUpdated.getFileMetadata());
+				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
 		if (!CollectionUtils.isEmpty(riskTaskUpdated.getSignalUrls())) {
 			for (SignalURL url : riskTaskUpdated.getSignalUrls()) {
 				url.setTopicId(riskTaskUpdated.getId());
@@ -595,7 +595,7 @@ public class RiskPlanService {
 		riskTask.setLastUpdatedDate(new Date());
 		riskTaskRepository.save(riskTask);
 		attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
-				riskTask.getDeletedAttachmentIds(), riskTask.getFileMetadata());
+				riskTask.getDeletedAttachmentIds(), riskTask.getFileMetadata(), riskTask.getCreatedBy());
 		List<RiskTask> risks = findAllByRiskId(riskTask.getRiskId(), null);
 		boolean allTasksCompletedFlag = true;
 		if (!CollectionUtils.isEmpty(risks)) {
@@ -639,7 +639,7 @@ public class RiskPlanService {
 		riskPlan.setLastModifiedDate(new Date());
 		riskPlan.setStatus(SmtConstant.COMPLETED.getDescription());
 		attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT,
-				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata());
+				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
 		riskPlanRepository.save(riskPlan);
 	}
 
@@ -649,7 +649,7 @@ public class RiskPlanService {
 		}
 		riskPlan.setLastModifiedDate(new Date());
 		attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT,
-				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata());
+				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
 		riskPlanRepository.save(riskPlan);
 		List<Comments> list = riskPlan.getComments();
 		if (!CollectionUtils.isEmpty(list)) {

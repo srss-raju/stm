@@ -289,7 +289,7 @@ public class SignalService {
 		saveSoc(topicUpdated);
 		saveSignalUrl(topicUpdated);
 		attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null,
-				topicUpdated.getFileMetadata());
+				topicUpdated.getFileMetadata(), topic.getCreatedBy());
 		LOG.info("Start Algorithm for matching signal");
 		return signalMatchService.findMatchingSignal(topicUpdated);
 	}
@@ -440,7 +440,7 @@ public class SignalService {
 		topic.setLastModifiedDate(new Date());
 		setTopicIdForSignalStatistics(topic);
 		attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT,
-				topic.getDeletedAttachmentIds(), topic.getFileMetadata());
+				topic.getDeletedAttachmentIds(), topic.getFileMetadata(), topic.getCreatedBy());
 		topicRepository.save(topic);
 		saveSignalUrl(topic);
 		return "Update Success";

@@ -53,7 +53,7 @@ public class AttachmentService {
         return a;
     }
 
-    public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds, Map<String, Attachment> metaData)  {
+    public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds, Map<String, Attachment> metaData, String createdBy)  {
 	    boolean flag = false;
     	
     	deleteAttachments(deletedAttachmentIds);
@@ -69,6 +69,7 @@ public class AttachmentService {
                     readBytes(attachment, a);
                     a.setFileName(attachment.getOriginalFilename());
                     a.setCreatedDate(new Date());
+                    a.setCreatedBy(createdBy);
                     attachmentRepository.save(a);
                 }
             }
