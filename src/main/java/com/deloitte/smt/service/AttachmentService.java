@@ -1,6 +1,7 @@
 package com.deloitte.smt.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class AttachmentService {
 
     @Autowired
     AttachmentRepository attachmentRepository;
-
+    
     public void save(Attachment attachment) {
         attachmentRepository.save(attachment);
     }
@@ -53,9 +54,9 @@ public class AttachmentService {
         return a;
     }
 
-    public void addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds, Map<String, Attachment> metaData, String createdBy)  {
+    public List<Attachment> addAttachments(Long attachmentResourceId, MultipartFile[] attachments, AttachmentType attachmentType, List<Long> deletedAttachmentIds, Map<String, Attachment> metaData, String createdBy)  {
 	    boolean flag = false;
-    	
+    	List<Attachment> attachmentList = new ArrayList<>();
     	deleteAttachments(deletedAttachmentIds);
         if(attachments != null) {
             for (MultipartFile attachment : attachments) {
@@ -70,13 +71,14 @@ public class AttachmentService {
                     a.setFileName(attachment.getOriginalFilename());
                     a.setCreatedDate(new Date());
                     a.setCreatedBy(createdBy);
-                    attachmentRepository.save(a);
+                    attachmentList.add(attachmentRepository.save(a));
                 }
             }
         }
         if(!flag && !CollectionUtils.isEmpty(metaData)){
         		metaData.forEach((k,v) -> attachmentRepository.updateDescriptionAndAttachmentsURL(k, v.getDescription(), v.getAttachmentsURL()));
         }
+        return attachmentList;
     }
 
 	/**

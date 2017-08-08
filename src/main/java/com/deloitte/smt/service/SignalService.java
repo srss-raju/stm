@@ -1,7 +1,5 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.entity.SignalConfiguration;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -49,6 +47,9 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.SignalAttachmentAudit;
+import com.deloitte.smt.entity.SignalAudit;
+import com.deloitte.smt.entity.SignalConfiguration;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
@@ -71,6 +72,8 @@ import com.deloitte.smt.repository.NonSignalRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
+import com.deloitte.smt.repository.SignalAttachmentAuditRepository;
+import com.deloitte.smt.repository.SignalAuditRepository;
 import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
@@ -78,6 +81,7 @@ import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -116,7 +120,10 @@ public class SignalService {
 	TaskInstRepository taskInstRepository;
 	@Autowired
 	SignalURLRepository signalURLRepository;
-
+	
+	@Autowired
+	SignalAuditRepository signalAuditRepository;
+	
 	@Autowired
 	CaseService caseService;
 
@@ -170,6 +177,9 @@ public class SignalService {
 	
 	@Autowired
 	CommentsRepository commentsRepository;
+	
+	@Autowired
+	SignalAttachmentAuditRepository signalAttachmentAuditRepository;
 
 	public NonSignal createOrupdateNonSignal(NonSignal nonSignal) {
 		Calendar c = Calendar.getInstance();
@@ -290,10 +300,44 @@ public class SignalService {
 		saveSignalUrl(topicUpdated);
 		attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null,
 				topicUpdated.getFileMetadata(), topic.getCreatedBy());
+		/*List<Attachment> attchmentList = attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null,
+				topicUpdated.getFileMetadata(), topic.getCreatedBy());*/
 		LOG.info("Start Algorithm for matching signal");
+		/*saveSignalAudit(topicUpdated, attchmentList);*/
 		return signalMatchService.findMatchingSignal(topicUpdated);
 	}
 	
+	private void saveSignalAudit(Topic topicUpdated, List<Attachment> attchmentList) {
+		SignalAudit signalAudit = new SignalAudit();
+		signalAudit.setCreatedBy(topicUpdated.getCreatedBy());
+		signalAudit.setCreatedDate(topicUpdated.getCreatedDate());
+		signalAudit.setEntityType("Signal");
+		signalAudit.setOperation("Create");
+		signalAudit.setOriginalValue(JsonUtil.converToJson(topicUpdated));
+		SignalAudit audit = signalAuditRepository.save(signalAudit);
+		saveSignalAttachmentAudit(attchmentList, audit);
+	}
+	
+	private void saveSignalAttachmentAudit(List<Attachment> attchmentList, SignalAudit audit) {
+		if(!CollectionUtils.isEmpty(attchmentList)){
+			List<SignalAttachmentAudit> list = new ArrayList<>();
+			for(Attachment attachment:attchmentList){
+				SignalAttachmentAudit signalAttachmentAudit = new SignalAttachmentAudit();
+				 signalAttachmentAudit.setAttachmentResourceId(audit.getId());
+				 signalAttachmentAudit.setAttachmentsURL(attachment.getAttachmentsURL());
+				 signalAttachmentAudit.setAttachmentType(attachment.getAttachmentType());
+				 signalAttachmentAudit.setContent(attachment.getContent());
+				 signalAttachmentAudit.setContentType(attachment.getContentType());
+				 signalAttachmentAudit.setCreatedBy(attachment.getCreatedBy());
+				 signalAttachmentAudit.setCreatedDate(attachment.getCreatedDate());
+				 signalAttachmentAudit.setDescription(attachment.getDescription());
+				 signalAttachmentAudit.setFileName(attachment.getFileName());
+				 list.add(signalAttachmentAudit);
+			}
+			signalAttachmentAuditRepository.save(list);
+		}
+	}
+
 	public List<Comments> updateComments(Topic topic){
 		List<Comments> list = topic.getComments();
 		if (!CollectionUtils.isEmpty(list)) {
