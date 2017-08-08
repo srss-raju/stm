@@ -35,6 +35,7 @@ import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.TopicSignalDetectionAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -49,6 +50,7 @@ import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -98,6 +100,9 @@ public class SignalDetectionService {
 
 	@Autowired
 	private QueryBuilderRepository queryBuilderRepository;
+	
+	@Autowired
+	private TopicSignalDetectionAssignmentAssigneesRepository topicSignalDetectionAssignmentAssigneesRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -140,7 +145,14 @@ public class SignalDetectionService {
 			saveIncludeAE(signalDetection);
 			saveDenominatorForPoisson(signalDetection);
 			saveQueryBuilder(signalDetection);
-
+			List<TopicSignalDetectionAssignmentAssignees> list = signalDetection.getTopicSignalDetectionAssignmentAssignees();
+			if(!CollectionUtils.isEmpty(list)){
+				for(TopicSignalDetectionAssignmentAssignees assignee:list){
+					assignee.setCreatedDate(clone.getCreatedDate());
+					assignee.setDetectionId(clone.getId());
+				}
+				signalDetection.setTopicSignalDetectionAssignmentAssignees(topicSignalDetectionAssignmentAssigneesRepository.save(list));
+			}
 			return signalDetection;
 		} catch (ApplicationException ex) {
 				throw new ApplicationException("Problem Creating Signal Detection",  ex);
@@ -293,6 +305,14 @@ public class SignalDetectionService {
 		}
 		signalDetectionRepository.delete(signalDetection);
 	}
+	
+	public void deleteByAssigneeId(Long assigneeId) throws ApplicationException {
+		TopicSignalDetectionAssignmentAssignees assignee = topicSignalDetectionAssignmentAssigneesRepository.findOne(assigneeId);
+		if (assignee == null) {
+			throw new ApplicationException("Failed to delete Action. Invalid Id received");
+		}
+		topicSignalDetectionAssignmentAssigneesRepository.delete(assignee);
+	}
 
 	public SignalDetection findById(Long id) throws ApplicationException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(id);
@@ -300,6 +320,7 @@ public class SignalDetectionService {
 			throw new ApplicationException("Signal Detection not found with given Id :" + id);
 		}
 		addOtherInfoToSignalDetection(signalDetection);
+		signalDetection.setTopicSignalDetectionAssignmentAssignees(topicSignalDetectionAssignmentAssigneesRepository.findByDetectionId(id));
 		return signalDetection;
 	}
 

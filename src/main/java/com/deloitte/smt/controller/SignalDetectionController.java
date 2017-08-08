@@ -77,4 +77,10 @@ public class SignalDetectionController {
 		return detectionList;
 	}
 	
+	@DeleteMapping(value = "/detectionassignee/{assigneeId}")
+    public ResponseEntity<Void> deleteByAssigneeId(@PathVariable Long assigneeId) throws ApplicationException {
+		signalDetectionService.deleteByAssigneeId(assigneeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+	
 }

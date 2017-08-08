@@ -17,6 +17,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     List<Topic> findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(List<Long> ids,String assignTo, String signalStatus);
     Long countByAssignToAndSignalStatusNotLikeIgnoreCase(String assignTo, String signalStatus);
+    Long countByAssignToOrAssignToIsNullOrOwnerOrOwnerIsNullAndSignalStatusNotLikeIgnoreCase(String assignTo,String owner, String signalStatus);
 
     @Query(value = "SELECT DISTINCT (o.name) FROM Topic o WHERE o.name IS NOT NULL ")
     List<String> findDistinctSignalName();

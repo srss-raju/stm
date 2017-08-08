@@ -104,6 +104,9 @@ public class SignalService {
 
 	@Autowired
 	private SignalMatchService signalMatchService;
+	
+	@Autowired
+	private SignalAssignmentService signalAssignmentService;
 
 	@Autowired
 	private RuntimeService runtimeService;
@@ -179,6 +182,9 @@ public class SignalService {
 	CommentsRepository commentsRepository;
 	
 	@Autowired
+	AssessmentAssignmentService assessmentAssignmentService;
+	
+	@Autowired
 	SignalAttachmentAuditRepository signalAttachmentAuditRepository;
 
 	public NonSignal createOrupdateNonSignal(NonSignal nonSignal) {
@@ -214,6 +220,7 @@ public class SignalService {
 			topic.setSignalStatus(SmtConstant.IN_PROGRESS.getDescription());
 			topic = topicRepository.save(topic);
 		}
+		signalAssignmentService.findSignalAssignmentAssignees(topic);
 		Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
 		List<Product> products = productRepository.findByTopicId(topic.getId());
 		List<License> licenses = licenseRepository.findByTopicId(topic.getId());
@@ -285,8 +292,9 @@ public class SignalService {
 			}
 
 			if (assignmentConfiguration != null) {
-				topicUpdated.setAssignTo(assignmentConfiguration.getSignalValidationAssignmentUser());
+				topicUpdated.setOwner(assignmentConfiguration.getSignalValidationAssignmentOwner());
 				topicUpdated = topicRepository.save(topicUpdated);
+				topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
 			}
 
 			ingredient.setTopicId(topicUpdated.getId());
@@ -523,9 +531,6 @@ public class SignalService {
 					.findByIngredientAndSignalSourceIsNull(assessmentPlan.getIngrediantName());
 		}
 
-		if (assignmentConfiguration != null) {
-			assessmentPlan.setAssignTo(assignmentConfiguration.getAssessmentAssignmentUser());
-		}
 		assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
 		assessmentPlan.setAssessmentTaskStatus("Not Completed");
 
@@ -541,7 +546,10 @@ public class SignalService {
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());
 		topic.setLastModifiedDate(new Date());
 		topicRepository.save(topic);
-
+		if (assignmentConfiguration != null) {
+			assessmentPlan.setOwner(assignmentConfiguration.getAssessmentAssignmentOwner());
+			assessmentAssignmentService.saveAssignmentAssignees(assignmentConfiguration, assessmentPlan);
+		}
 		return assessmentPlan;
 	}
 
@@ -998,7 +1006,21 @@ public class SignalService {
 			throw new ApplicationException("Risk Plan Action Type not found with the given Id : " + commentsId);
 		}
 		commentsRepository.delete(comments);
-		
+	}
+	
+	public Long getValidateAndPrioritizeCount(String assignTo,String owner) {
+		return topicRepository.countByAssignToOrAssignToIsNullOrOwnerOrOwnerIsNullAndSignalStatusNotLikeIgnoreCase(assignTo,owner,
+				SmtConstant.COMPLETED.getDescription());
+	}
+	
+	public Long getAssessmentCount(String assignTo, String owner) {
+		return assessmentPlanRepository.countByAssignToOrAssignToIsNullOrOwnerOrOwnerIsNullAndAssessmentPlanStatusNotLikeIgnoreCase(assignTo, owner,
+				SmtConstant.COMPLETED.getDescription());
+	}
+	
+	public Long getRiskCount(String assignTo, String owner) {
+		return riskPlanRepository.countByAssignToOrAssignToIsNullOrOwnerOrOwnerIsNullAndStatusNotLikeIgnoreCase(assignTo, owner,
+				SmtConstant.COMPLETED.getDescription());
 	}
 
 }

@@ -6,10 +6,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import com.deloitte.smt.entity.AssessmentAssignmentAssignees;
 import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.entity.RiskPlanAssignmentAssignees;
+import com.deloitte.smt.entity.SignalValidationAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.repository.AssessmentAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
+import com.deloitte.smt.repository.RiskPlanAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.SignalValidationAssignmentAssigneesRepository;
 
 /**
  * Created by myelleswarapu on 04-05-2017.
@@ -19,6 +26,17 @@ public class AssignmentConfigurationService {
 
     @Autowired
     AssignmentConfigurationRepository assignmentConfigurationRepository;
+    
+    @Autowired
+    SignalValidationAssignmentAssigneesRepository signalValidationAssignmentAssigneesRepository;
+    
+    @Autowired
+    AssessmentAssignmentAssigneesRepository assessmentAssignmentAssigneesRepository;
+    
+    @Autowired
+    RiskPlanAssignmentAssigneesRepository riskPlanAssignmentAssigneesRepository;
+    
+    
 
     public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
         assignmentConfiguration.setCreatedDate(new Date());
@@ -27,7 +45,9 @@ public class AssignmentConfigurationService {
         if(assignmentConfigurationFromDB != null){
         	throw new ApplicationException("Configuration already exists");
         }
-        return assignmentConfigurationRepository.save(assignmentConfiguration);
+        AssignmentConfiguration assignmentConfigurationUpdated = assignmentConfigurationRepository.save(assignmentConfiguration);
+        setAssignmentConfigurationAssignees(assignmentConfiguration, assignmentConfigurationUpdated);
+        return assignmentConfigurationUpdated;
     }
 
     public AssignmentConfiguration update(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
@@ -35,7 +55,10 @@ public class AssignmentConfigurationService {
             throw new ApplicationException("Required field Id is no present in the given request.");
         }
         assignmentConfiguration.setLastModifiedDate(new Date());
-        return assignmentConfigurationRepository.save(assignmentConfiguration);
+        assignmentConfigurationRepository.save(assignmentConfiguration);
+        
+        setAssignmentConfigurationAssignees(assignmentConfiguration, assignmentConfiguration);
+        return assignmentConfiguration;
     }
 
     public void delete(Long assignmentConfigurationId) throws ApplicationException {
@@ -51,10 +74,70 @@ public class AssignmentConfigurationService {
         if(assignmentConfiguration == null) {
             throw new ApplicationException("Assignment Configuration not found with the given Id : "+assignmentConfigurationId);
         }
+        assignmentConfiguration.setSignalValidationAssignmentAssignees(signalValidationAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfigurationId));
+        assignmentConfiguration.setAssessmentAssignmentAssignees(assessmentAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfigurationId));
+        assignmentConfiguration.setRiskPlanAssignmentAssignees(riskPlanAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfigurationId));
         return assignmentConfiguration;
     }
 
     public List<AssignmentConfiguration> findAll() {
         return assignmentConfigurationRepository.findAll(new Sort(Sort.Direction.DESC, "createdDate"));
     }
+    
+    /**
+	 * @param assignmentConfiguration
+	 * @param assignmentConfigurationUpdated
+	 */
+	private void setAssignmentConfigurationAssignees(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated) {
+		signalValidationAssignmentAssigneesRepository.deleteByAssignmentConfigurationId(assignmentConfiguration.getId());
+		assessmentAssignmentAssigneesRepository.deleteByAssignmentConfigurationId(assignmentConfiguration.getId());
+		riskPlanAssignmentAssigneesRepository.deleteByAssignmentConfigurationId(assignmentConfiguration.getId());
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getSignalValidationAssignmentAssignees())){
+        	for(SignalValidationAssignmentAssignees svaAssignees : assignmentConfiguration.getSignalValidationAssignmentAssignees()){
+        		svaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
+        		svaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
+        	}
+        	signalValidationAssignmentAssigneesRepository.save(assignmentConfiguration.getSignalValidationAssignmentAssignees());
+        }
+        
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getAssessmentAssignmentAssignees())){
+			for(AssessmentAssignmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignmentAssignees()){
+				aaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
+				aaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
+        	}
+			assessmentAssignmentAssigneesRepository.save(assignmentConfiguration.getAssessmentAssignmentAssignees());
+		}
+		
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getRiskPlanAssignmentAssignees())){
+			for(RiskPlanAssignmentAssignees rpaAssignees : assignmentConfiguration.getRiskPlanAssignmentAssignees()){
+				rpaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
+				rpaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
+        	}
+			riskPlanAssignmentAssigneesRepository.save(assignmentConfiguration.getRiskPlanAssignmentAssignees());
+		}
+	}
+
+	public void deleteSignalValidationAssignmentAssignee(Long assigneeId) throws ApplicationException {
+		SignalValidationAssignmentAssignees assignee = signalValidationAssignmentAssigneesRepository.findOne(assigneeId);
+		if (assignee == null) {
+			throw new ApplicationException("Signl Assignment Configuration not found with the given Id : "+assigneeId);
+		}
+		signalValidationAssignmentAssigneesRepository.delete(assignee);
+	}
+
+	public void deleteAssessmentAssignmentAssignee(Long assigneeId) throws ApplicationException {
+		AssessmentAssignmentAssignees assignee = assessmentAssignmentAssigneesRepository.findOne(assigneeId);
+		if (assignee == null) {
+			throw new ApplicationException("Assessment Assignment Configuration not found with the given Id : "+assigneeId);
+		}
+		assessmentAssignmentAssigneesRepository.delete(assignee);
+	}
+
+	public void deleteRiskPlanAssignmentAssignee(Long assigneeId) throws ApplicationException {
+		RiskPlanAssignmentAssignees assignee = riskPlanAssignmentAssigneesRepository.findOne(assigneeId);
+		if (assignee == null) {
+			throw new ApplicationException("Risk Plan Assignment Configuration not found with the given Id : "+assigneeId);
+		}
+		riskPlanAssignmentAssigneesRepository.delete(assignee);
+	}
 }

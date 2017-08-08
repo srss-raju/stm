@@ -48,6 +48,10 @@ public class SignalDetection implements Serializable {
 	
 	@Transient
 	private List<QueryBuilder> queryBuilder;
+	
+	private String owner;
+	@Transient
+	private List<TopicSignalDetectionAssignmentAssignees> topicSignalDetectionAssignmentAssignees;
 
 	public static void main(String[] args) throws JsonProcessingException {
 		ObjectMapper mapper=new ObjectMapper();
@@ -258,6 +262,23 @@ public class SignalDetection implements Serializable {
 
 	public void setMinCases(Long minCases) {
 		this.minCases = minCases;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public List<TopicSignalDetectionAssignmentAssignees> getTopicSignalDetectionAssignmentAssignees() {
+		return topicSignalDetectionAssignmentAssignees;
+	}
+
+	public void setTopicSignalDetectionAssignmentAssignees(
+			List<TopicSignalDetectionAssignmentAssignees> topicSignalDetectionAssignmentAssignees) {
+		this.topicSignalDetectionAssignmentAssignees = topicSignalDetectionAssignmentAssignees;
 	}
 	
 }

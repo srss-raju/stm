@@ -110,6 +110,9 @@ public class RiskPlanService {
 
 	@Autowired
 	private AssignmentConfigurationRepository assignmentConfigurationRepository;
+	
+	@Autowired
+	RiskPlanAssignmentService riskPlanAssignmentService;
 
 	public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId)
 			throws ApplicationException {
@@ -121,21 +124,6 @@ public class RiskPlanService {
 		riskPlan.setLastModifiedDate(d);
 		riskPlan.setRiskTaskStatus("Not Completed");
 		AssignmentConfiguration assignmentConfiguration = null;
-
-		if (!StringUtils.isEmpty(riskPlan.getSource())) {
-			assignmentConfiguration = assignmentConfigurationRepository
-					.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource());
-		}
-		// If Source is not null and combination not available we have to fetch
-		// with Ingredient
-		if (assignmentConfiguration == null) {
-			assignmentConfiguration = assignmentConfigurationRepository
-					.findByIngredientAndSignalSourceIsNull(riskPlan.getIngredient());
-		}
-
-		if (assignmentConfiguration != null) {
-			riskPlan.setAssignTo(assignmentConfiguration.getRiskPlanAssignmentUser());
-		}
 
 		RiskPlan riskPlanUpdated;
 		Long riskPlanExist = riskPlanRepository.countByNameIgnoreCase(riskPlan.getName());
@@ -169,6 +157,21 @@ public class RiskPlanService {
 				url.setModifiedDate(riskPlanUpdated.getLastModifiedDate());
 			}
 			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
+		}
+		if (!StringUtils.isEmpty(riskPlan.getSource())) {
+			assignmentConfiguration = assignmentConfigurationRepository
+					.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource());
+		}
+		// If Source is not null and combination not available we have to fetch
+		// with Ingredient
+		if (assignmentConfiguration == null) {
+			assignmentConfiguration = assignmentConfigurationRepository
+					.findByIngredientAndSignalSourceIsNull(riskPlan.getIngredient());
+		}
+
+		if (assignmentConfiguration != null) {
+			riskPlan.setOwner(assignmentConfiguration.getRiskPlanAssignmentOwner());
+			riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
 		}
 		return riskPlanUpdated;
 	}

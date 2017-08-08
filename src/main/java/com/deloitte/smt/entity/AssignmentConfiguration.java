@@ -2,12 +2,14 @@ package com.deloitte.smt.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Created by myelleswarapu on 04-05-2017.
@@ -29,9 +31,15 @@ public class AssignmentConfiguration implements Serializable {
     private String ingredient;
     private String signalSource;
     private String severity;
-    private String signalValidationAssignmentUser;
-    private String assessmentAssignmentUser;
-    private String riskPlanAssignmentUser;
+    private String signalValidationAssignmentOwner;
+    private String assessmentAssignmentOwner;
+    private String riskPlanAssignmentOwner;
+    @Transient
+	private List<SignalValidationAssignmentAssignees> signalValidationAssignmentAssignees;
+    @Transient
+	private List<AssessmentAssignmentAssignees> assessmentAssignmentAssignees;
+    @Transient
+	private List<RiskPlanAssignmentAssignees> riskPlanAssignmentAssignees;
     
     public Long getId() {
         return id;
@@ -89,28 +97,56 @@ public class AssignmentConfiguration implements Serializable {
 		this.severity = severity;
 	}
 
-	public String getSignalValidationAssignmentUser() {
-		return signalValidationAssignmentUser;
+	public String getSignalValidationAssignmentOwner() {
+		return signalValidationAssignmentOwner;
 	}
 
-	public void setSignalValidationAssignmentUser(
-			String signalValidationAssignmentUser) {
-		this.signalValidationAssignmentUser = signalValidationAssignmentUser;
+	public void setSignalValidationAssignmentOwner(
+			String signalValidationAssignmentOwner) {
+		this.signalValidationAssignmentOwner = signalValidationAssignmentOwner;
 	}
 
-	public String getAssessmentAssignmentUser() {
-		return assessmentAssignmentUser;
+	public String getAssessmentAssignmentOwner() {
+		return assessmentAssignmentOwner;
 	}
 
-	public void setAssessmentAssignmentUser(String assessmentAssignmentUser) {
-		this.assessmentAssignmentUser = assessmentAssignmentUser;
+	public void setAssessmentAssignmentOwner(String assessmentAssignmentOwner) {
+		this.assessmentAssignmentOwner = assessmentAssignmentOwner;
 	}
 
-	public String getRiskPlanAssignmentUser() {
-		return riskPlanAssignmentUser;
+	public String getRiskPlanAssignmentOwner() {
+		return riskPlanAssignmentOwner;
 	}
 
-	public void setRiskPlanAssignmentUser(String riskPlanAssignmentUser) {
-		this.riskPlanAssignmentUser = riskPlanAssignmentUser;
+	public void setRiskPlanAssignmentOwner(String riskPlanAssignmentOwner) {
+		this.riskPlanAssignmentOwner = riskPlanAssignmentOwner;
 	}
+
+	public List<SignalValidationAssignmentAssignees> getSignalValidationAssignmentAssignees() {
+		return signalValidationAssignmentAssignees;
+	}
+
+	public void setSignalValidationAssignmentAssignees(
+			List<SignalValidationAssignmentAssignees> signalValidationAssignmentAssignees) {
+		this.signalValidationAssignmentAssignees = signalValidationAssignmentAssignees;
+	}
+
+	public List<AssessmentAssignmentAssignees> getAssessmentAssignmentAssignees() {
+		return assessmentAssignmentAssignees;
+	}
+
+	public void setAssessmentAssignmentAssignees(
+			List<AssessmentAssignmentAssignees> assessmentAssignmentAssignees) {
+		this.assessmentAssignmentAssignees = assessmentAssignmentAssignees;
+	}
+
+	public List<RiskPlanAssignmentAssignees> getRiskPlanAssignmentAssignees() {
+		return riskPlanAssignmentAssignees;
+	}
+
+	public void setRiskPlanAssignmentAssignees(
+			List<RiskPlanAssignmentAssignees> riskPlanAssignmentAssignees) {
+		this.riskPlanAssignmentAssignees = riskPlanAssignmentAssignees;
+	}
+
 }

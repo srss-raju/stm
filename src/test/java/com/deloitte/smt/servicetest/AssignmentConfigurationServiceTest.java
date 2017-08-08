@@ -60,7 +60,7 @@ public class AssignmentConfigurationServiceTest {
 	public void testInsertNotNull() {
 		try{
 			AssignmentConfiguration config = new AssignmentConfiguration();
-			config.setAssessmentAssignmentUser("Test User");
+			config.setAssessmentAssignmentOwner("Test User");
 			config.setIngredient("test");
 			config.setSignalSource("test");
 			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource("test","test")).willReturn(config);
@@ -74,7 +74,7 @@ public class AssignmentConfigurationServiceTest {
 	public void testInsert() {
 		try{
 			AssignmentConfiguration config = new AssignmentConfiguration();
-			config.setAssessmentAssignmentUser("Test User");
+			config.setAssessmentAssignmentOwner("Test User");
 			config.setIngredient("test");
 			config.setSignalSource("test");
 			assignmentConfigurationService.insert(config);
@@ -87,7 +87,7 @@ public class AssignmentConfigurationServiceTest {
 	public void testUpdate() throws Exception{
 		try{
 			AssignmentConfiguration config = new AssignmentConfiguration();
-			config.setAssessmentAssignmentUser("Test User");
+			config.setAssessmentAssignmentOwner("Test User");
 			config.setIngredient("Test Ingredient");
 			config.setSignalSource("Test Source");
 			config.setId(1l);
@@ -102,7 +102,7 @@ public class AssignmentConfigurationServiceTest {
 	public void testUpdateWithNull() {
 		try{
 			AssignmentConfiguration config = new AssignmentConfiguration();
-			config.setAssessmentAssignmentUser("Test User");
+			config.setAssessmentAssignmentOwner("Test User");
 			config.setIngredient("Test Ingredient");
 			config.setSignalSource("Test Source");
 			assignmentConfigurationService.update(config);
@@ -115,7 +115,7 @@ public class AssignmentConfigurationServiceTest {
 	public void testDelete() throws Exception{
 		try{
 			AssignmentConfiguration config = new AssignmentConfiguration();
-			config.setAssessmentAssignmentUser("Test User");
+			config.setAssessmentAssignmentOwner("Test User");
 			config.setIngredient("Test Ingredient");
 			config.setSignalSource("Test Source");
 			config.setId(1l);
@@ -130,7 +130,7 @@ public class AssignmentConfigurationServiceTest {
 	public void testDeleteWithNull() throws Exception{
 		try{
 			AssignmentConfiguration config = new AssignmentConfiguration();
-			config.setAssessmentAssignmentUser("Test User");
+			config.setAssessmentAssignmentOwner("Test User");
 			config.setIngredient("Test Ingredient");
 			config.setSignalSource("Test Source");
 			config.setId(1l);
@@ -144,7 +144,7 @@ public class AssignmentConfigurationServiceTest {
 	@Test
 	public void testFindById() throws Exception{
 		AssignmentConfiguration config = new AssignmentConfiguration();
-		config.setAssessmentAssignmentUser("Test User");
+		config.setAssessmentAssignmentOwner("Test User");
 		config.setIngredient("Test Ingredient");
 		config.setSignalSource("Test Source");
 		config.setId(1l);
@@ -155,7 +155,7 @@ public class AssignmentConfigurationServiceTest {
 	public void testFindByIdWithNull() throws Exception{
 		try{
 			AssignmentConfiguration config = new AssignmentConfiguration();
-			config.setAssessmentAssignmentUser("Test User");
+			config.setAssessmentAssignmentOwner("Test User");
 			config.setIngredient("Test Ingredient");
 			config.setSignalSource("Test Source");
 			config.setId(1l);

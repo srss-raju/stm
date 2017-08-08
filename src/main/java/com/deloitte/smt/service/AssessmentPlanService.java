@@ -79,6 +79,9 @@ public class AssessmentPlanService {
     SearchService searchService;
     
     @Autowired
+    AssessmentAssignmentService assessmentAssignmentService;
+    
+    @Autowired
     SignalURLRepository signalURLRepository;
 
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
@@ -90,6 +93,7 @@ public class AssessmentPlanService {
             assessmentPlan.setAssessmentPlanStatus("In Progress");
             assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
         }
+        assessmentAssignmentService.findAssignmentAssignees(assessmentPlan);
         assessmentPlan.setComments(commentsRepository.findByAssessmentId(assessmentId));
         assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentId));
         return assessmentPlan;

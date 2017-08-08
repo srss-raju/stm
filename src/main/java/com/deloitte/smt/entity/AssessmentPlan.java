@@ -1,6 +1,11 @@
 package com.deloitte.smt.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,12 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "sm_assessment_plan")
@@ -67,6 +67,10 @@ public class AssessmentPlan  implements Serializable {
 	private String assessmentTaskStatus;
 	@Transient
 	private List<Comments> comments;
+	private String owner;
+    @Transient
+	private List<TopicAssessmentAssignmentAssignees> topicAssessmentAssignmentAssignees;
+	
 
 	public AssessmentPlan() {
 		this.topics = new HashSet<>();
@@ -281,8 +285,24 @@ public class AssessmentPlan  implements Serializable {
 	public String getModifiedBy() {
 		return modifiedBy;
 	}
+	
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
 
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+	public List<TopicAssessmentAssignmentAssignees> getTopicAssessmentAssignmentAssignees() {
+		return topicAssessmentAssignmentAssignees;
+	}
+
+	public void setTopicAssessmentAssignmentAssignees(
+			List<TopicAssessmentAssignmentAssignees> topicAssessmentAssignmentAssignees) {
+		this.topicAssessmentAssignmentAssignees = topicAssessmentAssignmentAssignees;
 	}
 }

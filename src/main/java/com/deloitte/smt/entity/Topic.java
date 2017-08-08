@@ -61,6 +61,8 @@ public class Topic implements Serializable{
 	private Long confidenceIndex;
 	private Long cohortPercentage;
 	private String owner;
+	@Transient
+	private List<TopicSignalValidationAssignmentAssignees> topicSignalValidationAssignmentAssignees;
 
 	@Transient
 	private List<Comments> comments;
@@ -388,5 +390,14 @@ public class Topic implements Serializable{
 		this.modifiedBy = modifiedBy;
 	}
 	
+	public List<TopicSignalValidationAssignmentAssignees> getTopicSignalValidationAssignmentAssignees() {
+		return topicSignalValidationAssignmentAssignees;
+	}
+
+	public void setTopicSignalValidationAssignmentAssignees(
+			List<TopicSignalValidationAssignmentAssignees> topicSignalValidationAssignmentAssignees) {
+		this.topicSignalValidationAssignmentAssignees = topicSignalValidationAssignmentAssignees;
+	}
+
 	
 }

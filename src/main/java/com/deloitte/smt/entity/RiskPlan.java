@@ -52,6 +52,11 @@ public class RiskPlan implements Serializable {
  	@Transient
 	private List<Long> riskTemplateIds;
  	
+ 	private String owner;
+ 	
+ 	@Transient
+	private List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssignees;
+ 	
     public RiskPlan(){
     	//Do Nothing
     }
@@ -260,5 +265,23 @@ public class RiskPlan implements Serializable {
 
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+	
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+
+	public List<TopicRiskPlanAssignmentAssignees> getTopicRiskPlanAssignmentAssignees() {
+		return topicRiskPlanAssignmentAssignees;
+	}
+
+	public void setTopicRiskPlanAssignmentAssignees(
+			List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssignees) {
+		this.topicRiskPlanAssignmentAssignees = topicRiskPlanAssignmentAssignees;
 	}
 }

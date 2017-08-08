@@ -139,4 +139,14 @@ public class SignalController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 	
+	@GetMapping(value = "/dashboard/getCounts")
+	public String getDashboardCounts(@RequestParam(value = "ingredient", required = false) String ingredient, 
+							@RequestParam(value = "assignees", required = false) String assignees,
+							@RequestParam(value = "owner", required = false) String owner) {
+		if(StringUtils.isNotBlank(ingredient)){
+			return signalService.getCountsByFilter(ingredient, assignees);
+		}
+		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(assignees,owner),signalService.getAssessmentCount(assignees,owner),signalService.getRiskCount(assignees,owner));
+	}
+	
 }
