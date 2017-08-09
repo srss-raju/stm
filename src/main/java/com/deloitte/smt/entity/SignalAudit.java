@@ -29,6 +29,7 @@ public class SignalAudit   implements Serializable {
 	@JsonRawValue
 	private String originalValue;
 	@Size(max = 1337)
+	@JsonRawValue
 	private String modifiedValue;
 	private String createdBy;
 	private String modifieddBy;
