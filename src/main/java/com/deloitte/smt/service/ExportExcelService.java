@@ -28,7 +28,7 @@ import com.deloitte.smt.dto.SignalAlgorithmDTO;
 public class ExportExcelService {
 
 	
-	public void writeExcel(List<SignalAlgorithmDTO> signalDTOList,
+	public byte[] writeExcel(List<SignalAlgorithmDTO> signalDTOList,
 			String excelFilePath) throws IOException {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet();
@@ -39,10 +39,10 @@ public class ExportExcelService {
 
 		writeSignalDTO(signalDTOList, sheet, workbook);
 
-		try (FileOutputStream outputStream = new FileOutputStream(excelFilePath)) {
+		FileOutputStream outputStream = new FileOutputStream(excelFilePath);
 			workbook.write(outputStream);
 			workbook.close();
-		}
+		return workbook.getBytes();
 	}
 
 	@SuppressWarnings("deprecation")

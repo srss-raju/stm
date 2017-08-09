@@ -1,7 +1,11 @@
 package com.deloitte.smt.controller;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,13 +25,17 @@ public class ExportToExcelController {
 	private static final String EXPORT_EXCEL="ExportDetectionDetails.xls";
 	
 	@RequestMapping("/exportExcel")
-	public void generateExcel(@RequestBody List<SignalAlgorithmDTO> signalDTOList){
+	public FileOutputStream generateExcel(@RequestBody List<SignalAlgorithmDTO> signalDTOList,HttpServletRequest request,HttpServletResponse response){
+		FileOutputStream outputStream= null;
 		try {
-			exportExcelService.writeExcel(signalDTOList, EXPORT_EXCEL);
+			 byte[] writeExcel = exportExcelService.writeExcel(signalDTOList, EXPORT_EXCEL);
+			 
+			response.setHeader("Content-disposition", "attachment; filename=ExportDetectionDetails.xls");
+		response.getOutputStream().write(writeExcel);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return outputStream;
 	}
-
 }
