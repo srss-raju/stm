@@ -44,7 +44,6 @@ import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.util.JsonUtil;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -86,8 +85,8 @@ public class AssessmentPlanService {
     @Autowired
     SignalURLRepository signalURLRepository;
     
-    @Autowired
-    SignalAuditService signalAuditService;
+    /*@Autowired
+    SignalAuditService signalAuditService;*/
 
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);

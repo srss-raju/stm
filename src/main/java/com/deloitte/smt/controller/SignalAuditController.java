@@ -1,4 +1,4 @@
-package com.deloitte.smt.controller;
+/*package com.deloitte.smt.controller;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deloitte.smt.entity.SignalAudit;
 import com.deloitte.smt.service.SignalAuditService;
 
-/**
+*//**
  * 
  * @author rbongurala
  *
- */
+ *//*
 @RestController
 @RequestMapping(value = "/camunda/api/signal/audit")
 public class SignalAuditController {
@@ -28,3 +28,4 @@ public class SignalAuditController {
 	}
 
 }
+*/

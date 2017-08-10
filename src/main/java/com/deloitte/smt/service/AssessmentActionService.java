@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SignalStatus;
-import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.SignalAction;
@@ -29,7 +28,6 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
-import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -63,8 +61,8 @@ public class AssessmentActionService {
     @Autowired
     SignalURLRepository signalURLRepository;
     
-    @Autowired
-    SignalAuditService signalAuditService;
+  /*  @Autowired
+    SignalAuditService signalAuditService;*/
 
     public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
         if(signalAction.getCaseInstanceId() != null && SignalStatus.COMPLETED.name().equalsIgnoreCase(signalAction.getActionStatus())){

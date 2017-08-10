@@ -48,7 +48,6 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
-import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -115,8 +114,8 @@ public class RiskPlanService {
 	@Autowired
 	RiskPlanAssignmentService riskPlanAssignmentService;
 	
-	@Autowired
-	SignalAuditService signalAuditService;
+	/*@Autowired
+	SignalAuditService signalAuditService;*/
 
 	public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId)
 			throws ApplicationException {

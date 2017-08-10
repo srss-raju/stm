@@ -70,7 +70,6 @@ import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -113,8 +112,8 @@ public class SignalService {
 	@Autowired
 	SignalURLRepository signalURLRepository;
 	
-	@Autowired
-	SignalAuditService signalAuditService;
+	/*@Autowired
+	SignalAuditService signalAuditService;*/
 	
 	@Autowired
 	CaseService caseService;

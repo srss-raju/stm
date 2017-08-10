@@ -1,12 +1,12 @@
-package com.deloitte.smt.util;
+/*package com.deloitte.smt.util;
 
 import com.google.gson.Gson;
 
-/**
+*//**
  * 
  * @author RajeshKumar
  *
- */
+ *//*
 public class JsonUtil {
 
 	private JsonUtil(){
@@ -17,3 +17,4 @@ public class JsonUtil {
 		return gson.toJson(object);
 	}
 }
+*/
