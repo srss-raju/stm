@@ -296,7 +296,7 @@ public class SignalService {
 		List<Attachment> attchmentList = attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null,
 				topicUpdated.getFileMetadata(), topic.getCreatedBy());
 		LOG.info("Start Algorithm for matching signal");
-		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, null, attchmentList, SmtConstant.CREATE.getDescription());
+		//signalAuditService.saveOrUpdateSignalAudit(topicUpdated, null, attchmentList, SmtConstant.CREATE.getDescription());
 		return signalMatchService.findMatchingSignal(topicUpdated);
 	}
 	
@@ -449,10 +449,10 @@ public class SignalService {
 		setTopicIdForSignalStatistics(topic);
 		List<Attachment> attchmentList = attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT,
 				topic.getDeletedAttachmentIds(), topic.getFileMetadata(), topic.getCreatedBy());
-		String topicOriginal = JsonUtil.converToJson(findById(topic.getId()));
+		//String topicOriginal = JsonUtil.converToJson(findById(topic.getId()));
 		Topic topicUpdated = topicRepository.save(topic);
 		saveSignalUrl(topic);
-		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
+		//signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
 		return "Update Success";
 	}
 
@@ -468,7 +468,7 @@ public class SignalService {
 		}
 		taskService.complete(task.getId());
 
-		String topicOriginal = JsonUtil.converToJson(topic);
+		//String topicOriginal = JsonUtil.converToJson(topic);
 		CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
 		topic.setProcessId(instance.getCaseInstanceId());
 		Date d = new Date();
@@ -505,12 +505,12 @@ public class SignalService {
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());
 		topic.setLastModifiedDate(new Date());
 		Topic topicUpdated = topicRepository.save(topic);
-		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, null, SmtConstant.UPDATE.getDescription());
+		//signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, null, SmtConstant.UPDATE.getDescription());
 		if (assignmentConfiguration != null) {
 			assessmentPlan.setOwner(assignmentConfiguration.getAssessmentAssignmentOwner());
 			assessmentAssignmentService.saveAssignmentAssignees(assignmentConfiguration, assessmentPlan);
 		}
-		signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, null, null, SmtConstant.CREATE.getDescription());
+		//signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, null, null, SmtConstant.CREATE.getDescription());
 		return assessmentPlan;
 	}
 
@@ -623,8 +623,9 @@ public class SignalService {
 		signalAction.setTaskId(taskInstance.getId());
 		signalAction = assessmentActionRepository.save(signalAction);
 		signalActionList.add(signalAction);
-		associateTemplateAttachments(sort, action, signalAction);
-		associateTemplateURLs(action, signalAction);
+		List<Attachment> signalActionAttachments = associateTemplateAttachments(sort, action, signalAction);
+		List<SignalURL> signalActionTaskUrls = associateTemplateURLs(action, signalAction);
+		//signalAuditService.saveOrUpdateSignalActionAudit(signalAction, null, signalActionAttachments, SmtConstant.CREATE.getDescription());
 	}
 
 	/**
