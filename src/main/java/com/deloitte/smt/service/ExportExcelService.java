@@ -27,8 +27,14 @@ import com.deloitte.smt.dto.SignalAlgorithmDTO;
 @Service
 public class ExportExcelService {
 
-	
-	public byte[] writeExcel(List<SignalAlgorithmDTO> signalDTOList,
+	/**
+	 * This method attempts to write the workbook to fileoutputstream
+	 * @param signalDTOList
+	 * @param excelFilePath
+	 * @return
+	 * @throws IOException
+	 */
+	public HSSFWorkbook writeExcel(List<SignalAlgorithmDTO> signalDTOList,
 			String excelFilePath) throws IOException {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet();
@@ -40,9 +46,8 @@ public class ExportExcelService {
 		writeSignalDTO(signalDTOList, sheet, workbook);
 
 		FileOutputStream outputStream = new FileOutputStream(excelFilePath);
-			workbook.write(outputStream);
-			workbook.close();
-		return workbook.getBytes();
+		workbook.write(outputStream);
+		return workbook;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -126,8 +131,6 @@ public class ExportExcelService {
 		cell22.setCellStyle(style);
 		cell22.setCellValue("SIGNAL");
 
-		
-
 		Row header2 = sheet.createRow(1);
 		Cell row2cell10 = header2.createCell(4);
 		row2cell10.setCellStyle(style);
@@ -148,9 +151,6 @@ public class ExportExcelService {
 		Cell row2cell20 = header2.createCell(14);
 		row2cell20.setCellStyle(style);
 		row2cell20.setCellValue("BCPNN");
-		
-		
-		
 
 		Row header3 = sheet.createRow(2);
 

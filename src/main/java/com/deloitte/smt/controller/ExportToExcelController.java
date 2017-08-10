@@ -1,12 +1,14 @@
 package com.deloitte.smt.controller;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import com.deloitte.smt.service.ExportExcelService;
 @RestController
 @RequestMapping("/camunda/api/signal")
 public class ExportToExcelController {
+	private static final Logger LOG = Logger.getLogger(ExportToExcelController.class);
 	
 	@Autowired
 	ExportExcelService exportExcelService;
@@ -25,17 +28,21 @@ public class ExportToExcelController {
 	private static final String EXPORT_EXCEL="ExportDetectionDetails.xls";
 	
 	@RequestMapping("/exportExcel")
-	public FileOutputStream generateExcel(@RequestBody List<SignalAlgorithmDTO> signalDTOList,HttpServletRequest request,HttpServletResponse response){
-		FileOutputStream outputStream= null;
+	public void generateExcel(@RequestBody List<SignalAlgorithmDTO> signalDTOList,HttpServletRequest request,HttpServletResponse response){
 		try {
-			 byte[] writeExcel = exportExcelService.writeExcel(signalDTOList, EXPORT_EXCEL);
-			 
-			response.setHeader("Content-disposition", "attachment; filename=ExportDetectionDetails.xls");
-		response.getOutputStream().write(writeExcel);
+			HSSFWorkbook workbook  = exportExcelService.writeExcel(signalDTOList, EXPORT_EXCEL);
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+			response.setHeader("Content-disposition", "attachment; filename="
+					+ EXPORT_EXCEL);
+			ServletOutputStream out = response.getOutputStream();
+			workbook.write(out);
+			out.flush();
+			out.close();
+
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.info("Exception occured while exporting excel sheet "+e);
 		}
-		return outputStream;
 	}
+
 }
