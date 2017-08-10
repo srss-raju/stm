@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class ExportToExcelController {
 	
 	private static final String EXPORT_EXCEL="ExportDetectionDetails.xls";
 	
-	@RequestMapping("/exportExcel")
+	@PostMapping(value = "/exportExcel")
 	public void generateExcel(@RequestBody List<SignalAlgorithmDTO> signalDTOList,HttpServletRequest request,HttpServletResponse response){
 		try {
 			HSSFWorkbook workbook  = exportExcelService.writeExcel(signalDTOList, EXPORT_EXCEL);
