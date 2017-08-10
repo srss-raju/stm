@@ -631,8 +631,9 @@ public class SignalService {
 	 * @param action
 	 * @param signalAction
 	 */
-	public void associateTemplateURLs(SignalAction action, SignalAction signalAction) {
+	public List<SignalURL> associateTemplateURLs(SignalAction action, SignalAction signalAction) {
 		List<SignalURL> templateTaskUrls = signalURLRepository.findByTopicId(action.getId());
+		List<SignalURL> signalActionTaskUrls = null;
 		if (!CollectionUtils.isEmpty(templateTaskUrls)) {
 			List<SignalURL> assessmentActionSignalURLs = new ArrayList<>();
 			for (SignalURL url : templateTaskUrls) {
@@ -646,8 +647,9 @@ public class SignalService {
 				assessmentActionSignalURL.setModifiedBy(signalAction.getModifiedBy());
 				assessmentActionSignalURLs.add(assessmentActionSignalURL);
 			}
-			signalURLRepository.save(assessmentActionSignalURLs);
+			signalActionTaskUrls = signalURLRepository.save(assessmentActionSignalURLs);
 		}
+		return signalActionTaskUrls;
 	}
 
 	/**
@@ -655,9 +657,10 @@ public class SignalService {
 	 * @param action
 	 * @param signalAction
 	 */
-	public void associateTemplateAttachments(Sort sort, SignalAction action, SignalAction signalAction) {
+	public List<Attachment> associateTemplateAttachments(Sort sort, SignalAction action, SignalAction signalAction) {
 		List<Attachment> attachments = attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(
 				action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort);
+		List<Attachment> signalActionAttachments = null;
 		if (!CollectionUtils.isEmpty(attachments)) {
 			List<Attachment> assessmentActionAttachments = new ArrayList<>();
 			for (Attachment attachment : attachments) {
@@ -674,8 +677,9 @@ public class SignalService {
 
 				assessmentActionAttachments.add(assessmentActionAttachment);
 			}
-			attachmentRepository.save(assessmentActionAttachments);
+			signalActionAttachments = attachmentRepository.save(assessmentActionAttachments);
 		}
+		return signalActionAttachments;
 	}
 
 	public List<Topic> findTopicsByRunInstanceId(Long runInstanceId) {
