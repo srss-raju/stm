@@ -15,7 +15,10 @@ public enum SmtConstant {
     COMPLETED("Completed"),
     INGREDIENT_NAME("ingredientName"),
     IN_PROGRESS("In Progress"),
-    ASSESSMENT_TASK_STATUS("assessmentTaskStatus");
+    ASSESSMENT_TASK_STATUS("assessmentTaskStatus"),
+    CREATE("CREATE"),
+    UPDATE("UPDATE"),
+    DELETE("DELETE");
     private String description;
 
     SmtConstant(String description) {

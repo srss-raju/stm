@@ -296,7 +296,7 @@ public class SignalService {
 		List<Attachment> attchmentList = attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null,
 				topicUpdated.getFileMetadata(), topic.getCreatedBy());
 		LOG.info("Start Algorithm for matching signal");
-		signalAuditService.saveSignalAudit(topicUpdated, attchmentList);
+		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, null, attchmentList, SmtConstant.CREATE.getDescription());
 		return signalMatchService.findMatchingSignal(topicUpdated);
 	}
 	
@@ -449,10 +449,10 @@ public class SignalService {
 		setTopicIdForSignalStatistics(topic);
 		List<Attachment> attchmentList = attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT,
 				topic.getDeletedAttachmentIds(), topic.getFileMetadata(), topic.getCreatedBy());
-		String topicOriginal = JsonUtil.converToJson(topicRepository.findOne(topic.getId()));
+		String topicOriginal = JsonUtil.converToJson(findById(topic.getId()));
 		Topic topicUpdated = topicRepository.save(topic);
 		saveSignalUrl(topic);
-		signalAuditService.updateSignalAudit(topicUpdated, topicOriginal, attchmentList);
+		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
 		return "Update Success";
 	}
 
@@ -468,6 +468,7 @@ public class SignalService {
 		}
 		taskService.complete(task.getId());
 
+		String topicOriginal = JsonUtil.converToJson(topic);
 		CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
 		topic.setProcessId(instance.getCaseInstanceId());
 		Date d = new Date();
@@ -503,19 +504,19 @@ public class SignalService {
 		topic.setSignalStatus(SmtConstant.COMPLETED.getDescription());
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());
 		topic.setLastModifiedDate(new Date());
-		topicRepository.save(topic);
+		Topic topicUpdated = topicRepository.save(topic);
+		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, null, SmtConstant.UPDATE.getDescription());
 		if (assignmentConfiguration != null) {
 			assessmentPlan.setOwner(assignmentConfiguration.getAssessmentAssignmentOwner());
 			assessmentAssignmentService.saveAssignmentAssignees(assignmentConfiguration, assessmentPlan);
 		}
+		signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, null, null, SmtConstant.CREATE.getDescription());
 		return assessmentPlan;
 	}
 
 	public List<Topic> findTopics(SearchDto searchDto) {
 		return signalSearchService.findTopics(searchDto);
 	}
-
-	
 
 	public Long getValidateAndPrioritizeCount(String assignTo) {
 		return topicRepository.countByAssignToAndSignalStatusNotLikeIgnoreCase(assignTo,

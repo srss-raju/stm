@@ -16,6 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SignalStatus;
+import com.deloitte.smt.constant.SmtConstant;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
@@ -26,6 +29,7 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -58,6 +62,9 @@ public class AssessmentActionService {
     
     @Autowired
     SignalURLRepository signalURLRepository;
+    
+    @Autowired
+    SignalAuditService signalAuditService;
 
     public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
         if(signalAction.getCaseInstanceId() != null && SignalStatus.COMPLETED.name().equalsIgnoreCase(signalAction.getActionStatus())){
@@ -89,7 +96,7 @@ public class AssessmentActionService {
 
     	
         SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
-        attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata(), signalActionUpdated.getCreatedBy());
+        List<Attachment> attachmentList = attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata(), signalActionUpdated.getCreatedBy());
         if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
         	for(SignalURL url:signalActionUpdated.getSignalUrls()){
         		url.setTopicId(signalActionUpdated.getId());
@@ -100,6 +107,7 @@ public class AssessmentActionService {
         	}
         	signalURLRepository.save(signalActionUpdated.getSignalUrls());
         }
+        signalAuditService.saveOrUpdateSignalActionAudit(signalActionUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
         return signalActionUpdated;
     }
 
@@ -110,9 +118,10 @@ public class AssessmentActionService {
         if("completed".equalsIgnoreCase(signalAction.getActionStatus())) {
             taskService.complete(signalAction.getTaskId());
         }
+        String assessmentActionOriginal = JsonUtil.converToJson(assessmentActionRepository.findOne(signalAction.getId()));
         signalAction.setLastModifiedDate(new Date());
         assessmentActionRepository.save(signalAction);
-        attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, signalAction.getDeletedAttachmentIds(), signalAction.getFileMetadata(), signalAction.getCreatedBy());
+        List<Attachment> attachmentList = attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, signalAction.getDeletedAttachmentIds(), signalAction.getFileMetadata(), signalAction.getCreatedBy());
         List<SignalAction> actions = findAllByAssessmentId(signalAction.getAssessmentId(), null);
         boolean allTasksCompletedFlag = true;
         if(!CollectionUtils.isEmpty(actions)){
@@ -133,8 +142,14 @@ public class AssessmentActionService {
         	signalURLRepository.save(signalAction.getSignalUrls());
         }
         if(allTasksCompletedFlag){
+        	String assessmentPlanOriginal = JsonUtil.converToJson(assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentId())));
         	assessmentPlanRepository.updateAssessmentTaskStatus("Completed", Long.valueOf(signalAction.getAssessmentId()));
+        	AssessmentPlan assessmentPlan  = assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentId()));
+        	assessmentPlan.setLastModifiedDate(new Date());
+        	assessmentPlan.setModifiedBy(signalAction.getModifiedBy());
+        	signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, assessmentPlanOriginal, null, SmtConstant.UPDATE.getDescription());
         }
+        signalAuditService.saveOrUpdateSignalActionAudit(signalAction, assessmentActionOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
     }
 
     public SignalAction findById(Long id) {
@@ -163,6 +178,7 @@ public class AssessmentActionService {
         if(taskId != null){
         	taskService.deleteTask(taskId);
         }
+        signalAuditService.saveOrUpdateSignalActionAudit(signalAction, null, null, SmtConstant.DELETE.getDescription());
     }
     
     public SignalAction createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
