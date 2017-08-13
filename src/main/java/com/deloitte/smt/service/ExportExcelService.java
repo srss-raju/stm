@@ -50,7 +50,6 @@ public class ExportExcelService {
 		return workbook;
 	}
 
-	@SuppressWarnings("deprecation")
 	private CellStyle createStyle(HSSFWorkbook wb) {
 
 		HSSFCellStyle style = wb.createCellStyle();
@@ -192,6 +191,7 @@ public class ExportExcelService {
 	
 	
 
+	@SuppressWarnings("deprecation")
 	private void createCellRangeAddress(Sheet sheet,HSSFWorkbook workbook) {
 		List<CellRangeAddress> cellRangeAdressList=new ArrayList<CellRangeAddress>();
 	

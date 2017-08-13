@@ -48,6 +48,7 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -114,8 +115,8 @@ public class RiskPlanService {
 	@Autowired
 	RiskPlanAssignmentService riskPlanAssignmentService;
 	
-	/*@Autowired
-	SignalAuditService signalAuditService;*/
+	@Autowired
+	SignalAuditService signalAuditService;
 
 	public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId)
 			throws ApplicationException {
@@ -176,7 +177,7 @@ public class RiskPlanService {
 			riskPlan.setOwner(assignmentConfiguration.getRiskPlanAssignmentOwner());
 			riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
 		}
-		//signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
+		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 		return riskPlanUpdated;
 	}
 	
@@ -565,7 +566,7 @@ public class RiskPlanService {
 			signalURLRepository.save(riskTaskUpdated.getSignalUrls());
 		}
 		
-		//signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
+		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 	}
 
 	public RiskTask findById(Long id) {
@@ -601,7 +602,7 @@ public class RiskPlanService {
 		if (SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())) {
 			taskService.complete(riskTask.getTaskId());
 		}
-		//String riskTaskOriginal = JsonUtil.converToJson(riskTaskRepository.findOne(riskTask.getId()));
+		String riskTaskOriginal = JsonUtil.converToJson(riskTaskRepository.findOne(riskTask.getId()));
 		
 		riskTask.setLastUpdatedDate(new Date());
 		riskTaskRepository.save(riskTask);
@@ -624,12 +625,12 @@ public class RiskPlanService {
 			signalURLRepository.save(riskTask.getSignalUrls());
 		}
 		if (allTasksCompletedFlag) {
-			//String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(Long.parseLong(riskTask.getRiskId())));
+			String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(Long.parseLong(riskTask.getRiskId())));
 			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
-			//signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanRepository.findOne(Long.parseLong(riskTask.getRiskId())), riskPlanOriginal, null, SmtConstant.UPDATE.getDescription());
+			signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanRepository.findOne(Long.parseLong(riskTask.getRiskId())), riskPlanOriginal, null, SmtConstant.UPDATE.getDescription());
 		}
 		
-		//signalAuditService.saveOrUpdateRiskTaskAudit(riskTask, riskTaskOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
+		signalAuditService.saveOrUpdateRiskTaskAudit(riskTask, riskTaskOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
 	}
 
 	public RiskPlan findByRiskId(Long riskId) throws ApplicationException {
@@ -661,7 +662,7 @@ public class RiskPlanService {
 		if (riskPlan.getId() == null) {
 			throw new ApplicationException("Failed to update Risk. Invalid Id received");
 		}
-		//String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(riskPlan.getId()));
+		String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(riskPlan.getId()));
 		
 		riskPlan.setLastModifiedDate(new Date());
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT,
@@ -686,7 +687,7 @@ public class RiskPlanService {
 			}
 			signalURLRepository.save(riskPlan.getSignalUrls());
 		}
-		//signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
+		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
 	}
 
 	public List<RiskTask> associateRiskTemplateTasks(RiskPlan riskPlan) {
