@@ -67,10 +67,9 @@ public class SignalAssignmentService {
 	
 	private void saveTopicSignalValidationAssignmentAssignees(SignalValidationAssignmentAssignees svaAssignees, Topic topic, List<TopicSignalValidationAssignmentAssignees> list) {
 		TopicSignalValidationAssignmentAssignees assignee = new TopicSignalValidationAssignmentAssignees();
-		assignee.setTopicId(topic.getId());
 		assignee.setAssignTo(svaAssignees.getAssignTo());
-		assignee.setUserGroupKey(svaAssignees.getUserGroupKey());
-		assignee.setUserKey(svaAssignees.getUserKey());
+		assignee.setUserGroupKeys(svaAssignees.getUserGroupKey());
+		assignee.setUserKeys(svaAssignees.getUserKey());
 		assignee.setCreatedDate(topic.getCreatedDate());
 		assignee.setCreatedBy(topic.getCreatedBy());
 		list.add(assignee);

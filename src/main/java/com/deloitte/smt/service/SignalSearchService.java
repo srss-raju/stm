@@ -8,6 +8,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -23,6 +25,7 @@ import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicSignalValidationAssignmentAssignees;
 
 @Service
 public class SignalSearchService {
@@ -34,7 +37,7 @@ public class SignalSearchService {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Topic> query = criteriaBuilder.createQuery(Topic.class);
 		Root<Topic> rootTopic = query.from(Topic.class);
-
+		
 		if (null != searchDto) {
 			List<Predicate> predicates = new ArrayList<>(10);
 
@@ -50,7 +53,9 @@ public class SignalSearchService {
 			addAssignees(searchDto, criteriaBuilder, rootTopic, predicates);
 			addDueDate(searchDto, criteriaBuilder, rootTopic, predicates);
 			addSignalConfirmations(searchDto, criteriaBuilder, rootTopic, predicates);
-			addSignalSources(searchDto, criteriaBuilder, rootTopic, predicates);
+			/**TopicSignalValidationAssignmentAssignees **/
+			addUserKeys(searchDto, criteriaBuilder,query,rootTopic,predicates);
+			addUserGroupKeys(searchDto, criteriaBuilder,query,rootTopic,predicates);
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			query.select(rootTopic).where(andPredicate)
@@ -115,18 +120,6 @@ public class SignalSearchService {
 		}
 	}
 	
-	/**
-	 * @param searchDto
-	 * @param criteriaBuilder
-	 * @param rootTopic
-	 * @param predicates
-	 */
-	private void addSignalSources(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic,
-			List<Predicate> predicates) {
-		if (!CollectionUtils.isEmpty(searchDto.getSources())) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get("sourceName").in(searchDto.getSources())));
-		}
-	}
 
 	/**
 	 * @param searchDto
@@ -284,5 +277,23 @@ public class SignalSearchService {
 			predicates.add(producNameEquals);
 		}
 	}
+	private void addUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery<Topic> query,
+			   Root<Topic> rootTopic, List<Predicate> predicates) {
+			  
+			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			   Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.LEFT); //left outer join
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userKeys").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
+			      
+			  }
+			 }
+	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery<Topic> query,
+			   Root<Topic> rootTopic, List<Predicate> predicates) {
+			  
+			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			   Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.LEFT); //left outer join
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userGroupKeys").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
+			      
+			  }
+			 }
 
 }
