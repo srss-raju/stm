@@ -14,9 +14,6 @@ import com.deloitte.smt.entity.AssessmentPlan;
 
 public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, Long> {
 
-	Long countByAssignToAndAssessmentPlanStatusNotLikeIgnoreCase(String assignTo, String assessmentPlanStatus);
-	Long countByAssignToOrAssignToIsNullOrOwnerOrOwnerIsNullAndAssessmentPlanStatusNotLikeIgnoreCase(String assignTo,String owner, String assessmentPlanStatus);
-
 	@Query(value = "SELECT t.id FROM AssessmentPlan o inner join o.topics t")
 	Set<Long> findAllSignalIds();
 

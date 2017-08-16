@@ -27,6 +27,9 @@ public class SearchDto {
 	private List<String> signalConfirmations;
 	private List<String> signalNames;
 	private List<String> assignees = new ArrayList<>();
+	private List<Long> userKeys = new ArrayList<>();
+	private List<Long> userGroupKeys = new ArrayList<>();
+	private String owner;
 	private List<String> frequency;
 	
 	private String dateKey;
@@ -214,6 +217,30 @@ public class SearchDto {
 	public void setAssessmentTaskStatus(List<String> assessmentTaskStatus) {
 		this.assessmentTaskStatus = assessmentTaskStatus;
 	
+	}
+
+	public List<Long> getUserKeys() {
+		return userKeys;
+	}
+
+	public void setUserKeys(List<Long> userKeys) {
+		this.userKeys = userKeys;
+	}
+
+	public List<Long> getUserGroupKeys() {
+		return userGroupKeys;
+	}
+
+	public void setUserGroupKeys(List<Long> userGroupKeys) {
+		this.userGroupKeys = userGroupKeys;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 	
 

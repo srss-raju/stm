@@ -79,15 +79,6 @@ public class SignalController {
 		return signalService.findTopics(dto);
 	}
 
-	@GetMapping(value = "/getCounts")
-	public String getCounts(@RequestParam(value = "ingredient", required = false) String ingredient, 
-							@RequestParam(value = "assignees", required = false) String assignees) {
-		if(StringUtils.isNotBlank(ingredient)){
-			return signalService.getCountsByFilter(ingredient, assignees);
-		}
-		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(assignees),signalService.getAssessmentCount(assignees),signalService.getRiskCount(assignees));
-	}
-	
 	@GetMapping(value = "/getTemplates/{ingrediantName}")
 	public List<TaskTemplate> getTaskTamplatesOfIngrediant(@PathVariable String ingrediantName){
 		return signalService.getTaskTamplatesOfIngrediant(ingrediantName);
@@ -141,12 +132,13 @@ public class SignalController {
 	
 	@GetMapping(value = "/dashboard/getCounts")
 	public String getDashboardCounts(@RequestParam(value = "ingredient", required = false) String ingredient, 
-							@RequestParam(value = "assignees", required = false) String assignees,
-							@RequestParam(value = "owner", required = false) String owner) {
+							@RequestParam(value = "owner", required = false) String owner,
+							@RequestParam(value = "userKeys", required = false) List<Long> userKeys,
+							@RequestParam(value = "userGroupKeys", required = false) List<Long> userGroupKeys) {
 		if(StringUtils.isNotBlank(ingredient)){
-			return signalService.getCountsByFilter(ingredient, assignees);
+			return signalService.getCountsByFilter(ingredient, null);
 		}
-		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(assignees,owner),signalService.getAssessmentCount(assignees,owner),signalService.getRiskCount(assignees,owner));
+		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(owner, userKeys, userGroupKeys),signalService.getAssessmentCount(owner, userKeys, userGroupKeys),signalService.getRiskCount(owner, userKeys, userGroupKeys));
 	}
 	
 }

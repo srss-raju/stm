@@ -90,6 +90,9 @@ public class SignalService {
 
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	DashboardCountService dashboardCountService;
 
 	@Autowired
 	private SignalMatchService signalMatchService;
@@ -518,21 +521,6 @@ public class SignalService {
 		return signalSearchService.findTopics(searchDto);
 	}
 
-	public Long getValidateAndPrioritizeCount(String assignTo) {
-		return topicRepository.countByAssignToAndSignalStatusNotLikeIgnoreCase(assignTo,
-				SmtConstant.COMPLETED.getDescription());
-	}
-
-	public Long getAssessmentCount(String assignTo) {
-		return assessmentPlanRepository.countByAssignToAndAssessmentPlanStatusNotLikeIgnoreCase(assignTo,
-				SmtConstant.COMPLETED.getDescription());
-	}
-
-	public Long getRiskCount(String assignTo) {
-		return riskPlanRepository.countByAssignToAndStatusNotLikeIgnoreCase(assignTo,
-				SmtConstant.COMPLETED.getDescription());
-	}
-
 	public String getCountsByFilter(String ingredientName, String assignTo) {
 		List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(Arrays.asList(ingredientName));
 		List<Long> topicIds = new ArrayList<>();
@@ -737,19 +725,16 @@ public class SignalService {
 		commentsRepository.delete(comments);
 	}
 	
-	public Long getValidateAndPrioritizeCount(String assignTo,String owner) {
-		return topicRepository.countByAssignToOrAssignToIsNullOrOwnerOrOwnerIsNullAndSignalStatusNotLikeIgnoreCase(assignTo,owner,
-				SmtConstant.COMPLETED.getDescription());
+	public Long getValidateAndPrioritizeCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
+		return dashboardCountService.getValidateAndPrioritizeCount(owner, userKeys, userGroupKeys);
 	}
 	
-	public Long getAssessmentCount(String assignTo, String owner) {
-		return assessmentPlanRepository.countByAssignToOrAssignToIsNullOrOwnerOrOwnerIsNullAndAssessmentPlanStatusNotLikeIgnoreCase(assignTo, owner,
-				SmtConstant.COMPLETED.getDescription());
+	public Long getAssessmentCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
+		return dashboardCountService.getAssessmentCount(owner, userKeys, userGroupKeys);
 	}
 	
-	public Long getRiskCount(String assignTo, String owner) {
-		return riskPlanRepository.countByAssignToOrAssignToIsNullOrOwnerOrOwnerIsNullAndStatusNotLikeIgnoreCase(assignTo, owner,
-				SmtConstant.COMPLETED.getDescription());
+	public Long getRiskCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
+		return dashboardCountService.getRiskCount(owner, userKeys, userGroupKeys);
 	}
 
 }

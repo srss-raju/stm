@@ -29,9 +29,6 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	@Query("SELECT o FROM RiskPlan o WHERE o.status IN (:status) AND o.createdDate = :createdDate ORDER BY o.createdDate DESC")
 	List<RiskPlan> findAllByStatusAndCreatedDate(@Param("status") List<String> status, @Param("createdDate") Date createdDate);
 
-	Long countByAssignToAndStatusNotLikeIgnoreCase(String assignTo, String status);
-	Long countByAssignToOrAssignToIsNullOrOwnerOrOwnerIsNullAndStatusNotLikeIgnoreCase(String assignTo,String owner, String status);
-
 	@Query(value = "SELECT t.id FROM RiskPlan o inner join o.assessmentPlan a inner join a.topics t")
 	Set<Long> findAllSignalIds();
 	

@@ -381,33 +381,6 @@ public class SignalServiceTest {
 	}
 	
 	@Test
-	public void testGetValidateAndPrioritizeCount() {
-		try{
-			signalService.getValidateAndPrioritizeCount("test");
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testGetAssessmentCount() {
-		try{
-			signalService.getAssessmentCount("test");
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testGetRiskCount() {
-		try{
-			signalService.getRiskCount("test");
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
 	public void testGetCountsByFilter() {
 		try{
 			List<Ingredient> ingredients = new ArrayList<>();
