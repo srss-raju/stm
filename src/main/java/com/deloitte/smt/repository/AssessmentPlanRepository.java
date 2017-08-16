@@ -28,6 +28,9 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	@Query("SELECT DISTINCT(o.assignTo) FROM AssessmentPlan o WHERE o.assignTo IS NOT NULL")
 	List<String> getAssignedUsers();
 	
+	@Query("SELECT DISTINCT(o.assessmentRiskStatus) FROM AssessmentPlan o WHERE o.assessmentRiskStatus IS NOT NULL")
+	List<String> getAssessmentRiskStatus();
+	
 	@Transactional
 	@Modifying
 	@Query(value = "UPDATE AssessmentPlan o SET o.assessmentTaskStatus=:assessmentTaskStatus WHERE id= :id")

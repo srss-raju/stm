@@ -78,9 +78,6 @@ public class AssessmentPlanService {
     private EntityManager entityManager;
 
     @Autowired
-    SearchService searchService;
-    
-    @Autowired
     AssessmentAssignmentService assessmentAssignmentService;
     
     @Autowired
@@ -147,6 +144,7 @@ public class AssessmentPlanService {
 			addHlgts(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
 			addPts(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
 			addStartOrDueDate(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
+			addAssessmentRiskStatus(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
@@ -350,6 +348,21 @@ public class AssessmentPlanService {
 			List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
 			predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()).in(searchDto.getAssignees())));
+		}
+	}
+	
+	/**
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param topicAssignmentJoin
+	 * @param predicates
+	 */
+	private void addAssessmentRiskStatus(SearchDto searchDto,
+			CriteriaBuilder criteriaBuilder,
+			Join<Topic, AssessmentPlan> topicAssignmentJoin,
+			List<Predicate> predicates) {
+		if (!CollectionUtils.isEmpty(searchDto.getFinalDispositions())) {
+			predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get(SmtConstant.ASSESSMENT_RISK_STATUS.getDescription()).in(searchDto.getFinalDispositions())));
 		}
 	}
 

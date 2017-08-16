@@ -31,6 +31,8 @@ public class SearchDto {
 	private List<Long> userGroupKeys = new ArrayList<>();
 	private String owner;
 	private List<String> frequency;
+	private List<String> sources;
+	private List<String> finalDispositions;
 	
 	private String dateKey;
 
@@ -241,6 +243,22 @@ public class SearchDto {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public List<String> getSources() {
+		return sources;
+	}
+
+	public void setSources(List<String> sources) {
+		this.sources = sources;
+	}
+
+	public List<String> getFinalDispositions() {
+		return finalDispositions;
+	}
+
+	public void setFinalDispositions(List<String> finalDispositions) {
+		this.finalDispositions = finalDispositions;
 	}
 	
 

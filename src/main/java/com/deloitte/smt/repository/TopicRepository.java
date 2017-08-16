@@ -32,5 +32,8 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
 	Long countByNameIgnoreCase(String topicName);
 	
+	@Query("SELECT DISTINCT(o.sourceName) FROM Topic o WHERE o.sourceName IS NOT NULL")
+	List<String> getSourceNames();
+	
 }
 

@@ -50,6 +50,7 @@ public class SignalSearchService {
 			addAssignees(searchDto, criteriaBuilder, rootTopic, predicates);
 			addDueDate(searchDto, criteriaBuilder, rootTopic, predicates);
 			addSignalConfirmations(searchDto, criteriaBuilder, rootTopic, predicates);
+			addSignalSources(searchDto, criteriaBuilder, rootTopic, predicates);
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			query.select(rootTopic).where(andPredicate)
@@ -111,6 +112,19 @@ public class SignalSearchService {
 			List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
 			predicates.add(criteriaBuilder.isTrue(rootTopic.get("assignTo").in(searchDto.getAssignees())));
+		}
+	}
+	
+	/**
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param rootTopic
+	 * @param predicates
+	 */
+	private void addSignalSources(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic,
+			List<Predicate> predicates) {
+		if (!CollectionUtils.isEmpty(searchDto.getSources())) {
+			predicates.add(criteriaBuilder.isTrue(rootTopic.get("sourceName").in(searchDto.getSources())));
 		}
 	}
 

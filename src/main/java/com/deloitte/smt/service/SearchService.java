@@ -69,7 +69,7 @@ public class SearchService {
         dto.setSignalNames(topicRepository.findDistinctSignalName());
         dto.setSignalConfirmations(topicRepository.findDistinctSignalConfirmationNames());
         dto.addAssignees(topicRepository.getAssignedUsers());
-        
+        dto.setSources(topicRepository.getSourceNames());
         return dto;
     }
 
@@ -92,6 +92,7 @@ public class SearchService {
         SearchDto searchDto= getFilters(topicIds);
         searchDto.addAssignees(assessmentPlanRepository.getAssignedUsers());
         searchDto.setAssessmentTaskStatus(AssessmentTaskStatusType.getAll());
+        searchDto.setFinalDispositions(assessmentPlanRepository.getAssessmentRiskStatus());
         return searchDto;
     }
 

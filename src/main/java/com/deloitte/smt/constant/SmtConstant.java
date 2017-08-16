@@ -16,6 +16,7 @@ public enum SmtConstant {
     INGREDIENT_NAME("ingredientName"),
     IN_PROGRESS("In Progress"),
     ASSESSMENT_TASK_STATUS("assessmentTaskStatus"),
+    ASSESSMENT_RISK_STATUS("assessmentRiskStatus"),
     CREATE("CREATE"),
     UPDATE("UPDATE"),
     DELETE("DELETE");
