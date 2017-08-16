@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -61,7 +62,9 @@ public class Topic implements Serializable{
 	private Long confidenceIndex;
 	private Long cohortPercentage;
 	private String owner;
-	@Transient
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "topic_id")
 	private List<TopicSignalValidationAssignmentAssignees> topicSignalValidationAssignmentAssignees;
 
 	@Transient
@@ -389,7 +392,7 @@ public class Topic implements Serializable{
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-	
+
 	public List<TopicSignalValidationAssignmentAssignees> getTopicSignalValidationAssignmentAssignees() {
 		return topicSignalValidationAssignmentAssignees;
 	}
@@ -398,6 +401,10 @@ public class Topic implements Serializable{
 			List<TopicSignalValidationAssignmentAssignees> topicSignalValidationAssignmentAssignees) {
 		this.topicSignalValidationAssignmentAssignees = topicSignalValidationAssignmentAssignees;
 	}
+
+	
+	
+	
 
 	
 }
