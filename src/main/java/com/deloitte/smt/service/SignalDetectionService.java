@@ -34,6 +34,7 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
+import com.deloitte.smt.entity.Smq;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TopicSignalDetectionAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
@@ -49,6 +50,7 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
+import com.deloitte.smt.repository.SmqRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.util.SignalUtil;
@@ -79,6 +81,9 @@ public class SignalDetectionService {
 
 	@Autowired
 	private SocRepository socRepository;
+	
+	@Autowired
+	SmqRepository smqRepository;
 
 	@Autowired
 	private HlgtRepository hlgtRepository;
@@ -142,6 +147,7 @@ public class SignalDetectionService {
 			}
 
 			saveSoc(signalDetection);
+			saveSmq(signalDetection);
 			saveIncludeAE(signalDetection);
 			saveDenominatorForPoisson(signalDetection);
 			saveQueryBuilder(signalDetection);
@@ -156,8 +162,6 @@ public class SignalDetectionService {
 			return signalDetection;
 		} catch (ApplicationException ex) {
 				throw new ApplicationException("Problem Creating Signal Detection",  ex);
-		}catch(Exception ex){
-			throw new ApplicationException("Problem Creating Signal Detection", ex);
 		}
 	}
 
@@ -178,6 +182,33 @@ public class SignalDetectionService {
 			}
 		}
 	}
+	
+	/**
+	 * @param signalDetection
+	 */
+	private void saveSmq(SignalDetection signalDetection) {
+		List<Smq> smqs = signalDetection.getSmqs();
+		if (!CollectionUtils.isEmpty(smqs)) {
+			for (Smq smq : smqs) {
+				smq.setDetectionId(signalDetection.getId());
+			}
+			smqs = smqRepository.save(smqs);
+			for (Smq smq : smqs) {
+				saveSmqPt(signalDetection, smq);
+			}
+		}
+	}
+
+	private void saveSmqPt(SignalDetection signalDetection, Smq smq) {
+		List<Pt> pts = smq.getPts();
+		if (!CollectionUtils.isEmpty(pts)) {
+			for (Pt pt : pts) {
+				pt.setSmqId(smq.getSmqId());
+				pt.setDetectionId(signalDetection.getId());
+			}
+			ptRepository.save(pts);
+		}
+	}
 
 	/**
 	 * @param signalDetection
@@ -193,6 +224,8 @@ public class SignalDetectionService {
 			ptRepository.save(pts);
 		}
 	}
+	
+	
 
 	/**
 	 * @param signalDetection
@@ -595,22 +628,28 @@ public class SignalDetectionService {
 		licenses = licenseRepository.findByDetectionId(signalDetection.getId());
 
 		if (ingredient != null) {
-			ingredient.setProducts(products);
-			ingredient.setLicenses(licenses);
+			if(products != null){
+				ingredient.setProducts(products);
+			}
+			if(licenses != null){
+				ingredient.setLicenses(licenses);
+			}
 			signalDetection.setIngredient(ingredient);
 		}
 
 		List<Soc> socs;
 		socs = socRepository.findByDetectionId(signalDetection.getId());
-		if (!CollectionUtils.isEmpty(socs)) {
-			for (Soc soc : socs) {
-				soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
-
-				soc.setHlts(hltRepository.findBySocId(soc.getId()));
-				soc.setPts(ptRepository.findBySocId(soc.getId()));
+		setSocValues(socs);
+		signalDetection.setSocs(socs);
+		
+		List<Smq> smqs;
+		smqs = smqRepository.findByDetectionId(signalDetection.getId());
+		if (!CollectionUtils.isEmpty(smqs)) {
+			for (Smq smq : smqs) {
+				smq.setPts(ptRepository.findBySmqId(smq.getId()));
 			}
 		}
-		signalDetection.setSocs(socs);
+		signalDetection.setSmqs(smqs);
 
 		List<DenominatorForPoisson> denominatorForPoissonList = denominatorForPoissonRepository
 				.findByDetectionId(signalDetection.getId());
@@ -618,6 +657,28 @@ public class SignalDetectionService {
 		signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
 		signalDetection.setIncludeAEs(includeAEList);
 		signalDetection.setQueryBuilder(queryBuilderRepository.findByDetectionId(signalDetection.getId()));
+	}
+
+	/**
+	 * @param socs
+	 */
+	private void setSocValues(List<Soc> socs) {
+		if (!CollectionUtils.isEmpty(socs)) {
+			for (Soc soc : socs) {
+				List<Hlgt> hlgtList = hlgtRepository.findBySocId(soc.getId());
+				if(!CollectionUtils.isEmpty(hlgtList)){
+					soc.setHlgts(hlgtList);
+				}
+				List<Hlt> hltList = hltRepository.findBySocId(soc.getId()); 
+				if(!CollectionUtils.isEmpty(hltList)){
+					soc.setHlts(hltList);
+				}
+				List<Pt> pts = ptRepository.findBySocId(soc.getId());
+				if(!CollectionUtils.isEmpty(hltList)){
+					soc.setPts(pts);
+				}
+			}
+		}
 	}
 
 	public List<SignalDetection> ganttDetections(List<SignalDetection> detections) {

@@ -72,6 +72,9 @@ public class SignalDetection implements Serializable {
 	private List<Soc> socs;
 	
 	@Transient
+	private List<Smq> smqs;
+	
+	@Transient
 	private List<DenominatorForPoisson> denominatorForPoisson;
 
 	@Transient
@@ -279,6 +282,14 @@ public class SignalDetection implements Serializable {
 	public void setTopicSignalDetectionAssignmentAssignees(
 			List<TopicSignalDetectionAssignmentAssignees> topicSignalDetectionAssignmentAssignees) {
 		this.topicSignalDetectionAssignmentAssignees = topicSignalDetectionAssignmentAssignees;
+	}
+
+	public List<Smq> getSmqs() {
+		return smqs;
+	}
+
+	public void setSmqs(List<Smq> smqs) {
+		this.smqs = smqs;
 	}
 	
 }

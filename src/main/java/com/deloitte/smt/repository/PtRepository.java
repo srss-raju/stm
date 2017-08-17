@@ -26,4 +26,6 @@ public interface PtRepository  extends JpaRepository<Pt, Long> {
 	List<Pt> findBySocId(Long socId);
     @Transactional
     Long deleteByDetectionId(Long detectionId);
+    
+    List<Pt> findBySmqId(Long smqId);
 }

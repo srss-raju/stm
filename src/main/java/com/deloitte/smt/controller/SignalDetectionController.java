@@ -16,10 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deloitte.smt.dto.PtDTO;
 import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.dto.SmqDTO;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SignalDetectionService;
+import com.deloitte.smt.service.SmqService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -30,6 +33,9 @@ public class SignalDetectionController {
 	
 	@Autowired
 	SignalDetectionService signalDetectionService;
+	
+	@Autowired
+	SmqService smqService;
 
 	@PostMapping(value = "/createSignalDetection")
 	public SignalDetection  createSignalDetection(@RequestParam(value = "data") String topicString) throws Exception {
@@ -81,6 +87,16 @@ public class SignalDetectionController {
     public ResponseEntity<Void> deleteByAssigneeId(@PathVariable Long assigneeId) throws ApplicationException {
 		signalDetectionService.deleteByAssigneeId(assigneeId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+	
+	@GetMapping(value = "/allsmqs")
+    public List<SmqDTO> findAllSmqs() {
+        return smqService.findAllSmqs();
+    }
+	
+	@PostMapping(value = "/allptsbysmqids")
+    public List<PtDTO> findPtsBySmqId(@RequestBody(required=false) SearchDto searchDto) {
+        return smqService.findPtsBySmqId(searchDto.getSmqIds());
     }
 	
 }

@@ -85,6 +85,10 @@
 			<artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
 			<version>${camunda.springboot.version}</version>
 		</dependency>
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            </dependency>
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 			<groupId>commons-io</groupId>

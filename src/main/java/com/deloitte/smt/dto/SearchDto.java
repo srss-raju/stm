@@ -33,6 +33,7 @@ public class SearchDto {
 	private List<String> frequency;
 	private List<String> sources;
 	private List<String> finalDispositions;
+	private List<Integer> smqIds;
 	
 	private String dateKey;
 
@@ -259,6 +260,14 @@ public class SearchDto {
 
 	public void setFinalDispositions(List<String> finalDispositions) {
 		this.finalDispositions = finalDispositions;
+	}
+
+	public List<Integer> getSmqIds() {
+		return smqIds;
+	}
+
+	public void setSmqIds(List<Integer> smqIds) {
+		this.smqIds = smqIds;
 	}
 	
 
