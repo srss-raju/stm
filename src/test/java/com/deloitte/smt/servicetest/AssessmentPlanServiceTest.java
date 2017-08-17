@@ -160,7 +160,6 @@ public class AssessmentPlanServiceTest {
 		}
 	}
 	
-	@Test
 	public void testFinalAssessment() throws Exception{
 		AssessmentPlan assessmentPlan = new AssessmentPlan();
 		assessmentPlan.setId(1l);
