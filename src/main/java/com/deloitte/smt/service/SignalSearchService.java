@@ -277,21 +277,37 @@ public class SignalSearchService {
 			predicates.add(producNameEquals);
 		}
 	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param query
+	 * @param rootTopic
+	 * @param predicates
+	 */
 	private void addUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery<Topic> query,
 			   Root<Topic> rootTopic, List<Predicate> predicates) {
 			  
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			   Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.LEFT); //left outer join
-			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userKeys").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
 			      
 			  }
 			 }
+	/**
+	 * 
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param query
+	 * @param rootTopic
+	 * @param predicates
+	 */
 	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery<Topic> query,
 			   Root<Topic> rootTopic, List<Predicate> predicates) {
 			  
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			   Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.LEFT); //left outer join
-			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userGroupKeys").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userGroupKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
 			      
 			  }
 			 }

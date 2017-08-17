@@ -21,12 +21,22 @@ public class TopicSignalValidationAssignmentAssignees {
 	private String createdBy;
 	private Date lastModifiedDate;
 	private String assignTo;
-	private Long userGroupKeys;
-	private Long userKeys;
+	private Long userGroupKey;
+	private Long userKey;
+	
+	private Long topicId;
 
-	@ManyToOne
-	@JoinColumn(name = "TOPIC_ID", referencedColumnName = "id")
 	private Topic topic;
+	
+	@ManyToOne
+	@JoinColumn(name = "topicId")
+	public Topic getTopic() {
+		return topic;
+	}
+
+	public void setTopic(Topic topic) {
+		this.topic = topic;
+	}
 
 	public Date getCreatedDate() {
 		return createdDate;
@@ -59,29 +69,35 @@ public class TopicSignalValidationAssignmentAssignees {
 	public void setAssignTo(String assignTo) {
 		this.assignTo = assignTo;
 	}
-
-	public Long getUserGroupKeys() {
-		return userGroupKeys;
-	}
-
-	public void setUserGroupKeys(Long userGroupKeys) {
-		this.userGroupKeys = userGroupKeys;
-	}
-
-	public Long getUserKeys() {
-		return userKeys;
-	}
-
-	public void setUserKeys(Long userKeys) {
-		this.userKeys = userKeys;
-	}
-
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public Long getTopicId() {
+		return topicId;
+	}
+
+	public void setTopicId(Long topicId) {
+		this.topicId = topicId;
+	}
+
+	public Long getUserGroupKey() {
+		return userGroupKey;
+	}
+
+	public void setUserGroupKey(Long userGroupKey) {
+		this.userGroupKey = userGroupKey;
+	}
+
+	public Long getUserKey() {
+		return userKey;
+	}
+
+	public void setUserKey(Long userKey) {
+		this.userKey = userKey;
 	}
 
 }

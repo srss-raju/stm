@@ -64,7 +64,7 @@ public class Topic implements Serializable{
 	private String owner;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "topic_id")
+    @JoinColumn(name = "topicId")
 	private List<TopicSignalValidationAssignmentAssignees> topicSignalValidationAssignmentAssignees;
 
 	@Transient
