@@ -665,18 +665,9 @@ public class SignalDetectionService {
 	private void setSocValues(List<Soc> socs) {
 		if (!CollectionUtils.isEmpty(socs)) {
 			for (Soc soc : socs) {
-				List<Hlgt> hlgtList = hlgtRepository.findBySocId(soc.getId());
-				if(!CollectionUtils.isEmpty(hlgtList)){
-					soc.setHlgts(hlgtList);
-				}
-				List<Hlt> hltList = hltRepository.findBySocId(soc.getId()); 
-				if(!CollectionUtils.isEmpty(hltList)){
-					soc.setHlts(hltList);
-				}
-				List<Pt> pts = ptRepository.findBySocId(soc.getId());
-				if(!CollectionUtils.isEmpty(hltList)){
-					soc.setPts(pts);
-				}
+				soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
+				soc.setHlts(hltRepository.findBySocId(soc.getId()));
+				soc.setPts(ptRepository.findBySocId(soc.getId()));
 			}
 		}
 	}
