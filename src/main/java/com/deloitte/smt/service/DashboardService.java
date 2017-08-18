@@ -363,7 +363,7 @@ public class DashboardService {
 	}
 
 	public Map<String, Object> getSignalStrength(List<Long> topicList) throws ApplicationException {
-		Map<String, Object> dataMap = new HashMap();
+		Map<String, Object> dataMap = new HashMap<>();
 		AlgorithmType[] algorithmTypes = AlgorithmType.values();
 		dataMap.put("algorithms", algorithmTypes);
 
@@ -371,7 +371,7 @@ public class DashboardService {
 		calendarYearOld.add(Calendar.YEAR, -1);
 
 		Calendar calendarNow = Calendar.getInstance();
-		Map<Long, List<SignalStrengthOverTimeDTO>> map = new HashMap();
+		Map<Long, List<SignalStrengthOverTimeDTO>> map = new HashMap<>();
 
 		for (Long topicId : topicList) {
 				Topic topic = signalService.findById(topicId);
@@ -390,7 +390,7 @@ public class DashboardService {
 				List<SignalStatistics> signalStatistics = signalStatisticsRepository
 						.findStatisticsByTopicsIds(matchingSignalsMap.keySet());
 
-				List<SignalStrengthOverTimeDTO> dtoList = new ArrayList();
+				List<SignalStrengthOverTimeDTO> dtoList = new ArrayList<>();
 
 				// Prepare map by Key Month
 				for (SignalStatistics signalStatistics2 : signalStatistics) {

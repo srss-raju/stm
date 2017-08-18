@@ -1,6 +1,5 @@
 package com.deloitte.smt.servicetest;
 
-import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
@@ -42,7 +41,6 @@ import com.deloitte.smt.dto.ValidationOutComesDTO;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
-import com.deloitte.smt.entity.SignalConfiguration;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
@@ -276,18 +274,17 @@ public class DashboardServiceTest {
 		given(this.signalService.findById(1L)).willReturn(topic);
 		given(this.ingredientRepository.findByTopicId(topic.getId())).willReturn(topic.getIngredient());
 		
-		List<Topic> list=new ArrayList();
+		List<Topic> list=new ArrayList<>();
 		given(this.signalMatchService.getMatchingSignals(topic)).willReturn(list);
-		Set set=new HashSet();
+		Set<Long> set=new HashSet<>();
 		
 		List<SignalStatistics> statList = stats.stream().collect(Collectors.toList());
 		
 		given(this.signalStatisticsRepository.findStatisticsByTopicsIds(set)).willReturn(statList);
 		
-		List<Long> list1=new ArrayList();
+		List<Long> list1=new ArrayList<>();
 		list1.add(1L);
-		Map<String, Object> map=dashboardService.getSignalStrength(list1);
-		//assertNotNull(map);
+		dashboardService.getSignalStrength(list1);
 	}
 	
 	private Ingredient setIngredient(Topic topic) {
