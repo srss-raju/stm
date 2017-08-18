@@ -45,6 +45,9 @@ public class SignalDetection implements Serializable {
 	private String caselistId;
 	private Long casesCount;
 	private Long minCases;
+	private boolean isHlgt;
+	private boolean isHlt;
+	private boolean isPt;
 	
 	@Transient
 	private List<QueryBuilder> queryBuilder;
@@ -290,6 +293,30 @@ public class SignalDetection implements Serializable {
 
 	public void setSmqs(List<Smq> smqs) {
 		this.smqs = smqs;
+	}
+
+	public boolean isHlgt() {
+		return isHlgt;
+	}
+
+	public void setHlgt(boolean isHlgt) {
+		this.isHlgt = isHlgt;
+	}
+
+	public boolean isHlt() {
+		return isHlt;
+	}
+
+	public void setHlt(boolean isHlt) {
+		this.isHlt = isHlt;
+	}
+
+	public boolean isPt() {
+		return isPt;
+	}
+
+	public void setPt(boolean isPt) {
+		this.isPt = isPt;
 	}
 	
 }
