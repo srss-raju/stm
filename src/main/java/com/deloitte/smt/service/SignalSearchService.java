@@ -54,8 +54,8 @@ public class SignalSearchService {
 			addDueDate(searchDto, criteriaBuilder, rootTopic, predicates);
 			addSignalConfirmations(searchDto, criteriaBuilder, rootTopic, predicates);
 			/**TopicSignalValidationAssignmentAssignees **/
-			addUserKeys(searchDto, criteriaBuilder,query,rootTopic,predicates);
-			addUserGroupKeys(searchDto, criteriaBuilder,query,rootTopic,predicates);
+			addUserKeys(searchDto, criteriaBuilder,rootTopic,predicates);
+			addUserGroupKeys(searchDto, criteriaBuilder, rootTopic,predicates);
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			query.select(rootTopic).where(andPredicate)
@@ -285,8 +285,7 @@ public class SignalSearchService {
 	 * @param rootTopic
 	 * @param predicates
 	 */
-	private void addUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery<Topic> query,
-			   Root<Topic> rootTopic, List<Predicate> predicates) {
+	private void addUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic, List<Predicate> predicates) {
 			  
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			   Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.LEFT); //left outer join
@@ -302,8 +301,7 @@ public class SignalSearchService {
 	 * @param rootTopic
 	 * @param predicates
 	 */
-	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery<Topic> query,
-			   Root<Topic> rootTopic, List<Predicate> predicates) {
+	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic, List<Predicate> predicates) {
 			  
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			   Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.LEFT); //left outer join
