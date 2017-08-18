@@ -23,6 +23,9 @@ public class Soc implements Serializable {
 	private Long topicId;
 	private Long detectionId;
 	private String hanaSocId;
+	private boolean hlgtSelected;
+	private boolean hltSelected;
+	private boolean ptSelected;
 	
 	@Transient
     private List<Hlgt> hlgts;
@@ -83,6 +86,24 @@ public class Soc implements Serializable {
 	}
 	public void setHanaSocId(String hanaSocId) {
 		this.hanaSocId = hanaSocId;
+	}
+	public boolean isHlgtSelected() {
+		return hlgtSelected;
+	}
+	public void setHlgtSelected(boolean hlgtSelected) {
+		this.hlgtSelected = hlgtSelected;
+	}
+	public boolean isHltSelected() {
+		return hltSelected;
+	}
+	public void setHltSelected(boolean hltSelected) {
+		this.hltSelected = hltSelected;
+	}
+	public boolean isPtSelected() {
+		return ptSelected;
+	}
+	public void setPtSelected(boolean ptSelected) {
+		this.ptSelected = ptSelected;
 	}
 
 }
