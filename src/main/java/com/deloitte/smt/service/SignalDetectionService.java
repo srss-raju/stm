@@ -10,6 +10,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
@@ -363,6 +365,7 @@ public class SignalDetectionService {
 		CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
 
 		Root<SignalDetection> rootSignalDetection = criteriaQuery.from(SignalDetection.class);
+		Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees = rootSignalDetection.join("topicSignalDetectionAssignmentAssignees", JoinType.LEFT); //left outer join
 
 		if (null != searchDto) {
 			Root<Ingredient> rootIngredient = criteriaQuery.from(Ingredient.class);
@@ -380,6 +383,9 @@ public class SignalDetectionService {
 			addHlgts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addPts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addCreatedOrLastRunDate(searchDto, criteriaBuilder, rootSignalDetection, predicates);
+			/**TopicSignalValidationAssignmentAssignees **/
+			addUserKeys(searchDto, criteriaBuilder,joinDetectionAssignees,rootSignalDetection,predicates);
+			addUserGroupKeys(searchDto, criteriaBuilder, joinDetectionAssignees,rootSignalDetection,predicates);
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			criteriaQuery.multiselect(rootSignalDetection).where(andPredicate)
@@ -691,4 +697,35 @@ public class SignalDetectionService {
 		}
 		signalDetection.setNextRunDates(nextRunDates);
 	}
+	
+	/**
+	 * 
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param query
+	 * @param rootTopic
+	 * @param predicates
+	 */
+	private void addUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees , Root<SignalDetection> rootSignalDetection,List<Predicate> predicates) {
+			  
+			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootSignalDetection.get("owner").in(searchDto.getOwner()))));
+			      
+			  }
+			 }
+	/**
+	 * 
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param query
+	 * @param rootTopic
+	 * @param predicates
+	 */
+	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees ,Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
+			  
+			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userGroupKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootSignalDetection.get("owner").in(searchDto.getOwner()))));
+			      
+			  }
+			 }
 }
