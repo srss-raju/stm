@@ -51,7 +51,7 @@ public class DashboardCountService {
 			queryBuilder.append(")");
 		}
 		
-		queryBuilder.append(") AND S.SIGNAL_STATUS <> 'COMPLETED'");
+		queryBuilder.append(") AND S.SIGNAL_STATUS <> 'Completed'");
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		query.setParameter(1, owner);
 		Object topicCount = query.getSingleResult();
@@ -92,7 +92,7 @@ public class DashboardCountService {
 			queryBuilder.append(")");
 		}
 		
-		queryBuilder.append(") AND S.ASSESSMENT_PLAN_STATUS <> 'COMPLETED'");
+		queryBuilder.append(") AND S.ASSESSMENT_PLAN_STATUS <> 'Completed'");
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		query.setParameter(1, owner);
 		Object topicCount = query.getSingleResult();
@@ -133,7 +133,7 @@ public class DashboardCountService {
 			queryBuilder.append(")");
 		}
 		
-		queryBuilder.append(") AND S.STATUS <> 'COMPLETED'");
+		queryBuilder.append(") AND S.STATUS <> 'Completed'");
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		query.setParameter(1, owner);
 		Object topicCount = query.getSingleResult();
