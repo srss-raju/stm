@@ -38,7 +38,7 @@ public class MasterDataController {
     }
 
     @GetMapping(value = "/filters/signalDetection")
-    public SearchDto getFiltersForSignalDetection() {
+    public SearchDto getFiltersForSignalDetection() { 
         return searchService.getFiltersForSignalDetection();
     }
 
