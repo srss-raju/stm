@@ -3,6 +3,7 @@ package com.deloitte.smt.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.deloitte.smt.entity.TopicSignalDetectionAssignmentAssignees;
@@ -14,6 +15,12 @@ import com.deloitte.smt.entity.TopicSignalDetectionAssignmentAssignees;
 public interface TopicSignalDetectionAssignmentAssigneesRepository extends JpaRepository<TopicSignalDetectionAssignmentAssignees, Long> {
 	
 	List<TopicSignalDetectionAssignmentAssignees> findByDetectionId(Long detectionId);
+	
+	@Query("SELECT DISTINCT(o.userKey) FROM TopicSignalDetectionAssignmentAssignees o WHERE o.userKey IS NOT NULL")
+	List<Long> getAssignedUsers();
+	
+	@Query("SELECT DISTINCT(o.userGroupKey) FROM TopicSignalDetectionAssignmentAssignees o WHERE o.userGroupKey IS NOT NULL")
+	List<Long> getAssignedGroups();
 
 }
 

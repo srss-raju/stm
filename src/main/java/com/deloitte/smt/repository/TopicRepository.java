@@ -24,9 +24,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     List<String> findDistinctSignalConfirmationNames();
 	List<Topic> findTopicByRunInstanceIdOrderByCreatedDateAsc(Long runInstanceId);
 	
-	@Query("SELECT DISTINCT(o.assignTo) FROM Topic o WHERE o.assignTo IS NOT NULL")
-	List<String> getAssignedUsers();
-	
 	@Query(value="select NEW com.deloitte.smt.dto.TopicDTO(t.id,i.ingredientName,t.name,t.signalStatus) from Topic  t , Ingredient  i where t.id=i.topicId order by i.ingredientName", nativeQuery=false)
 	List<TopicDTO> findByIngredientName();
 

@@ -27,7 +27,11 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.repository.TopicAssessmentAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.TopicSignalValidationAssignmentAssigneesRepository;
 
 /**
  * Created by myelleswarapu on 27-04-2017.
@@ -55,6 +59,14 @@ public class SearchService {
     RiskPlanRepository riskPlanRepository;
     @Autowired
     TopicRepository topicRepository;
+    @Autowired
+    TopicSignalValidationAssignmentAssigneesRepository topicSignalValidationAssignmentAssigneesRepository;
+    @Autowired
+    TopicAssessmentAssignmentAssigneesRepository topicAssessmentAssignmentAssigneesRepository;
+    @Autowired
+    TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+    @Autowired
+    TopicSignalDetectionAssignmentAssigneesRepository topicSignalDetectionAssignmentAssigneesRepository;
 
     public SearchDto getFiltersForSignal(){
         SearchDto dto = new SearchDto();
@@ -68,7 +80,8 @@ public class SearchService {
         dto.setPts(ptRepository.findDistinctPtNameForSignal());
         dto.setSignalNames(topicRepository.findDistinctSignalName());
         dto.setSignalConfirmations(topicRepository.findDistinctSignalConfirmationNames());
-        dto.addAssignees(topicRepository.getAssignedUsers());
+        dto.setUserKeys(topicSignalValidationAssignmentAssigneesRepository.getAssignedUsers());
+        dto.setUserGroupKeys(topicSignalValidationAssignmentAssigneesRepository.getAssignedGroups());
         dto.setSources(topicRepository.getSourceNames());
         return dto;
     }
@@ -83,6 +96,8 @@ public class SearchService {
         dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignalDetection());
         dto.setHlts(hltRepository.findDistinctHltNameForSignalDetection());
         dto.setPts(ptRepository.findDistinctPtNameForSignalDetection());
+        dto.setUserKeys(topicSignalDetectionAssignmentAssigneesRepository.getAssignedUsers());
+        dto.setUserGroupKeys(topicSignalDetectionAssignmentAssigneesRepository.getAssignedGroups());
         dto.setFrequency(RunFrequency.getAll());
         return dto;
     }
@@ -90,7 +105,8 @@ public class SearchService {
     public SearchDto getAllFiltersForAssessmentPlan() {
         Set<Long> topicIds = assessmentPlanRepository.findAllSignalIds();
         SearchDto searchDto= getFilters(topicIds);
-        searchDto.addAssignees(assessmentPlanRepository.getAssignedUsers());
+        searchDto.setUserKeys(topicAssessmentAssignmentAssigneesRepository.getAssignedUsers());
+        searchDto.setUserGroupKeys(topicAssessmentAssignmentAssigneesRepository.getAssignedGroups());
         searchDto.setAssessmentTaskStatus(AssessmentTaskStatusType.getAll());
         searchDto.setFinalDispositions(assessmentPlanRepository.getAssessmentRiskStatus());
         return searchDto;
@@ -99,7 +115,8 @@ public class SearchService {
     public SearchDto getAllFiltersForRiskPlan() {
         Set<Long> topicIds = riskPlanRepository.findAllSignalIds();
         SearchDto searchDto= getFilters(topicIds);
-        searchDto.addAssignees(riskPlanRepository.getAssignedUsers());
+        searchDto.setUserKeys(topicRiskPlanAssignmentAssigneesRepository.getAssignedUsers());
+        searchDto.setUserGroupKeys(topicRiskPlanAssignmentAssigneesRepository.getAssignedGroups());
         searchDto.setRiskTaskStatus(RiskTaskStatusType.getAll());
         return searchDto;
     }
