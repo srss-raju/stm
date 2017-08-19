@@ -195,9 +195,10 @@ public class AssessmentPlanService {
 		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneeList=new ArrayList<TopicRiskPlanAssignmentAssignees>();
 		if (!CollectionUtils.isEmpty(assessmentPlanList)) {
 			for(AssessmentPlan assessmentPlan :assessmentPlanList){
-				
+				if(null!=assessmentPlan.getRiskPlan()){
 				topicRiskPlanAssignmentAssigneeList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(assessmentPlan.getRiskPlan().getId());
 				assessmentPlan.getRiskPlan().setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneeList);
+				}
 			}
 		}
 	}

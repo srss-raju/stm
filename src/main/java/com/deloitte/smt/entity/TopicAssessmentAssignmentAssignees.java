@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Created by Rajesh on 31-07-2017.
  */
@@ -31,6 +33,7 @@ public class TopicAssessmentAssignmentAssignees {
 	    
 	    private Long assessmentId;
 	    @Transient
+	    @JsonIgnore
 	    private AssessmentPlan assessmentPlan;
 	    
 	    @ManyToOne
