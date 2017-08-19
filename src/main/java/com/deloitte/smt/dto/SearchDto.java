@@ -23,10 +23,11 @@ public class SearchDto {
 	private List<String> hlgts = new ArrayList<>();
 	private List<String> hlts;
 	private List<String> pts;
+	private List<?> assignees;
 	private String description;
 	private List<String> signalConfirmations;
 	private List<String> signalNames;
-	private List<String> assignees = new ArrayList<>();
+	
 	private List<Long> userKeys = new ArrayList<>();
 	private List<Long> userGroupKeys = new ArrayList<>();
 	private String owner;
@@ -62,10 +63,6 @@ public class SearchDto {
 
 	public void setGantt(boolean gantt) {
 		this.gantt = gantt;
-	}
-
-	public void addAssignees(List<String> assignees) {
-		this.assignees.addAll(assignees);
 	}
 
 	public List<String> getStatuses() {
@@ -164,14 +161,6 @@ public class SearchDto {
         this.signalNames = signalNames;
     }
 
-	public List<String> getAssignees() {
-		return assignees;
-	}
-
-	public void setAssignees(List<String> assignees) {
-		this.assignees = assignees;
-	}
-
 	public boolean isDueDate() {
 		return isDueDate;
 	}
@@ -268,6 +257,14 @@ public class SearchDto {
 
 	public void setSmqIds(List<Integer> smqIds) {
 		this.smqIds = smqIds;
+	}
+
+	public List<?> getAssignees() {
+		return assignees;
+	}
+
+	public void setAssignees(List<?> assignees) {
+		this.assignees = assignees;
 	}
 	
 

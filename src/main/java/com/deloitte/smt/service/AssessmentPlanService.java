@@ -142,7 +142,6 @@ public class AssessmentPlanService {
 			addRiskTaskStatus(searchDto, criteriaBuilder, assementRiskJoin, predicates);
 			addAssessmentPlanStatus(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			addAssessmentTaskStatus(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
-			addAssignTo(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			addSocs(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
 			addProducts(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
 			addLicenses(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
@@ -365,21 +364,6 @@ public class AssessmentPlanService {
 		}
 	}
 
-	/**
-	 * @param searchDto
-	 * @param criteriaBuilder
-	 * @param topicAssignmentJoin
-	 * @param predicates
-	 */
-	private void addAssignTo(SearchDto searchDto,
-			CriteriaBuilder criteriaBuilder,
-			Join<Topic, AssessmentPlan> topicAssignmentJoin,
-			List<Predicate> predicates) {
-		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-			predicates.add(criteriaBuilder.isTrue(topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()).in(searchDto.getAssignees())));
-		}
-	}
-	
 	/**
 	 * @param searchDto
 	 * @param criteriaBuilder

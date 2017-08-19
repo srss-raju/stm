@@ -80,6 +80,7 @@ public class SearchService {
         dto.setPts(ptRepository.findDistinctPtNameForSignal());
         dto.setSignalNames(topicRepository.findDistinctSignalName());
         dto.setSignalConfirmations(topicRepository.findDistinctSignalConfirmationNames());
+        dto.setAssignees(topicSignalValidationAssignmentAssigneesRepository.findAll());
         dto.setUserKeys(topicSignalValidationAssignmentAssigneesRepository.getAssignedUsers());
         dto.setUserGroupKeys(topicSignalValidationAssignmentAssigneesRepository.getAssignedGroups());
         dto.setSources(topicRepository.getSourceNames());
@@ -96,6 +97,7 @@ public class SearchService {
         dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignalDetection());
         dto.setHlts(hltRepository.findDistinctHltNameForSignalDetection());
         dto.setPts(ptRepository.findDistinctPtNameForSignalDetection());
+        dto.setAssignees(topicSignalDetectionAssignmentAssigneesRepository.findAll());
         dto.setUserKeys(topicSignalDetectionAssignmentAssigneesRepository.getAssignedUsers());
         dto.setUserGroupKeys(topicSignalDetectionAssignmentAssigneesRepository.getAssignedGroups());
         dto.setFrequency(RunFrequency.getAll());
@@ -105,6 +107,7 @@ public class SearchService {
     public SearchDto getAllFiltersForAssessmentPlan() {
         Set<Long> topicIds = assessmentPlanRepository.findAllSignalIds();
         SearchDto searchDto= getFilters(topicIds);
+        searchDto.setAssignees(topicAssessmentAssignmentAssigneesRepository.findAll());
         searchDto.setUserKeys(topicAssessmentAssignmentAssigneesRepository.getAssignedUsers());
         searchDto.setUserGroupKeys(topicAssessmentAssignmentAssigneesRepository.getAssignedGroups());
         searchDto.setAssessmentTaskStatus(AssessmentTaskStatusType.getAll());
@@ -115,6 +118,7 @@ public class SearchService {
     public SearchDto getAllFiltersForRiskPlan() {
         Set<Long> topicIds = riskPlanRepository.findAllSignalIds();
         SearchDto searchDto= getFilters(topicIds);
+        searchDto.setAssignees(topicRiskPlanAssignmentAssigneesRepository.findAll());
         searchDto.setUserKeys(topicRiskPlanAssignmentAssigneesRepository.getAssignedUsers());
         searchDto.setUserGroupKeys(topicRiskPlanAssignmentAssigneesRepository.getAssignedGroups());
         searchDto.setRiskTaskStatus(RiskTaskStatusType.getAll());

@@ -391,7 +391,6 @@ public class RiskPlanService {
 	private void buildWhereConditions(SearchDto searchDto, List<String> whereClauses) {
 		if (searchDto != null) {
 			addStatus(searchDto, whereClauses);
-			addAssignees(searchDto, whereClauses);
 			addRiskTaskStatus(searchDto, whereClauses);
 			addStartDate(searchDto, whereClauses);
 			addEndDate(searchDto, whereClauses);
@@ -447,16 +446,6 @@ public class RiskPlanService {
 	 * @param searchDto
 	 * @param whereClauses
 	 */
-	private void addAssignees(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-			whereClauses.add(" r.assign_to in :assignTo");
-		}
-	}
-
-	/**
-	 * @param searchDto
-	 * @param whereClauses
-	 */
 	private void addStatus(SearchDto searchDto, List<String> whereClauses) {
 		if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
 			whereClauses.add(" r.status in :statuses");
@@ -467,7 +456,7 @@ public class RiskPlanService {
 	 * @param whereClauses
 	 */
 	private void addUserKey(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+		if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			whereClauses.add(" ra.user_key in :userKeys");
 		}
 	}
@@ -477,7 +466,7 @@ public class RiskPlanService {
 	 * @param whereClauses
 	 */
 	private void addUserGroupKey(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+		if (!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())) {
 			whereClauses.add(" ra.user_group_key in :userGroupKeys");
 		}
 	}
@@ -487,7 +476,7 @@ public class RiskPlanService {
 	 * @param whereClauses
 	 */
 	private void addOwner(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+		if (searchDto.getOwner() != null) {
 			whereClauses.add(" r.owner in :owner");
 		}
 	}
@@ -557,10 +546,6 @@ public class RiskPlanService {
 
 		if (queryStr.contains(":riskTaskStatus")) {
 			query.setParameter("riskTaskStatus", searchDto.getRiskTaskStatus());
-		}
-
-		if (queryStr.contains(":assignTo")) {
-			query.setParameter("assignTo", searchDto.getAssignees());
 		}
 
 		if (queryStr.contains(":startDate")) {

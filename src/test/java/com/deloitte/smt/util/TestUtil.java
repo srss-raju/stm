@@ -79,7 +79,6 @@ public class TestUtil {
 		assessmentTaskStatus.add("Completed");
 		riskTaskStatus.add("Not Completed");
 		
-		searchDto.setAssignees(assignees);
 		searchDto.setIngredients(ingredients);
 		searchDto.setProducts(products);
 		searchDto.setLicenses(licenses);

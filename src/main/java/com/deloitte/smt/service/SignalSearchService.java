@@ -50,7 +50,6 @@ public class SignalSearchService {
 			addCreatedDate(searchDto, criteriaBuilder, rootTopic, predicates);
 			addStatuses(searchDto, criteriaBuilder, rootTopic, predicates);
 			addSignalNames(searchDto, criteriaBuilder, rootTopic, predicates);
-			addAssignees(searchDto, criteriaBuilder, rootTopic, predicates);
 			addDueDate(searchDto, criteriaBuilder, rootTopic, predicates);
 			addSignalConfirmations(searchDto, criteriaBuilder, rootTopic, predicates);
 			/**TopicSignalValidationAssignmentAssignees **/
@@ -107,19 +106,6 @@ public class SignalSearchService {
 		}
 	}
 
-	/**
-	 * @param searchDto
-	 * @param criteriaBuilder
-	 * @param rootTopic
-	 * @param predicates
-	 */
-	private void addAssignees(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic,
-			List<Predicate> predicates) {
-		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get("assignTo").in(searchDto.getAssignees())));
-		}
-	}
-	
 
 	/**
 	 * @param searchDto

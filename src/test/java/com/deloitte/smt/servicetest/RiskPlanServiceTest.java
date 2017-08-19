@@ -481,8 +481,6 @@ public class RiskPlanServiceTest {
 		products.add("Test Products");
 		List<String> statuses = new ArrayList<>();
 		statuses.add("Test Statuses");
-		List<String> assignees = new ArrayList<>();
-		assignees.add("Test Assignees");
 		List<String> riskTaskStatus = new ArrayList<>();
 		riskTaskStatus.add("Test RiskTaskStatus");
 		List<String> hlgts = new ArrayList<>();
@@ -500,7 +498,6 @@ public class RiskPlanServiceTest {
 		searchDto.setLicenses(licenses);
 		searchDto.setProducts(products);
 		searchDto.setStatuses(statuses);
-		searchDto.setAssignees(assignees);
 		searchDto.setRiskTaskStatus(riskTaskStatus);
 		searchDto.setStartDate(startDate);
 		searchDto.setEndDate(endDate);
