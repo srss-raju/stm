@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -12,8 +13,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "sm_topic_signal_validation_assignees")
-public class TopicSignalValidationAssignmentAssignees {
+public class TopicSignalValidationAssignmentAssignees implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;

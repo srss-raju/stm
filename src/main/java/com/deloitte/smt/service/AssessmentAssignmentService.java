@@ -60,6 +60,7 @@ public class AssessmentAssignmentService {
 		assignee.setUserKey(aaAssignees.getUserKey());
 		assignee.setCreatedDate(assessmentPlan.getCreatedDate());
 		assignee.setCreatedBy(assessmentPlan.getCreatedBy());
+		assignee.setAssessmentPlan(assessmentPlan);
 		list.add(assignee);
 	}
 	

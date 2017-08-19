@@ -6,7 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Created by Rajesh on 31-07-2017.
@@ -27,6 +30,17 @@ public class TopicAssessmentAssignmentAssignees {
 	    private Long userKey;
 	    
 	    private Long assessmentId;
+	    @Transient
+	    private AssessmentPlan assessmentPlan;
+	    
+	    @ManyToOne
+		@JoinColumn(name = "assessmentId")
+	    public AssessmentPlan getAssessmentPlan() {
+			return assessmentPlan;
+		}
+		public void setAssessmentPlan(AssessmentPlan assessmentPlan) {
+			this.assessmentPlan = assessmentPlan;
+		}
 	    
 		public Long getId() {
 			return id;

@@ -73,6 +73,7 @@ public class SignalAssignmentService {
 		assignee.setUserKey(svaAssignees.getUserKey());
 		assignee.setCreatedDate(topic.getCreatedDate());
 		assignee.setCreatedBy(topic.getCreatedBy());
+		assignee.setTopic(topic);
 		list.add(assignee);
 	}
 

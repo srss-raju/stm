@@ -34,6 +34,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TaskInst;
+import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -48,6 +49,7 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
@@ -117,6 +119,9 @@ public class RiskPlanService {
 	
 	@Autowired
 	SignalAuditService signalAuditService;
+	@Autowired
+	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+	
 
 	public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId)
 			throws ApplicationException {
@@ -192,6 +197,16 @@ public class RiskPlanService {
 		}
 		return tasks;
 	}
+	
+	private List<TopicRiskPlanAssignmentAssignees> associateRiskPlanAssignmentAssignees(List<RiskPlan> riskPlanList){
+		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneesList=new ArrayList<TopicRiskPlanAssignmentAssignees>();
+		for(RiskPlan riskPlan :riskPlanList){
+			topicRiskPlanAssignmentAssigneesList =	topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskPlan.getId());
+			riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesList);
+		}
+		return topicRiskPlanAssignmentAssigneesList;
+	}
+
 
 	private List<RiskTask> createRiskTask(List<RiskTask> riskTaskList, List<RiskTask> templateRiskTasks, RiskPlan riskPlan) {
 		if(!CollectionUtils.isEmpty(templateRiskTasks)){
@@ -307,7 +322,8 @@ public class RiskPlanService {
 		String queryStr = queryBuilder.toString();
 		Query query = entityManager.createNativeQuery(queryStr, RiskPlan.class);
 		setParameters(queryStr, searchDto, query);
-
+		/**For adding TopicRiskPlanAssignmentAssignees to RiskPlan */
+		associateRiskPlanAssignmentAssignees(query.getResultList());
 		return query.getResultList();
 	}
 
@@ -319,7 +335,7 @@ public class RiskPlanService {
 	private void buildQuery(SearchDto searchDto, StringBuilder queryBuilder,
 			List<String> whereClauses) {
 		queryBuilder.append(
-				"SELECT r.* FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id");
+				"SELECT r.* FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id left outer join sm_topic_riskplan_assignment_assignees ra on r.id=ra.risk_id");
 
 		if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
 			queryBuilder.append(" inner join sm_product p on p.topic_id=t.id ");
@@ -379,6 +395,9 @@ public class RiskPlanService {
 			addRiskTaskStatus(searchDto, whereClauses);
 			addStartDate(searchDto, whereClauses);
 			addEndDate(searchDto, whereClauses);
+			addUserKey(searchDto, whereClauses);
+			addUserGroupKey(searchDto, whereClauses);
+			addOwner(searchDto, whereClauses);
 		}
 	}
 
@@ -443,6 +462,35 @@ public class RiskPlanService {
 			whereClauses.add(" r.status in :statuses");
 		}
 	}
+	/**
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addUserKey(SearchDto searchDto, List<String> whereClauses) {
+		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+			whereClauses.add(" ra.user_key in :userKeys");
+		}
+	}
+	
+	/**
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addUserGroupKey(SearchDto searchDto, List<String> whereClauses) {
+		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+			whereClauses.add(" ra.user_group_key in :userGroupKeys");
+		}
+	}
+	
+	/**
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addOwner(SearchDto searchDto, List<String> whereClauses) {
+		if (!CollectionUtils.isEmpty(searchDto.getAssignees())) {
+			whereClauses.add(" r.owner in :owner");
+		}
+	}
 
 	private void setParameters(String queryStr, SearchDto searchDto, Query query) {
 		setInitialParameters(queryStr, searchDto, query);
@@ -483,6 +531,17 @@ public class RiskPlanService {
 		if (queryStr.contains(":socNames")) {
 			query.setParameter("socNames", searchDto.getSocs());
 		}
+		if (queryStr.contains(":userKeys")) {
+			query.setParameter("userKeys", searchDto.getUserKeys());
+		}
+
+		if (queryStr.contains(":userGroupKeys")) {
+			query.setParameter("userGroupKeys", searchDto.getUserGroupKeys());
+		}
+
+		if (queryStr.contains(":owner")) {
+			query.setParameter("owner", searchDto.getOwner());
+		}
 	}
 
 	/**
@@ -512,12 +571,13 @@ public class RiskPlanService {
 			query.setParameter("endDate", searchDto.getEndDate());
 		}
 	}
-
-	
-
-
-
-
+	/**
+	 * 
+	 * @param riskTask
+	 * @param attachments
+	 * @throws IOException
+	 * @throws ApplicationException
+	 */
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException, ApplicationException {
 		if (riskTask.getCaseInstanceId() != null
 				&& SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())) {
@@ -642,6 +702,8 @@ public class RiskPlanService {
 			riskPlan.setStatus("In Progress");
 			riskPlan = riskPlanRepository.save(riskPlan);
 		}
+		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneesList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskId);
+		riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesList);
 		riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
 		riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskPlan.getId()));
 		return riskPlan;

@@ -36,6 +36,8 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicAssessmentAssignmentAssignees;
+import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.CommentsRepository;
@@ -44,6 +46,7 @@ import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 
 /**
@@ -85,6 +88,9 @@ public class AssessmentPlanService {
     
     @Autowired
     SignalAuditService signalAuditService;
+    
+    @Autowired
+    RiskPlanService riskPlanService;
 
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
@@ -127,6 +133,7 @@ public class AssessmentPlanService {
 		Root<Topic> topic = criteriaQuery.from(Topic.class);
 		Join<Topic, AssessmentPlan> topicAssignmentJoin = topic.join("assessmentPlan", JoinType.INNER);
 		Join<AssessmentPlan,RiskPlan> assementRiskJoin=topicAssignmentJoin.join(SmtConstant.RISK_PLAN.getDescription(),JoinType.LEFT);
+		Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> joinAssignmentAssignees = topicAssignmentJoin.join("topicAssessmentAssignmentAssignees", JoinType.LEFT); //left outer join
 		
 
 		if (null != searchDto) {
@@ -145,9 +152,16 @@ public class AssessmentPlanService {
 			addPts(searchDto, criteriaBuilder, criteriaQuery, topic, predicates);
 			addStartOrDueDate(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			addAssessmentRiskStatus(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
+			/**TopicAssessmentAssignmentAssignees **/
+			addUserKeys(searchDto, criteriaBuilder,joinAssignmentAssignees,topic,predicates);
+			addUserGroupKeys(searchDto, criteriaBuilder,joinAssignmentAssignees,topic,predicates);
 			
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
+			
+			criteriaQuery.select(topicAssignmentJoin).where(andPredicate)
+			.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("id")))
+			.distinct(true);
+			/*criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
 					topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("priority"),
 					topicAssignmentJoin.get("inDays"), topicAssignmentJoin.get("ingrediantName"),
 					topicAssignmentJoin.get("source"), topicAssignmentJoin.get("caseInstanceId"),
@@ -156,7 +170,7 @@ public class AssessmentPlanService {
 					topicAssignmentJoin.get(SmtConstant.RISK_PLAN.getDescription()), topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription()),
 					topicAssignmentJoin.get("createdBy"), topicAssignmentJoin.get("lastModifiedDate"),
 					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription()))).distinct(true)
-					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));
+					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));*/
 		} else {
 			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
 					topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("priority"),
@@ -171,7 +185,21 @@ public class AssessmentPlanService {
 		}
 
 		TypedQuery<AssessmentPlan> q = entityManager.createQuery(criteriaQuery);
+		associateAssignees(q.getResultList());
 		return q.getResultList();
+	}
+	@Autowired
+	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+	
+	private void associateAssignees(List<AssessmentPlan> assessmentPlanList){
+		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneeList=new ArrayList<TopicRiskPlanAssignmentAssignees>();
+		if (!CollectionUtils.isEmpty(assessmentPlanList)) {
+			for(AssessmentPlan assessmentPlan :assessmentPlanList){
+				
+				topicRiskPlanAssignmentAssigneeList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(assessmentPlan.getRiskPlan().getId());
+				assessmentPlan.getRiskPlan().setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneeList);
+			}
+		}
 	}
 
 	private void addSocs(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
@@ -452,4 +480,39 @@ public class AssessmentPlanService {
         AssessmentPlan assessmentPlanUpdated = assessmentPlanRepository.save(assessmentPlan);
         signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlanUpdated, assessmentPlanOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
     }
+    
+    /**
+	 * 
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param query
+	 * @param rootTopic
+	 * @param predicates
+	 */
+	private void addUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
+			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees,Root<Topic> rootTopic, List<Predicate> predicates) {
+			  
+			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			  // Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> joinAssignees = rootTopic.join("topicAssessmentAssignmentAssignees", JoinType.LEFT); //left outer join
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
+			      
+			  }
+			 }
+	/**
+	 * 
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param query
+	 * @param rootTopic
+	 * @param predicates
+	 */
+	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees, Root<Topic> rootTopic,List<Predicate> predicates) {
+			  
+			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			   //Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> joinAssignees = rootTopic.join("topicAssessmentAssignmentAssignees", JoinType.LEFT); //left outer join
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
+			      
+			  }
+	 }
 }
