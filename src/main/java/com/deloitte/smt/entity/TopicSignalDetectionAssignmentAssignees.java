@@ -6,7 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Created by Rajesh on 31-07-2017.
@@ -26,7 +31,18 @@ public class TopicSignalDetectionAssignmentAssignees {
 	    private Long userKey;
 	    
 	    private Long detectionId;
+	    @Transient
+		@JsonIgnore
+	    private SignalDetection signalDetection;
 	    
+	    @ManyToOne
+		@JoinColumn(name = "detectionId")
+		public SignalDetection getSignalDetection() {
+			return signalDetection;
+		}
+		public void setSignalDetection(SignalDetection signalDetection) {
+			this.signalDetection = signalDetection;
+		}
 		public Long getId() {
 			return id;
 		}

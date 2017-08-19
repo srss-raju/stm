@@ -5,11 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -51,7 +53,9 @@ public class SignalDetection implements Serializable {
 	private List<QueryBuilder> queryBuilder;
 	
 	private String owner;
-	@Transient
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "detectionId")
 	private List<TopicSignalDetectionAssignmentAssignees> topicSignalDetectionAssignmentAssignees;
 
 	public static void main(String[] args) throws JsonProcessingException {
