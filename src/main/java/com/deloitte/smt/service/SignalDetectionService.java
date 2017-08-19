@@ -652,7 +652,7 @@ public class SignalDetectionService {
 		smqs = smqRepository.findByDetectionId(signalDetection.getId());
 		if (!CollectionUtils.isEmpty(smqs)) {
 			for (Smq smq : smqs) {
-				smq.setPts(ptRepository.findBySmqId(smq.getId()));
+				smq.setPts(ptRepository.findBySmqId(smq.getSmqId()));
 			}
 		}
 		signalDetection.setSmqs(smqs);
