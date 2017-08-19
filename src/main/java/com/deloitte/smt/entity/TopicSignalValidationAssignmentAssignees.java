@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "sm_topic_signal_validation_assignees")
@@ -27,7 +30,9 @@ public class TopicSignalValidationAssignmentAssignees implements Serializable{
 	private Long userKey;
 	
 	private Long topicId;
-
+	
+	@Transient
+	@JsonIgnore
 	private Topic topic;
 	
 	@ManyToOne
