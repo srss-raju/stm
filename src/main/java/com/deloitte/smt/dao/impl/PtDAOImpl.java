@@ -20,7 +20,7 @@ private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
 	public List<PtDTO> findPtsBySmqId(List<Integer> ids) {
-		String query = "SELECT smq_cui_key, meddra_pt_cui_key, pt_name FROM smq_meddra_mapping where smq_cui_key IN (:ids) order by smq_cui_key";
+		String query = "SELECT smq_cui_key, meddra_pt_cui_key, pt_name FROM pfizer.smq_meddra_mapping where smq_cui_key IN (:ids) order by smq_cui_key";
 		Map<String, Object> params = new HashMap<>();
 		params.put("ids", ids);
 		return namedParameterJdbcTemplate.query(query, params, new PtMapper());
