@@ -317,11 +317,12 @@ public class RiskPlanService {
 		}
 		buildWhereConditions(searchDto, whereClauses);
 		appendWhereClause(whereClauses, queryBuilder);
-
+		
 		queryBuilder.append(" order by created_date DESC");
 		String queryStr = queryBuilder.toString();
 		Query query = entityManager.createNativeQuery(queryStr, RiskPlan.class);
 		setParameters(queryStr, searchDto, query);
+		
 		/**For adding TopicRiskPlanAssignmentAssignees to RiskPlan */
 		associateRiskPlanAssignmentAssignees(query.getResultList());
 		return query.getResultList();
@@ -335,7 +336,7 @@ public class RiskPlanService {
 	private void buildQuery(SearchDto searchDto, StringBuilder queryBuilder,
 			List<String> whereClauses) {
 		queryBuilder.append(
-				"SELECT r.* FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id left outer join sm_topic_riskplan_assignment_assignees ra on r.id=ra.risk_id");
+				"SELECT r.* FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id left outer join sm_topic_riskplan_assignment_assignees ra on r.id=ra.risk_id or r.owner=:owner");
 
 		if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
 			queryBuilder.append(" inner join sm_product p on p.topic_id=t.id ");
@@ -371,6 +372,7 @@ public class RiskPlanService {
 			queryBuilder.append(" inner join sm_soc soc on soc.topic_id=t.id ");
 			whereClauses.add(" soc.soc_name in :socNames");
 		}
+		
 	}
 
 	
@@ -387,6 +389,8 @@ public class RiskPlanService {
 			}
 		}
 	}
+	
+	
 
 	private void buildWhereConditions(SearchDto searchDto, List<String> whereClauses) {
 		if (searchDto != null) {
@@ -396,7 +400,6 @@ public class RiskPlanService {
 			addEndDate(searchDto, whereClauses);
 			addUserKey(searchDto, whereClauses);
 			addUserGroupKey(searchDto, whereClauses);
-			addOwner(searchDto, whereClauses);
 		}
 	}
 
@@ -471,15 +474,6 @@ public class RiskPlanService {
 		}
 	}
 	
-	/**
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addOwner(SearchDto searchDto, List<String> whereClauses) {
-		if (searchDto.getOwner() != null) {
-			whereClauses.add(" r.owner in :owner");
-		}
-	}
 
 	private void setParameters(String queryStr, SearchDto searchDto, Query query) {
 		setInitialParameters(queryStr, searchDto, query);
