@@ -21,9 +21,9 @@ public class Pt implements Serializable {
 	private Long topicId;
 	private Long socId;
 	private Long detectionId;
-	private int smqId;
 	private int ptId;
-	 
+	private Long smqId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -57,16 +57,17 @@ public class Pt implements Serializable {
 	public void setDetectionId(Long detectionId) {
 		this.detectionId = detectionId;
 	}
-	public int getSmqId() {
-		return smqId;
-	}
-	public void setSmqId(int smqId) {
-		this.smqId = smqId;
-	}
+	
 	public int getPtId() {
 		return ptId;
 	}
 	public void setPtId(int ptId) {
 		this.ptId = ptId;
+	}
+	public Long getSmqId() {
+		return smqId;
+	}
+	public void setSmqId(Long smqId) {
+		this.smqId = smqId;
 	}
 }

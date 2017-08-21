@@ -205,7 +205,7 @@ public class SignalDetectionService {
 		List<Pt> pts = smq.getPts();
 		if (!CollectionUtils.isEmpty(pts)) {
 			for (Pt pt : pts) {
-				pt.setSmqId(smq.getSmqId());
+				pt.setSmqId(smq.getId());
 				pt.setDetectionId(signalDetection.getId());
 			}
 			ptRepository.save(pts);
