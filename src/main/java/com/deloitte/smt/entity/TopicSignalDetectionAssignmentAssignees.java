@@ -19,6 +19,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "sm_topic_signal_detection_assignees")
 public class TopicSignalDetectionAssignmentAssignees {
+	
+		public TopicSignalDetectionAssignmentAssignees(){
+			
+		}
+		
 		
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
@@ -90,6 +95,11 @@ public class TopicSignalDetectionAssignmentAssignees {
 		}
 		public void setUserKey(Long userKey) {
 			this.userKey = userKey;
+		}
+		
+		public TopicSignalDetectionAssignmentAssignees( Long userGroupKey,  Long userKey){
+			this.userKey = userKey;
+			this.userGroupKey = userGroupKey;
 		}
 		
 }

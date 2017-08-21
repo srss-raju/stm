@@ -80,7 +80,7 @@ public class SearchService {
         dto.setPts(ptRepository.findDistinctPtNameForSignal());
         dto.setSignalNames(topicRepository.findDistinctSignalName());
         dto.setSignalConfirmations(topicRepository.findDistinctSignalConfirmationNames());
-        dto.setAssignees(topicSignalValidationAssignmentAssigneesRepository.findAll());
+        dto.setAssignees(topicSignalValidationAssignmentAssigneesRepository.getSignalAssignedUsers());
         dto.setUserKeys(topicSignalValidationAssignmentAssigneesRepository.getAssignedUsers());
         dto.setUserGroupKeys(topicSignalValidationAssignmentAssigneesRepository.getAssignedGroups());
         dto.setSources(topicRepository.getSourceNames());

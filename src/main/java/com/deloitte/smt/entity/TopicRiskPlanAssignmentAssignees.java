@@ -14,6 +14,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "sm_topic_riskplan_assignment_assignees")
 public class TopicRiskPlanAssignmentAssignees {
+	
+		public TopicRiskPlanAssignmentAssignees(){
+			
+		}
+		
+		public TopicRiskPlanAssignmentAssignees( Long userGroupKey,  Long userKey){
+			this.userKey = userKey;
+			this.userGroupKey = userGroupKey;
+		}
 	 
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
