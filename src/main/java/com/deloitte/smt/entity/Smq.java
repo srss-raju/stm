@@ -20,7 +20,7 @@ public class Smq implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-	private int smqId;
+	private Long smqId;
 	private String smqName;
 	private Date validStartDate;
 	private Date validEndDate;
@@ -47,10 +47,10 @@ public class Smq implements Serializable {
 	public void setSmqName(String smqName) {
 		this.smqName = smqName;
 	}
-	public int getSmqId() {
+	public Long getSmqId() {
 		return smqId;
 	}
-	public void setSmqId(int smqId) {
+	public void setSmqId(Long smqId) {
 		this.smqId = smqId;
 	}
 	public Date getValidStartDate() {
