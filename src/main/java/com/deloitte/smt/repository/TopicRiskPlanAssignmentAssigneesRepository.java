@@ -15,6 +15,9 @@ import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 public interface TopicRiskPlanAssignmentAssigneesRepository extends JpaRepository<TopicRiskPlanAssignmentAssignees, Long> {
 	List<TopicRiskPlanAssignmentAssignees> findByRiskId(Long topicId);
 	
+	@Query("SELECT DISTINCT NEW TopicRiskPlanAssignmentAssignees(o.userKey, o.userGroupKey) FROM TopicRiskPlanAssignmentAssignees o")
+	List<TopicRiskPlanAssignmentAssignees> getRiskAssignedUsers();
+	
 	@Query("SELECT DISTINCT(o.userKey) FROM TopicRiskPlanAssignmentAssignees o WHERE o.userKey IS NOT NULL")
 	List<Long> getAssignedUsers();
 	
