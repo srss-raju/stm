@@ -16,6 +16,9 @@ public interface TopicSignalValidationAssignmentAssigneesRepository extends JpaR
 	
 	List<TopicSignalValidationAssignmentAssignees> findByTopicId(Long topicId);
 	
+    @Query("SELECT DISTINCT NEW TopicSignalValidationAssignmentAssignees(o.userGroupKey, o.userKey) FROM TopicSignalValidationAssignmentAssignees o")
+	List<TopicSignalValidationAssignmentAssignees> getSignalAssignedUsers();
+	
 	@Query("SELECT DISTINCT(o.userKey) FROM TopicSignalValidationAssignmentAssignees o WHERE o.userKey IS NOT NULL")
 	List<Long> getAssignedUsers();
 	

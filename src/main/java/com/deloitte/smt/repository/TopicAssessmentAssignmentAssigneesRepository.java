@@ -14,6 +14,10 @@ import com.deloitte.smt.entity.TopicAssessmentAssignmentAssignees;
 @Repository
 public interface TopicAssessmentAssignmentAssigneesRepository extends JpaRepository<TopicAssessmentAssignmentAssignees, Long> {
 	List<TopicAssessmentAssignmentAssignees> findByAssessmentId(Long topicId);
+	
+	@Query("SELECT DISTINCT NEW TopicAssessmentAssignmentAssignees(o.userGroupKey, o.userKey) FROM TopicAssessmentAssignmentAssignees o")
+	List<TopicAssessmentAssignmentAssignees> getAssessmentAssignedUsers();
+	
 	@Query("SELECT DISTINCT(o.userKey) FROM TopicAssessmentAssignmentAssignees o WHERE o.userKey IS NOT NULL")
 	List<Long> getAssignedUsers();
 	

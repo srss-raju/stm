@@ -205,7 +205,7 @@ public class SignalDetectionService {
 		List<Pt> pts = smq.getPts();
 		if (!CollectionUtils.isEmpty(pts)) {
 			for (Pt pt : pts) {
-				pt.setSmqId(smq.getSmqId());
+				pt.setSmqId(smq.getId());
 				pt.setDetectionId(signalDetection.getId());
 			}
 			ptRepository.save(pts);
@@ -652,7 +652,7 @@ public class SignalDetectionService {
 		smqs = smqRepository.findByDetectionId(signalDetection.getId());
 		if (!CollectionUtils.isEmpty(smqs)) {
 			for (Smq smq : smqs) {
-				smq.setPts(ptRepository.findBySmqId(smq.getSmqId()));
+				smq.setPts(ptRepository.findBySmqId(smq.getId()));
 			}
 		}
 		signalDetection.setSmqs(smqs);

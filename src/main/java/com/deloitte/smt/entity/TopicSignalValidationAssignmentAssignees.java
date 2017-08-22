@@ -17,6 +17,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "sm_topic_signal_validation_assignees")
 public class TopicSignalValidationAssignmentAssignees implements Serializable{
+	
+	public TopicSignalValidationAssignmentAssignees(){
+		
+	}
 
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -105,6 +109,11 @@ public class TopicSignalValidationAssignmentAssignees implements Serializable{
 
 	public void setUserKey(Long userKey) {
 		this.userKey = userKey;
+	}
+	
+	public TopicSignalValidationAssignmentAssignees( Long userGroupKey,  Long userKey){
+		this.userKey = userKey;
+		this.userGroupKey = userGroupKey;
 	}
 
 }

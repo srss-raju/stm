@@ -16,6 +16,9 @@ public interface TopicSignalDetectionAssignmentAssigneesRepository extends JpaRe
 	
 	List<TopicSignalDetectionAssignmentAssignees> findByDetectionId(Long detectionId);
 	
+	@Query("SELECT DISTINCT NEW TopicSignalDetectionAssignmentAssignees(o.userGroupKey, o.userKey) FROM TopicSignalDetectionAssignmentAssignees o")
+	List<TopicSignalDetectionAssignmentAssignees> getDetectionAssignedUsers();
+	
 	@Query("SELECT DISTINCT(o.userKey) FROM TopicSignalDetectionAssignmentAssignees o WHERE o.userKey IS NOT NULL")
 	List<Long> getAssignedUsers();
 	

@@ -20,6 +20,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "sm_topic_assessment_assignment_assignees")
 public class TopicAssessmentAssignmentAssignees {
 	 
+		public TopicAssessmentAssignmentAssignees(){
+			
+		}
+		
+		public TopicAssessmentAssignmentAssignees( Long userGroupKey,  Long userKey){
+			this.userKey = userKey;
+			this.userGroupKey = userGroupKey;
+		}
 		
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
