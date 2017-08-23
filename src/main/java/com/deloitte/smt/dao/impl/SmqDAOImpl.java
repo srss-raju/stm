@@ -19,5 +19,5 @@ private JdbcTemplate jdbcTemplate;
     @Override
     public List<SmqDTO> findAllSmqs() {
     	return jdbcTemplate.query("SELECT distinct smq_cui_key, smq_name, valid_start_date, valid_end_date FROM smq_meddra_mapping order by smq_cui_key",new SmqMapper());
-    }
+    } 
 }
