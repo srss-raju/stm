@@ -336,7 +336,7 @@ public class RiskPlanService {
 	private void buildQuery(SearchDto searchDto, StringBuilder queryBuilder,
 			List<String> whereClauses) {
 		queryBuilder.append(
-				"SELECT distinct(r.*) FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id left outer join sm_topic_riskplan_assignment_assignees ra on r.id=ra.risk_id or r.owner=:owner");
+				"SELECT distinct(r.*) FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id left outer join sm_topic_riskplan_assignment_assignees ra on r.id=ra.risk_id ");
 
 		if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
 			queryBuilder.append(" inner join sm_product p on p.topic_id=t.id ");
@@ -470,7 +470,7 @@ public class RiskPlanService {
 	 */
 	private void addUserGroupKey(SearchDto searchDto, List<String> whereClauses) {
 		if (!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())) {
-			whereClauses.add(" ra.user_group_key in :userGroupKeys");
+			whereClauses.add("r.owner is null or r.owner=:owner or ra.user_group_key in :userGroupKeys");
 		}
 	}
 	
