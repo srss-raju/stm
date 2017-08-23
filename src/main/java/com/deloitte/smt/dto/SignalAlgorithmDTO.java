@@ -15,65 +15,65 @@ public class SignalAlgorithmDTO implements Serializable {
 	
 	private String ptDescription;
 	
-	private String cases;
+	private float cases;
 	
-	private String outcomeDE;
+	private float outcomeDE;
 	
-	private String outcomeHO;
+	private float outcomeHO;
 	
-	private String outcomeLT;
+	private float outcomeLT;
 	
-	private String outcomeCA;
+	private float outcomeCA;
 	
-	private String outcomeRI;
+	private float outcomeRI;
 	
-	private String outcomeOT;
+	private float outcomeOT;
 	
-	private String algorithmPRRScore;
+	private float algorithmPRRScore;
 	
-	private String algorithmPRRLB;
+	private float algorithmPRRLB;
 	
-	private String algorithmPRRUB;
+	private float algorithmPRRUB;
+	
+	private float algorithmRORScore;
+	
+	private float algorithmRORLB;
+	
+	private float algorithmRORUB;
+	
+	private float algorithmRRRScore;
+	
+	private float algorithmRRRLB;
+	
+	private float algorithmRRRUB;
+	
+	private float algorithmEBScore;
+	
+	private float algorithmBCPNNScore;
+	
+	private float pp;
+	
+	private String signal;
 	
 	private String algorithmPRRSQ;
 	
-	private String algorithmPRRSTDev;
-	
-	private String algorithmRORScore;
-	
-	private String algorithmRORSTDev;
-	
-	private String algorithmRORLB;
-	
-	private String algorithmRORUB;
-	
-	private String algorithmRRRScore;
-	
-	private String algorithmRRRSTDev;
-	
-	private String algorithmRRRLB;
-	
-	private String algorithmRRRUB;
-	
-	private String algorithmRRRInfoComp;
-	
-	private String algorithmEBScore;
+	private String signalId;	
 	
 	private String algorithmEBLB;
 	
 	private String algorithmEBUB;
 	
-	private String algorithmBCPNNScore;
+	private String algorithmRRRInfoComp;
 	
 	private String algorithmBCPNNLB;
 	
 	private String algorithmBCPNNUB;
 	
-	private String pp;
+	private String algorithmRRRSTDev;
 	
-	private String signal;
+	private String algorithmRORSTDev;
 	
-	private String signalId;
+	private String algorithmPRRSTDev;
 
 	public String getFamilyDescription() {
 		return familyDescription;
@@ -99,108 +99,12 @@ public class SignalAlgorithmDTO implements Serializable {
 		this.ptDescription = ptDescription;
 	}
 
-	public String getCases() {
-		return cases;
-	}
-
-	public void setCases(String cases) {
-		this.cases = cases;
-	}
-
-	public String getOutcomeDE() {
-		return outcomeDE;
-	}
-
-	public void setOutcomeDE(String outcomeDE) {
-		this.outcomeDE = outcomeDE;
-	}
-
-	public String getOutcomeHO() {
-		return outcomeHO;
-	}
-
-	public void setOutcomeHO(String outcomeHO) {
-		this.outcomeHO = outcomeHO;
-	}
-
-	public String getOutcomeLT() {
-		return outcomeLT;
-	}
-
-	public void setOutcomeLT(String outcomeLT) {
-		this.outcomeLT = outcomeLT;
-	}
-
-	public String getOutcomeCA() {
-		return outcomeCA;
-	}
-
-	public void setOutcomeCA(String outcomeCA) {
-		this.outcomeCA = outcomeCA;
-	}
-
-	public String getOutcomeRI() {
-		return outcomeRI;
-	}
-
-	public void setOutcomeRI(String outcomeRI) {
-		this.outcomeRI = outcomeRI;
-	}
-
-	public String getOutcomeOT() {
-		return outcomeOT;
-	}
-
-	public void setOutcomeOT(String outcomeOT) {
-		this.outcomeOT = outcomeOT;
-	}
-
-	public String getAlgorithmPRRScore() {
-		return algorithmPRRScore;
-	}
-
-	public void setAlgorithmPRRScore(String algorithmPRRScore) {
-		this.algorithmPRRScore = algorithmPRRScore;
-	}
-
-	public String getAlgorithmPRRLB() {
-		return algorithmPRRLB;
-	}
-
-	public void setAlgorithmPRRLB(String algorithmPRRLB) {
-		this.algorithmPRRLB = algorithmPRRLB;
-	}
-
-	public String getAlgorithmPRRUB() {
-		return algorithmPRRUB;
-	}
-
-	public void setAlgorithmPRRUB(String algorithmPRRUB) {
-		this.algorithmPRRUB = algorithmPRRUB;
-	}
-
-	public String getAlgorithmPRRSQ() {
-		return algorithmPRRSQ;
-	}
-
-	public void setAlgorithmPRRSQ(String algorithmPRRSQ) {
-		this.algorithmPRRSQ = algorithmPRRSQ;
-	}
-
 	public String getAlgorithmPRRSTDev() {
 		return algorithmPRRSTDev;
 	}
 
 	public void setAlgorithmPRRSTDev(String algorithmPRRSTDev) {
 		this.algorithmPRRSTDev = algorithmPRRSTDev;
-	}
-
-	public String getAlgorithmRORScore() {
-		return algorithmRORScore;
-	}
-
-	public void setAlgorithmRORScore(String algorithmRORScore) {
-		this.algorithmRORScore = algorithmRORScore;
 	}
 
 	public String getAlgorithmRORSTDev() {
@@ -211,52 +115,12 @@ public class SignalAlgorithmDTO implements Serializable {
 		this.algorithmRORSTDev = algorithmRORSTDev;
 	}
 
-	public String getAlgorithmRORLB() {
-		return algorithmRORLB;
-	}
-
-	public void setAlgorithmRORLB(String algorithmRORLB) {
-		this.algorithmRORLB = algorithmRORLB;
-	}
-
-	public String getAlgorithmRORUB() {
-		return algorithmRORUB;
-	}
-
-	public void setAlgorithmRORUB(String algorithmRORUB) {
-		this.algorithmRORUB = algorithmRORUB;
-	}
-
-	public String getAlgorithmRRRScore() {
-		return algorithmRRRScore;
-	}
-
-	public void setAlgorithmRRRScore(String algorithmRRRScore) {
-		this.algorithmRRRScore = algorithmRRRScore;
-	}
-
 	public String getAlgorithmRRRSTDev() {
 		return algorithmRRRSTDev;
 	}
 
 	public void setAlgorithmRRRSTDev(String algorithmRRRSTDev) {
 		this.algorithmRRRSTDev = algorithmRRRSTDev;
-	}
-
-	public String getAlgorithmRRRLB() {
-		return algorithmRRRLB;
-	}
-
-	public void setAlgorithmRRRLB(String algorithmRRRLB) {
-		this.algorithmRRRLB = algorithmRRRLB;
-	}
-
-	public String getAlgorithmRRRUB() {
-		return algorithmRRRUB;
-	}
-
-	public void setAlgorithmRRRUB(String algorithmRRRUB) {
-		this.algorithmRRRUB = algorithmRRRUB;
 	}
 
 	public String getAlgorithmRRRInfoComp() {
@@ -266,15 +130,6 @@ public class SignalAlgorithmDTO implements Serializable {
 	public void setAlgorithmRRRInfoComp(String algorithmRRRInfoComp) {
 		this.algorithmRRRInfoComp = algorithmRRRInfoComp;
 	}
-
-	public String getAlgorithmEBScore() {
-		return algorithmEBScore;
-	}
-
-	public void setAlgorithmEBScore(String algorithmEBScore) {
-		this.algorithmEBScore = algorithmEBScore;
-	}
-
 	public String getAlgorithmEBLB() {
 		return algorithmEBLB;
 	}
@@ -290,15 +145,6 @@ public class SignalAlgorithmDTO implements Serializable {
 	public void setAlgorithmEBUB(String algorithmEBUB) {
 		this.algorithmEBUB = algorithmEBUB;
 	}
-
-	public String getAlgorithmBCPNNScore() {
-		return algorithmBCPNNScore;
-	}
-
-	public void setAlgorithmBCPNNScore(String algorithmBCPNNScore) {
-		this.algorithmBCPNNScore = algorithmBCPNNScore;
-	}
-
 	public String getAlgorithmBCPNNLB() {
 		return algorithmBCPNNLB;
 	}
@@ -314,15 +160,6 @@ public class SignalAlgorithmDTO implements Serializable {
 	public void setAlgorithmBCPNNUB(String algorithmBCPNNUB) {
 		this.algorithmBCPNNUB = algorithmBCPNNUB;
 	}
-
-	public String getPp() {
-		return pp;
-	}
-
-	public void setPp(String pp) {
-		this.pp = pp;
-	}
-
 	public String getSignal() {
 		return signal;
 	}
@@ -337,5 +174,164 @@ public class SignalAlgorithmDTO implements Serializable {
 
 	public void setSignalId(String signalId) {
 		this.signalId = signalId;
+	}
+
+	public float getCases() {
+		return cases;
+	}
+
+	public void setCases(float cases) {
+		this.cases = cases;
+	}
+
+	public float getOutcomeDE() {
+		return outcomeDE;
+	}
+
+	public void setOutcomeDE(float outcomeDE) {
+		this.outcomeDE = outcomeDE;
+	}
+
+	public float getOutcomeHO() {
+		return outcomeHO;
+	}
+
+	public void setOutcomeHO(float outcomeHO) {
+		this.outcomeHO = outcomeHO;
+	}
+
+	public float getOutcomeLT() {
+		return outcomeLT;
+	}
+
+	public void setOutcomeLT(float outcomeLT) {
+		this.outcomeLT = outcomeLT;
+	}
+
+	public float getOutcomeCA() {
+		return outcomeCA;
+	}
+
+	public void setOutcomeCA(float outcomeCA) {
+		this.outcomeCA = outcomeCA;
+	}
+
+	public float getOutcomeRI() {
+		return outcomeRI;
+	}
+
+	public void setOutcomeRI(float outcomeRI) {
+		this.outcomeRI = outcomeRI;
+	}
+
+	public float getOutcomeOT() {
+		return outcomeOT;
+	}
+
+	public void setOutcomeOT(float outcomeOT) {
+		this.outcomeOT = outcomeOT;
+	}
+
+	public float getAlgorithmPRRScore() {
+		return algorithmPRRScore;
+	}
+
+	public void setAlgorithmPRRScore(float algorithmPRRScore) {
+		this.algorithmPRRScore = algorithmPRRScore;
+	}
+
+	public float getAlgorithmPRRLB() {
+		return algorithmPRRLB;
+	}
+
+	public void setAlgorithmPRRLB(float algorithmPRRLB) {
+		this.algorithmPRRLB = algorithmPRRLB;
+	}
+
+	public float getAlgorithmPRRUB() {
+		return algorithmPRRUB;
+	}
+
+	public void setAlgorithmPRRUB(float algorithmPRRUB) {
+		this.algorithmPRRUB = algorithmPRRUB;
+	}
+	public float getAlgorithmRORScore() {
+		return algorithmRORScore;
+	}
+
+	public void setAlgorithmRORScore(float algorithmRORScore) {
+		this.algorithmRORScore = algorithmRORScore;
+	}
+
+	public float getAlgorithmRORLB() {
+		return algorithmRORLB;
+	}
+
+	public void setAlgorithmRORLB(float algorithmRORLB) {
+		this.algorithmRORLB = algorithmRORLB;
+	}
+
+	public float getAlgorithmRORUB() {
+		return algorithmRORUB;
+	}
+
+	public void setAlgorithmRORUB(float algorithmRORUB) {
+		this.algorithmRORUB = algorithmRORUB;
+	}
+
+	public float getAlgorithmRRRScore() {
+		return algorithmRRRScore;
+	}
+
+	public void setAlgorithmRRRScore(float algorithmRRRScore) {
+		this.algorithmRRRScore = algorithmRRRScore;
+	}
+
+	public float getAlgorithmRRRLB() {
+		return algorithmRRRLB;
+	}
+
+	public void setAlgorithmRRRLB(float algorithmRRRLB) {
+		this.algorithmRRRLB = algorithmRRRLB;
+	}
+
+	public float getAlgorithmRRRUB() {
+		return algorithmRRRUB;
+	}
+
+	public void setAlgorithmRRRUB(float algorithmRRRUB) {
+		this.algorithmRRRUB = algorithmRRRUB;
+	}
+
+	public float getAlgorithmEBScore() {
+		return algorithmEBScore;
+	}
+
+	public void setAlgorithmEBScore(float algorithmEBScore) {
+		this.algorithmEBScore = algorithmEBScore;
+	}
+
+	public float getAlgorithmBCPNNScore() {
+		return algorithmBCPNNScore;
+	}
+
+	public void setAlgorithmBCPNNScore(float algorithmBCPNNScore) {
+		this.algorithmBCPNNScore = algorithmBCPNNScore;
+	}
+
+	public float getPp() {
+		return pp;
+	}
+
+	public void setPp(float pp) {
+		this.pp = pp;
+	}
+
+	public String getAlgorithmPRRSQ() {
+		return algorithmPRRSQ;
+	}
+
+	public void setAlgorithmPRRSQ(String algorithmPRRSQ) {
+		this.algorithmPRRSQ = algorithmPRRSQ;
 	}
 }
