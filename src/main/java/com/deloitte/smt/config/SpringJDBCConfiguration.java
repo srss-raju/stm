@@ -2,11 +2,13 @@ package com.deloitte.smt.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.deloitte.smt.dao.PtDAO;
 import com.deloitte.smt.dao.SmqDAO;
@@ -15,24 +17,29 @@ import com.deloitte.smt.dao.impl.SmqDAOImpl;
  
 @Configuration
 public class SpringJDBCConfiguration {
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://10.120.43.91:5432/smtdev");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("postgres");
-        return dataSource;
-    }
- 
+	
+	
+	@Bean
+	@Primary
+	@ConfigurationProperties(prefix="spring.datasource")
+	public DataSource primaryDataSource() {
+	    return DataSourceBuilder.create().build();
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix="spring.fizer")
+	public DataSource secondaryDataSource() {
+	    return DataSourceBuilder.create().build();
+	}
+	
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
-        return new NamedParameterJdbcTemplate(dataSource());
+        return new NamedParameterJdbcTemplate(secondaryDataSource());
     }
     
     @Bean
     public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
+        return new JdbcTemplate(secondaryDataSource());
     }
  
     @Bean
