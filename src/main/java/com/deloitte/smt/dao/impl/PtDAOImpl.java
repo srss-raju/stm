@@ -13,7 +13,7 @@ import com.deloitte.smt.util.PtMapper;
 public class PtDAOImpl implements PtDAO{
 
 private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
+    
     public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate){
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }

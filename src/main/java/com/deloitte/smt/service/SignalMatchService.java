@@ -231,7 +231,7 @@ public class SignalMatchService {
 		for (Topic cohort95PercentageSignal : cohort95PercentageSignals) {
 
 			if (prevTopic != null) {
-				if (final95Signal.getCohortPercentage() < prevTopic.getCohortPercentage()) {
+				if (final95Signal.getCohortPercentage() < cohort95PercentageSignal.getCohortPercentage()) {
 					final95Signal = cohort95PercentageSignal;
 					prevTopic = cohort95PercentageSignal;
 				} else {
