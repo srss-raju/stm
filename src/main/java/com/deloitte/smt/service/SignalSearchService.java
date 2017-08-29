@@ -113,7 +113,7 @@ public class SignalSearchService {
 	 */
 	private void addSourceNames(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic,
 			List<Predicate> predicates) {
-		if (!CollectionUtils.isEmpty(searchDto.getSignalNames())) {
+		if (!CollectionUtils.isEmpty(searchDto.getSources())) {
 			predicates.add(criteriaBuilder.isTrue(rootTopic.get("sourceName").in(searchDto.getSources())));
 		}
 	}
