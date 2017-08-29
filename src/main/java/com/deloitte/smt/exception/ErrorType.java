@@ -22,7 +22,7 @@ public enum ErrorType {
 		return defaultMessage;
 	}
 
-	private ErrorType(Integer code, String label, String defaultMessage) {
+	ErrorType(Integer code, String label, String defaultMessage) {
 		this.code = code;
 		this.label = label;
 		this.defaultMessage = defaultMessage;
