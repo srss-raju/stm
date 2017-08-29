@@ -41,7 +41,7 @@ public class ExportExcelService {
 
 		CellStyle style = createStyle(workbook);
 
-		createHeaderRow(sheet, style, workbook);
+		createHeaderRow(signalDTOList,sheet, style, workbook);
 
 		writeSignalDTO(signalDTOList, sheet, workbook);
 
@@ -80,7 +80,7 @@ public class ExportExcelService {
 
 	}
 
-	private void createHeaderRow(Sheet sheet, CellStyle style,
+	private void createHeaderRow(List<SignalAlgorithmDTO> signalDTOList,Sheet sheet, CellStyle style,
 			HSSFWorkbook workbook) {
 
 		sheet.setColumnWidth(0, 5000);
@@ -106,10 +106,17 @@ public class ExportExcelService {
 		Cell cell0 = header.createCell(0);
 		cell0.setCellStyle(style);
 		cell0.setCellValue("PRODUCT");
-
+		for (SignalAlgorithmDTO signalDTO : signalDTOList) {
+		
 		Cell cell1 = header.createCell(1);
 		cell1.setCellStyle(style);
-		cell1.setCellValue("SOC");
+		if(signalDTO.isSmq()){
+		cell1.setCellValue("SMQ");
+		}
+		else{
+			cell1.setCellValue("SOC");
+		}
+		}
 
 		Cell cell2 = header.createCell(2);
 		cell2.setCellStyle(style);

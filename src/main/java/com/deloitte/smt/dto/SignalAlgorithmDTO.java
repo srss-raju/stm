@@ -74,6 +74,8 @@ public class SignalAlgorithmDTO implements Serializable {
 	private String algorithmRORSTDev;
 	
 	private String algorithmPRRSTDev;
+	
+	private boolean smq;
 
 	public String getFamilyDescription() {
 		return familyDescription;
@@ -333,5 +335,13 @@ public class SignalAlgorithmDTO implements Serializable {
 
 	public void setAlgorithmPRRSQ(String algorithmPRRSQ) {
 		this.algorithmPRRSQ = algorithmPRRSQ;
+	}
+
+	public boolean isSmq() {
+		return smq;
+	}
+
+	public void setSmq(boolean smq) {
+		this.smq = smq;
 	}
 }

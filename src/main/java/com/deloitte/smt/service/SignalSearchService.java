@@ -49,7 +49,7 @@ public class SignalSearchService {
 			addPts(searchDto, criteriaBuilder, query, rootTopic, predicates);
 			addCreatedDate(searchDto, criteriaBuilder, rootTopic, predicates);
 			addStatuses(searchDto, criteriaBuilder, rootTopic, predicates);
-			addSignalNames(searchDto, criteriaBuilder, rootTopic, predicates);
+			addSourceNames(searchDto, criteriaBuilder, rootTopic, predicates);
 			addDueDate(searchDto, criteriaBuilder, rootTopic, predicates);
 			addSignalConfirmations(searchDto, criteriaBuilder, rootTopic, predicates);
 			addUserGroupKeys(searchDto, criteriaBuilder,rootTopic,predicates);
@@ -111,10 +111,10 @@ public class SignalSearchService {
 	 * @param rootTopic
 	 * @param predicates
 	 */
-	private void addSignalNames(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic,
+	private void addSourceNames(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic,
 			List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getSignalNames())) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get("name").in(searchDto.getSignalNames())));
+			predicates.add(criteriaBuilder.isTrue(rootTopic.get("sourceName").in(searchDto.getSources())));
 		}
 	}
 
