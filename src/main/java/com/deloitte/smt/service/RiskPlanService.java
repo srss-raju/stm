@@ -198,8 +198,8 @@ public class RiskPlanService {
 		return tasks;
 	}
 	
-	private List<TopicRiskPlanAssignmentAssignees> associateRiskPlanAssignmentAssignees(List<RiskPlan> riskPlanList){
-		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneesList=new ArrayList<TopicRiskPlanAssignmentAssignees>();
+	List<TopicRiskPlanAssignmentAssignees> associateRiskPlanAssignmentAssignees(List<RiskPlan> riskPlanList){
+		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneesList=new ArrayList<>();
 		for(RiskPlan riskPlan :riskPlanList){
 			topicRiskPlanAssignmentAssigneesList =	topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskPlan.getId());
 			riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesList);
@@ -514,6 +514,15 @@ public class RiskPlanService {
 		if (queryStr.contains(":socNames")) {
 			query.setParameter("socNames", searchDto.getSocs());
 		}
+		setAssignees(queryStr, searchDto, query);
+	}
+
+	/**
+	 * @param queryStr
+	 * @param searchDto
+	 * @param query
+	 */
+	private void setAssignees(String queryStr, SearchDto searchDto, Query query) {
 		if (queryStr.contains(":userKeys")) {
 			query.setParameter("userKeys", searchDto.getUserKeys());
 		}
