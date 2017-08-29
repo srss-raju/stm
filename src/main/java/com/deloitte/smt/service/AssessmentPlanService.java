@@ -160,16 +160,6 @@ public class AssessmentPlanService {
 			criteriaQuery.select(topicAssignmentJoin).where(andPredicate)
 			.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get("id")))
 			.distinct(true);
-			/*criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
-					topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("priority"),
-					topicAssignmentJoin.get("inDays"), topicAssignmentJoin.get("ingrediantName"),
-					topicAssignmentJoin.get("source"), topicAssignmentJoin.get("caseInstanceId"),
-					topicAssignmentJoin.get(SmtConstant.ASSESSMENT_PLAN_STATUS.getDescription()), topicAssignmentJoin.get("assessmentRiskStatus"),
-					topicAssignmentJoin.get(SmtConstant.ASSESSMENT_DUE_DATE.getDescription()), topicAssignmentJoin.get("finalAssessmentSummary"),
-					topicAssignmentJoin.get(SmtConstant.RISK_PLAN.getDescription()), topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription()),
-					topicAssignmentJoin.get("createdBy"), topicAssignmentJoin.get("lastModifiedDate"),
-					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription()))).distinct(true)
-					.where(andPredicate).orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));*/
 		} else {
 			criteriaQuery.select(criteriaBuilder.construct(AssessmentPlan.class, topicAssignmentJoin.get("id"),
 					topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("priority"),
