@@ -489,5 +489,5 @@ public class AssessmentPlanService {
 			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
 			      
 			  }
-	 }
+	 } 
 }
