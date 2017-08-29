@@ -121,7 +121,7 @@ public class SignalDetectionService {
 			if(signalDetection.getId()==null){
 				Long signalDetectionExist = signalDetectionRepository.countByNameIgnoreCase(signalDetection.getName());
 				if (signalDetectionExist > 0) {
-					throw exceptionBuilder.buildException(ErrorType.DETECTION_NAME_DUPLICATE, null);
+					throw exceptionBuilder.buildException(ErrorType.DETECTION_NAME_DUPLICATE);
 				}
 			}
 

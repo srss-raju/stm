@@ -261,7 +261,7 @@ public class SignalService {
 
 		Long topicExist = topicRepository.countByNameIgnoreCase(topic.getName());
 		if (topicExist > 0) {
-			throw exceptionBuilder.buildException(ErrorType.SIGNAL_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.SIGNAL_NAME_DUPLICATE);
 		}
 
 		Topic topicUpdated = topicRepository.save(topic);
@@ -499,7 +499,7 @@ public class SignalService {
 		Long assessmentPlanExist = assessmentPlanRepository
 				.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());
 		if (assessmentPlanExist > 0) {
-			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE);
 		}
 
     	
