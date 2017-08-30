@@ -27,7 +27,7 @@ public class SearchDto {
 	private String description;
 	private List<String> signalConfirmations;
 	private List<String> signalNames;
-	
+	private String ingredient;
 	private List<Long> userKeys = new ArrayList<>();
 	private List<Long> userGroupKeys = new ArrayList<>();
 	private String owner;
@@ -266,6 +266,13 @@ public class SearchDto {
 	public void setAssignees(List<?> assignees) {
 		this.assignees = assignees;
 	}
-	
+
+	public String getIngredient() {
+		return ingredient;
+	}
+
+	public void setIngredient(String ingredient) {
+		this.ingredient = ingredient;
+	}
 
 }
