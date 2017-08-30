@@ -130,15 +130,12 @@ public class SignalController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 	
-	@GetMapping(value = "/dashboard/getCounts")
-	public String getDashboardCounts(@RequestParam(value = "ingredient", required = false) String ingredient, 
-							@RequestParam(value = "owner", required = false) String owner,
-							@RequestParam(value = "userKeys", required = false) List<Long> userKeys,
-							@RequestParam(value = "userGroupKeys", required = false) List<Long> userGroupKeys) {
-		if(StringUtils.isNotBlank(ingredient)){
-			return signalService.getCountsByFilter(ingredient, null);
+	@PostMapping(value = "/dashboard/getCounts")
+	public String getDashboardCounts(@RequestBody(required=false) SearchDto dto) {
+		if(StringUtils.isNotBlank(dto.getIngredient())){
+			return signalService.getCountsByFilter(dto.getIngredient(), null);
 		}
-		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(owner, userKeys, userGroupKeys),signalService.getAssessmentCount(owner, userKeys, userGroupKeys),signalService.getRiskCount(owner, userKeys, userGroupKeys));
+		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(dto.getOwner(), dto.getUserKeys(), dto.getUserGroupKeys()),signalService.getAssessmentCount(dto.getOwner(), dto.getUserKeys(), dto.getUserGroupKeys()),signalService.getRiskCount(dto.getOwner(), dto.getUserKeys(), dto.getUserGroupKeys()));
 	}
 	
 }

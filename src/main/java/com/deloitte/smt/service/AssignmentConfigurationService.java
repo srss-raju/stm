@@ -94,6 +94,11 @@ public class AssignmentConfigurationService {
 		riskPlanAssignmentAssigneesRepository.deleteByAssignmentConfigurationId(assignmentConfiguration.getId());
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getSignalValidationAssignmentAssignees())){
         	for(SignalValidationAssignmentAssignees svaAssignees : assignmentConfiguration.getSignalValidationAssignmentAssignees()){
+        		if(svaAssignees.getUserGroupKey()!= -1){
+        			svaAssignees.setUserKey(0l);
+        		}else{
+        			svaAssignees.setUserGroupKey(0l);
+        		}
         		svaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
         		svaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
         	}
@@ -102,6 +107,11 @@ public class AssignmentConfigurationService {
         
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getAssessmentAssignmentAssignees())){
 			for(AssessmentAssignmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignmentAssignees()){
+				if(aaAssignees.getUserGroupKey()!= -1){
+					aaAssignees.setUserKey(0l);
+        		}else{
+        			aaAssignees.setUserGroupKey(0l);
+        		}
 				aaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 				aaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
         	}
@@ -110,6 +120,11 @@ public class AssignmentConfigurationService {
 		
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getRiskPlanAssignmentAssignees())){
 			for(RiskPlanAssignmentAssignees rpaAssignees : assignmentConfiguration.getRiskPlanAssignmentAssignees()){
+				if(rpaAssignees.getUserGroupKey()!= -1){
+					rpaAssignees.setUserKey(0l);
+        		}else{
+        			rpaAssignees.setUserGroupKey(0l);
+        		}
 				rpaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 				rpaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
         	}
