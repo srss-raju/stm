@@ -153,14 +153,6 @@ public class SignalDetectionService {
 			saveIncludeAE(signalDetection);
 			saveDenominatorForPoisson(signalDetection);
 			saveQueryBuilder(signalDetection);
-			List<TopicSignalDetectionAssignmentAssignees> list = signalDetection.getTopicSignalDetectionAssignmentAssignees();
-			if(!CollectionUtils.isEmpty(list)){
-				for(TopicSignalDetectionAssignmentAssignees assignee:list){
-					assignee.setCreatedDate(clone.getCreatedDate());
-					assignee.setDetectionId(clone.getId());
-				}
-				signalDetection.setTopicSignalDetectionAssignmentAssignees(topicSignalDetectionAssignmentAssigneesRepository.save(list));
-			}
 			return signalDetection;
 		} catch (ApplicationException ex) {
 				throw new ApplicationException("Problem Creating Signal Detection",  ex);

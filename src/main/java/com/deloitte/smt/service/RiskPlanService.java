@@ -717,7 +717,16 @@ public class RiskPlanService {
 		riskPlan.setLastModifiedDate(new Date());
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT,
 				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
-		riskPlanRepository.save(riskPlan);
+		RiskPlan riskPlanUpdated = riskPlanRepository.save(riskPlan);
+		
+		List<TopicRiskPlanAssignmentAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
+		if(!CollectionUtils.isEmpty(assigneeList)){
+			for (TopicRiskPlanAssignmentAssignees assignee : assigneeList) {
+				assignee.setRiskId(riskPlanUpdated.getId());
+			}
+			topicRiskPlanAssignmentAssigneesRepository.save(assigneeList);
+		}
+		
 		List<Comments> list = riskPlan.getComments();
 		if (!CollectionUtils.isEmpty(list)) {
 			for (Comments comment : list) {
