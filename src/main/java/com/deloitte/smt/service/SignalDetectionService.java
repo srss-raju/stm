@@ -381,11 +381,11 @@ public class SignalDetectionService {
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			criteriaQuery.multiselect(rootSignalDetection).where(andPredicate)
-					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription())));
+					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()))).distinct(true);;
 
 		} else {
 			criteriaQuery.multiselect(rootSignalDetection)
-					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription())));
+					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()))).distinct(true);;
 		}
 
 		TypedQuery<SignalDetection> q = entityManager.createQuery(criteriaQuery);
