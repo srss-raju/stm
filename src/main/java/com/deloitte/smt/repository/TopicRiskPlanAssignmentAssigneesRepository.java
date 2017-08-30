@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 
@@ -23,4 +24,7 @@ public interface TopicRiskPlanAssignmentAssigneesRepository extends JpaRepositor
 	
 	@Query("SELECT DISTINCT(o.userGroupKey) FROM TopicRiskPlanAssignmentAssignees o WHERE o.userGroupKey IS NOT NULL")
 	List<Long> getAssignedGroups();
+	
+	@Transactional
+	Long deleteByRiskId(Long riskId);
 }

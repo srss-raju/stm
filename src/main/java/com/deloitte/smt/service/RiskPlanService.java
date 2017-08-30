@@ -721,6 +721,7 @@ public class RiskPlanService {
 		
 		List<TopicRiskPlanAssignmentAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
 		if(!CollectionUtils.isEmpty(assigneeList)){
+			topicRiskPlanAssignmentAssigneesRepository.deleteByRiskId(riskPlanUpdated.getId());
 			for (TopicRiskPlanAssignmentAssignees assignee : assigneeList) {
 				assignee.setRiskId(riskPlanUpdated.getId());
 			}
