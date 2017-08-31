@@ -368,8 +368,8 @@ public class SignalDetectionService {
 			addDescription(searchDto, criteriaBuilder, rootSignalDetection, predicates);
 			addFrequency(searchDto, criteriaBuilder, rootSignalDetection, predicates);
 			addIngredients(searchDto, criteriaBuilder, rootIngredient, predicates);
-			addProducts(searchDto, criteriaBuilder, criteriaQuery, rootIngredient, predicates);
-			addLicenses(searchDto, criteriaBuilder, criteriaQuery, rootIngredient, predicates);
+			addProducts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
+			addLicenses(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addSocs(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addHlts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addHlgts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
@@ -380,11 +380,11 @@ public class SignalDetectionService {
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			criteriaQuery.multiselect(rootSignalDetection).where(andPredicate)
-					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()))).distinct(true);;
+					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()))).distinct(true);
 
 		} else {
 			criteriaQuery.multiselect(rootSignalDetection)
-					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()))).distinct(true);;
+					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()))).distinct(true);
 		}
 
 		TypedQuery<SignalDetection> q = entityManager.createQuery(criteriaQuery);
@@ -535,10 +535,10 @@ public class SignalDetectionService {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void addLicenses(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
-			Root<Ingredient> rootIngredient, List<Predicate> predicates) {
+			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
 			Root<License> rootLicense = criteriaQuery.from(License.class);
-			Predicate ingredientLicenseEquals = criteriaBuilder.equal(rootIngredient.get("id"),
+			Predicate ingredientLicenseEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
 					rootLicense.get("ingredientId"));
 
 			Predicate licenseNameIn = criteriaBuilder
@@ -558,11 +558,11 @@ public class SignalDetectionService {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void addProducts(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
-			Root<Ingredient> rootIngredient, List<Predicate> predicates) {
+			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
 			Root<Product> rootProduct = criteriaQuery.from(Product.class);
-			Predicate ingredientProductEquals = criteriaBuilder.equal(rootIngredient.get("id"),
-					rootProduct.get("ingredientId"));
+			Predicate ingredientProductEquals = criteriaBuilder.equal(rootSignalDetection.get("id"),
+					rootProduct.get("detectionId"));
 
 			Predicate productNameIn = criteriaBuilder
 					.isTrue(rootProduct.get("productName").in(searchDto.getProducts()));

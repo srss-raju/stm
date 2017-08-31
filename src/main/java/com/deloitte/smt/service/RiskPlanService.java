@@ -179,7 +179,9 @@ public class RiskPlanService {
 		}
 
 		if (assignmentConfiguration != null) {
-			riskPlan.setOwner(assignmentConfiguration.getRiskPlanAssignmentOwner());
+			if(assignmentConfiguration.getRiskPlanAssignmentOwner()!=null){
+				riskPlan.setOwner(assignmentConfiguration.getRiskPlanAssignmentOwner());
+			}
 			riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
 		}
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());

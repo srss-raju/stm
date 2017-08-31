@@ -281,7 +281,9 @@ public class SignalService {
 			}
 
 			if (assignmentConfiguration != null) {
-				topicUpdated.setOwner(assignmentConfiguration.getSignalValidationAssignmentOwner());
+				if(assignmentConfiguration.getSignalValidationAssignmentOwner()!=null){
+					topicUpdated.setOwner(assignmentConfiguration.getSignalValidationAssignmentOwner());
+				}
 				topicUpdated = topicRepository.save(topicUpdated);
 				topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
 			}
@@ -510,7 +512,9 @@ public class SignalService {
 		Topic topicUpdated = topicRepository.save(topic);
 		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, null, SmtConstant.UPDATE.getDescription());
 		if (assignmentConfiguration != null) {
-			assessmentPlan.setOwner(assignmentConfiguration.getAssessmentAssignmentOwner());
+			if(assignmentConfiguration.getAssessmentAssignmentOwner()!=null){
+				assessmentPlan.setOwner(assignmentConfiguration.getAssessmentAssignmentOwner());
+			}
 			assessmentAssignmentService.saveAssignmentAssignees(assignmentConfiguration, assessmentPlan);
 		}
 		signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, null, null, SmtConstant.CREATE.getDescription());
