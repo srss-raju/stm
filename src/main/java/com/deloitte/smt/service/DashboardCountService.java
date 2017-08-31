@@ -22,7 +22,7 @@ public class DashboardCountService {
 
 	public Long getValidateAndPrioritizeCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
 		Long count = 0l;
-		StringBuilder queryBuilder = new StringBuilder("SELECT count(*) FROM SM_TOPIC S LEFT JOIN SM_TOPIC_SIGNAL_VALIDATION_ASSIGNEES A ON A.TOPIC_ID = S.ID WHERE ");
+		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT S.* FROM SM_TOPIC S LEFT JOIN SM_TOPIC_SIGNAL_VALIDATION_ASSIGNEES A ON A.TOPIC_ID = S.ID WHERE ");
 		queryBuilder.append(ownerQuery);
 		StringBuilder keyBuilder;
 		String userKey;
@@ -54,7 +54,7 @@ public class DashboardCountService {
 		queryBuilder.append(") AND S.SIGNAL_STATUS <> 'Completed'");
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		query.setParameter(1, owner);
-		Object topicCount = query.getSingleResult();
+		Object topicCount = query.getResultList();
 		if(topicCount != null){
 			count = ((BigInteger)topicCount).longValue();
 		}
@@ -63,7 +63,7 @@ public class DashboardCountService {
 	
 	public Long getAssessmentCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
 		Long count = 0l;
-		StringBuilder queryBuilder = new StringBuilder("SELECT count(*) FROM SM_ASSESSMENT_PLAN S LEFT JOIN SM_TOPIC_ASSESSMENT_ASSIGNMENT_ASSIGNEES A ON A.ASSESSMENT_ID = S.ID WHERE ");
+		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT S.* FROM SM_ASSESSMENT_PLAN S LEFT JOIN SM_TOPIC_ASSESSMENT_ASSIGNMENT_ASSIGNEES A ON A.ASSESSMENT_ID = S.ID WHERE ");
 		queryBuilder.append(ownerQuery);
 		StringBuilder keyBuilder;
 		String userKey;
@@ -95,7 +95,7 @@ public class DashboardCountService {
 		queryBuilder.append(") AND S.ASSESSMENT_PLAN_STATUS <> 'Completed'");
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		query.setParameter(1, owner);
-		Object topicCount = query.getSingleResult();
+		Object topicCount = query.getResultList();
 		if(topicCount != null){
 			count = ((BigInteger)topicCount).longValue();
 		}
@@ -104,7 +104,7 @@ public class DashboardCountService {
 	
 	public Long getRiskCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
 		Long count = 0l;
-		StringBuilder queryBuilder = new StringBuilder("SELECT count(*) FROM SM_RISK_PLAN S LEFT JOIN SM_TOPIC_RISKPLAN_ASSIGNMENT_ASSIGNEES A ON A.RISK_ID = S.ID WHERE ");
+		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT S.* FROM SM_RISK_PLAN S LEFT JOIN SM_TOPIC_RISKPLAN_ASSIGNMENT_ASSIGNEES A ON A.RISK_ID = S.ID WHERE ");
 		queryBuilder.append(ownerQuery);
 		StringBuilder keyBuilder;
 		String userKey;
@@ -136,7 +136,7 @@ public class DashboardCountService {
 		queryBuilder.append(") AND S.STATUS <> 'Completed'");
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		query.setParameter(1, owner);
-		Object topicCount = query.getSingleResult();
+		Object topicCount = query.getResultList();
 		if(topicCount != null){
 			count = ((BigInteger)topicCount).longValue();
 		}

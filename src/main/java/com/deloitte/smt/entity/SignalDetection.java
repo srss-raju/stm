@@ -47,8 +47,16 @@ public class SignalDetection implements Serializable {
 	private String caselistId;
 	private Long casesCount;
 	private Long minCases;
+	private boolean socSelected;
 	
-	
+	public boolean isSocSelected() {
+		return socSelected;
+	}
+
+	public void setSocSelected(boolean socSelected) {
+		this.socSelected = socSelected;
+	}
+
 	@Transient
 	private List<QueryBuilder> queryBuilder;
 	
