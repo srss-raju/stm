@@ -18,12 +18,14 @@ import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
+import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicSignalValidationAssignmentAssignees;
 
@@ -44,6 +46,7 @@ public class SignalSearchService {
 			addProducts(searchDto, criteriaBuilder, query, rootTopic, predicates);
 			addLicenses(searchDto, criteriaBuilder, query, rootTopic, predicates);
 			addIngredients(searchDto, criteriaBuilder, query, rootTopic, predicates);
+			addSocs(searchDto, criteriaBuilder, query, rootTopic, predicates);
 			addHlts(searchDto, criteriaBuilder, query, rootTopic, predicates);
 			addHlgts(searchDto, criteriaBuilder, query, rootTopic, predicates);
 			addPts(searchDto, criteriaBuilder, query, rootTopic, predicates);
@@ -201,6 +204,20 @@ public class SignalSearchService {
 			predicates.add(hltNameEquals);
 		}
 	}
+	
+	private void addSocs(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
+			CriteriaQuery<Topic> criteriaQuery, Root<Topic> topic,
+			List<Predicate> predicates) {
+		if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
+			Root<Soc> rootSocs = criteriaQuery.from(Soc.class);
+			Predicate socEquals = criteriaBuilder.equal(topic.get("id"), rootSocs.get(SmtConstant.TOPIC_ID.getDescription()));
+			Predicate socNameEquals = criteriaBuilder.isTrue(rootSocs.get("socName").in(searchDto.getSocs()));
+			predicates.add(socEquals);
+			predicates.add(socNameEquals);
+		}
+		
+	}
+
 
 	/**
 	 * @param searchDto
@@ -278,6 +295,5 @@ public class SignalSearchService {
 			      
 			  }
 			 }
-
 
 }
