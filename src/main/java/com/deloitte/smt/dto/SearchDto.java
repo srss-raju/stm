@@ -37,6 +37,8 @@ public class SearchDto {
 	private List<Integer> smqIds;
 	
 	private String dateKey;
+	
+	private List<String> owners;
 
 	public String getDateKey() {
 		return dateKey;
@@ -273,6 +275,14 @@ public class SearchDto {
 
 	public void setIngredient(String ingredient) {
 		this.ingredient = ingredient;
+	}
+
+	public List<String> getOwners() {
+		return owners;
+	}
+
+	public void setOwners(List<String> owners) {
+		this.owners = owners;
 	}
 
 }

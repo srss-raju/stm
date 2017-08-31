@@ -32,5 +32,8 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	@Query("SELECT DISTINCT(o.sourceName) FROM Topic o WHERE o.sourceName IS NOT NULL")
 	List<String> getSourceNames();
 	
+	@Query("SELECT DISTINCT(o.owner) FROM Topic o WHERE o.owner IS NOT NULL ")
+	List<String> findDistinctOwnerNames();
+	
 }
 

@@ -38,4 +38,7 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	void updateRiskTaskStatus(@Param("riskTaskStatus") String riskTaskStatus, @Param("id") Long id);
 	
 	Long countByNameIgnoreCase(String topicName);
+	
+	@Query("SELECT DISTINCT(o.owner) FROM  RiskPlan o WHERE o.owner IS NOT NULL")
+	List<String> findOwnersOnRiskPlan();
 }

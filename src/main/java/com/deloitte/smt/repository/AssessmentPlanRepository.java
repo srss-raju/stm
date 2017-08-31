@@ -35,5 +35,7 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	
 	Long countByAssessmentNameIgnoreCase(String assessmentName);
 	
+	@Query("SELECT DISTINCT(o.owner) FROM AssessmentPlan o WHERE o.owner IS NOT NULL")
+	List<String> findOwnersOnAssessmentPlan();
 	
 }
