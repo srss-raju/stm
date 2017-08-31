@@ -71,17 +71,17 @@ public class SearchService {
     @Autowired
     SignalDetectionRepository signalDetectionRepository;
 
-    public SearchDto getFiltersForSignal(){
+    public SearchDto getFiltersForSignal(String owner,Long userGroupKey){
         SearchDto dto = new SearchDto();
         dto.setStatuses(Arrays.asList("New", SmtConstant.IN_PROGRESS.getDescription(), SmtConstant.COMPLETED.getDescription(), "Overdue"));
-        dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignal());
-        dto.setProducts(productRepository.findDistinctProductNameForSignal());
-        dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignal());
-        dto.setSocs(socRepository.findDistinctSocNameForSignal());
-        dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignal());
-        dto.setHlts(hltRepository.findDistinctHltNameForSignal());
-        dto.setPts(ptRepository.findDistinctPtNameForSignal());
-        dto.setSignalNames(topicRepository.findDistinctSignalName());
+        dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignal(owner,userGroupKey));
+        dto.setProducts(productRepository.findDistinctProductNameForSignal(owner,userGroupKey));
+        dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignal(owner,userGroupKey));
+        dto.setSocs(socRepository.findDistinctSocNameForSignal(owner,userGroupKey));
+        dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignal(owner,userGroupKey));
+        dto.setHlts(hltRepository.findDistinctHltNameForSignal(owner,userGroupKey));
+        dto.setPts(ptRepository.findDistinctPtNameForSignal(owner,userGroupKey));
+        dto.setSignalNames(topicRepository.findDistinctSignalName(owner,userGroupKey));
         dto.setSignalConfirmations(topicRepository.findDistinctSignalConfirmationNames());
         dto.setAssignees(topicSignalValidationAssignmentAssigneesRepository.getSignalAssignedUsers());
         dto.setUserKeys(topicSignalValidationAssignmentAssigneesRepository.getAssignedUsers());
@@ -91,16 +91,16 @@ public class SearchService {
         return dto;
     }
 
-    public SearchDto getFiltersForSignalDetection(){
+    public SearchDto getFiltersForSignalDetection(String owner,Long userGroupKey){
         SearchDto dto = new SearchDto();
         dto.setStatuses(Arrays.asList("New", SmtConstant.IN_PROGRESS.getDescription(), SmtConstant.COMPLETED.getDescription()));
-        dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignalDetection());
-        dto.setProducts(productRepository.findDistinctProductNameForSignalDetection());
-        dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignalDetection());
-        dto.setSocs(socRepository.findDistinctSocNameForSignalDetection());
-        dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignalDetection());
-        dto.setHlts(hltRepository.findDistinctHltNameForSignalDetection());
-        dto.setPts(ptRepository.findDistinctPtNameForSignalDetection());
+        dto.setIngredients(ingredientRepository.findDistinctIngredientNamesForSignalDetection(owner,userGroupKey));
+        dto.setProducts(productRepository.findDistinctProductNameForSignalDetection(owner,userGroupKey));
+        dto.setLicenses(licenseRepository.findDistinctLicenseNameForSignalDetection(owner,userGroupKey));
+        dto.setSocs(socRepository.findDistinctSocNameForSignalDetection(owner,userGroupKey));
+        dto.setHlgts(hlgtRepository.findDistinctHlgtNameForSignalDetection(owner,userGroupKey));
+        dto.setHlts(hltRepository.findDistinctHltNameForSignalDetection(owner,userGroupKey));
+        dto.setPts(ptRepository.findDistinctPtNameForSignalDetection(owner,userGroupKey));
         dto.setAssignees(topicSignalDetectionAssignmentAssigneesRepository.getDetectionAssignedUsers());
         dto.setUserKeys(topicSignalDetectionAssignmentAssigneesRepository.getAssignedUsers());
         dto.setUserGroupKeys(topicSignalDetectionAssignmentAssigneesRepository.getAssignedGroups());
@@ -109,8 +109,8 @@ public class SearchService {
         return dto;
     }
 
-    public SearchDto getAllFiltersForAssessmentPlan() {
-        Set<Long> topicIds = assessmentPlanRepository.findAllSignalIds();
+    public SearchDto getAllFiltersForAssessmentPlan(String owner,Long userGroupKey){
+        Set<Long> topicIds = assessmentPlanRepository.findAllSignalIds(owner,userGroupKey);
         SearchDto searchDto= getFilters(topicIds);
         searchDto.setAssignees(topicAssessmentAssignmentAssigneesRepository.getAssessmentAssignedUsers());
         searchDto.setUserKeys(topicAssessmentAssignmentAssigneesRepository.getAssignedUsers());
@@ -121,8 +121,8 @@ public class SearchService {
         return searchDto;
     }
 
-    public SearchDto getAllFiltersForRiskPlan() {
-        Set<Long> topicIds = riskPlanRepository.findAllSignalIds();
+    public SearchDto getAllFiltersForRiskPlan(String owner,Long userGroupKey) {
+        Set<Long> topicIds = riskPlanRepository.findAllSignalIds(owner,userGroupKey);
         SearchDto searchDto= getFilters(topicIds);
         searchDto.setAssignees(topicRiskPlanAssignmentAssigneesRepository.getRiskAssignedUsers());
         searchDto.setUserKeys(topicRiskPlanAssignmentAssigneesRepository.getAssignedUsers());

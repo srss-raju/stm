@@ -13,11 +13,11 @@ public interface HlgtRepository  extends JpaRepository<Hlgt, Long> {
 
     List<Hlgt> findAllByHlgtNameIn(List<String> hlgts);
 
-    @Query(value = "SELECT distinct (o.hlgtName) from Hlgt o where o.hlgtName is not null AND o.topicId IS not null")
-    List<String> findDistinctHlgtNameForSignal();
+    @Query(value = "SELECT distinct (o.hlgtName) from Hlgt o ,TopicSignalValidationAssignmentAssignees ta,Topic t WHERE ta.topicId=o.topicId AND ta.userGroupKey =:userGroupKey OR t.owner =:owner AND o.hlgtName is not null AND o.topicId IS not null")
+    List<String> findDistinctHlgtNameForSignal(@Param("owner")String owner,@Param("userGroupKey")Long userGroupKey);
 
-    @Query(value = "SELECT distinct (o.hlgtName) from Hlgt o where o.hlgtName is not null AND o.detectionId IS not null")
-    List<String> findDistinctHlgtNameForSignalDetection();
+    @Query(value="SELECT distinct (o.hlgtName) from Hlgt o , TopicSignalDetectionAssignmentAssignees ta,SignalDetection t WHERE o.detectionId=ta.detectionId AND ta.userGroupKey =:userGroupKey OR t.owner=:owner AND o.detectionId IS not null")
+    List<String> findDistinctHlgtNameForSignalDetection(@Param("owner")String owner,@Param("userGroupKey")Long userGroupKey);
 
     @Query(value = "SELECT DISTINCT(o.hlgtName) FROM Hlgt o WHERE o.hlgtName IS NOT NULL and o.topicId is not null and o.topicId in :topicIds")
     List<String> findDistinctHlgtNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);

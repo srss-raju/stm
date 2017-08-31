@@ -62,7 +62,7 @@ public class MasterDataControllerTest {
 	@Test
 	public void testGetFiltersForSignal()throws Exception{
 		SearchDto searchDto=new SearchDto();
-		when(searchService.getFiltersForSignal()).thenReturn(searchDto);
+		when(searchService.getFiltersForSignal(null, null)).thenReturn(searchDto);
 		this.mockMvc
 				.perform(get("/camunda/api/signal/utils/filters/signal")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -73,7 +73,7 @@ public class MasterDataControllerTest {
 	@Test
 	public void testGetFiltersForSignalDetection()throws Exception{
 		SearchDto searchDto=new SearchDto();
-		when(searchService.getFiltersForSignalDetection()).thenReturn(searchDto);
+		when(searchService.getFiltersForSignalDetection(null, null)).thenReturn(searchDto);
 		this.mockMvc
 				.perform(get("/camunda/api/signal/utils/filters/signalDetection")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -83,7 +83,7 @@ public class MasterDataControllerTest {
 	@Test
 	public void testGetFiltersForAssessmentPlan()throws Exception{
 		SearchDto searchDto=new SearchDto();
-		when(searchService.getAllFiltersForAssessmentPlan()).thenReturn(searchDto);
+		when(searchService.getAllFiltersForAssessmentPlan(null, null)).thenReturn(searchDto);
 		this.mockMvc
 				.perform(get("/camunda/api/signal/utils/filters/assessmentPlan")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -93,7 +93,7 @@ public class MasterDataControllerTest {
 	@Test
 	public void testGetFiltersForRiskPlan()throws Exception{
 		SearchDto searchDto=new SearchDto();
-		when(searchService.getAllFiltersForRiskPlan()).thenReturn(searchDto);
+		when(searchService.getAllFiltersForRiskPlan(null, null)).thenReturn(searchDto);
 		this.mockMvc
 				.perform(get("/camunda/api/signal/utils/filters/riskPlan")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

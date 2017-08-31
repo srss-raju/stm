@@ -25,11 +25,12 @@ public interface IngredientRepository  extends JpaRepository<Ingredient, Long> {
     @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL")
     List<String> findDistinctIngredientNames();
 
-    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL AND o.topicId IS not null")
-    List<String> findDistinctIngredientNamesForSignal();
+    //@Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL AND o.topicId IS not null")
+    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o,TopicSignalValidationAssignmentAssignees ta,Topic t WHERE ta.topicId=o.topicId AND ta.userGroupKey= :userGroupKey OR t.owner=:owner")
+    List<String> findDistinctIngredientNamesForSignal(@Param("owner")String owner,@Param("userGroupKey")Long userGroupKey);
 
-    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL and o.detectionId is not null")
-    List<String> findDistinctIngredientNamesForSignalDetection();
+    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o ,TopicSignalDetectionAssignmentAssignees ta,SignalDetection t WHERE o.detectionId=ta.detectionId AND ta.userGroupKey= :userGroupKey OR t.owner=:owner AND o.ingredientName IS NOT NULL")
+    List<String> findDistinctIngredientNamesForSignalDetection(@Param("owner")String owner,@Param("userGroupKey")Long userGroupKey);
 
     @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL and o.topicId is not null and o.topicId in :topicIds")
     List<String> findDistinctIngredientNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);
