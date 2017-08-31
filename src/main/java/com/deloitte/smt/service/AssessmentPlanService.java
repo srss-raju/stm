@@ -479,7 +479,7 @@ public class AssessmentPlanService {
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())),
 					   criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
-					   criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner())))));   
+					   criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwners())))));   
 			  }
 	 }
 }

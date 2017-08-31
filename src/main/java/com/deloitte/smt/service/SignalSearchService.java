@@ -18,7 +18,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
 import com.deloitte.smt.entity.Ingredient;
@@ -291,7 +290,8 @@ public class SignalSearchService {
 			  
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			   Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.LEFT); //left outer join
-			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userKey").in(searchDto.getUserKeys())),criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner())),criteriaBuilder.isTrue(rootTopic.get("owner").isNull()))));
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userKey").in(searchDto.getUserKeys())),criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
+					   criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwners())),criteriaBuilder.isTrue(rootTopic.get("owner").isNull()))));
 			      
 			  }
 			 }
