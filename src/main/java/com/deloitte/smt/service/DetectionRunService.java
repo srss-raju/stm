@@ -42,4 +42,14 @@ public class DetectionRunService {
     public List<DetectionRun> findByDetectionId(Long detectionId) {
         return detectionRunRepository.findByDetectionId(detectionId, new Sort(Sort.Direction.DESC, "createdDate"));
     }
+
+	public void delete(Long detectionRunId) throws ApplicationException {
+		DetectionRun detectionRun = detectionRunRepository.findOne(detectionRunId);
+        if(detectionRun == null) {
+            throw new ApplicationException("Detection Run not found with the given Id : "+detectionRunId);
+        }else{
+        	detectionRunRepository.delete(detectionRun);
+        }
+		
+	}
 }

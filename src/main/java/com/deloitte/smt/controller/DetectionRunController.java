@@ -3,7 +3,11 @@ package com.deloitte.smt.controller;
 import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.DetectionRunService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,5 +41,11 @@ public class DetectionRunController {
     @GetMapping(value = "/detection/{detectionId}")
     public List<DetectionRun> findByDetectionId(@PathVariable Long detectionId) {
         return detectionRunService.findByDetectionId(detectionId);
+    }
+    
+    @DeleteMapping(value = "/{detectionRunId}")
+    public ResponseEntity<Void> deleteDetectionRun(@PathVariable Long detectionRunId) throws ApplicationException {
+    	detectionRunService.delete(detectionRunId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
