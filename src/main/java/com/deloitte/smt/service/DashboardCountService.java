@@ -1,6 +1,5 @@
 package com.deloitte.smt.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -54,9 +53,11 @@ public class DashboardCountService {
 		queryBuilder.append(") AND S.SIGNAL_STATUS <> 'Completed'");
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		query.setParameter(1, owner);
-		Object topicCount = query.getResultList();
+		List<Object> topicCount = query.getResultList();
 		if(topicCount != null){
-			count = ((BigInteger)topicCount).longValue();
+			Integer size = topicCount.size();
+			count = size.longValue();
+			
 		}
 		return count;
 	}
@@ -95,9 +96,10 @@ public class DashboardCountService {
 		queryBuilder.append(") AND S.ASSESSMENT_PLAN_STATUS <> 'Completed'");
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		query.setParameter(1, owner);
-		Object topicCount = query.getResultList();
+		List<Object> topicCount = query.getResultList();
 		if(topicCount != null){
-			count = ((BigInteger)topicCount).longValue();
+			Integer size = topicCount.size();
+			count = size.longValue();
 		}
 		return count;
 	}
@@ -136,9 +138,10 @@ public class DashboardCountService {
 		queryBuilder.append(") AND S.STATUS <> 'Completed'");
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		query.setParameter(1, owner);
-		Object topicCount = query.getResultList();
+		List<Object> topicCount = query.getResultList();
 		if(topicCount != null){
-			count = ((BigInteger)topicCount).longValue();
+			Integer size = topicCount.size();
+			count = size.longValue();
 		}
 		return count;
 	}
