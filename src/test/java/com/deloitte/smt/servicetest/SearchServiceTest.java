@@ -91,28 +91,28 @@ public class SearchServiceTest {
 
 	@Test
 	public void testGetFiltersForSignal() {
-		searchService.getFiltersForSignal();
+		searchService.getFiltersForSignal("", (long) 12212);
 	}
 	
 	@Test
 	public void testGetFiltersForSignalDetection() {
-		searchService.getFiltersForSignalDetection();
+		searchService.getFiltersForSignalDetection(null, null);
 	}
 	
 	@Test
 	public void testGetAllFiltersForAssessmentPlan() {
 		Set<Long> topicIds = new HashSet<>();
 		topicIds.add(1l);
-		given(this.assessmentPlanRepository.findAllSignalIds()).willReturn(topicIds);
-		searchService.getAllFiltersForAssessmentPlan();
+		given(this.assessmentPlanRepository.findAllSignalIds(null, null)).willReturn(topicIds);
+		searchService.getAllFiltersForAssessmentPlan(null, null);
 	}
 	
 	@Test
 	public void testGetAllFiltersForRiskPlan() {
 		Set<Long> topicIds = new HashSet<>();
 		topicIds.add(1l);
-		given(this.riskPlanRepository.findAllSignalIds()).willReturn(topicIds);
-		searchService.getAllFiltersForRiskPlan();
+		given(this.riskPlanRepository.findAllSignalIds(null, null)).willReturn(topicIds);
+		searchService.getAllFiltersForRiskPlan(null, null);
 	}
 	
 	@Test

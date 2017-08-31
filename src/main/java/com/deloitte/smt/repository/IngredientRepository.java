@@ -1,36 +1,38 @@
 package com.deloitte.smt.repository;
 
-import com.deloitte.smt.entity.Ingredient;
+import java.util.List;
+import java.util.Set;
+
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Set;
+import com.deloitte.smt.entity.Ingredient;
 
-public interface IngredientRepository  extends JpaRepository<Ingredient, Long> {
+public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
-    List<Ingredient> findAllByIngredientNameIn(List<String> ingredients);
-    
-    Ingredient findByTopicId(Long topicId);
+	List<Ingredient> findAllByIngredientNameIn(List<String> ingredients);
 
-    Ingredient findByDetectionId(Long detectionId);
+	Ingredient findByTopicId(Long topicId);
 
-    Ingredient findByDetectionIdAndIngredientNameIn(Long detectionId, List<String> ingredients);
+	Ingredient findByDetectionId(Long detectionId);
 
-    @Transactional
-    Long deleteByDetectionId(Long detectionId);
+	Ingredient findByDetectionIdAndIngredientNameIn(Long detectionId, List<String> ingredients);
 
-    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL")
-    List<String> findDistinctIngredientNames();
+	@Transactional
+	Long deleteByDetectionId(Long detectionId);
 
-    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL AND o.topicId IS not null")
-    List<String> findDistinctIngredientNamesForSignal();
+	@Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL")
+	List<String> findDistinctIngredientNames();
 
-    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL and o.detectionId is not null")
-    List<String> findDistinctIngredientNamesForSignalDetection();
+	@Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o,TopicSignalValidationAssignmentAssignees ta,Topic t WHERE ta.topicId=o.topicId AND ta.userGroupKey= :userGroupKey OR t.owner=:owner")
+	List<String> findDistinctIngredientNamesForSignal(@Param("userGroupKey")Long userGroupKey);
+	
+	@Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o ,TopicSignalDetectionAssignmentAssignees ta,SignalDetection t WHERE o.detectionId=ta.detectionId AND ta.userGroupKey= :userGroupKey OR t.owner=:owner AND o.ingredientName IS NOT NULL")
+	List<String> findDistinctIngredientNamesForSignalDetection(@Param("owner")String owner,@Param("userGroupKey")Long userGroupKey);
 
-    @Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL and o.topicId is not null and o.topicId in :topicIds")
-    List<String> findDistinctIngredientNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);
+	@Query(value = "SELECT DISTINCT(o.ingredientName) FROM Ingredient o WHERE o.ingredientName IS NOT NULL and o.topicId is not null and o.topicId in :topicIds")
+	List<String> findDistinctIngredientNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);
 }

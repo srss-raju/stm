@@ -14,8 +14,8 @@ import com.deloitte.smt.entity.AssessmentPlan;
 
 public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, Long> {
 
-	@Query(value = "SELECT t.id FROM AssessmentPlan o inner join o.topics t")
-	Set<Long> findAllSignalIds();
+	@Query(value = "SELECT t.id FROM AssessmentPlan o inner join o.topics t,TopicAssessmentAssignmentAssignees ta WHERE o.id=ta.assessmentId AND ta.userGroupKey=:userGroupKey AND t.owner=:owner")
+	Set<Long> findAllSignalIds(@Param("owner") String owner,@Param("userGroupKey") Long userGroupKey);
 
 	List<AssessmentPlan> findAllByCreatedDateOrderByCreatedDateDesc(Date createdDate);
 	

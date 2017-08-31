@@ -37,9 +37,12 @@ public class SignalSearchService {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Topic> query = criteriaBuilder.createQuery(Topic.class);
 		Root<Topic> rootTopic = query.from(Topic.class);
-		
+		 Predicate ownerOr=null;
+		 Predicate ownerNull=null;
+		  
 		if (null != searchDto) {
 			List<Predicate> predicates = new ArrayList<>(10);
+			List<Predicate> orPredicates = new ArrayList<Predicate>();
 
 			addProducts(searchDto, criteriaBuilder, query, rootTopic, predicates);
 			addLicenses(searchDto, criteriaBuilder, query, rootTopic, predicates);
@@ -53,12 +56,23 @@ public class SignalSearchService {
 			addAssignees(searchDto, criteriaBuilder, rootTopic, predicates);
 			addDueDate(searchDto, criteriaBuilder, rootTopic, predicates);
 			addSignalConfirmations(searchDto, criteriaBuilder, rootTopic, predicates);
-			/**TopicSignalValidationAssignmentAssignees **/
+			addOwner(searchDto, criteriaBuilder,rootTopic,predicates);
+			
+			if (null!=searchDto.getOwner()) {
+				
+				ownerOr=criteriaBuilder.or(rootTopic.get("owner").in(searchDto.getOwner()));
+				orPredicates.add(ownerOr);
+			}
+			ownerNull=criteriaBuilder.or(rootTopic.get("owner").isNull());
+			orPredicates.add(ownerNull);
+			
 			addUserKeys(searchDto, criteriaBuilder,rootTopic,predicates);
-			addUserGroupKeys(searchDto, criteriaBuilder, rootTopic,predicates);
+			//addUserGroupKeys(searchDto, criteriaBuilder, rootTopic,predicates);
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-			query.select(rootTopic).where(andPredicate)
+			Predicate orPredicate = criteriaBuilder.or(orPredicates.toArray(new Predicate[orPredicates.size()]));
+			
+			query.select(rootTopic).where(andPredicate,orPredicate)
 					.orderBy(criteriaBuilder.desc(rootTopic.get(SmtConstant.CREATED_DATE.getDescription())))
 					.distinct(true);
 		} else {
@@ -289,7 +303,8 @@ public class SignalSearchService {
 			  
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			   Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.LEFT); //left outer join
-			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
+			   predicates.add(criteriaBuilder.or(joinAssignees.get("userKey").in(searchDto.getUserKeys())));
+			   predicates.add(criteriaBuilder.or(joinAssignees.get("userGroupKey").in(searchDto.getUserKeys())));
 			      
 			  }
 			 }
@@ -305,9 +320,26 @@ public class SignalSearchService {
 			  
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			   Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.LEFT); //left outer join
-			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userGroupKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get("userGroupKey").in(searchDto.getUserKeys()))));
 			      
 			  }
+			 }
+	/**
+	 * 
+	 * @param searchDto
+	 * @param criteriaBuilder
+	 * @param query
+	 * @param rootTopic
+	 * @param predicates
+	 */
+	private void addOwner(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic, List<Predicate> predicates) {
+			  
+		if (null!=searchDto.getOwner()) {
+			
+			predicates.add(criteriaBuilder.or(rootTopic.get("owner").in(searchDto.getOwner())));
+		}
+		predicates.add(criteriaBuilder.or(rootTopic.get("owner").isNull()));
+	
 			 }
 
 }

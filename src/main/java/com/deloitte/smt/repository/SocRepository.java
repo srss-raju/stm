@@ -17,11 +17,12 @@ public interface SocRepository  extends JpaRepository<Soc, Long> {
 
 	List<Soc> findByDetectionId(Long detectionId);
 
-	@Query(value = "SELECT distinct (o.socName) FROM Soc o WHERE o.socName is not null AND o.topicId IS not null")
-	List<String> findDistinctSocNameForSignal();
+	@Query(value = "SELECT distinct (o.socName) FROM Soc o ,TopicSignalValidationAssignmentAssignees ta,Topic t WHERE ta.topicId=o.topicId AND ta.userGroupKey =:userGroupKey OR t.owner= :owner")
+	List<String> findDistinctSocNameForSignal(@Param("owner")String owner,@Param("userGroupKey")Long userGroupKey);
 
-	@Query(value = "SELECT distinct (o.socName) FROM Soc o WHERE o.socName is not null AND o.detectionId IS not null")
-	List<String> findDistinctSocNameForSignalDetection();
+	//@Query(value = "SELECT distinct (o.socName) FROM Soc o WHERE o.socName is not null AND o.detectionId IS not null")
+	@Query(value="SELECT DISTINCT(o.socName) FROM Soc o ,TopicSignalDetectionAssignmentAssignees ta,SignalDetection t WHERE o.detectionId=ta.detectionId AND ta.userGroupKey =:userGroupKey OR t.owner= :owner AND o.socName is not null AND o.detectionId IS not null")
+	List<String> findDistinctSocNameForSignalDetection(@Param("owner")String owner,@Param("userGroupKey")Long userGroupKey);
 
 	@Query(value = "SELECT DISTINCT(o.socName) FROM Soc o WHERE o.socName IS NOT NULL and o.topicId is not null and o.topicId in :topicIds")
 	List<String> findDistinctSocNamesTopicIdsIn(@Param("topicIds") Set<Long> topicIds);
