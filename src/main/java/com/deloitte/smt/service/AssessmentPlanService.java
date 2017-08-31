@@ -152,7 +152,6 @@ public class AssessmentPlanService {
 			addStartOrDueDate(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			addAssessmentRiskStatus(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			/**TopicAssessmentAssignmentAssignees **/
-			addUserKeys(searchDto, criteriaBuilder,joinAssignmentAssignees,topic,predicates);
 			addUserGroupKeys(searchDto, criteriaBuilder,joinAssignmentAssignees,topic,predicates);
 			
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -466,23 +465,6 @@ public class AssessmentPlanService {
         signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlanUpdated, assessmentPlanOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
     }
     
-    /**
-	 * 
-	 * @param searchDto
-	 * @param criteriaBuilder
-	 * @param query
-	 * @param rootTopic
-	 * @param predicates
-	 */
-	private void addUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder,
-			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees,Root<Topic> rootTopic, List<Predicate> predicates) {
-			  
-			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			  // Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> joinAssignees = rootTopic.join("topicAssessmentAssignmentAssignees", JoinType.LEFT); //left outer join
-			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
-			      
-			  }
-			 }
 	/**
 	 * 
 	 * @param searchDto
@@ -495,9 +477,9 @@ public class AssessmentPlanService {
 			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees, Root<Topic> rootTopic,List<Predicate> predicates) {
 			  
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			   //Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> joinAssignees = rootTopic.join("topicAssessmentAssignmentAssignees", JoinType.LEFT); //left outer join
-			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserKeys())), criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner()))));
-			      
+			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())),
+					   criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
+					   criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwner())))));   
 			  }
 	 }
 }
