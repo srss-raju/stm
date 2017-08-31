@@ -400,7 +400,6 @@ public class RiskPlanService {
 			addRiskTaskStatus(searchDto, whereClauses);
 			addStartDate(searchDto, whereClauses);
 			addEndDate(searchDto, whereClauses);
-			addUserKey(searchDto, whereClauses);
 			addUserGroupKey(searchDto, whereClauses);
 		}
 	}
@@ -456,15 +455,6 @@ public class RiskPlanService {
 			whereClauses.add(" r.status in :statuses");
 		}
 	}
-	/**
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addUserKey(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add(" ra.user_key in :userKeys");
-		}
-	}
 	
 	/**
 	 * @param searchDto
@@ -472,7 +462,7 @@ public class RiskPlanService {
 	 */
 	private void addUserGroupKey(SearchDto searchDto, List<String> whereClauses) {
 		if (!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())) {
-			whereClauses.add("r.owner is null or r.owner=:owner or ra.user_group_key in :userGroupKeys");
+			whereClauses.add(" r.owner in :owners or ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
 		}
 	}
 	
@@ -516,6 +506,9 @@ public class RiskPlanService {
 		if (queryStr.contains(":socNames")) {
 			query.setParameter("socNames", searchDto.getSocs());
 		}
+		if (queryStr.contains(":owners")) {
+			query.setParameter("owners", searchDto.getOwners());
+		}
 		setAssignees(queryStr, searchDto, query);
 	}
 
@@ -533,9 +526,6 @@ public class RiskPlanService {
 			query.setParameter("userGroupKeys", searchDto.getUserGroupKeys());
 		}
 
-		if (queryStr.contains(":owner")) {
-			query.setParameter("owner", searchDto.getOwner());
-		}
 	}
 
 	/**
