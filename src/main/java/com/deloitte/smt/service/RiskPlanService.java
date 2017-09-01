@@ -461,10 +461,25 @@ public class RiskPlanService {
 	 * @param whereClauses
 	 */
 	private void addUserGroupKey(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())) {
+		if (!CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && !CollectionUtils.isEmpty(searchDto.getOwners()) && !CollectionUtils.isEmpty(searchDto.getUserKeys()) ) {
 			whereClauses.add(" r.owner in :owners or ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
-		}else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())) {
+		}else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getOwners())&& !CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			whereClauses.add(" ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
+		}
+		else if(CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners()) && CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			whereClauses.add("r.owner in :owners");
+		}
+		else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners()) && CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			whereClauses.add(" ra.user_group_key in :userGroupKeys ");
+		}
+		else if(CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners()) && !CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			whereClauses.add(" ra.user_key in :userKeys ");
+		}
+		else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners()) && CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			whereClauses.add(" ra.user_group_key in :userGroupKeys or r.owner in :owners ");
+		}
+		else if(CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners()) && !CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+			whereClauses.add(" ra.user_key in :userKeys or r.owner in :owners ");
 		}
 	}
 	
