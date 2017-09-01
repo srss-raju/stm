@@ -47,7 +47,6 @@ import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.entity.TopicSignalValidationAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -200,23 +199,8 @@ public class SignalService {
 
 	public Topic findById(Long topicId) throws ApplicationException {
 		Topic topic = topicRepository.findOne(topicId);
-		//Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription())
-		
-		
-		
 		if (topic == null) {
 			throw new ApplicationException("Signal not found with the given Id :" + topicId);
-		}
-		
-		List<TopicSignalValidationAssignmentAssignees>  list = topic.getTopicSignalValidationAssignmentAssignees();
-		if(!CollectionUtils.isEmpty(list)){
-			for(TopicSignalValidationAssignmentAssignees a:list){
-				if(a.getUserGroupKey()!= -99){
-					a.setUserKey(-1l);
-        		}else{
-        			a.setUserGroupKey(-1l);
-        		}
-			}
 		}
 		
 		if (null == topic.getSignalValidation()) {
@@ -303,16 +287,6 @@ public class SignalService {
 				}
 				topicUpdated = topicRepository.save(topicUpdated);
 				topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
-			}
-			List<TopicSignalValidationAssignmentAssignees>  list = topicUpdated.getTopicSignalValidationAssignmentAssignees();
-			if(!CollectionUtils.isEmpty(list)){
-				for(TopicSignalValidationAssignmentAssignees a:list){
-					if(a.getUserGroupKey()!= -99){
-						a.setUserKey(-1l);
-	        		}else{
-	        			a.setUserGroupKey(-1l);
-	        		}
-				}
 			}
 			
 			ingredient.setTopicId(topicUpdated.getId());
@@ -482,16 +456,6 @@ public class SignalService {
 		List<Attachment> attchmentList = attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT,
 				topic.getDeletedAttachmentIds(), topic.getFileMetadata(), topic.getCreatedBy());
 		String topicOriginal = JsonUtil.converToJson(findById(topic.getId()));
-		List<TopicSignalValidationAssignmentAssignees> list = topic.getTopicSignalValidationAssignmentAssignees();
-		if(!CollectionUtils.isEmpty(list)){
-			for(TopicSignalValidationAssignmentAssignees aaAssignees:list){
-				if(aaAssignees.getUserGroupKey()!= -1){
-					aaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
-        		}else{
-        			aaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
-        		}
-			}
-		}
 		
 		Topic topicUpdated = topicRepository.save(topic);
 		saveSignalUrl(topic);

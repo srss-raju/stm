@@ -116,8 +116,6 @@ public class SignalDetectionService {
 
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
-
-			
 			if(signalDetection.getId()==null){
 				Long signalDetectionExist = signalDetectionRepository.countByNameIgnoreCase(signalDetection.getName());
 				if (signalDetectionExist > 0) {
@@ -132,21 +130,8 @@ public class SignalDetectionService {
 			} else {
 				signalDetection.setLastModifiedDate(c.getTime());
 			}
-
 			signalDetection.setNextRunDate(
 					SignalUtil.getNextRunDate(signalDetection.getRunFrequency(), signalDetection.getCreatedDate()));
-			
-			List<TopicSignalDetectionAssignmentAssignees> detectionAssigneeList = signalDetection.getTopicSignalDetectionAssignmentAssignees();
-			if(!CollectionUtils.isEmpty(detectionAssigneeList)){
-				for(TopicSignalDetectionAssignmentAssignees aaAssignees:detectionAssigneeList){
-					if(aaAssignees.getUserGroupKey()!= -1){
-						aaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
-	        		}else{
-	        			aaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
-	        		}
-				}
-			}
-			
 			SignalDetection clone = signalDetection;
 			clone = signalDetectionRepository.save(clone);
 			List<TopicSignalDetectionAssignmentAssignees>  detectionAssigneesList = clone.getTopicSignalDetectionAssignmentAssignees();
@@ -155,18 +140,6 @@ public class SignalDetectionService {
 					assignee.setDetectionId(clone.getId());
 				} 
 			}
-			
-			 List<TopicSignalDetectionAssignmentAssignees>  alist = clone.getTopicSignalDetectionAssignmentAssignees();
-				if(!CollectionUtils.isEmpty(alist)){
-					for(TopicSignalDetectionAssignmentAssignees a:alist){
-						if(a.getUserGroupKey()!= -99){
-							a.setUserKey(-1l);
-		        		}else{
-		        			a.setUserGroupKey(-1l);
-		        		}
-					}
-				}
-				
 			signalDetection.setId(clone.getId());
 			Ingredient ingredient = signalDetection.getIngredient();
 			if (ingredient != null) {
@@ -376,18 +349,6 @@ public class SignalDetectionService {
 		if (null == signalDetection) {
 			throw new ApplicationException("Signal Detection not found with given Id :" + id);
 		}
-		
-		List<TopicSignalDetectionAssignmentAssignees>  alist = signalDetection.getTopicSignalDetectionAssignmentAssignees();
-		if(!CollectionUtils.isEmpty(alist)){
-			for(TopicSignalDetectionAssignmentAssignees a:alist){
-				if(a.getUserGroupKey()!= -99){
-					a.setUserKey(-1l);
-        		}else{
-        			a.setUserGroupKey(-1l);
-        		}
-			}
-		}
-		
 		addOtherInfoToSignalDetection(signalDetection);
 		signalDetection.setTopicSignalDetectionAssignmentAssignees(topicSignalDetectionAssignmentAssigneesRepository.findByDetectionId(id));
 		return signalDetection;

@@ -680,18 +680,6 @@ public class RiskPlanService {
 		if (riskPlan == null) {
 			throw new ApplicationException("Risk Plan not found with the given Id : " + riskId);
 		}
-		
-		List<TopicRiskPlanAssignmentAssignees>  alist = riskPlan.getTopicRiskPlanAssignmentAssignees();
-		if(!CollectionUtils.isEmpty(alist)){
-			for(TopicRiskPlanAssignmentAssignees a:alist){
-				if(a.getUserGroupKey()!= -99){
-					a.setUserKey(-1l);
-        		}else{
-        			a.setUserGroupKey(-1l);
-        		}
-			}
-		}
-		
 		if ("New".equalsIgnoreCase(riskPlan.getStatus())) {
 			riskPlan.setStatus("In Progress");
 			riskPlan = riskPlanRepository.save(riskPlan);
@@ -723,33 +711,7 @@ public class RiskPlanService {
 		riskPlan.setLastModifiedDate(new Date());
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT,
 				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
-		
-		List<TopicRiskPlanAssignmentAssignees> riskAssigneelist = riskPlan.getTopicRiskPlanAssignmentAssignees();
-		if(!CollectionUtils.isEmpty(riskAssigneelist)){
-			for(TopicRiskPlanAssignmentAssignees aaAssignees:riskAssigneelist){
-				if(aaAssignees.getUserGroupKey()!= -1){
-					aaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
-        		}else{
-        			aaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
-        		}
-			}
-		}
-		
-		
 		RiskPlan riskPlanUpdated = riskPlanRepository.save(riskPlan);
-		
-		 List<TopicRiskPlanAssignmentAssignees>  alist = riskPlanUpdated.getTopicRiskPlanAssignmentAssignees();
-			if(!CollectionUtils.isEmpty(alist)){
-				for(TopicRiskPlanAssignmentAssignees a:alist){
-					if(a.getUserGroupKey()!= -99){
-						a.setUserKey(-1l);
-	        		}else{
-	        			a.setUserGroupKey(-1l);
-	        		}
-				}
-			}
-			
-		
 		List<TopicRiskPlanAssignmentAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
 		if(!CollectionUtils.isEmpty(assigneeList)){
 			topicRiskPlanAssignmentAssigneesRepository.deleteByRiskId(riskPlanUpdated.getId());
