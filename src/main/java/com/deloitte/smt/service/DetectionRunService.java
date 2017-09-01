@@ -1,15 +1,15 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.entity.DetectionRun;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.repository.DetectionRunRepository;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import com.deloitte.smt.entity.DetectionRun;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.repository.DetectionRunRepository;
 
 /**
  * Created by rajesh on 05-05-2017.
@@ -24,6 +24,13 @@ public class DetectionRunService {
     	detectionRun.setCreatedDate(new Date());
     	detectionRun.setRunDate(new Date());
     	detectionRun.setLastModifiedDate(new Date());
+        return detectionRunRepository.save(detectionRun);
+    }
+    
+    public DetectionRun update(DetectionRun detectionRun) throws ApplicationException {
+        if(detectionRun.getId() == null) {
+            throw new ApplicationException("Required field Id is no present in the given request.");
+        }
         return detectionRunRepository.save(detectionRun);
     }
 

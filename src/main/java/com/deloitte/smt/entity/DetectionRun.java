@@ -21,7 +21,14 @@ public class DetectionRun {
 	private Date createdDate;
     private String createdBy;
     private Date lastModifiedDate;
+    private String message;
     
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
 	public Long getId() {
 		return id;
 	}
