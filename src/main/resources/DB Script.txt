@@ -19,7 +19,7 @@ INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, descri
 INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (14, 'Rajesh', null, 'Post-Marketing Study', null, 'Post-Marketing Study');
 				
 INSERT INTO public.sm_signal_configuration(id, cohort_percentage, confidence_index, config_name) VALUES (15, 95, 60, 'DEFAULT_CONFIG');
-
+ 
 INSERT INTO public.sm_signal_confirmations(id, created_by, created_date, description, last_modified_date, name) VALUES (15, 'Rajesh', null, 'Continue To Monitor', null, 'Continue To Monitor');
 INSERT INTO public.sm_signal_confirmations(id, created_by, created_date, description, last_modified_date, name) VALUES (16, 'Rajesh', null, 'Validated Signal', null, 'Validated Signal');
 INSERT INTO public.sm_signal_confirmations(id, created_by, created_date, description, last_modified_date, name) VALUES (17, 'Rajesh', null, 'Non-Signal', null, 'Non-Signal');
