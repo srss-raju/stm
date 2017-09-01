@@ -47,6 +47,7 @@ import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicSignalValidationAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -455,6 +456,20 @@ public class SignalService {
 		List<Attachment> attchmentList = attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT,
 				topic.getDeletedAttachmentIds(), topic.getFileMetadata(), topic.getCreatedBy());
 		String topicOriginal = JsonUtil.converToJson(findById(topic.getId()));
+		List<TopicSignalValidationAssignmentAssignees> list = topic.getTopicSignalValidationAssignmentAssignees();
+		if(!CollectionUtils.isEmpty(list)){
+			for(TopicSignalValidationAssignmentAssignees aaAssignees:list){
+				if(aaAssignees.getUserGroupKey()!= -1){
+					aaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
+        		}else{
+        			aaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
+        		}
+			}
+		}
+		
+		
+		
+		
 		Topic topicUpdated = topicRepository.save(topic);
 		saveSignalUrl(topic);
 		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
