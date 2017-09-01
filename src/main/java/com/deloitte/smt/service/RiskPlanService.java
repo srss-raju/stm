@@ -709,6 +709,19 @@ public class RiskPlanService {
 		riskPlan.setLastModifiedDate(new Date());
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT,
 				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
+		
+		List<TopicRiskPlanAssignmentAssignees> riskAssigneelist = riskPlan.getTopicRiskPlanAssignmentAssignees();
+		if(!CollectionUtils.isEmpty(riskAssigneelist)){
+			for(TopicRiskPlanAssignmentAssignees aaAssignees:riskAssigneelist){
+				if(aaAssignees.getUserGroupKey()!= -1){
+					aaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
+        		}else{
+        			aaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
+        		}
+			}
+		}
+		
+		
 		RiskPlan riskPlanUpdated = riskPlanRepository.save(riskPlan);
 		
 		List<TopicRiskPlanAssignmentAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
