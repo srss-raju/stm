@@ -153,7 +153,7 @@ public class SignalDetectionService {
 			if(!CollectionUtils.isEmpty(detectionAssigneesList)){
 				for(TopicSignalDetectionAssignmentAssignees assignee:detectionAssigneesList){
 					assignee.setDetectionId(clone.getId());
-				}
+				} 
 			}
 			signalDetection.setId(clone.getId());
 			Ingredient ingredient = signalDetection.getIngredient();
