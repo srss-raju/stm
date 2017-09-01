@@ -431,6 +431,18 @@ public class AssessmentPlanService {
         String assessmentPlanOriginal = JsonUtil.converToJson(topicRepository.findOne(assessmentPlan.getId()));
         assessmentPlan.setLastModifiedDate(new Date());
         List<Attachment> attchmentList = attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata(), assessmentPlan.getCreatedBy());
+        
+        List<TopicAssessmentAssignmentAssignees> assigneesList = assessmentPlan.getTopicAssessmentAssignmentAssignees();
+		if(!CollectionUtils.isEmpty(assigneesList)){
+			for(TopicAssessmentAssignmentAssignees aaAssignees:assigneesList){
+				if(aaAssignees.getUserGroupKey()!= -1){
+					aaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
+        		}else{
+        			aaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
+        		}
+			}
+		}
+        
         assessmentPlanRepository.save(assessmentPlan);
         List<Comments> list = assessmentPlan.getComments();
         if(!CollectionUtils.isEmpty(list)){

@@ -467,9 +467,6 @@ public class SignalService {
 			}
 		}
 		
-		
-		
-		
 		Topic topicUpdated = topicRepository.save(topic);
 		saveSignalUrl(topic);
 		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
