@@ -19,7 +19,9 @@ public enum SmtConstant {
     ASSESSMENT_RISK_STATUS("assessmentRiskStatus"),
     CREATE("CREATE"),
     UPDATE("UPDATE"),
-    DELETE("DELETE");
+    DELETE("DELETE"),
+    ASSIGNEES_GROUP_KEY("-99"),
+    OWNER("owner");
     private String description;
 
     SmtConstant(String description) {
