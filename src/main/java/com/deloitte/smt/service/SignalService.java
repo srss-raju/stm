@@ -595,6 +595,7 @@ public class SignalService {
 		signalAction.setInDays(action.getInDays());
 		signalAction.setActionDescription(action.getActionDescription());
 		signalAction.setActionNotes(action.getActionNotes());
+		signalAction.setRecipients(action.getRecipients());
 		if (action.getAssignTo() == null) {
 			signalAction.setAssignTo(assessmentPlan.getAssignTo());
 		} else {
