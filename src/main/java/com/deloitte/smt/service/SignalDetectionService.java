@@ -149,6 +149,12 @@ public class SignalDetectionService {
 			
 			SignalDetection clone = signalDetection;
 			clone = signalDetectionRepository.save(clone);
+			List<TopicSignalDetectionAssignmentAssignees>  detectionAssigneesList = clone.getTopicSignalDetectionAssignmentAssignees();
+			if(!CollectionUtils.isEmpty(detectionAssigneesList)){
+				for(TopicSignalDetectionAssignmentAssignees assignee:detectionAssigneesList){
+					assignee.setDetectionId(clone.getId());
+				}
+			}
 			signalDetection.setId(clone.getId());
 			Ingredient ingredient = signalDetection.getIngredient();
 			if (ingredient != null) {
