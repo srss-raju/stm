@@ -135,6 +135,18 @@ public class SignalDetectionService {
 
 			signalDetection.setNextRunDate(
 					SignalUtil.getNextRunDate(signalDetection.getRunFrequency(), signalDetection.getCreatedDate()));
+			
+			List<TopicSignalDetectionAssignmentAssignees> detectionAssigneeList = signalDetection.getTopicSignalDetectionAssignmentAssignees();
+			if(!CollectionUtils.isEmpty(detectionAssigneeList)){
+				for(TopicSignalDetectionAssignmentAssignees aaAssignees:detectionAssigneeList){
+					if(aaAssignees.getUserGroupKey()!= -1){
+						aaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
+	        		}else{
+	        			aaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
+	        		}
+				}
+			}
+			
 			SignalDetection clone = signalDetection;
 			clone = signalDetectionRepository.save(clone);
 			signalDetection.setId(clone.getId());
