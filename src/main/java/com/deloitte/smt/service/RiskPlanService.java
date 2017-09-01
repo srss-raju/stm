@@ -680,6 +680,18 @@ public class RiskPlanService {
 		if (riskPlan == null) {
 			throw new ApplicationException("Risk Plan not found with the given Id : " + riskId);
 		}
+		
+		List<TopicRiskPlanAssignmentAssignees>  alist = riskPlan.getTopicRiskPlanAssignmentAssignees();
+		if(!CollectionUtils.isEmpty(alist)){
+			for(TopicRiskPlanAssignmentAssignees a:alist){
+				if(a.getUserGroupKey()!= -99){
+					a.setUserKey(-1l);
+        		}else{
+        			a.setUserGroupKey(-1l);
+        		}
+			}
+		}
+		
 		if ("New".equalsIgnoreCase(riskPlan.getStatus())) {
 			riskPlan.setStatus("In Progress");
 			riskPlan = riskPlanRepository.save(riskPlan);
@@ -725,6 +737,18 @@ public class RiskPlanService {
 		
 		
 		RiskPlan riskPlanUpdated = riskPlanRepository.save(riskPlan);
+		
+		 List<TopicRiskPlanAssignmentAssignees>  alist = riskPlanUpdated.getTopicRiskPlanAssignmentAssignees();
+			if(!CollectionUtils.isEmpty(alist)){
+				for(TopicRiskPlanAssignmentAssignees a:alist){
+					if(a.getUserGroupKey()!= -99){
+						a.setUserKey(-1l);
+	        		}else{
+	        			a.setUserGroupKey(-1l);
+	        		}
+				}
+			}
+			
 		
 		List<TopicRiskPlanAssignmentAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
 		if(!CollectionUtils.isEmpty(assigneeList)){

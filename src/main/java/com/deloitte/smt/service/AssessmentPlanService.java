@@ -94,9 +94,24 @@ public class AssessmentPlanService {
 
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
+        
+		
         if(assessmentPlan == null) {
             throw new ApplicationException("Assessment Plan not found with given Id :"+assessmentId);
         }
+        
+
+        List<TopicAssessmentAssignmentAssignees>  alist = assessmentPlan.getTopicAssessmentAssignmentAssignees();
+		if(!CollectionUtils.isEmpty(alist)){
+			for(TopicAssessmentAssignmentAssignees a:alist){
+				if(a.getUserGroupKey()!= -99){
+					a.setUserKey(-1l);
+        		}else{
+        			a.setUserGroupKey(-1l);
+        		}
+			}
+		}
+		
         if("New".equalsIgnoreCase(assessmentPlan.getAssessmentPlanStatus())) {
             assessmentPlan.setAssessmentPlanStatus("In Progress");
             assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
@@ -444,6 +459,18 @@ public class AssessmentPlanService {
 		}
         
         assessmentPlanRepository.save(assessmentPlan);
+        
+        List<TopicAssessmentAssignmentAssignees>  alist = assessmentPlan.getTopicAssessmentAssignmentAssignees();
+		if(!CollectionUtils.isEmpty(alist)){
+			for(TopicAssessmentAssignmentAssignees a:alist){
+				if(a.getUserGroupKey()!= -99){
+					a.setUserKey(-1l);
+        		}else{
+        			a.setUserGroupKey(-1l);
+        		}
+			}
+		}
+		
         List<Comments> list = assessmentPlan.getComments();
         if(!CollectionUtils.isEmpty(list)){
         	for(Comments comment:list){

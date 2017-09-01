@@ -155,6 +155,18 @@ public class SignalDetectionService {
 					assignee.setDetectionId(clone.getId());
 				} 
 			}
+			
+			 List<TopicSignalDetectionAssignmentAssignees>  alist = clone.getTopicSignalDetectionAssignmentAssignees();
+				if(!CollectionUtils.isEmpty(alist)){
+					for(TopicSignalDetectionAssignmentAssignees a:alist){
+						if(a.getUserGroupKey()!= -99){
+							a.setUserKey(-1l);
+		        		}else{
+		        			a.setUserGroupKey(-1l);
+		        		}
+					}
+				}
+				
 			signalDetection.setId(clone.getId());
 			Ingredient ingredient = signalDetection.getIngredient();
 			if (ingredient != null) {
@@ -364,6 +376,18 @@ public class SignalDetectionService {
 		if (null == signalDetection) {
 			throw new ApplicationException("Signal Detection not found with given Id :" + id);
 		}
+		
+		List<TopicSignalDetectionAssignmentAssignees>  alist = signalDetection.getTopicSignalDetectionAssignmentAssignees();
+		if(!CollectionUtils.isEmpty(alist)){
+			for(TopicSignalDetectionAssignmentAssignees a:alist){
+				if(a.getUserGroupKey()!= -99){
+					a.setUserKey(-1l);
+        		}else{
+        			a.setUserGroupKey(-1l);
+        		}
+			}
+		}
+		
 		addOtherInfoToSignalDetection(signalDetection);
 		signalDetection.setTopicSignalDetectionAssignmentAssignees(topicSignalDetectionAssignmentAssigneesRepository.findByDetectionId(id));
 		return signalDetection;

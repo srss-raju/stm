@@ -200,9 +200,25 @@ public class SignalService {
 
 	public Topic findById(Long topicId) throws ApplicationException {
 		Topic topic = topicRepository.findOne(topicId);
+		//Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription())
+		
+		
+		
 		if (topic == null) {
 			throw new ApplicationException("Signal not found with the given Id :" + topicId);
 		}
+		
+		List<TopicSignalValidationAssignmentAssignees>  list = topic.getTopicSignalValidationAssignmentAssignees();
+		if(!CollectionUtils.isEmpty(list)){
+			for(TopicSignalValidationAssignmentAssignees a:list){
+				if(a.getUserGroupKey()!= -99){
+					a.setUserKey(-1l);
+        		}else{
+        			a.setUserGroupKey(-1l);
+        		}
+			}
+		}
+		
 		if (null == topic.getSignalValidation()) {
 			topic.setSignalValidation(SmtConstant.IN_PROGRESS.getDescription());
 		}
@@ -288,7 +304,17 @@ public class SignalService {
 				topicUpdated = topicRepository.save(topicUpdated);
 				topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
 			}
-
+			List<TopicSignalValidationAssignmentAssignees>  list = topicUpdated.getTopicSignalValidationAssignmentAssignees();
+			if(!CollectionUtils.isEmpty(list)){
+				for(TopicSignalValidationAssignmentAssignees a:list){
+					if(a.getUserGroupKey()!= -99){
+						a.setUserKey(-1l);
+	        		}else{
+	        			a.setUserGroupKey(-1l);
+	        		}
+				}
+			}
+			
 			ingredient.setTopicId(topicUpdated.getId());
 			ingredient = ingredientRepository.save(ingredient);
 
