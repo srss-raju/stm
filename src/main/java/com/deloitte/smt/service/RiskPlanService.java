@@ -461,8 +461,10 @@ public class RiskPlanService {
 	 * @param whereClauses
 	 */
 	private void addUserGroupKey(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())) {
+		if (!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())) {
 			whereClauses.add(" r.owner in :owners or ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
+		}else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())) {
+			whereClauses.add(" ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
 		}
 	}
 	

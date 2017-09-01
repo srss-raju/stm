@@ -487,11 +487,36 @@ public class AssessmentPlanService {
 	 */
 	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
 			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees, Root<Topic> rootTopic,List<Predicate> predicates) {
+			
+			  if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) &&!CollectionUtils.isEmpty(searchDto.getOwners()) ){
+				   
+				   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())),
+						   criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
+						   criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwners())))));
+				   
+				  }else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
+					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())),
+							   criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys()))));
+				  }
+				  else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getOwners())){
+					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys()))));
+							  
+				  }else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
+					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys()))));
+					     
+				  }else if(!CollectionUtils.isEmpty(searchDto.getOwners())&&CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getUserKeys())){
+					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())),
+							  criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).isNull())));
+					   
+				  }else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) ){
+					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())),
+							   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
+				  }
+				  else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserKeys())){
+					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
+							   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
+				  }
+			
 			  
-			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())),
-					   criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
-					   criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwners())))));   
-			  }
 	 }
 }
