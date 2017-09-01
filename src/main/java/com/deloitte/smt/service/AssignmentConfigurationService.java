@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentAssignmentAssignees;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.RiskPlanAssignmentAssignees;
@@ -95,9 +96,9 @@ public class AssignmentConfigurationService {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getSignalValidationAssignmentAssignees())){
         	for(SignalValidationAssignmentAssignees svaAssignees : assignmentConfiguration.getSignalValidationAssignmentAssignees()){
         		if(svaAssignees.getUserGroupKey()!= -1){
-        			svaAssignees.setUserKey(0l);
+        			svaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
         		}else{
-        			svaAssignees.setUserGroupKey(0l);
+        			svaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
         		}
         		svaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
         		svaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
@@ -108,9 +109,9 @@ public class AssignmentConfigurationService {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getAssessmentAssignmentAssignees())){
 			for(AssessmentAssignmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignmentAssignees()){
 				if(aaAssignees.getUserGroupKey()!= -1){
-					aaAssignees.setUserKey(0l);
+					aaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
         		}else{
-        			aaAssignees.setUserGroupKey(0l);
+        			aaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
         		}
 				aaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 				aaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
@@ -121,9 +122,9 @@ public class AssignmentConfigurationService {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getRiskPlanAssignmentAssignees())){
 			for(RiskPlanAssignmentAssignees rpaAssignees : assignmentConfiguration.getRiskPlanAssignmentAssignees()){
 				if(rpaAssignees.getUserGroupKey()!= -1){
-					rpaAssignees.setUserKey(0l);
+					rpaAssignees.setUserKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
         		}else{
-        			rpaAssignees.setUserGroupKey(0l);
+        			rpaAssignees.setUserGroupKey(Long.valueOf(SmtConstant.ASSIGNEES_GROUP_KEY.getDescription()));
         		}
 				rpaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 				rpaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());

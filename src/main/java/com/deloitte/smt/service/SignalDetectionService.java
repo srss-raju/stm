@@ -703,7 +703,7 @@ public class SignalDetectionService {
 			  if (!CollectionUtils.isEmpty(searchDto.getUserKeys())) {
 			   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userKey").in(searchDto.getUserKeys())),
 					   criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
-					   criteriaBuilder.isTrue(rootSignalDetection.get("owner").in(searchDto.getOwner())))));    
+					   criteriaBuilder.isTrue(rootSignalDetection.get("owner").in(searchDto.getOwners())))));    
 			  }
 			 }
 }
