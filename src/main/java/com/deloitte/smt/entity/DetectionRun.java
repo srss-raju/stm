@@ -22,7 +22,14 @@ public class DetectionRun {
     private String createdBy;
     private Date lastModifiedDate;
     private String message;
+    private String jobId;
     
+	public String getJobId() {
+		return jobId;
+	}
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
 	public String getMessage() {
 		return message;
 	}
