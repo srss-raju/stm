@@ -54,13 +54,13 @@ public class ExportExcelService {
 
 		HSSFCellStyle style = wb.createCellStyle();
 		/* Create HSSFFont object from the workbook */
-		HSSFFont my_font = wb.createFont();
+		HSSFFont hssfFont = wb.createFont();
 		/* set the weight of the font */
-		my_font.setBold(true);
+		hssfFont.setBold(true);
 		/* Also make the font color to Blue */
-		my_font.setColor(HSSFColor.BLUE.index);
+		hssfFont.setColor(HSSFColor.BLUE.index);
 		/* attach the font to the style created earlier */
-		style.setFont(my_font);
+		style.setFont(hssfFont);
 		style.setAlignment(HorizontalAlignment.CENTER);
 		style.setVerticalAlignment(VerticalAlignment.CENTER);
 
@@ -93,13 +93,13 @@ public class ExportExcelService {
 		
 		workbook.createCellStyle();
 		/* Create HSSFFont object from the workbook */
-		HSSFFont my_font = workbook.createFont();
+		HSSFFont hssfFont = workbook.createFont();
 		/* set the weight of the font */
-		my_font.setBold(true);
+		hssfFont.setBold(true);
 		/* Also make the font color to RED */
-		my_font.setColor(HSSFColor.BLUE.index);
+		hssfFont.setColor(HSSFColor.BLUE.index);
 		/* attach the font to the style created earlier */
-		style.setFont(my_font);
+		style.setFont(hssfFont);
 		
 		Row header = sheet.createRow(0);
 
@@ -219,16 +219,13 @@ public class ExportExcelService {
 		row3cell18.setCellStyle(style);
 		row3cell18.setCellValue("RRRUB");
 
-		
-		// ** this method creates the cell range**/
-				createCellRangeAddress(sheet,workbook);
+		createCellRangeAddress(sheet,workbook);
 	}
 	
 	
 
-	@SuppressWarnings("deprecation")
 	private void createCellRangeAddress(Sheet sheet,HSSFWorkbook workbook) {
-		List<CellRangeAddress> cellRangeAdressList=new ArrayList<CellRangeAddress>();
+		List<CellRangeAddress> cellRangeAdressList=new ArrayList<>();
 	
 		
 		CellRangeAddress cellRangeAddress0 = new CellRangeAddress(0, 2, 0, 0);
@@ -287,13 +284,13 @@ public class ExportExcelService {
 		
 		for (CellRangeAddress rangeAddress : cellRangeAdressList) {
 		
-		HSSFRegionUtil.setBorderBottom(HSSFCellStyle.BORDER_THIN,
+		HSSFRegionUtil.setBorderBottom(BorderStyle.THIN.ordinal(),
 				rangeAddress, (HSSFSheet) sheet, workbook);
-		HSSFRegionUtil.setBorderTop(HSSFCellStyle.BORDER_THIN,
+		HSSFRegionUtil.setBorderTop(BorderStyle.THIN.ordinal(),
 				rangeAddress, (HSSFSheet) sheet, workbook);
-		HSSFRegionUtil.setBorderLeft(HSSFCellStyle.BORDER_THIN,
+		HSSFRegionUtil.setBorderLeft(BorderStyle.THIN.ordinal(),
 				rangeAddress, (HSSFSheet) sheet, workbook);
-		HSSFRegionUtil.setBorderRight(HSSFCellStyle.BORDER_THIN,
+		HSSFRegionUtil.setBorderRight(BorderStyle.THIN.ordinal(),
 				rangeAddress, (HSSFSheet) sheet, workbook);
 		}
 	}
@@ -304,13 +301,13 @@ public class ExportExcelService {
 
 		HSSFCellStyle style=	 workbook.createCellStyle();
 			/* Create HSSFFont object from the workbook */
-			HSSFFont my_font = workbook.createFont();
+			HSSFFont hssfFont = workbook.createFont();
 			/* set the weight of the font */
-			my_font.setBold(false);
+			hssfFont.setBold(false);
 			/* Also make the font color to RED */
-			my_font.setColor(HSSFColor.BLACK.index);
+			hssfFont.setColor(HSSFColor.BLACK.index);
 			/* attach the font to the style created earlier */
-			style.setFont(my_font);
+			style.setFont(hssfFont);
 		
 			int rowCount = 2;
 			for (SignalAlgorithmDTO signalDTO : signalDTOList) {

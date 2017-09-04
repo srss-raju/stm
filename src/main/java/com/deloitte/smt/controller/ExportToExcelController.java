@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.dto.SignalAlgorithmDTO;
 import com.deloitte.smt.service.ExportExcelService;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -37,7 +35,7 @@ public class ExportToExcelController {
 	public void generateExcel(
 			@RequestParam(value = "data") String detectionDetails,
 			HttpServletRequest request, HttpServletResponse response)
-			throws JsonParseException, JsonMappingException, IOException {
+			throws IOException {
 
 		List<SignalAlgorithmDTO> signalAlgorithmDtoList = new ObjectMapper()
 				.readValue(detectionDetails,
@@ -54,7 +52,6 @@ public class ExportToExcelController {
 			workbook.write(out);
 			out.flush();
 			out.close();
-			// response.flushBuffer();
 
 		} catch (IOException e) {
 			LOG.info("Exception occured while exporting excel sheet " + e);
