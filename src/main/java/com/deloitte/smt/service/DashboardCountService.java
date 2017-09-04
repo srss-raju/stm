@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 @Service
-public class DashboardCountService {
+public class DashboardCountService { 
 
 	@PersistenceContext
 	private EntityManager entityManager;
