@@ -16,7 +16,7 @@ public class ExceptionBuilder implements MessageSourceAware{
 	
 	 MessageSource messageSource;
 	
-	public  ApplicationException buildException(ErrorType errorType,Throwable throwable){
+	public  ApplicationException buildException(ErrorType errorType){
 		return new ApplicationException(errorType.getCode(),
 				messageSource.getMessage(errorType.getLabel(), null,errorType.getDefaultMessage(), null), null);
 	}
