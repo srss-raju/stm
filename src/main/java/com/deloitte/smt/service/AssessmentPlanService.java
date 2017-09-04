@@ -91,6 +91,9 @@ public class AssessmentPlanService {
     
     @Autowired
     RiskPlanService riskPlanService;
+    
+	@Autowired
+	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
@@ -177,9 +180,6 @@ public class AssessmentPlanService {
 		associateAssignees(q.getResultList());
 		return q.getResultList();
 	}
-	@Autowired
-	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
-	
 	private void associateAssignees(List<AssessmentPlan> assessmentPlanList){
 		if (!CollectionUtils.isEmpty(assessmentPlanList)) {
 			for(AssessmentPlan assessmentPlan :assessmentPlanList){
