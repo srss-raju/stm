@@ -91,7 +91,7 @@ public class AssessmentActionService {
         
         Long actionsExist=assessmentActionRepository.countByActionNameIgnoreCaseAndAssessmentId(signalAction.getActionName(), signalAction.getAssessmentId());
     	if (actionsExist > 0) {
-			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE);
 		}
 
     	

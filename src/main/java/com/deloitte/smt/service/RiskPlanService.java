@@ -145,13 +145,13 @@ public class RiskPlanService {
 			assessmentPlan.setRiskPlan(riskPlan);
 			riskPlan.setAssessmentPlan(assessmentPlan);
 			if (riskPlanExist>0) {
-				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
+				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE);
 			}
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 			assessmentPlanRepository.save(assessmentPlan);
 		} else {
 			if (riskPlanExist>0) {
-				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
+				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE);
 			}
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 		}
@@ -607,7 +607,7 @@ public class RiskPlanService {
 		
 		Long riskTaskExists=riskTaskRepository.countByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
 		if (riskTaskExists > 0) {
-			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE);
 		}
 
     	
