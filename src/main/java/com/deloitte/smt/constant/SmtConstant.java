@@ -21,7 +21,10 @@ public enum SmtConstant {
     UPDATE("UPDATE"),
     DELETE("DELETE"),
     ASSIGNEES_GROUP_KEY("-99"),
-    OWNER("owner");
+    OWNER("owner"),
+	USER_KEY("userKey"),
+	USER_GROUP_KEY("userGroupKey");
+	
     private String description;
 
     SmtConstant(String description) {
