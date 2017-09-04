@@ -19,15 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class NonSignal implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-
-	
-	public static void main(String[] args) throws JsonProcessingException {
-		ObjectMapper mapper=new ObjectMapper();
-		NonSignal nonSignal=new NonSignal();
-		String str=mapper.writeValueAsString(nonSignal);
-		System.out.println(str);
-		
-	}
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
