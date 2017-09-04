@@ -37,7 +37,6 @@ import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicAssessmentAssignmentAssignees;
-import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.CommentsRepository;
@@ -91,6 +90,9 @@ public class AssessmentPlanService {
     
     @Autowired
     RiskPlanService riskPlanService;
+    
+    @Autowired
+	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
@@ -177,16 +179,12 @@ public class AssessmentPlanService {
 		associateAssignees(q.getResultList());
 		return q.getResultList();
 	}
-	@Autowired
-	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 	
-	private void associateAssignees(List<AssessmentPlan> assessmentPlanList){
-		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneeList=new ArrayList<>();
+	void associateAssignees(List<AssessmentPlan> assessmentPlanList){
 		if (!CollectionUtils.isEmpty(assessmentPlanList)) {
 			for(AssessmentPlan assessmentPlan :assessmentPlanList){
 				if(null!=assessmentPlan.getRiskPlan()){
-				topicRiskPlanAssignmentAssigneeList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(assessmentPlan.getRiskPlan().getId());
-				assessmentPlan.getRiskPlan().setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneeList);
+				assessmentPlan.getRiskPlan().setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesRepository.findByRiskId(assessmentPlan.getRiskPlan().getId()));
 				}
 			}
 		}
