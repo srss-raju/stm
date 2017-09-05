@@ -64,7 +64,7 @@ public class SignalSearchService {
 			addSearchKeys(searchDto, criteriaBuilder, joinAssignees,rootTopic, predicates);
 			addUserGroupKeysUserKeys(searchDto, criteriaBuilder, joinAssignees, predicates);
 			addUserKey(searchDto, criteriaBuilder, joinAssignees, predicates);
-			addUserGroupKeys(searchDto, criteriaBuilder,joinAssignees,rootTopic,predicates);
+			addUserGroupKeys(searchDto, criteriaBuilder,joinAssignees,predicates);
 			addOwners(searchDto, criteriaBuilder,rootTopic,predicates);
 			addOwnersUserKeys(searchDto, criteriaBuilder, joinAssignees,rootTopic, predicates);
 			addOwnersUserGroupKeys(searchDto, criteriaBuilder, joinAssignees,rootTopic, predicates);
@@ -299,7 +299,7 @@ public class SignalSearchService {
 	 * @param rootTopic
 	 * @param predicates
 	 */
-	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder,Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees, Root<Topic> rootTopic, List<Predicate> predicates) {
+	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder,Join<Topic,TopicSignalValidationAssignmentAssignees> joinAssignees, List<Predicate> predicates) {
 		
 		 if(searchFilters.ifUserGroupKey(searchDto)&& ! searchFilters.isOwnerUserKey(searchDto)){
 				   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
