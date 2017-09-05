@@ -52,7 +52,7 @@ import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
-
+import com.deloitte.smt.util.SearchFilters;
 /**
  * Created by RajeshKumar on 12-04-2017.
  */
@@ -121,7 +121,8 @@ public class RiskPlanService {
 	SignalAuditService signalAuditService;
 	@Autowired
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
-	
+	@Autowired
+	private SearchFilters searchFilters;
 
 	public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId)
 			throws ApplicationException {
@@ -404,9 +405,14 @@ public class RiskPlanService {
 			addRiskTaskStatus(searchDto, whereClauses);
 			addStartDate(searchDto, whereClauses);
 			addEndDate(searchDto, whereClauses);
+			addSearchKeys(searchDto, whereClauses);
+			addOwners(searchDto, whereClauses);
+			addUserGroupUserKeys(searchDto, whereClauses);
+			addUserKeys(searchDto, whereClauses);
+			addOwnerUserKey(searchDto, whereClauses);
+			addOwnerUserGroupKey(searchDto, whereClauses);
 			addUserGroupKey(searchDto, whereClauses);
 		}
-	}
 
 	/**
 	 * @param searchDto
@@ -465,25 +471,68 @@ public class RiskPlanService {
 	 * @param whereClauses
 	 */
 	private void addUserGroupKey(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && !CollectionUtils.isEmpty(searchDto.getOwners()) && !CollectionUtils.isEmpty(searchDto.getUserKeys()) ) {
-			whereClauses.add(" r.owner in :owners or ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
-		}else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getOwners())&& !CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add(" ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
-		}
-		else if(CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners()) && CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add("r.owner in :owners");
-		}
-		else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners()) && CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+		 if(searchFilters.ifUserGroupKey(searchDto)&& ! searchFilters.isOwnerUserKey(searchDto)){
 			whereClauses.add(" ra.user_group_key in :userGroupKeys ");
 		}
-		else if(CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners()) && !CollectionUtils.isEmpty(searchDto.getUserKeys())) {
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addSearchKeys(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.ifUserGroupKey(searchDto) && searchFilters.isOwnerUserKey(searchDto)){
+			whereClauses.add(" r.owner in :owners or ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
+		}
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addOwners(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.ifOwner(searchDto) && !searchFilters.isGroupKeyUserKey(searchDto)){
+			whereClauses.add("r.owner in :owners");
+		}
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addUserGroupUserKeys(SearchDto searchDto, List<String> whereClauses){
+		 if(searchFilters.isGroupKeyUserKey(searchDto)&& !searchFilters.ifOwner(searchDto)){
+		whereClauses.add(" ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
+		 }
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addUserKeys(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.ifUserKey(searchDto)&& !searchFilters.isOwnerUserGRoupKey(searchDto)){
 			whereClauses.add(" ra.user_key in :userKeys ");
 		}
-		else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners()) && CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add(" ra.user_group_key in :userGroupKeys or r.owner in :owners ");
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addOwnerUserKey(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.isOwnerUserKey(searchDto)&& !searchFilters.ifUserGroupKey(searchDto)){
+		whereClauses.add(" ra.user_key in :userKeys or r.owner in :owners ");
 		}
-		else if(CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners()) && !CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add(" ra.user_key in :userKeys or r.owner in :owners ");
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addOwnerUserGroupKey(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.isOwnerUserGRoupKey(searchDto)&& !searchFilters.ifUserKey(searchDto)){
+			whereClauses.add(" ra.user_group_key in :userGroupKeys or r.owner in :owners ");
 		}
 	}
 	
