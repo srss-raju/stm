@@ -55,6 +55,7 @@ import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SmqRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
+import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -113,6 +114,9 @@ public class SignalDetectionService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	@Autowired
+	private SearchFilters searchFilters;
 
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
@@ -379,7 +383,13 @@ public class SignalDetectionService {
 			addPts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addCreatedOrLastRunDate(searchDto, criteriaBuilder, rootSignalDetection, predicates);
 			/**TopicSignalValidationAssignmentAssignees **/
-			addUserGroupKeys(searchDto, criteriaBuilder, joinDetectionAssignees,rootSignalDetection,predicates);
+			addSearchKeys(searchDto, criteriaBuilder, joinDetectionAssignees,rootSignalDetection,predicates);
+			addUserKey(searchDto, criteriaBuilder, joinDetectionAssignees,predicates);
+			addOwners(searchDto, criteriaBuilder, rootSignalDetection,predicates);
+			addOwnersUserGroupKeys(searchDto, criteriaBuilder, joinDetectionAssignees,rootSignalDetection,predicates);
+			addOwnersUserKeys(searchDto, criteriaBuilder, joinDetectionAssignees,rootSignalDetection,predicates);
+			addUserGroupKeysUserKeys(searchDto, criteriaBuilder, joinDetectionAssignees,predicates);
+			addUserGroupKeys(searchDto, criteriaBuilder, joinDetectionAssignees,predicates);
 
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			criteriaQuery.multiselect(rootSignalDetection).where(andPredicate)
@@ -693,6 +703,7 @@ public class SignalDetectionService {
 	}
 	
 	
+
 	/**
 	 * 
 	 * @param searchDto
@@ -701,36 +712,106 @@ public class SignalDetectionService {
 	 * @param rootTopic
 	 * @param predicates
 	 */
-	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees ,Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
-			  
-			  if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) &&!CollectionUtils.isEmpty(searchDto.getOwners()) ){
-				   
-				   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
-						   criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
-						   criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())))));
-				   
-				  } if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
-							   criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
-				  }
-				   if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys()))));
-							  
-				  } if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
-					     
-				  } if(!CollectionUtils.isEmpty(searchDto.getOwners())&&CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getUserKeys())){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())),
-							  criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).isNull())));
-					   
-				  } if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) ){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
-							   criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
-				  }
-				   if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserKeys())){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
-							   criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
-				  }
-			
+	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder,Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees, List<Predicate> predicates) {
+		
+		 if(searchFilters.ifUserGroupKey(searchDto)&& ! searchFilters.isOwnerUserKey(searchDto)){
+			 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
+			  } 
+		
 			 }
+	/**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addSearchKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+    		Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees, Root<SignalDetection> rootSignalDetection,List<Predicate> predicates){
+    	 if(searchFilters.ifUserGroupKey(searchDto) && searchFilters.isOwnerUserKey(searchDto)){
+    		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+					   criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
+					   criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())))));
+			   
+  	 }
+    }
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addUserKey(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+    		Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees, List<Predicate> predicates){
+    	 if(searchFilters.ifUserKey(searchDto)&& !searchFilters.isOwnerUserGRoupKey(searchDto)){
+    		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys()))));
+    	 }
+    }
+    
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addOwners(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+    		Root<SignalDetection> rootSignalDetection,List<Predicate> predicates){
+    	if(searchFilters.ifOwner(searchDto) && !searchFilters.isGroupKeyUserKey(searchDto)){
+    		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())),
+					  criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).isNull())));
+   	 }
+    }
+    
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addOwnersUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+    		Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees, Root<SignalDetection> rootSignalDetection,List<Predicate> predicates){
+    	if(searchFilters.isOwnerUserKey(searchDto)&& !searchFilters.ifUserGroupKey(searchDto)){
+    		predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+					   criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
+   	 }
+    }
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addOwnersUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+    		Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees, 
+    		Root<SignalDetection> rootSignalDetection,List<Predicate> predicates){
+    	 if(searchFilters.isOwnerUserGRoupKey(searchDto)&& !searchFilters.ifUserKey(searchDto)){
+    		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
+					   criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
+    	 }
+    }
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addUserGroupKeysUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+    		Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees, 
+    		 List<Predicate> predicates){
+    	 if(searchFilters.isGroupKeyUserKey(searchDto)&& !searchFilters.ifOwner(searchDto)){
+    		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+					   criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
+    	 }
+    }
 }
