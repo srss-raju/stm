@@ -157,16 +157,7 @@ public class RiskPlanService {
 		}
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlanUpdated.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null,
 				riskPlanUpdated.getFileMetadata(), riskPlanUpdated.getCreatedBy());
-		if (!CollectionUtils.isEmpty(riskPlanUpdated.getSignalUrls())) {
-			for (SignalURL url : riskPlanUpdated.getSignalUrls()) {
-				url.setTopicId(riskPlanUpdated.getId());
-				url.setCreatedDate(riskPlanUpdated.getCreatedDate());
-				url.setCreatedBy(riskPlanUpdated.getCreatedBy());
-				url.setModifiedBy(riskPlanUpdated.getModifiedBy());
-				url.setModifiedDate(riskPlanUpdated.getLastModifiedDate());
-			}
-			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
-		}
+		updateSingalUrl(riskPlanUpdated);
 		if (!StringUtils.isEmpty(riskPlan.getSource())) {
 			assignmentConfiguration = assignmentConfigurationRepository
 					.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource());
@@ -186,6 +177,19 @@ public class RiskPlanService {
 		}
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 		return riskPlanUpdated;
+	}
+
+	private void updateSingalUrl(RiskPlan riskPlanUpdated) {
+		if (!CollectionUtils.isEmpty(riskPlanUpdated.getSignalUrls())) {
+			for (SignalURL url : riskPlanUpdated.getSignalUrls()) {
+				url.setTopicId(riskPlanUpdated.getId());
+				url.setCreatedDate(riskPlanUpdated.getCreatedDate());
+				url.setCreatedBy(riskPlanUpdated.getCreatedBy());
+				url.setModifiedBy(riskPlanUpdated.getModifiedBy());
+				url.setModifiedDate(riskPlanUpdated.getLastModifiedDate());
+			}
+			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
+		}
 	}
 	
 	public List<RiskTask> associateRiskTasks(RiskPlan riskPlan){
@@ -575,7 +579,7 @@ public class RiskPlanService {
 	 * @throws IOException
 	 * @throws ApplicationException
 	 */
-	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException, ApplicationException {
+	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
 		if (riskTask.getCaseInstanceId() != null
 				&& SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())) {
 			Task task = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).singleResult();
@@ -745,16 +749,7 @@ public class RiskPlanService {
 		}
 		commentsRepository.save(riskPlan.getComments());
 
-		if (!CollectionUtils.isEmpty(riskPlan.getSignalUrls())) {
-			for (SignalURL url : riskPlan.getSignalUrls()) {
-				url.setTopicId(riskPlan.getId());
-				url.setCreatedDate(riskPlan.getCreatedDate());
-				url.setCreatedBy(riskPlan.getCreatedBy());
-				url.setModifiedBy(riskPlan.getModifiedBy());
-				url.setModifiedDate(riskPlan.getLastModifiedDate());
-			}
-			signalURLRepository.save(riskPlan.getSignalUrls());
-		}
+		updateSingalUrl(riskPlan);
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
 	}
 
