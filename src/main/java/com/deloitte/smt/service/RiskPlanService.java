@@ -413,7 +413,7 @@ public class RiskPlanService {
 			addOwnerUserGroupKey(searchDto, whereClauses);
 			addUserGroupKey(searchDto, whereClauses);
 		}
-
+	}
 	/**
 	 * @param searchDto
 	 * @param whereClauses
