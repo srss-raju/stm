@@ -66,7 +66,7 @@ public class AssessmentActionService {
     @Autowired
     SignalAuditService signalAuditService;
 
-    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
+    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws ApplicationException {
         if(signalAction.getCaseInstanceId() != null && SignalStatus.COMPLETED.name().equalsIgnoreCase(signalAction.getActionStatus())){
             Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
             taskService.complete(task.getId());
