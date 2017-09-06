@@ -60,7 +60,6 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
@@ -100,8 +99,6 @@ public class SignalService {
 
 	@Autowired
 	private LicenseRepository licenseRepository;
-	@Autowired
-	TaskInstRepository taskInstRepository;
 	@Autowired
 	SignalURLRepository signalURLRepository;
 	

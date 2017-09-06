@@ -43,7 +43,6 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
@@ -69,9 +68,6 @@ public class RiskPlanService {
 
 	@Autowired
 	RiskTaskRepository riskTaskRepository;
-
-	@Autowired
-	TaskInstRepository taskInstRepository;
 
 	@Autowired
 	AttachmentService attachmentService;
