@@ -447,42 +447,36 @@ public class SignalService {
 
 	public AssessmentPlan validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan)
 			throws ApplicationException {
+		AssignmentConfiguration assignmentConfiguration = null;
 		Topic topic = topicRepository.findOne(topicId);
 		if (topic == null) {
 			throw new ApplicationException("Topic not found with the given Id [" + topicId + "]");
 		}
-		
-
 		String topicOriginal = JsonUtil.converToJson(topic);
-		Date d = new Date();
-		assessmentPlan.setCreatedDate(d);
-		assessmentPlan.setLastModifiedDate(d);
 		if (assessmentPlan.getId() == null) {
+		
+			Date d = new Date();
+			assessmentPlan.setCreatedDate(d);
+			assessmentPlan.setLastModifiedDate(d);
 			assessmentPlan.setAssessmentPlanStatus("New");
+	
+			if (!StringUtils.isEmpty(topic.getSourceName())) {
+				assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());
+			}
+			// If Source is not null and combination not available we have to fetch
+			// with Ingredient
+			if (assignmentConfiguration == null) {
+				assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSourceIsNull(assessmentPlan.getIngrediantName());
+			}
+			assessmentPlan.setAssessmentTaskStatus("Not Completed");
+			Long assessmentPlanExist = assessmentPlanRepository.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());
+			if (assessmentPlanExist > 0) {
+				throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE, null);
+			}
+			topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
+		}else{
+			topic.setAssessmentPlan(assessmentPlan);
 		}
-		AssignmentConfiguration assignmentConfiguration = null;
-
-		if (!StringUtils.isEmpty(topic.getSourceName())) {
-			assignmentConfiguration = assignmentConfigurationRepository
-					.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());
-		}
-		// If Source is not null and combination not available we have to fetch
-		// with Ingredient
-		if (assignmentConfiguration == null) {
-			assignmentConfiguration = assignmentConfigurationRepository
-					.findByIngredientAndSignalSourceIsNull(assessmentPlan.getIngrediantName());
-		}
-
-		assessmentPlan.setAssessmentTaskStatus("Not Completed");
-
-		Long assessmentPlanExist = assessmentPlanRepository
-				.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());
-		if (assessmentPlanExist > 0) {
-			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE, null);
-		}
-
-    	
-		topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
 		topic.setSignalStatus(SmtConstant.COMPLETED.getDescription());
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());
 		topic.setLastModifiedDate(new Date());
