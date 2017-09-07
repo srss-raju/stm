@@ -156,7 +156,7 @@ public class ExportExcelService {
 
 		Cell row2cell19 = header2.createCell(19);
 		row2cell19.setCellStyle(style);
-		row2cell19.setCellValue("EB05");
+		row2cell19.setCellValue("EBGM");
 
 		Cell row2cell22 = header2.createCell(22);
 		row2cell22.setCellStyle(style);
