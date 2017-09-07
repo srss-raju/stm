@@ -87,12 +87,7 @@ public class ExportExcelService {
 		sheet.setColumnWidth(1, 15000);
 		sheet.setColumnWidth(2, 5000);
 		sheet.setColumnWidth(4, 3500);
-		sheet.setColumnWidth(10, 3500);
-		sheet.setColumnWidth(13, 3500);
-		sheet.setColumnWidth(16, 3500);
-		sheet.setColumnWidth(19, 3500);
-		sheet.setColumnWidth(22, 3500);
-		
+			
 		workbook.createCellStyle();
 		/* Create HSSFFont object from the workbook */
 		HSSFFont my_font = workbook.createFont();
