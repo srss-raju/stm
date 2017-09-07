@@ -90,6 +90,8 @@ public class ExportExcelService {
 		sheet.setColumnWidth(10, 3500);
 		sheet.setColumnWidth(13, 3500);
 		sheet.setColumnWidth(16, 3500);
+		sheet.setColumnWidth(19, 3500);
+		sheet.setColumnWidth(22, 3500);
 		
 		workbook.createCellStyle();
 		/* Create HSSFFont object from the workbook */
@@ -134,13 +136,9 @@ public class ExportExcelService {
 		cell10.setCellStyle(style);
 		cell10.setCellValue("ALGORITHMS");
 
-		Cell cell21 = header.createCell(21);
-		cell21.setCellStyle(style);
-		cell21.setCellValue("PP");
-
-		Cell cell22 = header.createCell(22);
-		cell22.setCellStyle(style);
-		cell22.setCellValue("SIGNAL");
+		Cell cell25 = header.createCell(25);
+		cell25.setCellStyle(style);
+		cell25.setCellValue("SIGNAL");
 
 		Row header2 = sheet.createRow(1);
 		
@@ -160,9 +158,9 @@ public class ExportExcelService {
 		row2cell19.setCellStyle(style);
 		row2cell19.setCellValue("EB05");
 
-		Cell row2cell20 = header2.createCell(20);
-		row2cell20.setCellStyle(style);
-		row2cell20.setCellValue("BCPNN");
+		Cell row2cell22 = header2.createCell(22);
+		row2cell22.setCellStyle(style);
+		row2cell22.setCellValue("BCPNN");
 
 		Row header3 = sheet.createRow(2);
 
@@ -191,34 +189,54 @@ public class ExportExcelService {
 		/** Algorithm attributes **/
 		Cell row3cell10 = header3.createCell(10);
 		row3cell10.setCellStyle(style);
-		row3cell10.setCellValue("PRRSCORE");
+		row3cell10.setCellValue("Score");
 		Cell row3cell11 = header3.createCell(11);
 		row3cell11.setCellStyle(style);
-		row3cell11.setCellValue("PRRLB");
+		row3cell11.setCellValue("LB");
 		Cell row3cell12 = header3.createCell(12);
 		row3cell12.setCellStyle(style);
-		row3cell12.setCellValue("PRRUB");
+		row3cell12.setCellValue("UB");
 
 		Cell row3cell13 = header3.createCell(13);
 		row3cell13.setCellStyle(style);
-		row3cell13.setCellValue("RORSCORE");
+		row3cell13.setCellValue("Score");
 		Cell row3cell14 = header3.createCell(14);
 		row3cell14.setCellStyle(style);
-		row3cell14.setCellValue("RORLB");
+		row3cell14.setCellValue("LB");
 		Cell row3cell15 = header3.createCell(15);
 		row3cell15.setCellStyle(style);
-		row3cell15.setCellValue("RORUB");
+		row3cell15.setCellValue("UB");
 
 		Cell row3cell16 = header3.createCell(16);
 		row3cell16.setCellStyle(style);
-		row3cell16.setCellValue("RRRSCORE");
+		row3cell16.setCellValue("Score");
 		Cell row3cell17 = header3.createCell(17);
 		row3cell17.setCellStyle(style);
-		row3cell17.setCellValue("RRRLB");
+		row3cell17.setCellValue("LB");
 		Cell row3cell18 = header3.createCell(18);
 		row3cell18.setCellStyle(style);
-		row3cell18.setCellValue("RRRUB");
-
+		row3cell18.setCellValue("UB");
+		
+		Cell row3cell19 = header3.createCell(19);
+		row3cell19.setCellStyle(style);
+		row3cell19.setCellValue("Score");
+		Cell row3cell20 = header3.createCell(20);
+		row3cell20.setCellStyle(style);
+		row3cell20.setCellValue("LB");
+		Cell row3cell21 = header3.createCell(21);
+		row3cell21.setCellStyle(style);
+		row3cell21.setCellValue("UB");
+		
+		Cell row3cell22 = header3.createCell(22);
+		row3cell22.setCellStyle(style);
+		row3cell22.setCellValue("Score");
+		Cell row3cell23 = header3.createCell(23);
+		row3cell23.setCellStyle(style);
+		row3cell23.setCellValue("LB");
+		Cell row3cell24 = header3.createCell(24);
+		row3cell24.setCellStyle(style);
+		row3cell24.setCellValue("UB");
+		
 		
 		// ** this method creates the cell range**/
 				createCellRangeAddress(sheet,workbook);
@@ -256,21 +274,17 @@ public class ExportExcelService {
 		cellRangeAdressList.add(cellRangeAddress10);
 		
 		
-		CellRangeAddress cellRangeAddress19 = new CellRangeAddress(1, 2, 19, 19);
+		CellRangeAddress cellRangeAddress19 = new CellRangeAddress(1, 1, 19, 21);
 		sheet.addMergedRegion(cellRangeAddress19);
 		cellRangeAdressList.add(cellRangeAddress19);
 		
-		CellRangeAddress cellRangeAddress20 = new CellRangeAddress(1, 2, 20, 20);
-		sheet.addMergedRegion(cellRangeAddress20);
-		cellRangeAdressList.add(cellRangeAddress20);
-		
-		CellRangeAddress cellRangeAddress21 = new CellRangeAddress(0, 2, 21, 21);
-		sheet.addMergedRegion(cellRangeAddress21);
-		cellRangeAdressList.add(cellRangeAddress21);
-		
-		CellRangeAddress cellRangeAddress22 = new CellRangeAddress(0, 2, 22, 22);
+		CellRangeAddress cellRangeAddress22 = new CellRangeAddress(1, 1, 22, 24);
 		sheet.addMergedRegion(cellRangeAddress22);
 		cellRangeAdressList.add(cellRangeAddress22);
+		
+		CellRangeAddress cellRangeAddress25 = new CellRangeAddress(0, 2, 25, 25);
+		sheet.addMergedRegion(cellRangeAddress25);
+		cellRangeAdressList.add(cellRangeAddress25);
 		
 		CellRangeAddress cellRangeAddress12 = new CellRangeAddress(1,1,10,12);
 		sheet.addMergedRegion(cellRangeAddress12);
@@ -378,11 +392,21 @@ public class ExportExcelService {
 			cell.setCellValue(signalDTO.getAlgorithmEBScore());
 			
 			cell=row.createCell(20);
-			cell.setCellValue(signalDTO.getAlgorithmBCPNNScore());
+			cell.setCellValue(signalDTO.getAlgorithmEBLB());
 			
 			cell=row.createCell(21);
-			cell.setCellValue(signalDTO.getPp());
+			cell.setCellValue(signalDTO.getAlgorithmEBUB());
+			
 			cell=row.createCell(22);
+			cell.setCellValue(signalDTO.getAlgorithmBCPNNScore());
+			
+			cell=row.createCell(23);
+			cell.setCellValue(signalDTO.getAlgorithmBCPNNLB());
+			
+			cell=row.createCell(24);
+			cell.setCellValue(signalDTO.getAlgorithmBCPNNUB());
+			
+			cell=row.createCell(25);
 			cell.setCellValue(signalDTO.getSignal());
 
 		}
