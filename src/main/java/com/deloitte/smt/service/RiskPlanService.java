@@ -205,7 +205,7 @@ public class RiskPlanService {
 		return tasks;
 	}
 	
-	List<TopicRiskPlanAssignmentAssignees> associateRiskPlanAssignmentAssignees(List<RiskPlan> riskPlanList){
+	public List<TopicRiskPlanAssignmentAssignees> associateRiskPlanAssignmentAssignees(List<RiskPlan> riskPlanList){
 		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneesList=new ArrayList<>();
 		for(RiskPlan riskPlan :riskPlanList){
 			topicRiskPlanAssignmentAssigneesList =	topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskPlan.getId());

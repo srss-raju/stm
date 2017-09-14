@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.CaseService;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
+import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
@@ -24,20 +25,26 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.DateKeyType;
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
+import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
@@ -47,6 +54,7 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
+import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.service.RiskPlanService;
 import com.deloitte.smt.service.SearchService;
@@ -103,9 +111,18 @@ public class RiskPlanServiceTest {
 
 	@MockBean
 	SignalURLRepository signalURLRepository;
+	
+	@Autowired
+	private TaskService taskService;
 
 	@MockBean
 	AssignmentConfigurationRepository assignmentConfigurationRepository;
+	
+	@MockBean
+	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+	
+	@MockBean
+	AttachmentRepository attachmentRepository;
 	
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
 	    {
@@ -494,6 +511,10 @@ public class RiskPlanServiceTest {
 		Date startDate = new Date();
 		Date endDate = new Date();
 		
+		List<Long> userKeys = new ArrayList<>();
+		userKeys.add(1l);
+		List<Long> userGroupKeys = new ArrayList<>();
+		userGroupKeys.add(1l);
 		searchDto.setIngredients(ingredients);
 		searchDto.setLicenses(licenses);
 		searchDto.setProducts(products);
@@ -505,6 +526,99 @@ public class RiskPlanServiceTest {
 		searchDto.setHlts(hlts);
 		searchDto.setPts(pts);
 		searchDto.setSocs(socs);
+		searchDto.setUserKeys(userKeys);
+		searchDto.setUserGroupKeys(userGroupKeys);
+		searchDto.setOwner("1");
 		
 	}
+	
+	@Test
+	public void testAssociateRiskTasks() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setCaseInstanceId("222");
+			List<Long> ids = new ArrayList<>();
+			ids.add(1l);
+			riskPlan.setRiskTemplateIds(ids);
+			List<RiskTask> riskTasks = new ArrayList<>();
+			RiskTask task = new RiskTask();
+			riskTasks.add(task);
+			given(this.riskTaskRepository.findAllByTemplateId(1l)).willReturn(riskTasks);
+			riskPlanService.associateRiskTasks(riskPlan);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testAssociateRiskTasksAssignToNotNull() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setCaseInstanceId("222");
+			List<Long> ids = new ArrayList<>();
+			ids.add(1l);
+			riskPlan.setRiskTemplateIds(ids);
+			List<RiskTask> riskTasks = new ArrayList<>();
+			RiskTask task = new RiskTask();
+			task.setAssignTo("admin");
+			task.setInDays(1l);
+			riskTasks.add(task);
+			given(this.riskTaskRepository.findAllByTemplateId(1l)).willReturn(riskTasks);
+			riskPlanService.associateRiskTasks(riskPlan);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testAssociateRiskPlanAssignmentAssignees() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setId(1l);
+			List<RiskPlan> riskPlanList = new ArrayList<>();
+			riskPlanList.add(riskPlan);
+			List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneesList=new ArrayList<>();
+			TopicRiskPlanAssignmentAssignees assignee = new TopicRiskPlanAssignmentAssignees();
+			topicRiskPlanAssignmentAssigneesList.add(assignee);
+			given(this.topicRiskPlanAssignmentAssigneesRepository.findByRiskId(1l)).willReturn(topicRiskPlanAssignmentAssigneesList);
+			riskPlanService.associateRiskPlanAssignmentAssignees(riskPlanList);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testAssociateTemplateAttachments() {
+		try{
+			List<Attachment> attachments = new ArrayList<>();
+			RiskTask riskTask = new RiskTask();
+			riskTask.setId(1l);
+			Attachment attachment = new Attachment();
+			attachments.add(attachment);
+			Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
+			given(this.attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(1l,AttachmentType.RISK_TASK_ASSESSMENT,sort)).willReturn(attachments);
+			riskPlanService.associateTemplateAttachments(riskTask,riskTask);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testAssociateTemplateURLs() {
+		try{
+			RiskTask riskTask = new RiskTask();
+			riskTask.setId(1l);
+			List<SignalURL> riskTemplateTaskUrls = new ArrayList<>();
+			SignalURL url = new SignalURL();
+			riskTemplateTaskUrls.add(url);
+			given(this.signalURLRepository.findByTopicId(1l)).willReturn(riskTemplateTaskUrls);
+			riskPlanService.associateTemplateURLs(riskTask,riskTask);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
 }
