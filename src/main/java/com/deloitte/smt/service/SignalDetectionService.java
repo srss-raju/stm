@@ -161,7 +161,7 @@ public class SignalDetectionService {
 			saveDenominatorForPoisson(signalDetection);
 			saveQueryBuilder(signalDetection);
 			return signalDetection;
-		} catch (ApplicationException ex) {
+		} catch (ApplicationException | NullPointerException ex) {
 				throw new ApplicationException("Problem Creating Signal Detection",  ex);
 		}
 	}

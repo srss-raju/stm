@@ -38,7 +38,9 @@ import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
+import com.deloitte.smt.entity.Smq;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.TopicSignalDetectionAssignmentAssignees;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
@@ -51,6 +53,7 @@ import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.service.SignalDetectionService;
 import com.deloitte.smt.util.TestUtil;
 
@@ -103,6 +106,9 @@ public class SignalDetectionServiceTest {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
+	@MockBean
+	private TopicSignalDetectionAssignmentAssigneesRepository topicSignalDetectionAssignmentAssigneesRepository;
+	
 		
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
 	    {
@@ -127,6 +133,18 @@ public class SignalDetectionServiceTest {
 	public void testCreateOrUpdateSignalDetection() {
 		try{
 			SignalDetection signalDetection = new SignalDetection();
+			List<Smq> smqs = new ArrayList<>();
+			Smq smq = new Smq();
+			List<Pt> pts = new ArrayList<>();
+			Pt pt = new Pt();
+			pts.add(pt);
+			smq.setPts(pts);
+			smqs.add(smq);
+			signalDetection.setSmqs(smqs);
+			List<TopicSignalDetectionAssignmentAssignees>  detectionAssigneesList = new ArrayList<>();
+			TopicSignalDetectionAssignmentAssignees assignee = new TopicSignalDetectionAssignmentAssignees();
+			detectionAssigneesList.add(assignee);
+			signalDetection.setTopicSignalDetectionAssignmentAssignees(detectionAssigneesList);
 			Ingredient ingredient = setIngredient(signalDetection);
 			given(this.ingredientRepository.save(ingredient)).willReturn(ingredient);
 			List<Soc> socs = setSoc(signalDetection);
@@ -144,6 +162,15 @@ public class SignalDetectionServiceTest {
 		try{
 			SignalDetection signalDetection = new SignalDetection();
 			signalDetectionService.createOrUpdateSignalDetection(signalDetection);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testCreateOrUpdateSignalDetectionNull() {
+		try{
+			signalDetectionService.createOrUpdateSignalDetection(null);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -372,6 +399,27 @@ public class SignalDetectionServiceTest {
 		licenses.add(license);
 		ingredient.setLicenses(licenses);
 		return ingredient;
+	}
+	
+	@Test
+	public void testDeleteByAssigneeId() {
+		try{
+			TopicSignalDetectionAssignmentAssignees assignee = new TopicSignalDetectionAssignmentAssignees();
+			given(this.topicSignalDetectionAssignmentAssigneesRepository.findOne(1l)).willReturn(assignee);
+			signalDetectionService.deleteByAssigneeId(1l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testDeleteByAssigneeIdWithNull() {
+		try{
+			given(this.topicSignalDetectionAssignmentAssigneesRepository.findOne(1l)).willReturn(null);
+			signalDetectionService.deleteByAssigneeId(1l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
 	}
 	
 }
