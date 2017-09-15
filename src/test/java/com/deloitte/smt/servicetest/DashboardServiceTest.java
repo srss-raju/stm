@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -270,13 +271,35 @@ public class DashboardServiceTest {
 		stats.add(signalStatistics);
 		topic.setSignalStatistics(stats);
 		
-		given(this.signalService.findById(1L)).willReturn(topic);
+		Topic topic2 = new Topic();
+		topic2.setId(2L);
+		topic2.setSignalStatus("Completed");
+		topic2.setIngredient(setIngredient(topic2));
+		topic2.setSourceName("Test Source");
+		topic2.setCreatedDate(new Date());
+		List<SignalURL> urls2 = new ArrayList<>();
+		SignalURL url2 = new SignalURL();
+		url2.setUrl("Test Url");
+		urls2.add(url2);
+		topic2.setSignalUrls(urls2);
+		Set<SignalStatistics> stats2 = new HashSet<>();
+		SignalStatistics signalStatistics2 = new SignalStatistics();
+		signalStatistics2.setScore(1);
+		signalStatistics2.setLb(1.0);
+		signalStatistics2.setUb(10.0);
+		signalStatistics2.setAlgorithm("ROR");
+		signalStatistics2.setTopic(topic);
+		stats2.add(signalStatistics2);
+		topic2.setSignalStatistics(stats2);
+		
+		given(this.signalService.findById(1L)).willReturn(topic2);
 		given(this.ingredientRepository.findByTopicId(topic.getId())).willReturn(topic.getIngredient());
 		
 		List<Topic> list=new ArrayList<>();
+		list.add(topic2);
 		given(this.signalMatchService.getMatchingSignals(topic)).willReturn(list);
 		Set<Long> set=new HashSet<>();
-		
+		set.add(1l);
 		List<SignalStatistics> statList = new ArrayList<>();
 		statList.add(signalStatistics);
 		given(this.signalStatisticsRepository.findStatisticsByTopicsIds(set)).willReturn(statList);
