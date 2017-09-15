@@ -42,6 +42,7 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
+import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.Hlgt;
 import com.deloitte.smt.entity.Hlt;
 import com.deloitte.smt.entity.Ingredient;
@@ -681,5 +682,19 @@ public class SignalServiceTest {
 		ingredient.setLicenses(licenses);
 		ingredient.setTopicId(1l);
 		return ingredient;
+	}
+	
+	@Test
+	public void testUpdateComments() {
+		try{
+			Topic topic = new Topic();
+			List<Comments> list = new ArrayList<>();
+			Comments comments = new Comments();
+			list.add(comments);
+			topic.setComments(list);
+			signalService.updateComments(topic);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
 	}
 }
