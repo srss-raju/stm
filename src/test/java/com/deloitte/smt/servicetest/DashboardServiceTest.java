@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -278,8 +277,8 @@ public class DashboardServiceTest {
 		given(this.signalMatchService.getMatchingSignals(topic)).willReturn(list);
 		Set<Long> set=new HashSet<>();
 		
-		List<SignalStatistics> statList = stats.stream().collect(Collectors.toList());
-		
+		List<SignalStatistics> statList = new ArrayList<>();
+		statList.add(signalStatistics);
 		given(this.signalStatisticsRepository.findStatisticsByTopicsIds(set)).willReturn(statList);
 		
 		List<Long> list1=new ArrayList<>();
