@@ -64,6 +64,16 @@ public class TestUtil {
 		Date startDate = new Date();
 		Date endDate = new Date();
 		
+		List<String> sources = new ArrayList<>();
+		sources.add("'Social Media");
+		
+		List<Long> userKeys = new ArrayList<>();
+		List<Long> userGroupKeys = new ArrayList<>();
+		userKeys.add(1l);
+		userGroupKeys.add(1l);
+		List<String> owners = new ArrayList<>();
+		owners.add("admin");
+		
 		assignees.add("SANALYST1");
 		ingredients.add("AMOXICILLIN");
 		products.add("IBUPROFEN ( Tablet )");
@@ -99,6 +109,10 @@ public class TestUtil {
 		searchDto.setDateKey(dateKey);
 		searchDto.setDueDate(isDueDate);
 		searchDto.setGantt(gantt);
+		searchDto.setSources(sources);
+		searchDto.setUserGroupKeys(userGroupKeys);
+		searchDto.setUserKeys(userKeys);
+		searchDto.setOwners(owners);
 		
     	return searchDto;
     }
