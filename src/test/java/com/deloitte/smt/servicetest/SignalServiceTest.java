@@ -61,6 +61,7 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
+import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
 import com.deloitte.smt.repository.IngredientRepository;
@@ -116,6 +117,9 @@ public class SignalServiceTest {
 
 	@Autowired
 	CaseService caseService;
+	
+	@MockBean
+	CommentsRepository commentsRepository;
 
 	@MockBean
 	AssessmentPlanRepository assessmentPlanRepository;
@@ -694,6 +698,17 @@ public class SignalServiceTest {
 			topic.setComments(list);
 			signalService.updateComments(topic);
 		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testGetTopicComments() {
+		try {
+			given(this.commentsRepository.findByTopicId(1l)).willReturn(null);
+			signalService. getTopicComments(1l);
+		} catch (Exception ex) {
 			LOG.info(ex);
 		}
 	}
