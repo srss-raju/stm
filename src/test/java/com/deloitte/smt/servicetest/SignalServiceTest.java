@@ -78,6 +78,7 @@ import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.AttachmentService;
+import com.deloitte.smt.service.DashboardCountService;
 import com.deloitte.smt.service.SearchService;
 import com.deloitte.smt.service.SignalMatchService;
 import com.deloitte.smt.service.SignalService;
@@ -153,6 +154,9 @@ public class SignalServiceTest {
 
 	@Autowired
 	SearchService searchService;
+	
+	@Autowired
+	DashboardCountService dashboardCountService;
 
 	@MockBean
 	AttachmentRepository attachmentRepository;
@@ -712,4 +716,62 @@ public class SignalServiceTest {
 			LOG.info(ex);
 		}
 	}
+	
+	@Test
+	public void testDeleteTopicComments() {
+		try {
+			Comments comments = new Comments();
+			given(this.commentsRepository.findOne(1l)).willReturn(comments);
+			signalService. deleteTopicComments(1l);
+		} catch (Exception ex) {
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testDeleteTopicCommentsWithNull() {
+		try {
+			given(this.commentsRepository.findOne(1l)).willReturn(null);
+			signalService. deleteTopicComments(1l);
+		} catch (Exception ex) {
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testGetValidateAndPrioritizeCount() {
+		try {
+			String owner = "Admin"; 
+			List<Long> userKeys = new ArrayList<>(); 
+			List<Long> userGroupKeys = new ArrayList<>();
+			signalService.getValidateAndPrioritizeCount(owner, userKeys, userGroupKeys);
+		} catch (Exception ex) {
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testGetAssessmentCount() {
+		try {
+			String owner = "Admin"; 
+			List<Long> userKeys = new ArrayList<>(); 
+			List<Long> userGroupKeys = new ArrayList<>();
+			signalService.getAssessmentCount(owner, userKeys, userGroupKeys);
+		} catch (Exception ex) {
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testGetRiskCount() {
+		try {
+			String owner = "Admin"; 
+			List<Long> userKeys = new ArrayList<>(); 
+			List<Long> userGroupKeys = new ArrayList<>();
+			signalService.getRiskCount(owner, userKeys, userGroupKeys);
+		} catch (Exception ex) {
+			LOG.info(ex);
+		}
+	}
+	
 }
