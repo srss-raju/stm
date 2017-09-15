@@ -57,21 +57,45 @@ public class DetectionRunServiceTest {
 	  
 	@Test
 	public void testInsert() throws Exception {
-		LOG.info("testGetSmtComplianceDetails");
+		LOG.info("testInsert");
 		DetectionRun detectionRun = new DetectionRun();
 		detectionRunService.insert(detectionRun);
 	}
 	
 	@Test
-	public void testFindById() throws Exception {
-		LOG.info("Test findById");
+	public void update() throws Exception {
+		LOG.info("update");
 		DetectionRun detectionRun = new DetectionRun();
-		given(this.detectionRunRepository.findOne(1l)).willReturn(detectionRun);
-		detectionRunService.findById(1l);
+		detectionRun.setId(1l);
+		detectionRunService.update(detectionRun);
 	}
 	
 	@Test
-	public void testFindByIdWithNull() throws Exception {
+	public void updateWithNull() {
+		try{
+			LOG.info("update");
+			DetectionRun detectionRun = new DetectionRun();
+			detectionRunService.update(detectionRun);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testFindById() {
+		try{
+			LOG.info("Test findById");
+			DetectionRun detectionRun = new DetectionRun();
+			given(this.detectionRunRepository.findOne(1l)).willReturn(detectionRun);
+			detectionRunService.findById(1l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindByIdWithNull() {
 		try{
 			detectionRunService.findById(1l);
 		}catch(Exception ex){
@@ -87,6 +111,31 @@ public class DetectionRunServiceTest {
 	@Test
 	public void testFindByDetectionId() throws Exception {
 		detectionRunService.findByDetectionId(1l);
+	}
+	
+	@Test
+	public void delete()  {
+		try{
+			LOG.info("update");
+			DetectionRun detectionRun = new DetectionRun();
+			detectionRun.setId(1l);
+			given(this.detectionRunRepository.findOne(1l)).willReturn(detectionRun);
+			detectionRunService.delete(1l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+		
+	}
+	
+	@Test
+	public void deleteWithNull() {
+		try{
+			LOG.info("delete");
+			given(this.detectionRunRepository.findOne(1l)).willReturn(null);
+			detectionRunService.delete(1l);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
 	}
 
 }
