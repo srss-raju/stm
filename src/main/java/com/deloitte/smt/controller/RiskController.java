@@ -23,6 +23,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.RiskPlanService;
+import com.deloitte.smt.util.SmtResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -54,7 +55,7 @@ public class RiskController {
     
     
     @PostMapping(value = "/search")
-    public List<RiskPlan> getAllRiskPlans(@RequestBody(required=false) SearchDto searchDto){
+    public SmtResponse getAllRiskPlans(@RequestBody(required=false) SearchDto searchDto){
         return riskPlanService.findAllRiskPlansForSearch(searchDto);
     }
     

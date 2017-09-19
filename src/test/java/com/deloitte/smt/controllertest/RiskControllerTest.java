@@ -36,6 +36,7 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.service.RiskPlanService;
+import com.deloitte.smt.util.SmtResponse;
 import com.deloitte.smt.util.TestUtil;
 
 /**
@@ -84,7 +85,9 @@ public class RiskControllerTest {
 		
 		List<RiskPlan> riskPlans=new ArrayList<>();
 		SearchDto searchDto=new SearchDto();
-		when(riskPlanServiceMock.findAllRiskPlansForSearch(Matchers.any(SearchDto.class))).thenReturn(riskPlans);
+		SmtResponse smtResponse = new SmtResponse();
+		smtResponse.setResult(riskPlans);
+		when(riskPlanServiceMock.findAllRiskPlansForSearch(Matchers.any(SearchDto.class))).thenReturn(smtResponse);
 		
 		this.mockMvc
 		.perform(post("/camunda/api/signal/risk/search")

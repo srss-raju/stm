@@ -78,6 +78,8 @@ public class SignalSearchService {
 		if(searchDto!= null && searchDto.getFetchSize() !=0 ){
 			q.setFirstResult(searchDto.getFromRecord());
 			q.setMaxResults(searchDto.getFetchSize());
+			smtResponse.setFetchSize(searchDto.getFetchSize());
+			smtResponse.setFromRecord(searchDto.getFromRecord());
 		}
 		smtResponse.setResult(q.getResultList());
 		return smtResponse;

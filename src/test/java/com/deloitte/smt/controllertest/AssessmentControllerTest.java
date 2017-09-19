@@ -1,8 +1,23 @@
 package com.deloitte.smt.controllertest;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,16 +37,8 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.service.AssessmentPlanService;
+import com.deloitte.smt.util.SmtResponse;
 import com.deloitte.smt.util.TestUtil;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 /**
  * 
@@ -64,8 +71,9 @@ public class AssessmentControllerTest {
 		planList.add(type);
 
 		SearchDto searchDTO = new SearchDto();
-
-		when(assessmentPlanServiceMock.findAllAssessmentPlans(Matchers.any(SearchDto.class))).thenReturn(planList);
+		SmtResponse smtResponse = new SmtResponse();
+		smtResponse.setResult(planList);
+		when(assessmentPlanServiceMock.findAllAssessmentPlans(Matchers.any(SearchDto.class))).thenReturn(smtResponse);
 		this.mockMvc
 				.perform(post("/camunda/api/signal/allAssessmentPlans")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)

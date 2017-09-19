@@ -46,6 +46,7 @@ import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
+import com.deloitte.smt.util.SmtResponse;
 
 /**
  * Created by RajeshKumar on 12-04-2017.
@@ -106,6 +107,9 @@ public class RiskPlanService {
 	SignalAuditService signalAuditService;
 	@Autowired
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+	
+	@Autowired
+	SmtResponse smtResponse;
 	
 
 	public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId)
@@ -279,7 +283,7 @@ public class RiskPlanService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
+	public SmtResponse findAllRiskPlansForSearch(SearchDto searchDto) {
 		StringBuilder queryBuilder = new StringBuilder();
 		List<String> whereClauses = new ArrayList<>();
 
@@ -294,12 +298,26 @@ public class RiskPlanService {
 		
 		queryBuilder.append(" order by created_date DESC");
 		String queryStr = queryBuilder.toString();
-		Query query = entityManager.createNativeQuery(queryStr, RiskPlan.class);
-		setParameters(queryStr, searchDto, query);
+		Query q = entityManager.createNativeQuery(queryStr, RiskPlan.class);
+		setParameters(queryStr, searchDto, q);
+		
+		if (!CollectionUtils.isEmpty(q.getResultList())) {
+			smtResponse.setTotalRecords(q.getResultList().size());
+		}
+		if(searchDto!= null && searchDto.getFetchSize() !=0 ){
+			q.setFirstResult(searchDto.getFromRecord());
+			q.setMaxResults(searchDto.getFetchSize());
+			smtResponse.setFetchSize(searchDto.getFetchSize());
+			smtResponse.setFromRecord(searchDto.getFromRecord());
+		}
+		smtResponse.setResult(q.getResultList());
 		
 		/**For adding TopicRiskPlanAssignmentAssignees to RiskPlan */
-		associateRiskPlanAssignmentAssignees(query.getResultList());
-		return query.getResultList();
+		if (smtResponse.getResult() != null) {
+			List<RiskPlan> result = (List<RiskPlan>) smtResponse.getResult();
+			associateRiskPlanAssignmentAssignees(result);
+		}
+		return smtResponse;
 	}
 
 	/**

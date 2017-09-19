@@ -48,6 +48,7 @@ import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
+import com.deloitte.smt.util.SmtResponse;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -91,6 +92,9 @@ public class AssessmentPlanService {
     
     @Autowired
     RiskPlanService riskPlanService;
+    
+    @Autowired
+	SmtResponse smtResponse;
 
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
@@ -127,7 +131,8 @@ public class AssessmentPlanService {
         }
     }
 
-	public List<AssessmentPlan> findAllAssessmentPlans(SearchDto searchDto) {
+	@SuppressWarnings("unchecked")
+	public SmtResponse findAllAssessmentPlans(SearchDto searchDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<AssessmentPlan> criteriaQuery = criteriaBuilder.createQuery(AssessmentPlan.class);
 
@@ -184,8 +189,21 @@ public class AssessmentPlanService {
 		}
 
 		TypedQuery<AssessmentPlan> q = entityManager.createQuery(criteriaQuery);
-		associateAssignees(q.getResultList());
-		return q.getResultList();
+		if (!CollectionUtils.isEmpty(q.getResultList())) {
+			smtResponse.setTotalRecords(q.getResultList().size());
+		}
+		if(searchDto!= null && searchDto.getFetchSize() !=0 ){
+			q.setFirstResult(searchDto.getFromRecord());
+			q.setMaxResults(searchDto.getFetchSize());
+			smtResponse.setFetchSize(searchDto.getFetchSize());
+			smtResponse.setFromRecord(searchDto.getFromRecord());
+		}
+		smtResponse.setResult(q.getResultList());
+		if (smtResponse.getResult() != null) {
+			List<AssessmentPlan> result = (List<AssessmentPlan>) smtResponse.getResult();
+			associateAssignees(result);
+		}
+		return smtResponse;
 	}
 	@Autowired
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
