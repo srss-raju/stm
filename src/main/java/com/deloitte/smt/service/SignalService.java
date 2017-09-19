@@ -65,6 +65,7 @@ import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
+import com.deloitte.smt.util.SmtResponse;
 
 /**
  * Created by RKB on 04-04-2017.
@@ -489,7 +490,7 @@ public class SignalService {
 		return assessmentPlan;
 	}
 
-	public List<Topic> findTopics(SearchDto searchDto) {
+	public SmtResponse findTopics(SearchDto searchDto) {
 		return signalSearchService.findTopics(searchDto);
 	}
 

@@ -31,6 +31,7 @@ import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
+import com.deloitte.smt.util.SmtResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -75,7 +76,7 @@ public class SignalController {
 	
 
 	@PostMapping(value = "/search")	
-	public List<Topic> getAllByStatus(@RequestBody(required=false) SearchDto dto) {
+	public SmtResponse getAllByStatus(@RequestBody(required=false) SearchDto dto) {
 		return signalService.findTopics(dto);
 	}
 

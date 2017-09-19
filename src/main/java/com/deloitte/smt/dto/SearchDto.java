@@ -40,14 +40,6 @@ public class SearchDto {
 	
 	private List<String> owners;
 
-	public String getDateKey() {
-		return dateKey;
-	}
-
-	public void setDateKey(String dateKey) {
-		this.dateKey = dateKey;
-	}
-
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date startDate;
 
@@ -58,6 +50,9 @@ public class SearchDto {
 	private List<String> riskTaskStatus;
 
 	private boolean gantt;
+	
+	private int fetchSize;
+	private int fromRecord;
 
 	public boolean isGantt() {
 		return gantt;
@@ -283,6 +278,29 @@ public class SearchDto {
 
 	public void setOwners(List<String> owners) {
 		this.owners = owners;
+	}
+	public String getDateKey() {
+		return dateKey;
+	}
+
+	public void setDateKey(String dateKey) {
+		this.dateKey = dateKey;
+	}
+
+	public int getFetchSize() {
+		return fetchSize;
+	}
+
+	public void setFetchSize(int fetchSize) {
+		this.fetchSize = fetchSize;
+	}
+
+	public int getFromRecord() {
+		return fromRecord;
+	}
+
+	public void setFromRecord(int fromRecord) {
+		this.fromRecord = fromRecord;
 	}
 
 }

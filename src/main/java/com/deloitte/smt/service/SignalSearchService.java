@@ -13,6 +13,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,14 +28,18 @@ import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicSignalValidationAssignmentAssignees;
+import com.deloitte.smt.util.SmtResponse;
 
 @Service
 public class SignalSearchService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	@Autowired
+	SmtResponse smtResponse;
 
-	public List<Topic> findTopics(SearchDto searchDto) {
+	public SmtResponse findTopics(SearchDto searchDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Topic> query = criteriaBuilder.createQuery(Topic.class);
 		Root<Topic> rootTopic = query.from(Topic.class);
@@ -67,7 +72,15 @@ public class SignalSearchService {
 		}
 
 		TypedQuery<Topic> q = entityManager.createQuery(query);
-		return q.getResultList();
+		if (!CollectionUtils.isEmpty(q.getResultList())) {
+			smtResponse.setTotalRecords(q.getResultList().size());
+		}
+		if(searchDto!= null && searchDto.getFetchSize() !=0 ){
+			q.setFirstResult(searchDto.getFromRecord());
+			q.setMaxResults(searchDto.getFetchSize());
+		}
+		smtResponse.setResult(q.getResultList());
+		return smtResponse;
 	}
 
 	/**
