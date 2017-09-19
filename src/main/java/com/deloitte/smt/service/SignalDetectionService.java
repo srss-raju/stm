@@ -56,6 +56,7 @@ import com.deloitte.smt.repository.SmqRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.util.SignalUtil;
+import com.deloitte.smt.util.SmtResponse;
 
 /**
  * Created by RajeshKumar on 04-04-2017.
@@ -113,6 +114,9 @@ public class SignalDetectionService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	@Autowired
+	SmtResponse smtResponse;
 
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
@@ -355,7 +359,7 @@ public class SignalDetectionService {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<SignalDetection> findAllForSearch(SearchDto searchDto) {
+	public SmtResponse findAllForSearch(SearchDto searchDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
 
@@ -391,14 +395,25 @@ public class SignalDetectionService {
 		}
 
 		TypedQuery<SignalDetection> q = entityManager.createQuery(criteriaQuery);
-		List<SignalDetection> results = q.getResultList();
-		if (!CollectionUtils.isEmpty(results)) {
-			for (SignalDetection signalDetection : results) {
+		if (!CollectionUtils.isEmpty(q.getResultList())) {
+			smtResponse.setTotalRecords(q.getResultList().size());
+		}
+		if(searchDto!= null && searchDto.getFetchSize() !=0 ){
+			q.setFirstResult(searchDto.getFromRecord());
+			q.setMaxResults(searchDto.getFetchSize());
+			smtResponse.setFetchSize(searchDto.getFetchSize());
+			smtResponse.setFromRecord(searchDto.getFromRecord());
+		}
+		smtResponse.setResult(q.getResultList());
+		
+		if (!CollectionUtils.isEmpty(smtResponse.getResult())) {
+			List<SignalDetection> result = (List<SignalDetection>) smtResponse.getResult();
+			for (SignalDetection signalDetection : result) {
 				signalDetection.setDenominatorForPoisson(
 						denominatorForPoissonRepository.findByDetectionId(signalDetection.getId()));
 			}
 		}
-		return results;
+		return smtResponse;
 	}
 
 	/**
@@ -672,13 +687,18 @@ public class SignalDetectionService {
 		}
 	}
 
-	public List<SignalDetection> ganttDetections(List<SignalDetection> detections) {
+	@SuppressWarnings("unchecked")
+	public SmtResponse ganttDetections(SmtResponse smtResponse) {
+		List<SignalDetection> detections = null;
+		if (!CollectionUtils.isEmpty(smtResponse.getResult())) {
+			detections = (List<SignalDetection>) smtResponse.getResult();
+		}
 		if (!CollectionUtils.isEmpty(detections)) {
 			for (SignalDetection signalDetection : detections) {
 				createGanttSignalDetections(signalDetection);
 			}
 		}
-		return detections;
+		return smtResponse;
 	}
 
 	private void createGanttSignalDetections(SignalDetection signalDetection) {

@@ -30,6 +30,7 @@ import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.service.SignalDetectionService;
+import com.deloitte.smt.util.SmtResponse;
 import com.deloitte.smt.util.TestUtil;
 
 /**
@@ -118,8 +119,9 @@ public class SignalDetectionControllerTest {
 		List<SignalDetection> detectionList=new ArrayList<>();
 		SignalDetection signalDection = new SignalDetection();
 		detectionList.add(signalDection);
-		
-		when(signalDetectionServiceMock.ganttDetections(detectionList)).thenReturn(detectionList);
+		SmtResponse smtResponse = new SmtResponse();
+		smtResponse.setResult(detectionList);
+		when(signalDetectionServiceMock.ganttDetections(smtResponse)).thenReturn(smtResponse);
 		
 		this.mockMvc
 		.perform(post("/camunda/api/signal/detect/all")
@@ -138,8 +140,9 @@ public class SignalDetectionControllerTest {
 		List<SignalDetection> detectionList=new ArrayList<>();
 		SignalDetection signalDection = new SignalDetection();
 		detectionList.add(signalDection);
-		
-		when(signalDetectionServiceMock.ganttDetections(detectionList)).thenReturn(detectionList);
+		SmtResponse smtResponse = new SmtResponse();
+		smtResponse.setResult(detectionList);
+		when(signalDetectionServiceMock.ganttDetections(smtResponse)).thenReturn(smtResponse);
 		
 		this.mockMvc
 		.perform(post("/camunda/api/signal/detect/all")

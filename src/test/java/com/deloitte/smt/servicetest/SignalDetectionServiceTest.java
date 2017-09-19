@@ -52,6 +52,7 @@ import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.service.SignalDetectionService;
+import com.deloitte.smt.util.SmtResponse;
 import com.deloitte.smt.util.TestUtil;
 
 @RunWith(SpringRunner.class)
@@ -241,7 +242,9 @@ public class SignalDetectionServiceTest {
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Daily");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			SmtResponse smtResponse = new SmtResponse();
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -256,7 +259,9 @@ public class SignalDetectionServiceTest {
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Weekly");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			SmtResponse smtResponse = new SmtResponse();
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -271,7 +276,9 @@ public class SignalDetectionServiceTest {
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Monthly");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			SmtResponse smtResponse = new SmtResponse();
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -280,13 +287,15 @@ public class SignalDetectionServiceTest {
 	@Test
 	public void testGanttDetectionsQuarterly() {
 		try{
+			SmtResponse smtResponse = new SmtResponse();
 			List<SignalDetection> detections = new ArrayList<>();
 			SignalDetection signalDetection = new SignalDetection();
 			signalDetection.setCreatedDate(new Date());
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Quarterly");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -301,7 +310,9 @@ public class SignalDetectionServiceTest {
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Yearly");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			SmtResponse smtResponse = new SmtResponse();
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
