@@ -78,8 +78,8 @@ public class SignalDetection implements Serializable {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "signalDetection")
 	private Set<SignalDetectionStatistics> signalDetectionStatistics;
 
-	@Transient
-	private Ingredient ingredient;
+	/*@Transient
+	private Ingredient ingredient;*/
 	@Transient
 	private List<Ingredient> ingredients;
 	@Transient
@@ -177,13 +177,13 @@ public class SignalDetection implements Serializable {
 		this.signalDetectionStatistics = signalDetectionStatistics;
 	}
 
-	public Ingredient getIngredient() {
+	/*public Ingredient getIngredient() {
 		return ingredient;
 	}
 
 	public void setIngredient(Ingredient ingredient) {
 		this.ingredient = ingredient;
-	}
+	}*/
 
 	public List<Soc> getSocs() {
 		return socs;

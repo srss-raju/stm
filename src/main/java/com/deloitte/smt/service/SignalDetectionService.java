@@ -645,22 +645,24 @@ public class SignalDetectionService {
 	}
 
 	private void addOtherInfoToSignalDetection(SignalDetection signalDetection) {
-		Ingredient ingredient;
-		ingredient = ingredientRepository.findByDetectionId(signalDetection.getId());
+		List<Ingredient> ingredients;
+		ingredients = ingredientRepository.findByDetectionId(signalDetection.getId());
 		List<Product> products;
 		products = productRepository.findByDetectionId(signalDetection.getId());
 
 		List<License> licenses;
 		licenses = licenseRepository.findByDetectionId(signalDetection.getId());
-
-		if (ingredient != null) {
+		if (!CollectionUtils.isEmpty(ingredients)) {
+			for (Ingredient ingredient : ingredients) {
+		
 			if(products != null){
 				ingredient.setProducts(products);
 			}
 			if(licenses != null){
 				ingredient.setLicenses(licenses);
 			}
-			signalDetection.setIngredient(ingredient);
+			}
+			signalDetection.setIngredients(ingredients);
 		}
 
 		List<Soc> socs;
