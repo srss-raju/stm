@@ -29,9 +29,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Comments;
+import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
+import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.service.AssessmentPlanService;
 import com.deloitte.smt.util.TestUtil;
 
@@ -50,6 +53,9 @@ public class AssessmentPlanServiceTest {
 	
 	@MockBean
     AssessmentPlanRepository assessmentPlanRepository;
+	
+	@MockBean
+	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
 	    {
@@ -208,6 +214,27 @@ public class AssessmentPlanServiceTest {
 	public void testFindAllAssessmentPlansWithDueDateAndWithGantt() {
 		try{
 			assessmentPlanService.findAllAssessmentPlans(TestUtil.buildSearchDto(true, true));
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testAssociateAssignees() {
+		try{
+			List<AssessmentPlan> assessmentPlanList = new ArrayList<>();
+			List<TopicRiskPlanAssignmentAssignees> trList = new ArrayList<>();
+			TopicRiskPlanAssignmentAssignees assignee = new TopicRiskPlanAssignmentAssignees();
+			trList.add(assignee);
+			RiskPlan riskPlan= new RiskPlan();
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setAssessmentName("Test Case 1");
+			assessmentPlan.setAssessmentPlanStatus("New");
+			assessmentPlan.setId(1l);
+			assessmentPlan.setRiskPlan(riskPlan);
+			assessmentPlanList.add(assessmentPlan);
+			given(this.topicRiskPlanAssignmentAssigneesRepository.findByRiskId(1l)).willReturn(trList);
+			assessmentPlanService.associateAssignees(assessmentPlanList);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}

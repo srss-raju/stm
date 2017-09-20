@@ -190,7 +190,8 @@ public class AssessmentPlanService {
 		associateAssignees(q.getResultList());
 		return q.getResultList();
 	}
-	private void associateAssignees(List<AssessmentPlan> assessmentPlanList){
+	
+	public void associateAssignees(List<AssessmentPlan> assessmentPlanList){
 		if (!CollectionUtils.isEmpty(assessmentPlanList)) {
 			for(AssessmentPlan assessmentPlan :assessmentPlanList){
 				if(null!=assessmentPlan.getRiskPlan()){
