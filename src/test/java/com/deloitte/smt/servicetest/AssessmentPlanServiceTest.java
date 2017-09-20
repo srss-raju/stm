@@ -160,6 +160,7 @@ public class AssessmentPlanServiceTest {
 		}
 	}
 	
+	@Test
 	public void testFinalAssessment() throws Exception{
 		AssessmentPlan assessmentPlan = new AssessmentPlan();
 		assessmentPlan.setId(1l);
@@ -192,6 +193,16 @@ public class AssessmentPlanServiceTest {
 			LOG.info(ex);
 		}
 	}
+	
+	@Test
+	public void testFindAllAssessmentPlansNull() {
+		try{
+			assessmentPlanService.findAllAssessmentPlans(null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
 	
 	@Test
 	public void testFindAllAssessmentPlansWithDueDateAndWithGantt() {
