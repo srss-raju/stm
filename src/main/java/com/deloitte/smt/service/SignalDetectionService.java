@@ -145,16 +145,17 @@ public class SignalDetectionService {
 				} 
 			}
 			signalDetection.setId(clone.getId());
-			Ingredient ingredient = signalDetection.getIngredient();
-			if (ingredient != null) {
-				ingredient.setDetectionId(signalDetection.getId());
-				ingredientRepository.deleteByDetectionId(signalDetection.getId());
-				ingredient = ingredientRepository.save(ingredient);
+			List<Ingredient> ingredients = signalDetection.getIngredients();
+			if (!CollectionUtils.isEmpty(ingredients)) {
+				for (Ingredient ingredient : ingredients) {
+					ingredient.setDetectionId(signalDetection.getId());
+					ingredientRepository.deleteByDetectionId(signalDetection.getId());
+				}
+				ingredients = ingredientRepository.save(ingredients);
 
-				saveProduct(signalDetection, ingredient);
-				saveLicense(signalDetection, ingredient);
+				saveProduct(signalDetection, ingredients);
+				saveLicense(signalDetection, ingredients);
 			}
-
 			saveSoc(signalDetection);
 			saveSmq(signalDetection);
 			saveIncludeAE(signalDetection);
@@ -262,15 +263,20 @@ public class SignalDetectionService {
 	 * @param signalDetection
 	 * @param ingredient
 	 */
-	private void saveProduct(SignalDetection signalDetection, Ingredient ingredient) {
-		List<Product> products = ingredient.getProducts();
-		if (!CollectionUtils.isEmpty(products)) {
-			for (Product singleProduct : products) {
-				singleProduct.setIngredientId(ingredient.getId());
-				singleProduct.setDetectionId(signalDetection.getId());
+	private void saveProduct(SignalDetection signalDetection, List<Ingredient> ingredients) {
+		List<Product> products = null;
+		if (!CollectionUtils.isEmpty(ingredients)) {
+			for (Ingredient ingredient : ingredients) {
+				products = ingredient.getProducts();
+				if (!CollectionUtils.isEmpty(products)) {
+					for (Product singleProduct : products) {
+						singleProduct.setIngredientId(ingredient.getId());
+						singleProduct.setDetectionId(signalDetection.getId());
+					}
+					productRepository.deleteByDetectionId(signalDetection.getId());
+					productRepository.save(products);
+				}
 			}
-			productRepository.deleteByDetectionId(signalDetection.getId());
-			productRepository.save(products);
 		}
 	}
 
@@ -278,15 +284,20 @@ public class SignalDetectionService {
 	 * @param signalDetection
 	 * @param ingredient
 	 */
-	private void saveLicense(SignalDetection signalDetection, Ingredient ingredient) {
-		List<License> licenses = ingredient.getLicenses();
-		if (!CollectionUtils.isEmpty(licenses)) {
-			for (License singleLicense : licenses) {
-				singleLicense.setIngredientId(ingredient.getId());
-				singleLicense.setDetectionId(signalDetection.getId());
+	private void saveLicense(SignalDetection signalDetection, List<Ingredient> ingredients) {
+		if (!CollectionUtils.isEmpty(ingredients)) {
+			for (Ingredient ingredient : ingredients) {
+
+				List<License> licenses = ingredient.getLicenses();
+				if (!CollectionUtils.isEmpty(licenses)) {
+					for (License singleLicense : licenses) {
+						singleLicense.setIngredientId(ingredient.getId());
+						singleLicense.setDetectionId(signalDetection.getId());
+					}
+					licenseRepository.deleteByDetectionId(signalDetection.getId());
+					licenseRepository.save(licenses);
+				}
 			}
-			licenseRepository.deleteByDetectionId(signalDetection.getId());
-			licenseRepository.save(licenses);
 		}
 	}
 

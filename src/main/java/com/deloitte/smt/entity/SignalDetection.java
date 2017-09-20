@@ -80,7 +80,8 @@ public class SignalDetection implements Serializable {
 
 	@Transient
 	private Ingredient ingredient;
-
+	@Transient
+	private List<Ingredient> ingredients;
 	@Transient
 	private List<Soc> socs;
 	
@@ -303,6 +304,14 @@ public class SignalDetection implements Serializable {
 
 	public void setSmqs(List<Smq> smqs) {
 		this.smqs = smqs;
+	}
+
+	public List<Ingredient> getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(List<Ingredient> ingredients) {
+		this.ingredients = ingredients;
 	}
 
 }
