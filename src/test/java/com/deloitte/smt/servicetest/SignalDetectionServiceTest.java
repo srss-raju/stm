@@ -128,7 +128,7 @@ public class SignalDetectionServiceTest {
 	public void testCreateOrUpdateSignalDetection() {
 		try{
 			SignalDetection signalDetection = new SignalDetection();
-			Ingredient ingredient = setIngredient(signalDetection);
+			List<Ingredient> ingredient = setIngredient(signalDetection);
 			given(this.ingredientRepository.save(ingredient)).willReturn(ingredient);
 			List<Soc> socs = setSoc(signalDetection);
 			setOthers(signalDetection, ingredient);
@@ -174,7 +174,7 @@ public class SignalDetectionServiceTest {
 	public void testFindById() {
 		try{
 			SignalDetection signalDetection = new SignalDetection();
-			Ingredient ingredient = setIngredient(signalDetection);
+			List<Ingredient> ingredient = setIngredient(signalDetection);
 			setSoc(signalDetection);
 			setOthers(signalDetection, ingredient);
 			given(this.signalDetectionRepository.findOne(1l)).willReturn(signalDetection);
@@ -317,7 +317,7 @@ public class SignalDetectionServiceTest {
 			LOG.info(ex);
 		}
 	}
-	private void setOthers(SignalDetection signalDetection, Ingredient ingredient) {
+	private void setOthers(SignalDetection signalDetection, List<Ingredient> ingredient) {
 		List<IncludeAE> includeAEs = new ArrayList<>();
 		IncludeAE includeAE = new IncludeAE();
 		includeAE.setAeName("Test AE");
@@ -337,7 +337,7 @@ public class SignalDetectionServiceTest {
 		signalDetection.setQueryBuilder(queryBuilders);
 		signalDetection.setRunFrequency("Daily");
 		signalDetection.setCreatedDate(new Date());
-		signalDetection.setIngredient(ingredient);
+		signalDetection.setIngredients(ingredient);
 	}
 
 
@@ -366,7 +366,8 @@ public class SignalDetectionServiceTest {
 	}
 
 
-	private Ingredient setIngredient(SignalDetection signalDetection) {
+	private List<Ingredient> setIngredient(SignalDetection signalDetection) {
+		List<Ingredient> ingredients=new ArrayList<>();
 		signalDetection.setId(1l);
 		Ingredient ingredient = new Ingredient();
 		ingredient.setIngredientName("Test Ingredient");
@@ -382,7 +383,8 @@ public class SignalDetectionServiceTest {
 		license.setLicenseName("Test License");
 		licenses.add(license);
 		ingredient.setLicenses(licenses);
-		return ingredient;
+		ingredients.add(ingredient);
+		return ingredients;
 	}
 	
 }
