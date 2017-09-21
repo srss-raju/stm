@@ -1,13 +1,15 @@
 package com.deloitte.smt.repository;
 
-import com.deloitte.smt.entity.License;
+import java.util.List;
+import java.util.Set;
+
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Set;
+import com.deloitte.smt.entity.License;
 
 public interface LicenseRepository extends JpaRepository<License, Long> {
 
@@ -15,6 +17,8 @@ public interface LicenseRepository extends JpaRepository<License, Long> {
     
     List<License> findByTopicId(Long topicId);
     List<License> findByDetectionId(Long detectionId);
+    
+    List<License> findByIngredientId(Long ingredientId);
 
     @Query(value = "SELECT DISTINCT (o.licenseName) FROM License o WHERE o.licenseName IS NOT NULL AND o.topicId IS not null")
     List<String> findDistinctLicenseNameForSignal();

@@ -645,26 +645,23 @@ public class SignalDetectionService {
 	}
 
 	private void addOtherInfoToSignalDetection(SignalDetection signalDetection) {
-		List<Ingredient> ingredients;
-		ingredients = ingredientRepository.findByDetectionId(signalDetection.getId());
-		List<Product> products;
-		products = productRepository.findByDetectionId(signalDetection.getId());
-
-		List<License> licenses;
-		licenses = licenseRepository.findByDetectionId(signalDetection.getId());
+	
+		List<Ingredient> ingredients = ingredientRepository.findByDetectionId(signalDetection.getId());
+		
 		if (!CollectionUtils.isEmpty(ingredients)) {
 			for (Ingredient ingredient : ingredients) {
-		
-			if(products != null){
+				List<Product> products = productRepository.findByIngredientId(ingredient.getId());
+				if (!CollectionUtils.isEmpty(products)) {
 				ingredient.setProducts(products);
-			}
-			if(licenses != null){
+				}
+				List<License> licenses = licenseRepository.findByIngredientId(ingredient.getId());
+				if (!CollectionUtils.isEmpty(licenses)) {
 				ingredient.setLicenses(licenses);
 			}
 			}
 			signalDetection.setIngredients(ingredients);
 		}
-
+		signalDetection.setIngredients(ingredients);
 		List<Soc> socs;
 		socs = socRepository.findByDetectionId(signalDetection.getId());
 		setSocValues(socs);
