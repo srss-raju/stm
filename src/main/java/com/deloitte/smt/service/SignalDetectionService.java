@@ -273,7 +273,7 @@ public class SignalDetectionService {
 						singleProduct.setIngredientId(ingredient.getId());
 						singleProduct.setDetectionId(signalDetection.getId());
 					}
-					productRepository.deleteByDetectionId(signalDetection.getId());
+					//productRepository.deleteByDetectionId(signalDetection.getId());
 					productRepository.save(products);
 				}
 			}
@@ -294,7 +294,7 @@ public class SignalDetectionService {
 						singleLicense.setIngredientId(ingredient.getId());
 						singleLicense.setDetectionId(signalDetection.getId());
 					}
-					licenseRepository.deleteByDetectionId(signalDetection.getId());
+				//	licenseRepository.deleteByDetectionId(signalDetection.getId());
 					licenseRepository.save(licenses);
 				}
 			}
@@ -647,14 +647,16 @@ public class SignalDetectionService {
 	private void addOtherInfoToSignalDetection(SignalDetection signalDetection) {
 	
 		List<Ingredient> ingredients = ingredientRepository.findByDetectionId(signalDetection.getId());
+		List<Product> products = null;
+		List<License> licenses = null;
 		
 		if (!CollectionUtils.isEmpty(ingredients)) {
 			for (Ingredient ingredient : ingredients) {
-				List<Product> products = productRepository.findByIngredientId(ingredient.getId());
+				 products = productRepository.findByIngredientId(ingredient.getId());
 				if (!CollectionUtils.isEmpty(products)) {
 				ingredient.setProducts(products);
 				}
-				List<License> licenses = licenseRepository.findByIngredientId(ingredient.getId());
+				licenses = licenseRepository.findByIngredientId(ingredient.getId());
 				if (!CollectionUtils.isEmpty(licenses)) {
 				ingredient.setLicenses(licenses);
 			}
