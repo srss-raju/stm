@@ -114,9 +114,6 @@ public class SignalDetectionService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
-	
-	@Autowired
-	SmtResponse smtResponse;
 
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
@@ -404,7 +401,7 @@ public class SignalDetectionService {
 			criteriaQuery.multiselect(rootSignalDetection)
 					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()))).distinct(true);
 		}
-
+		SmtResponse smtResponse=new SmtResponse();
 		TypedQuery<SignalDetection> q = entityManager.createQuery(criteriaQuery);
 		if (!CollectionUtils.isEmpty(q.getResultList())) {
 			smtResponse.setTotalRecords(q.getResultList().size());

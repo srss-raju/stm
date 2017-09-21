@@ -93,9 +93,6 @@ public class AssessmentPlanService {
     @Autowired
     RiskPlanService riskPlanService;
     
-    @Autowired
-	SmtResponse smtResponse;
-
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
         if(assessmentPlan == null) {
@@ -187,7 +184,7 @@ public class AssessmentPlanService {
 					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription()))).distinct(true)
 			.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));
 		}
-
+		SmtResponse smtResponse=new SmtResponse();
 		TypedQuery<AssessmentPlan> q = entityManager.createQuery(criteriaQuery);
 		if (!CollectionUtils.isEmpty(q.getResultList())) {
 			smtResponse.setTotalRecords(q.getResultList().size());

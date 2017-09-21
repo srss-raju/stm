@@ -107,11 +107,14 @@ public class RiskPlanService {
 	SignalAuditService signalAuditService;
 	@Autowired
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
-	
-	@Autowired
-	SmtResponse smtResponse;
-	
-
+	/**
+	 * 
+	 * @param riskPlan
+	 * @param attachments
+	 * @param assessmentId
+	 * @return
+	 * @throws ApplicationException
+	 */
 	public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId)
 			throws ApplicationException {
 		riskPlan.setStatus("New");
@@ -301,6 +304,7 @@ public class RiskPlanService {
 		Query q = entityManager.createNativeQuery(queryStr, RiskPlan.class);
 		setParameters(queryStr, searchDto, q);
 		
+		SmtResponse smtResponse=new SmtResponse();
 		if (!CollectionUtils.isEmpty(q.getResultList())) {
 			smtResponse.setTotalRecords(q.getResultList().size());
 		}
