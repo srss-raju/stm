@@ -35,9 +35,6 @@ public class SignalSearchService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
-	
-	@Autowired
-	SmtResponse smtResponse;
 
 	public SmtResponse findTopics(SearchDto searchDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -70,7 +67,7 @@ public class SignalSearchService {
 			query.select(rootTopic).orderBy(
 					criteriaBuilder.desc(rootTopic.get(SmtConstant.CREATED_DATE.getDescription())));
 		}
-
+		SmtResponse smtResponse=new SmtResponse();
 		TypedQuery<Topic> q = entityManager.createQuery(query);
 		if (!CollectionUtils.isEmpty(q.getResultList())) {
 			smtResponse.setTotalRecords(q.getResultList().size());
