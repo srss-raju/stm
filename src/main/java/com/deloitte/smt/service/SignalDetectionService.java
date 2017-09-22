@@ -146,7 +146,7 @@ public class SignalDetectionService {
 			if (!CollectionUtils.isEmpty(ingredients)) {
 				for (Ingredient ingredient : ingredients) {
 					ingredient.setDetectionId(signalDetection.getId());
-					ingredientRepository.deleteByDetectionId(signalDetection.getId());
+					//ingredientRepository.deleteByDetectionId(signalDetection.getId());
 				}
 				ingredients = ingredientRepository.save(ingredients);
 
@@ -269,8 +269,8 @@ public class SignalDetectionService {
 					for (Product singleProduct : products) {
 						singleProduct.setIngredientId(ingredient.getId());
 						singleProduct.setDetectionId(signalDetection.getId());
+						//productRepository.deleteByIngredientId(ingredient.getId());
 					}
-					//productRepository.deleteByDetectionId(signalDetection.getId());
 					productRepository.save(products);
 				}
 			}
