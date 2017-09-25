@@ -57,6 +57,7 @@ import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SignalUtil;
+import com.deloitte.smt.util.SmtResponse;
 
 /**
  * Created by RajeshKumar on 04-04-2017.
@@ -145,14 +146,16 @@ public class SignalDetectionService {
 				} 
 			}
 			signalDetection.setId(clone.getId());
-			Ingredient ingredient = signalDetection.getIngredient();
-			if (ingredient != null) {
-				ingredient.setDetectionId(signalDetection.getId());
-				ingredientRepository.deleteByDetectionId(signalDetection.getId());
-				ingredient = ingredientRepository.save(ingredient);
+			List<Ingredient> ingredients = signalDetection.getIngredients();
+			if (!CollectionUtils.isEmpty(ingredients)) {
+				for (Ingredient ingredient : ingredients) {
+					ingredient.setDetectionId(signalDetection.getId());
+					//ingredientRepository.deleteByDetectionId(signalDetection.getId());
+				}
+				ingredients = ingredientRepository.save(ingredients);
 
-				saveProduct(signalDetection, ingredient);
-				saveLicense(signalDetection, ingredient);
+				saveProduct(signalDetection, ingredients);
+				saveLicense(signalDetection, ingredients);
 			}
 
 			saveSoc(signalDetection);
@@ -161,7 +164,7 @@ public class SignalDetectionService {
 			saveDenominatorForPoisson(signalDetection);
 			saveQueryBuilder(signalDetection);
 			return signalDetection;
-		} catch (ApplicationException | NullPointerException ex) {
+		} catch (ApplicationException ex) {
 				throw new ApplicationException("Problem Creating Signal Detection",  ex);
 		}
 	}
@@ -262,15 +265,20 @@ public class SignalDetectionService {
 	 * @param signalDetection
 	 * @param ingredient
 	 */
-	private void saveProduct(SignalDetection signalDetection, Ingredient ingredient) {
-		List<Product> products = ingredient.getProducts();
-		if (!CollectionUtils.isEmpty(products)) {
-			for (Product singleProduct : products) {
-				singleProduct.setIngredientId(ingredient.getId());
-				singleProduct.setDetectionId(signalDetection.getId());
+	private void saveProduct(SignalDetection signalDetection, List<Ingredient> ingredients) {
+		List<Product> products = null;
+		if (!CollectionUtils.isEmpty(ingredients)) {
+			for (Ingredient ingredient : ingredients) {
+				products = ingredient.getProducts();
+				if (!CollectionUtils.isEmpty(products)) {
+					for (Product singleProduct : products) {
+						singleProduct.setIngredientId(ingredient.getId());
+						singleProduct.setDetectionId(signalDetection.getId());
+						//productRepository.deleteByIngredientId(ingredient.getId());
+					}
+					productRepository.save(products);
+				}
 			}
-			productRepository.deleteByDetectionId(signalDetection.getId());
-			productRepository.save(products);
 		}
 	}
 
@@ -278,15 +286,20 @@ public class SignalDetectionService {
 	 * @param signalDetection
 	 * @param ingredient
 	 */
-	private void saveLicense(SignalDetection signalDetection, Ingredient ingredient) {
-		List<License> licenses = ingredient.getLicenses();
-		if (!CollectionUtils.isEmpty(licenses)) {
-			for (License singleLicense : licenses) {
-				singleLicense.setIngredientId(ingredient.getId());
-				singleLicense.setDetectionId(signalDetection.getId());
+	private void saveLicense(SignalDetection signalDetection, List<Ingredient> ingredients) {
+		if (!CollectionUtils.isEmpty(ingredients)) {
+			for (Ingredient ingredient : ingredients) {
+
+				List<License> licenses = ingredient.getLicenses();
+				if (!CollectionUtils.isEmpty(licenses)) {
+					for (License singleLicense : licenses) {
+						singleLicense.setIngredientId(ingredient.getId());
+						singleLicense.setDetectionId(signalDetection.getId());
+					}
+				//	licenseRepository.deleteByDetectionId(signalDetection.getId());
+					licenseRepository.save(licenses);
+				}
 			}
-			licenseRepository.deleteByDetectionId(signalDetection.getId());
-			licenseRepository.save(licenses);
 		}
 	}
 
@@ -359,7 +372,7 @@ public class SignalDetectionService {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<SignalDetection> findAllForSearch(SearchDto searchDto) {
+	public SmtResponse findAllForSearch(SearchDto searchDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
 
@@ -399,16 +412,27 @@ public class SignalDetectionService {
 			criteriaQuery.multiselect(rootSignalDetection)
 					.orderBy(criteriaBuilder.desc(rootSignalDetection.get(SmtConstant.CREATED_DATE.getDescription()))).distinct(true);
 		}
-
+		SmtResponse smtResponse=new SmtResponse();
 		TypedQuery<SignalDetection> q = entityManager.createQuery(criteriaQuery);
-		List<SignalDetection> results = q.getResultList();
-		if (!CollectionUtils.isEmpty(results)) {
-			for (SignalDetection signalDetection : results) {
+		if (!CollectionUtils.isEmpty(q.getResultList())) {
+			smtResponse.setTotalRecords(q.getResultList().size());
+		}
+		if(searchDto!= null && searchDto.getFetchSize() !=0 ){
+			q.setFirstResult(searchDto.getFromRecord());
+			q.setMaxResults(searchDto.getFetchSize());
+			smtResponse.setFetchSize(searchDto.getFetchSize());
+			smtResponse.setFromRecord(searchDto.getFromRecord());
+		}
+		smtResponse.setResult(q.getResultList());
+		
+		if (!CollectionUtils.isEmpty(smtResponse.getResult())) {
+			List<SignalDetection> result = (List<SignalDetection>) smtResponse.getResult();
+			for (SignalDetection signalDetection : result) {
 				signalDetection.setDenominatorForPoisson(
 						denominatorForPoissonRepository.findByDetectionId(signalDetection.getId()));
 			}
 		}
-		return results;
+		return smtResponse;
 	}
 
 	/**
@@ -629,24 +653,25 @@ public class SignalDetectionService {
 	}
 
 	private void addOtherInfoToSignalDetection(SignalDetection signalDetection) {
-		Ingredient ingredient;
-		ingredient = ingredientRepository.findByDetectionId(signalDetection.getId());
-		List<Product> products;
-		products = productRepository.findByDetectionId(signalDetection.getId());
-
-		List<License> licenses;
-		licenses = licenseRepository.findByDetectionId(signalDetection.getId());
-
-		if (ingredient != null) {
-			if(products != null){
+	
+		List<Ingredient> ingredients = ingredientRepository.findByDetectionId(signalDetection.getId());
+		List<Product> products = null;
+		List<License> licenses = null;
+		
+		if (!CollectionUtils.isEmpty(ingredients)) {
+			for (Ingredient ingredient : ingredients) {
+				 products = productRepository.findByIngredientId(ingredient.getId());
+				if (!CollectionUtils.isEmpty(products)) {
 				ingredient.setProducts(products);
-			}
-			if(licenses != null){
+				}
+				licenses = licenseRepository.findByIngredientId(ingredient.getId());
+				if (!CollectionUtils.isEmpty(licenses)) {
 				ingredient.setLicenses(licenses);
 			}
-			signalDetection.setIngredient(ingredient);
+			}
+			signalDetection.setIngredients(ingredients);
 		}
-
+		signalDetection.setIngredients(ingredients);
 		List<Soc> socs;
 		socs = socRepository.findByDetectionId(signalDetection.getId());
 		setSocValues(socs);
@@ -682,13 +707,18 @@ public class SignalDetectionService {
 		}
 	}
 
-	public List<SignalDetection> ganttDetections(List<SignalDetection> detections) {
+	@SuppressWarnings("unchecked")
+	public SmtResponse ganttDetections(SmtResponse smtResponse) {
+		List<SignalDetection> detections = null;
+		if (!CollectionUtils.isEmpty(smtResponse.getResult())) {
+			detections = (List<SignalDetection>) smtResponse.getResult();
+		}
 		if (!CollectionUtils.isEmpty(detections)) {
 			for (SignalDetection signalDetection : detections) {
 				createGanttSignalDetections(signalDetection);
 			}
 		}
-		return detections;
+		return smtResponse;
 	}
 
 	private void createGanttSignalDetections(SignalDetection signalDetection) {

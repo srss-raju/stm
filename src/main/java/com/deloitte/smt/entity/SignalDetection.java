@@ -79,8 +79,7 @@ public class SignalDetection implements Serializable {
 	private Set<SignalDetectionStatistics> signalDetectionStatistics;
 
 	@Transient
-	private Ingredient ingredient;
-
+	private List<Ingredient> ingredients;
 	@Transient
 	private List<Soc> socs;
 	
@@ -174,14 +173,6 @@ public class SignalDetection implements Serializable {
 
 	public void setSignalDetectionStatistics(Set<SignalDetectionStatistics> signalDetectionStatistics) {
 		this.signalDetectionStatistics = signalDetectionStatistics;
-	}
-
-	public Ingredient getIngredient() {
-		return ingredient;
-	}
-
-	public void setIngredient(Ingredient ingredient) {
-		this.ingredient = ingredient;
 	}
 
 	public List<Soc> getSocs() {
@@ -303,6 +294,14 @@ public class SignalDetection implements Serializable {
 
 	public void setSmqs(List<Smq> smqs) {
 		this.smqs = smqs;
+	}
+
+	public List<Ingredient> getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(List<Ingredient> ingredients) {
+		this.ingredients = ingredients;
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.deloitte.smt.controller;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -23,6 +22,7 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.AssessmentPlanService;
+import com.deloitte.smt.util.SmtResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -38,7 +38,7 @@ public class AssessmentController {
     AssessmentPlanService assessmentPlanService;
 
     @PostMapping(value = "/allAssessmentPlans")
-    public List<AssessmentPlan> getAllAssessmentPlans(@RequestBody(required=false) SearchDto searchDto){
+    public SmtResponse getAllAssessmentPlans(@RequestBody(required=false) SearchDto searchDto){
         return assessmentPlanService.findAllAssessmentPlans(searchDto);
     }
 

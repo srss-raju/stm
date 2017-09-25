@@ -49,6 +49,7 @@ import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SearchFilters;
+import com.deloitte.smt.util.SmtResponse;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -92,8 +93,7 @@ public class AssessmentPlanService {
     
     @Autowired
     RiskPlanService riskPlanService;
-    
-	@Autowired
+    @Autowired
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 	
 	@Autowired
@@ -134,7 +134,8 @@ public class AssessmentPlanService {
         }
     }
 
-	public List<AssessmentPlan> findAllAssessmentPlans(SearchDto searchDto) {
+	@SuppressWarnings("unchecked")
+	public SmtResponse findAllAssessmentPlans(SearchDto searchDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<AssessmentPlan> criteriaQuery = criteriaBuilder.createQuery(AssessmentPlan.class);
 
@@ -185,17 +186,30 @@ public class AssessmentPlanService {
 					topicAssignmentJoin.get(SmtConstant.ASSIGN_TO.getDescription()), topicAssignmentJoin.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription()))).distinct(true)
 			.orderBy(criteriaBuilder.desc(topicAssignmentJoin.get(SmtConstant.CREATED_DATE.getDescription())));
 		}
-
+		SmtResponse smtResponse=new SmtResponse();
 		TypedQuery<AssessmentPlan> q = entityManager.createQuery(criteriaQuery);
-		associateAssignees(q.getResultList());
-		return q.getResultList();
+		if (!CollectionUtils.isEmpty(q.getResultList())) {
+			smtResponse.setTotalRecords(q.getResultList().size());
+		}
+		if(searchDto!= null && searchDto.getFetchSize() !=0 ){
+			q.setFirstResult(searchDto.getFromRecord());
+			q.setMaxResults(searchDto.getFetchSize());
+			smtResponse.setFetchSize(searchDto.getFetchSize());
+			smtResponse.setFromRecord(searchDto.getFromRecord());
+		}
+		smtResponse.setResult(q.getResultList());
+		if (smtResponse.getResult() != null) {
+			List<AssessmentPlan> result = (List<AssessmentPlan>) smtResponse.getResult();
+			associateAssignees(result);
+		}
+		return smtResponse;
 	}
-	
 	public void associateAssignees(List<AssessmentPlan> assessmentPlanList){
+		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneeList=new ArrayList<TopicRiskPlanAssignmentAssignees>();
 		if (!CollectionUtils.isEmpty(assessmentPlanList)) {
 			for(AssessmentPlan assessmentPlan :assessmentPlanList){
 				if(null!=assessmentPlan.getRiskPlan()){
-					List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneeList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(assessmentPlan.getRiskPlan().getId());
+				topicRiskPlanAssignmentAssigneeList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(assessmentPlan.getRiskPlan().getId());
 				assessmentPlan.getRiskPlan().setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneeList);
 				}
 			}

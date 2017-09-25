@@ -23,6 +23,7 @@ import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SignalDetectionService;
 import com.deloitte.smt.service.SmqService;
+import com.deloitte.smt.util.SmtResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -73,15 +74,15 @@ public class SignalDetectionController {
     }
 	
 	@PostMapping(value = "/all")
-	public List<SignalDetection> getAllByStatus(@RequestBody(required=false) SearchDto searchDto) {
-		List<SignalDetection> detectionList;
+	public SmtResponse getAllByStatus(@RequestBody(required=false) SearchDto searchDto) {
+		SmtResponse smtResponse;
 
 		if(null!=searchDto && searchDto.isGantt()) {
-			detectionList = signalDetectionService.ganttDetections(signalDetectionService.findAllForSearch(searchDto));
+			smtResponse = signalDetectionService.ganttDetections(signalDetectionService.findAllForSearch(searchDto));
 		}else{
-			detectionList = signalDetectionService.findAllForSearch(searchDto);
+			smtResponse = signalDetectionService.findAllForSearch(searchDto);
 		}
-		return detectionList;
+		return smtResponse;
 	}
 	
 	@DeleteMapping(value = "/detectionassignee/{assigneeId}")

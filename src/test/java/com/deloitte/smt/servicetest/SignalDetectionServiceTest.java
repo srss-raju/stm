@@ -55,6 +55,7 @@ import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.service.SignalDetectionService;
+import com.deloitte.smt.util.SmtResponse;
 import com.deloitte.smt.util.TestUtil;
 
 @RunWith(SpringRunner.class)
@@ -145,7 +146,7 @@ public class SignalDetectionServiceTest {
 			TopicSignalDetectionAssignmentAssignees assignee = new TopicSignalDetectionAssignmentAssignees();
 			detectionAssigneesList.add(assignee);
 			signalDetection.setTopicSignalDetectionAssignmentAssignees(detectionAssigneesList);
-			Ingredient ingredient = setIngredient(signalDetection);
+			List<Ingredient> ingredient = setIngredient(signalDetection);
 			given(this.ingredientRepository.save(ingredient)).willReturn(ingredient);
 			List<Soc> socs = setSoc(signalDetection);
 			setOthers(signalDetection, ingredient);
@@ -200,7 +201,7 @@ public class SignalDetectionServiceTest {
 	public void testFindById() {
 		try{
 			SignalDetection signalDetection = new SignalDetection();
-			Ingredient ingredient = setIngredient(signalDetection);
+			List<Ingredient> ingredient = setIngredient(signalDetection);
 			setSoc(signalDetection);
 			setOthers(signalDetection, ingredient);
 			given(this.signalDetectionRepository.findOne(1l)).willReturn(signalDetection);
@@ -268,7 +269,9 @@ public class SignalDetectionServiceTest {
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Daily");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			SmtResponse smtResponse = new SmtResponse();
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -283,7 +286,9 @@ public class SignalDetectionServiceTest {
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Weekly");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			SmtResponse smtResponse = new SmtResponse();
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -298,7 +303,9 @@ public class SignalDetectionServiceTest {
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Monthly");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			SmtResponse smtResponse = new SmtResponse();
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -307,13 +314,15 @@ public class SignalDetectionServiceTest {
 	@Test
 	public void testGanttDetectionsQuarterly() {
 		try{
+			SmtResponse smtResponse = new SmtResponse();
 			List<SignalDetection> detections = new ArrayList<>();
 			SignalDetection signalDetection = new SignalDetection();
 			signalDetection.setCreatedDate(new Date());
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Quarterly");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -328,12 +337,14 @@ public class SignalDetectionServiceTest {
 			signalDetection.setWindowType("1");
 			signalDetection.setRunFrequency("Yearly");
 			detections.add(signalDetection);
-			signalDetectionService.ganttDetections(detections);
+			SmtResponse smtResponse = new SmtResponse();
+			smtResponse.setResult(detections);
+			signalDetectionService.ganttDetections(smtResponse);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
 	}
-	private void setOthers(SignalDetection signalDetection, Ingredient ingredient) {
+	private void setOthers(SignalDetection signalDetection, List<Ingredient> ingredient) {
 		List<IncludeAE> includeAEs = new ArrayList<>();
 		IncludeAE includeAE = new IncludeAE();
 		includeAE.setAeName("Test AE");
@@ -353,7 +364,7 @@ public class SignalDetectionServiceTest {
 		signalDetection.setQueryBuilder(queryBuilders);
 		signalDetection.setRunFrequency("Daily");
 		signalDetection.setCreatedDate(new Date());
-		signalDetection.setIngredient(ingredient);
+		signalDetection.setIngredients(ingredient);
 	}
 
 
@@ -382,7 +393,8 @@ public class SignalDetectionServiceTest {
 	}
 
 
-	private Ingredient setIngredient(SignalDetection signalDetection) {
+	private List<Ingredient> setIngredient(SignalDetection signalDetection) {
+		List<Ingredient> ingredients=new ArrayList<>();
 		signalDetection.setId(1l);
 		Ingredient ingredient = new Ingredient();
 		ingredient.setIngredientName("Test Ingredient");
@@ -398,7 +410,8 @@ public class SignalDetectionServiceTest {
 		license.setLicenseName("Test License");
 		licenses.add(license);
 		ingredient.setLicenses(licenses);
-		return ingredient;
+		ingredients.add(ingredient);
+		return ingredients;
 	}
 	
 	@Test

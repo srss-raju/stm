@@ -10,10 +10,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
@@ -33,7 +29,6 @@ import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
-import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
@@ -48,11 +43,11 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 import com.deloitte.smt.util.SearchFilters;
+import com.deloitte.smt.util.SmtResponse;
 /**
  * Created by RajeshKumar on 12-04-2017.
  */
@@ -74,15 +69,6 @@ public class RiskPlanService {
 
 	@Autowired
 	RiskTaskRepository riskTaskRepository;
-
-	@Autowired
-	private TaskService taskService;
-
-	@Autowired
-	TaskInstRepository taskInstRepository;
-
-	@Autowired
-	CaseService caseService;
 
 	@Autowired
 	AttachmentService attachmentService;
@@ -126,8 +112,6 @@ public class RiskPlanService {
 
 	public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId)
 			throws ApplicationException {
-		CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
-		riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
 		riskPlan.setStatus("New");
 		Date d = new Date();
 		riskPlan.setCreatedDate(d);
@@ -226,18 +210,7 @@ public class RiskPlanService {
 				} else {
 					riskTask.setAssignTo(templateTask.getAssignTo());
 				}
-				Task task = taskService.newTask();
-				task.setCaseInstanceId(riskPlan.getCaseInstanceId());
-				task.setName(riskTask.getName());
-				taskService.saveTask(task);
-				List<Task> list = taskService.createTaskQuery().caseInstanceId(riskPlan.getCaseInstanceId()).list();
-				TaskInst taskInstance = new TaskInst();
-				taskInstance.setId(list.get(list.size() - 1).getId());
-				taskInstance.setCaseDefKey("risk");
-				taskInstance.setTaskDefKey("risk");
-				taskInstance.setCaseInstId(riskTask.getCaseInstanceId());
-				taskInstance.setStartTime(new Date());
-				riskTask.setTaskId(taskInstance.getId());
+				
 				riskTask.setCreatedBy(templateTask.getCreatedBy());
 				riskTask.setCreatedDate(new Date());
 				riskTask.setDescription(templateTask.getDescription());
@@ -312,7 +285,7 @@ public class RiskPlanService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<RiskPlan> findAllRiskPlansForSearch(SearchDto searchDto) {
+	public SmtResponse findAllRiskPlansForSearch(SearchDto searchDto) {
 		StringBuilder queryBuilder = new StringBuilder();
 		List<String> whereClauses = new ArrayList<>();
 
@@ -330,9 +303,24 @@ public class RiskPlanService {
 		Query query = entityManager.createNativeQuery(queryStr, RiskPlan.class);
 		setParameters(queryStr, searchDto, query);
 		
+		SmtResponse smtResponse=new SmtResponse();
+		if (!CollectionUtils.isEmpty(query.getResultList())) {
+			smtResponse.setTotalRecords(query.getResultList().size());
+		}
+		if(searchDto!= null && searchDto.getFetchSize() !=0 ){
+			query.setFirstResult(searchDto.getFromRecord());
+			query.setMaxResults(searchDto.getFetchSize());
+			smtResponse.setFetchSize(searchDto.getFetchSize());
+			smtResponse.setFromRecord(searchDto.getFromRecord());
+		}
+		smtResponse.setResult(query.getResultList());
+		
 		/**For adding TopicRiskPlanAssignmentAssignees to RiskPlan */
-		associateRiskPlanAssignmentAssignees(query.getResultList());
-		return query.getResultList();
+		if (smtResponse.getResult() != null) {
+			List<RiskPlan> result = (List<RiskPlan>) smtResponse.getResult();
+			associateRiskPlanAssignmentAssignees(result);
+		}
+		return smtResponse;
 	}
 
 	/**
@@ -628,24 +616,8 @@ public class RiskPlanService {
 	 * @throws IOException
 	 * @throws ApplicationException
 	 */
-	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
-		if (riskTask.getCaseInstanceId() != null
-				&& SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())) {
-			Task task = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).singleResult();
-			taskService.complete(task.getId());
-		}
-		Task task = taskService.newTask();
-		task.setCaseInstanceId(riskTask.getCaseInstanceId());
-		task.setName(riskTask.getName());
-		taskService.saveTask(task);
-		List<Task> list = taskService.createTaskQuery().caseInstanceId(riskTask.getCaseInstanceId()).list();
-		TaskInst taskInstance = new TaskInst();
-		taskInstance.setId(list.get(list.size() - 1).getId());
-		taskInstance.setCaseDefKey("risk");
-		taskInstance.setTaskDefKey("risk");
-		taskInstance.setCaseInstId(riskTask.getCaseInstanceId());
-		taskInstance.setStartTime(new Date());
-		riskTask.setTaskId(taskInstance.getId());
+	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException, ApplicationException {
+		
 		Date d = new Date();
 		riskTask.setCreatedDate(d);
 		riskTask.setLastUpdatedDate(d);
@@ -656,8 +628,6 @@ public class RiskPlanService {
 			riskTask.setOwner(riskPlan.getAssignTo());
 		}
 
-		taskInstRepository.save(taskInstance);
-		
 		Long riskTaskExists=riskTaskRepository.countByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
 		if (riskTaskExists > 0) {
 			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE);
@@ -702,16 +672,13 @@ public class RiskPlanService {
 			throw new ApplicationException("Failed to delete Action. Invalid Id received");
 		}
 		riskTaskRepository.delete(riskTask);
-		taskService.deleteTask(taskId);
 	}
 
 	public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
 		if (riskTask.getId() == null) {
 			throw new ApplicationException("Failed to update Action. Invalid Id received");
 		}
-		if (SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(riskTask.getStatus())) {
-			taskService.complete(riskTask.getTaskId());
-		}
+		
 		String riskTaskOriginal = JsonUtil.converToJson(riskTaskRepository.findOne(riskTask.getId()));
 		
 		riskTask.setLastUpdatedDate(new Date());

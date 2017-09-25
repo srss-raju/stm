@@ -10,11 +10,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
@@ -44,7 +39,6 @@ import com.deloitte.smt.entity.SignalConfiguration;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
-import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
@@ -66,12 +60,12 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
+import com.deloitte.smt.util.SmtResponse;
 
 /**
  * Created by RKB on 04-04-2017.
@@ -89,9 +83,6 @@ public class SignalService {
 	ExceptionBuilder exceptionBuilder;
 
 	@Autowired
-	private TaskService taskService;
-	
-	@Autowired
 	DashboardCountService dashboardCountService;
 
 	@Autowired
@@ -100,8 +91,6 @@ public class SignalService {
 	@Autowired
 	private SignalAssignmentService signalAssignmentService;
 
-	@Autowired
-	private RuntimeService runtimeService;
 	@Autowired
 	private TopicRepository topicRepository;
 	@Autowired
@@ -112,16 +101,11 @@ public class SignalService {
 	@Autowired
 	private LicenseRepository licenseRepository;
 	@Autowired
-	TaskInstRepository taskInstRepository;
-	@Autowired
 	SignalURLRepository signalURLRepository;
 	
 	@Autowired
 	SignalAuditService signalAuditService;
 	
-	@Autowired
-	CaseService caseService;
-
 	@Autowired
 	AssessmentPlanRepository assessmentPlanRepository;
 
@@ -235,9 +219,6 @@ public class SignalService {
 	}
 
 	public Topic createTopic(Topic topic, MultipartFile[] attachments) throws ApplicationException {
-		String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
-		Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-		taskService.delegateTask(task.getId(), "Demo Demo");
 		if (topic.getId() != null) {
 			topic.setId(null);
 		}
@@ -248,7 +229,6 @@ public class SignalService {
 		topic.setCreatedDate(c.getTime());
 		topic.setLastModifiedDate(c.getTime());
 		topic.setSignalStatus("New");
-		topic.setProcessId(processInstanceId);
 		c.add(Calendar.DAY_OF_YEAR, 5);
 		topic.setDueDate(c.getTime());
 		setTopicIdForSignalStatistics(topic);
@@ -465,49 +445,36 @@ public class SignalService {
 
 	public AssessmentPlan validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan)
 			throws ApplicationException {
+		AssignmentConfiguration assignmentConfiguration = null;
 		Topic topic = topicRepository.findOne(topicId);
 		if (topic == null) {
 			throw new ApplicationException("Topic not found with the given Id [" + topicId + "]");
 		}
-		Task task = taskService.createTaskQuery().processInstanceId(topic.getProcessId()).singleResult();
-		if (task == null) {
-			throw new ApplicationException("Task not found for the process " + topic.getProcessId());
-		}
-		taskService.complete(task.getId());
-
 		String topicOriginal = JsonUtil.converToJson(topic);
-		CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
-		topic.setProcessId(instance.getCaseInstanceId());
-		Date d = new Date();
-		assessmentPlan.setCreatedDate(d);
-		assessmentPlan.setLastModifiedDate(d);
 		if (assessmentPlan.getId() == null) {
+		
+			Date d = new Date();
+			assessmentPlan.setCreatedDate(d);
+			assessmentPlan.setLastModifiedDate(d);
 			assessmentPlan.setAssessmentPlanStatus("New");
+	
+			if (!StringUtils.isEmpty(topic.getSourceName())) {
+				assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());
+			}
+			// If Source is not null and combination not available we have to fetch
+			// with Ingredient
+			if (assignmentConfiguration == null) {
+				assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSourceIsNull(assessmentPlan.getIngrediantName());
+			}
+			assessmentPlan.setAssessmentTaskStatus("Not Completed");
+			Long assessmentPlanExist = assessmentPlanRepository.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());
+			if (assessmentPlanExist > 0) {
+				throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE);
+			}
+			topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
+		}else{
+			topic.setAssessmentPlan(assessmentPlan);
 		}
-		AssignmentConfiguration assignmentConfiguration = null;
-
-		if (!StringUtils.isEmpty(topic.getSourceName())) {
-			assignmentConfiguration = assignmentConfigurationRepository
-					.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());
-		}
-		// If Source is not null and combination not available we have to fetch
-		// with Ingredient
-		if (assignmentConfiguration == null) {
-			assignmentConfiguration = assignmentConfigurationRepository
-					.findByIngredientAndSignalSourceIsNull(assessmentPlan.getIngrediantName());
-		}
-
-		assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
-		assessmentPlan.setAssessmentTaskStatus("Not Completed");
-
-		Long assessmentPlanExist = assessmentPlanRepository
-				.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());
-		if (assessmentPlanExist > 0) {
-			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE);
-		}
-
-    	
-		topic.setAssessmentPlan(assessmentPlanRepository.save(assessmentPlan));
 		topic.setSignalStatus(SmtConstant.COMPLETED.getDescription());
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());
 		topic.setLastModifiedDate(new Date());
@@ -523,7 +490,7 @@ public class SignalService {
 		return assessmentPlan;
 	}
 
-	public List<Topic> findTopics(SearchDto searchDto) {
+	public SmtResponse findTopics(SearchDto searchDto) {
 		return signalSearchService.findTopics(searchDto);
 	}
 
@@ -604,18 +571,6 @@ public class SignalService {
 			signalAction.setAssignTo(action.getAssignTo());
 		}
 		signalAction.setOwner(assessmentPlan.getAssignTo());
-		Task task = taskService.newTask();
-		task.setCaseInstanceId(signalAction.getCaseInstanceId());
-		task.setName(signalAction.getActionName());
-		taskService.saveTask(task);
-		List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
-		TaskInst taskInstance = new TaskInst();
-		taskInstance.setId(list.get(list.size() - 1).getId());
-		taskInstance.setCaseDefKey("assessment");
-		taskInstance.setTaskDefKey("assessment");
-		taskInstance.setCaseInstId(assessmentPlan.getCaseInstanceId());
-		taskInstance.setStartTime(new Date());
-		signalAction.setTaskId(taskInstance.getId());
 		signalAction = assessmentActionRepository.save(signalAction);
 		signalActionList.add(signalAction);
 		List<Attachment> signalActionAttachments = associateTemplateAttachments(sort, action, signalAction);

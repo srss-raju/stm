@@ -15,20 +15,17 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
-import com.deloitte.smt.constant.SignalStatus;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
-import com.deloitte.smt.entity.TaskInst;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
@@ -44,12 +41,6 @@ public class AssessmentActionService {
 	
 	@Autowired
 	ExceptionBuilder  exceptionBuilder;
-	
-    @Autowired
-    private TaskService taskService;
-
-    @Autowired
-    TaskInstRepository taskInstRepository;
 
     @Autowired
     AssessmentActionRepository assessmentActionRepository;
@@ -66,24 +57,8 @@ public class AssessmentActionService {
     @Autowired
     SignalAuditService signalAuditService;
 
-    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws ApplicationException {
-        if(signalAction.getCaseInstanceId() != null && SignalStatus.COMPLETED.name().equalsIgnoreCase(signalAction.getActionStatus())){
-            Task task = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).singleResult();
-            taskService.complete(task.getId());
-        }
-        Task task = taskService.newTask();
-        task.setCaseInstanceId(signalAction.getCaseInstanceId());
-        task.setName(signalAction.getActionName());
-        taskService.saveTask(task);
-        List<Task> list = taskService.createTaskQuery().caseInstanceId(signalAction.getCaseInstanceId()).list();
-        TaskInst taskInstance = new TaskInst();
-        taskInstance.setId(list.get(list.size()-1).getId());
-        taskInstance.setCaseDefKey("assessment");
-        taskInstance.setTaskDefKey("assessment");
-        taskInstance.setCaseInstId(signalAction.getCaseInstanceId());
-        taskInstance.setStartTime(new Date());
-        signalAction.setTaskId(taskInstance.getId());
-        taskInstRepository.save(taskInstance);
+    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
+        
         Date d = new Date();
         signalAction.setCreatedDate(d);
         signalAction.setLastModifiedDate(d);
@@ -115,9 +90,7 @@ public class AssessmentActionService {
         if(signalAction.getId() == null) {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
-        if("completed".equalsIgnoreCase(signalAction.getActionStatus())) {
-            taskService.complete(signalAction.getTaskId());
-        }
+       
         String assessmentActionOriginal = JsonUtil.converToJson(assessmentActionRepository.findOne(signalAction.getId()));
         signalAction.setLastModifiedDate(new Date());
         assessmentActionRepository.save(signalAction);
@@ -175,9 +148,7 @@ public class AssessmentActionService {
             throw new ApplicationException("Failed to delete Action. Invalid Id received");
         }
         assessmentActionRepository.delete(signalAction);
-        if(taskId != null){
-        	taskService.deleteTask(taskId);
-        }
+        
         signalAuditService.saveOrUpdateSignalActionAudit(signalAction, null, null, SmtConstant.DELETE.getDescription());
     }
     

@@ -1,20 +1,23 @@
 package com.deloitte.smt.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import java.util.Set;
 
-import com.deloitte.smt.entity.Product;
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Set;
+import com.deloitte.smt.entity.Product;
 
 public interface ProductRepository  extends JpaRepository<Product, Long> {
 
     List<Product> findAllByProductNameIn(List<String> productName);
     List<Product> findByTopicId(Long topicId);
     List<Product> findByDetectionId(Long detectionId);
+    
+    List<Product> findByIngredientId(Long ingredientId);
 
     @Query(value = "SELECT distinct (o.productName) FROM Product o WHERE o.productName IS NOT NULL AND o.topicId IS not null")
     List<String> findDistinctProductNameForSignal();
