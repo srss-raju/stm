@@ -39,6 +39,8 @@ import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicAssessmentAssignmentAssignees;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.exception.ErrorType;
+import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.IngredientRepository;
@@ -92,6 +94,9 @@ public class AssessmentPlanService {
     
     @Autowired
     RiskPlanService riskPlanService;
+    
+    @Autowired
+    ExceptionBuilder exceptionBuilder;
     
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
@@ -523,4 +528,27 @@ public class AssessmentPlanService {
 			
 			  
 	 }
+	
+	/**
+	 * * @param id
+	 * 
+	 * @param assessmentName
+	 * @throws ApplicationException
+	 */
+	public void updateAssessmentName(Long id, String assessmentName) throws ApplicationException {
+
+		List<AssessmentPlan> list = assessmentPlanRepository.findAll();
+		List<String> assessmentNames = assessmentPlanRepository.findByAssessmentName(assessmentName,id);
+
+		for (AssessmentPlan assessmentPlan : list) {
+
+			if (id.equals(assessmentPlan.getId()) && assessmentNames.contains(assessmentName)) {
+				throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE, null);
+			} else if (id.equals(assessmentPlan.getId()) && !assessmentNames.contains(assessmentName)) {
+				assessmentPlan.setAssessmentName(assessmentName);
+				assessmentPlanRepository.save(assessmentPlan);
+			}
+		}
+
+	}
 }

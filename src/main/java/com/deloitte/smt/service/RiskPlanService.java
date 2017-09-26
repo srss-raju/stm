@@ -734,4 +734,25 @@ public class RiskPlanService {
 	public List<RiskTask> associateRiskTemplateTasks(RiskPlan riskPlan) {
 		return associateRiskTasks(riskPlan);
 	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @throws ApplicationException
+	 */
+	public void updateRiskName(Long id,String name) throws ApplicationException{
+		List<RiskPlan> list = riskPlanRepository.findAll();
+		List<String> riskPlanNames = riskPlanRepository.findByRiskName(name, id);
+
+		for (RiskPlan riskPlan : list) {
+
+			if (id.equals(riskPlan.getId()) && riskPlanNames.contains(name)) {
+				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
+			} else if (id.equals(riskPlan.getId()) && !riskPlanNames.contains(name)) {
+				riskPlan.setName(name);
+				riskPlanRepository.save(riskPlan);
+			}
+		}
+	}
 }
