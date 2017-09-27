@@ -42,6 +42,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
@@ -619,6 +620,37 @@ public class RiskPlanServiceTest {
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
+	}
+	@Test
+	public void testUpdateRiskName(){
+		
+		try {
+			List<RiskPlan> riskPlanLst=new ArrayList<>();
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setName("TestRisk1");
+			riskPlanLst.add(riskPlan);
+			given(this.riskPlanRepository.findAll()).willReturn(riskPlanLst);
+			riskPlanService.updateRiskName(1l, "testRiskNameUpdate");
+		} catch (ApplicationException ex) {
+			LOG.info(ex);
+		}
+	}
+	
+	@Test(expected = ApplicationException.class)
+	public void testUpdateDuplicateRiskName() throws ApplicationException{
+		
+			List<RiskPlan> riskPlanLst=new ArrayList<>();
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setName("TestRisk1");
+			riskPlanLst.add(riskPlan);
+			given(this.riskPlanRepository.findAll()).willReturn(riskPlanLst);
+			List<String> duplicateNames=new ArrayList<>();
+			duplicateNames.add("TestRisk1");
+			given(this.riskPlanRepository.findByRiskName("TestRisk1",1l)).willReturn(duplicateNames);
+			riskPlanService.updateRiskName(1l, "TestRisk1");
+		
 	}
 	
 }

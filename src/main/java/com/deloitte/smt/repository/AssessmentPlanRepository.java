@@ -38,4 +38,7 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	@Query("SELECT DISTINCT(o.owner) FROM AssessmentPlan o WHERE o.owner IS NOT NULL")
 	List<String> findOwnersOnAssessmentPlan();
 	
+	@Query("SELECT o.assessmentName from AssessmentPlan o where o.assessmentName not in (select a.assessmentName from AssessmentPlan a where a.assessmentName= :assessmentName AND a.id=:id)")
+	List<String> findByAssessmentName(@Param(value = "assessmentName") String assessmentName,@Param(value = "id") Long id);
+	
 }

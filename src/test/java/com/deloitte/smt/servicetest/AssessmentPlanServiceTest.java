@@ -33,6 +33,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.service.AssessmentPlanService;
@@ -238,6 +239,33 @@ public class AssessmentPlanServiceTest {
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
+	}
+	@Test
+	public void testUpdateAssessmentName(){
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		assessmentPlan.setId(1l);
+		assessmentPlan.setAssessmentName("testAssessmentName");
+		List<AssessmentPlan> assessmentPlanList=new ArrayList<>();
+		assessmentPlanList.add(assessmentPlan);
+		try {
+			given(this.assessmentPlanRepository.findAll()).willReturn(assessmentPlanList);
+			assessmentPlanService.updateAssessmentName(1l, "testAssessmentName1");
+		} catch (ApplicationException ex) {
+			LOG.info(ex);
+		}
+	}
+	@Test(expected = ApplicationException.class)
+	public void testUpdateDuplicateAssessmentName() throws ApplicationException{
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		assessmentPlan.setId(1l);
+		assessmentPlan.setAssessmentName("testAssessmentName");
+		List<AssessmentPlan> assessmentPlanList=new ArrayList<>();
+		assessmentPlanList.add(assessmentPlan);
+		List<String> assesmentNames=new ArrayList<>();
+		assesmentNames.add("testAssessmentName");
+			given(this.assessmentPlanRepository.findAll()).willReturn(assessmentPlanList);
+			given(this.assessmentPlanRepository.findByAssessmentName("testAssessmentName", 1l)).willReturn(assesmentNames);
+			assessmentPlanService.updateAssessmentName(1l, "testAssessmentName");
 	}
 
 }
