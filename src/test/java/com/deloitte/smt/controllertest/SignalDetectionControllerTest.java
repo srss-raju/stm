@@ -127,7 +127,7 @@ public class SignalDetectionControllerTest {
 		.perform(post("/camunda/api/signal/detect/all")
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(TestUtil.convertObjectToJsonBytes(searchDto)))
-		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		.andExpect(status().isOk());
 		
 	}
 	
@@ -148,7 +148,7 @@ public class SignalDetectionControllerTest {
 		.perform(post("/camunda/api/signal/detect/all")
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(TestUtil.convertObjectToJsonBytes(searchDto)))
-		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		.andExpect(status().isOk());
 		
 	}
 }
