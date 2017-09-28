@@ -58,6 +58,7 @@ public class TestUtil {
 		List<String> statuses = new ArrayList<>();
 		List<String> assessmentTaskStatus = new ArrayList<>();
 		List<String> riskTaskStatus = new ArrayList<>();
+		List<String> finalDispositions = new ArrayList<>();
 		Date createdDate = new Date();
 		String description = "Test";
 		String dateKey = "DueDate";
@@ -88,6 +89,7 @@ public class TestUtil {
 		statuses.add("New");
 		assessmentTaskStatus.add("Completed");
 		riskTaskStatus.add("Not Completed");
+		finalDispositions.add("Risk");
 		
 		searchDto.setIngredients(ingredients);
 		searchDto.setProducts(products);
@@ -113,6 +115,7 @@ public class TestUtil {
 		searchDto.setUserGroupKeys(userGroupKeys);
 		searchDto.setUserKeys(userKeys);
 		searchDto.setOwners(owners);
+		searchDto.setFinalDispositions(finalDispositions);
 		
     	return searchDto;
     }
