@@ -545,6 +545,7 @@ public class AssessmentPlanService {
 			if (id.equals(assessmentPlan.getId()) && assessmentNames.contains(assessmentName)) {
 				throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE, null);
 			} else if (id.equals(assessmentPlan.getId()) && !assessmentNames.contains(assessmentName)) {
+				assessmentPlan.setLastModifiedDate(new Date());
 				assessmentPlan.setAssessmentName(assessmentName);
 				assessmentPlanRepository.save(assessmentPlan);
 			}

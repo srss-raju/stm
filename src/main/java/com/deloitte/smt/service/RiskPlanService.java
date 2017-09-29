@@ -750,6 +750,7 @@ public class RiskPlanService {
 			if (id.equals(riskPlan.getId()) && riskPlanNames.contains(name)) {
 				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
 			} else if (id.equals(riskPlan.getId()) && !riskPlanNames.contains(name)) {
+				riskPlan.setLastModifiedDate(new Date());
 				riskPlan.setName(name);
 				riskPlanRepository.save(riskPlan);
 			}
