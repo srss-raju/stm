@@ -12,8 +12,10 @@ public enum ErrorType {
 	RISKPLAN_NAME_DUPLICATE(102,"error.riskplan.name.duplicate","Risk Plan with Same Name Existed"),
 	ASSESSMENTACCTION_NAME_DUPLICATE(103, "error.assessmentaction.name.duplicate","Assessment Action with Same Name Existed"),
 	RISKPACTION_NAME_DUPLICATE(104,"error.riskaction.task.name.duplicate","Risk Action with Same Name Existed"),
-	DETECTION_NAME_DUPLICATE(105,"error.detection.name.duplicate","Detection with Same Name Existed");
-
+	DETECTION_NAME_DUPLICATE(105,"error.detection.name.duplicate","Detection with Same Name Existed"),
+	ASSESSMENT_TASK_NAME_DUPLICATE(106,"error.assessment.task.name.duplicate","Assessment Task with Same Name Existed"),
+	RISKTASK_NAME_DUPLICATE(107,"error.risk.task.name.duplicate","Risk Task with Same Name Existed");
+	
 	private final Integer code;
 	private final String label;
 	private final String defaultMessage;

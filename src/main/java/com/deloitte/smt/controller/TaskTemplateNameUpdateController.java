@@ -9,22 +9,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.AssessmentPlanService;
+import com.deloitte.smt.service.TaskTemplateService;
 
 @RestController
-@RequestMapping("/camunda/api/signal")
-public class AssessmentNameUpdateController {
+@RequestMapping("/camunda/api/signal/template")
+public class TaskTemplateNameUpdateController {
 	
 	@Autowired
-	AssessmentPlanService assessmentPlanService;
-	
-	@GetMapping(value = "/{assessmentId}/updateAssessmentName/{assessmentName}")
-	public ResponseEntity<Void> updateAssessmentName(@PathVariable Long assessmentId,@PathVariable String assessmentName ) throws ApplicationException{
+	TaskTemplateService taskTemplateService;
+
+	@GetMapping(value = "/{taskId}/updateTaskTemplateName/{name}")
+	public ResponseEntity<Void> updateTaskTemplateName(@PathVariable Long taskId,@PathVariable String name ) throws ApplicationException{
 		
-		assessmentPlanService.updateAssessmentName(assessmentId, assessmentName);
+		taskTemplateService.updateTaskTemplateName(taskId, name);
 		
 		return new ResponseEntity<>(HttpStatus.OK);
 		
 	}
-
 }
