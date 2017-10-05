@@ -348,6 +348,7 @@ public class DashboardService {
 		List<SignalDetectDTO> signalDetectDTOs =  new ArrayList<>();
 		
 		if (!CollectionUtils.isEmpty(signals)) {
+			
 		
 			for (Object[] signal : signals) {
 				SignalDetectDTO dto = new SignalDetectDTO();
@@ -355,7 +356,9 @@ public class DashboardService {
 				dto.setSignalCount(((BigInteger) signal[1]).longValue());
 				dto.setRecurringCount(((BigInteger) signal[2]).longValue());
 				dto.setTotalSignalCount(((BigInteger) signal[3]).longValue());
+				if(null!=signal[4]){
 				dto.setCasesCount(((BigDecimal) signal[4]).longValue());
+				}
 				signalDetectDTOs.add(dto);
 			}
 		}
