@@ -345,10 +345,10 @@ public class DashboardService {
 	 * @return
 	 */
 	public List<SignalDetectDTO> detectedSignals(List<Object[]> signals) {
-		List<SignalDetectDTO> signalDetectDTOs = null;
-
+		List<SignalDetectDTO> signalDetectDTOs =  new ArrayList<>();
+		
 		if (!CollectionUtils.isEmpty(signals)) {
-			signalDetectDTOs = new ArrayList<>();
+		
 			for (Object[] signal : signals) {
 				SignalDetectDTO dto = new SignalDetectDTO();
 				dto.setMonth((Timestamp) signal[0]);
