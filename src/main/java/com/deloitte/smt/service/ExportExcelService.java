@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.stereotype.Service;
 
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SignalAlgorithmDTO;
 
 @Service
@@ -184,7 +185,7 @@ public class ExportExcelService {
 		/** Algorithm attributes **/
 		Cell row3cell10 = header3.createCell(10);
 		row3cell10.setCellStyle(style);
-		row3cell10.setCellValue("Score");
+		row3cell10.setCellValue(SmtConstant.SCORE.toString());
 		Cell row3cell11 = header3.createCell(11);
 		row3cell11.setCellStyle(style);
 		row3cell11.setCellValue("LB");
@@ -194,7 +195,7 @@ public class ExportExcelService {
 
 		Cell row3cell13 = header3.createCell(13);
 		row3cell13.setCellStyle(style);
-		row3cell13.setCellValue("Score");
+		row3cell13.setCellValue(SmtConstant.SCORE.toString());
 		Cell row3cell14 = header3.createCell(14);
 		row3cell14.setCellStyle(style);
 		row3cell14.setCellValue("LB");
@@ -204,7 +205,7 @@ public class ExportExcelService {
 
 		Cell row3cell16 = header3.createCell(16);
 		row3cell16.setCellStyle(style);
-		row3cell16.setCellValue("Score");
+		row3cell16.setCellValue(SmtConstant.SCORE.toString());
 		Cell row3cell17 = header3.createCell(17);
 		row3cell17.setCellStyle(style);
 		row3cell17.setCellValue("LB");
@@ -214,7 +215,7 @@ public class ExportExcelService {
 		
 		Cell row3cell19 = header3.createCell(19);
 		row3cell19.setCellStyle(style);
-		row3cell19.setCellValue("Score");
+		row3cell19.setCellValue(SmtConstant.SCORE.toString());
 		Cell row3cell20 = header3.createCell(20);
 		row3cell20.setCellStyle(style);
 		row3cell20.setCellValue("LB");
@@ -224,7 +225,7 @@ public class ExportExcelService {
 		
 		Cell row3cell22 = header3.createCell(22);
 		row3cell22.setCellStyle(style);
-		row3cell22.setCellValue("Score");
+		row3cell22.setCellValue(SmtConstant.SCORE.toString());
 		Cell row3cell23 = header3.createCell(23);
 		row3cell23.setCellStyle(style);
 		row3cell23.setCellValue("LB");

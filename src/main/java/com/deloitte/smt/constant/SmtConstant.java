@@ -23,7 +23,8 @@ public enum SmtConstant {
     ASSIGNEES_GROUP_KEY("-99"),
     OWNER("owner"),
 	USER_KEY("userKey"),
-	USER_GROUP_KEY("userGroupKey");
+	USER_GROUP_KEY("userGroupKey"),
+	SCORE("Score");
 	
     private String description;
 

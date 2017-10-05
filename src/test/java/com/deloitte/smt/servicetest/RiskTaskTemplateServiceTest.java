@@ -23,7 +23,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.RiskTaskTemplate;
+import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateIngrediant;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.RiskTaskTemplateRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
@@ -159,6 +161,38 @@ public class RiskTaskTemplateServiceTest {
 			given(this.riskTaskTemplateRepository.findOne(1l)).willReturn(taskTemplate);
 			riskTaskTemplateService.findById(11l);
 		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	@Test
+	public void testUpdateRiskTaskName(){
+		try {
+		List<RiskTaskTemplate> listTasks=new ArrayList<>();
+		RiskTaskTemplate taskTemplate=new RiskTaskTemplate();
+		taskTemplate.setId(1l);
+		taskTemplate.setName("testTemplate1");
+		listTasks.add(taskTemplate);
+		given(this.riskTaskTemplateRepository.findAll()).willReturn(listTasks);
+	
+		riskTaskTemplateService.updateRiskTaskName(1l, "testTemplate2");
+		} catch (ApplicationException ex) {
+			LOG.info(ex);
+		}
+	}
+	@Test(expected = ApplicationException.class)
+	public void testupdateRiskTaskDuplicateName(){
+		try {
+		List<RiskTaskTemplate> listTasks=new ArrayList<>();
+		RiskTaskTemplate taskTemplate=new RiskTaskTemplate();
+		taskTemplate.setId(1l);
+		taskTemplate.setName("testTemplate1");
+		listTasks.add(taskTemplate);
+		given(this.riskTaskTemplateRepository.findAll()).willReturn(listTasks);
+		List<String> duplicateNames=new ArrayList<>();
+		duplicateNames.add("testTemplate1");
+		given(this.riskTaskTemplateRepository.findByName("testTemplate1",1l)).willReturn(duplicateNames);
+		riskTaskTemplateService.updateRiskTaskName(1l, "testTemplate1");
+		} catch (ApplicationException ex) {
 			LOG.info(ex);
 		}
 	}

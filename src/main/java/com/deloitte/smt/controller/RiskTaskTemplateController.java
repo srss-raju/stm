@@ -29,7 +29,7 @@ public class RiskTaskTemplateController {
 	private RiskTaskTemplateService riskTaskTemplateService;
 	
 	@PostMapping(value = "/createTaskTemplate")
-	public RiskTaskTemplate createTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
+	public RiskTaskTemplate createTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
 		RiskTaskTemplate taskTemplate = new ObjectMapper().readValue(taskTemplateString, RiskTaskTemplate.class);
 		return riskTaskTemplateService.createTaskTemplate(taskTemplate);
 	}

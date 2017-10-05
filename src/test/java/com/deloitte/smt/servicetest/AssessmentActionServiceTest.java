@@ -186,7 +186,7 @@ public class AssessmentActionServiceTest {
 		try{
 			SignalAction signalAction = new SignalAction();
 			given(this.assessmentActionRepository.findOne(1l)).willReturn(signalAction);
-			assessmentActionService.delete(1l,null);
+			assessmentActionService.delete(1l);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -195,7 +195,7 @@ public class AssessmentActionServiceTest {
 	@Test
 	public void testDeleteWithNull() {
 		try{
-			assessmentActionService.delete(1l,null);
+			assessmentActionService.delete(1l);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}

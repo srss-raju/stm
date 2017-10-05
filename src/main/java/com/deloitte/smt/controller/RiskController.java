@@ -86,7 +86,7 @@ public class RiskController {
 
     @DeleteMapping(value = "/task/{riskTaskId}/{taskId}")
     public ResponseEntity<Void> deleteById(@PathVariable Long riskTaskId, @PathVariable String taskId) throws ApplicationException {
-    	riskPlanService.delete(riskTaskId, taskId);
+    	riskPlanService.delete(riskTaskId);
     	return new ResponseEntity<>(HttpStatus.OK);
     }
     

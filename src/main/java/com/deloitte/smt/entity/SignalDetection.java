@@ -16,9 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * Created by Rajesh on 21-04-2017.
  */
@@ -65,15 +62,6 @@ public class SignalDetection implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "detectionId")
 	private List<TopicSignalDetectionAssignmentAssignees> topicSignalDetectionAssignmentAssignees;
-
-	public static void main(String[] args) throws JsonProcessingException {
-		ObjectMapper mapper=new ObjectMapper();
-		
-		SignalDetection signalDetection=new SignalDetection();
-		String json=mapper.writeValueAsString(signalDetection);
-		
-		System.out.println(json);
-	}
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "signalDetection")
 	private Set<SignalDetectionStatistics> signalDetectionStatistics;

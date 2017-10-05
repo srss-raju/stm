@@ -13,6 +13,8 @@ import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.RiskTaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateIngrediant;
 import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.exception.ErrorType;
+import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.RiskTaskTemplateRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
@@ -29,9 +31,15 @@ public class RiskTaskTemplateService {
 	
 	@Autowired
 	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
+	@Autowired
+	private ExceptionBuilder exceptionBuilder;
 
-	public RiskTaskTemplate createTaskTemplate(RiskTaskTemplate riskTaskTemplate) {
+	public RiskTaskTemplate createTaskTemplate(RiskTaskTemplate riskTaskTemplate) throws ApplicationException {
 		riskTaskTemplate.setCreatedDate(new Date());
+		Long countRiskTask=riskTaskTemplateRepository.countRiskTaskTemplateByNameIgnoreCase(riskTaskTemplate.getName());
+		if(countRiskTask>0){
+			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE);
+		}
 		RiskTaskTemplate template = riskTaskTemplateRepository.save(riskTaskTemplate);
 		if(!CollectionUtils.isEmpty(template.getTaskTemplateIngrediant())){
 			for(TaskTemplateIngrediant ingrediant : template.getTaskTemplateIngrediant()){
@@ -97,5 +105,26 @@ public class RiskTaskTemplateService {
 	public List<RiskTaskTemplate> getTaskTamplatesOfIngrediant(String ingrediantName) {
 		List<Long> templateIds = taskTemplateIngrediantRepository.findByIngrediantName(ingrediantName);
 		return riskTaskTemplateRepository.findByIdIn(templateIds);
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @throws ApplicationException
+	 */
+	public void updateRiskTaskName(Long id,String name) throws ApplicationException{
+		List<RiskTaskTemplate> listRiskTasks=riskTaskTemplateRepository.findAll();
+		List<String> taskTemplateNames=riskTaskTemplateRepository.findByName(name, id);
+		
+		for (RiskTaskTemplate risktaskTemplate : listRiskTasks) {
+
+			if (id.equals(risktaskTemplate.getId()) && taskTemplateNames.contains(name)) {
+				throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE);
+			} else if (id.equals(risktaskTemplate.getId()) && !taskTemplateNames.contains(name)) {
+				risktaskTemplate.setName(name);
+				riskTaskTemplateRepository.save(risktaskTemplate);
+			}
+		}
 	}
 }

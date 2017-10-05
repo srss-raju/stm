@@ -666,7 +666,7 @@ public class RiskPlanService {
 		return riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(riskId);
 	}
 
-	public void delete(Long riskTaskId, String taskId) throws ApplicationException {
+	public void delete(Long riskTaskId) throws ApplicationException {
 		RiskTask riskTask = riskTaskRepository.findOne(riskTaskId);
 		if (riskTask == null) {
 			throw new ApplicationException("Failed to delete Action. Invalid Id received");
@@ -787,6 +787,7 @@ public class RiskPlanService {
 			if (id.equals(riskPlan.getId()) && riskPlanNames.contains(name)) {
 				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE);
 			} else if (id.equals(riskPlan.getId()) && !riskPlanNames.contains(name)) {
+				riskPlan.setLastModifiedDate(new Date());
 				riskPlan.setName(name);
 				riskPlanRepository.save(riskPlan);
 			}

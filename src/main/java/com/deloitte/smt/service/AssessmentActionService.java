@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -142,7 +140,7 @@ public class AssessmentActionService {
         return assessmentActionRepository.findAllByAssessmentId(assessmentId);
     }
 
-    public void delete(Long assessmentActionId, String taskId) throws ApplicationException {
+    public void delete(Long assessmentActionId) throws ApplicationException {
         SignalAction signalAction = assessmentActionRepository.findOne(assessmentActionId);
         if(signalAction == null) {
             throw new ApplicationException("Failed to delete Action. Invalid Id received");

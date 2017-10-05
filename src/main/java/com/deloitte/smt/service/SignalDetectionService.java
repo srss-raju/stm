@@ -150,7 +150,6 @@ public class SignalDetectionService {
 			if (!CollectionUtils.isEmpty(ingredients)) {
 				for (Ingredient ingredient : ingredients) {
 					ingredient.setDetectionId(signalDetection.getId());
-					//ingredientRepository.deleteByDetectionId(signalDetection.getId());
 				}
 				ingredients = ingredientRepository.save(ingredients);
 
@@ -274,7 +273,6 @@ public class SignalDetectionService {
 					for (Product singleProduct : products) {
 						singleProduct.setIngredientId(ingredient.getId());
 						singleProduct.setDetectionId(signalDetection.getId());
-						//productRepository.deleteByIngredientId(ingredient.getId());
 					}
 					productRepository.save(products);
 				}
@@ -296,7 +294,6 @@ public class SignalDetectionService {
 						singleLicense.setIngredientId(ingredient.getId());
 						singleLicense.setDetectionId(signalDetection.getId());
 					}
-				//	licenseRepository.deleteByDetectionId(signalDetection.getId());
 					licenseRepository.save(licenses);
 				}
 			}

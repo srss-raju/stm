@@ -77,7 +77,7 @@ public class AssessmentActionController    {
 
     @DeleteMapping(value = "/assessmentAction/{assessmentActionId}/{taskId}")
     public ResponseEntity<Void> deleteById(@PathVariable Long assessmentActionId, @PathVariable String taskId) throws ApplicationException {
-        assessmentActionService.delete(assessmentActionId, taskId);
+        assessmentActionService.delete(assessmentActionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     

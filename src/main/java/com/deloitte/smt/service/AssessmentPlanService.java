@@ -210,7 +210,7 @@ public class AssessmentPlanService {
 		return smtResponse;
 	}
 	public void associateAssignees(List<AssessmentPlan> assessmentPlanList){
-		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneeList=new ArrayList<TopicRiskPlanAssignmentAssignees>();
+		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneeList=new ArrayList<>();
 		if (!CollectionUtils.isEmpty(assessmentPlanList)) {
 			for(AssessmentPlan assessmentPlan :assessmentPlanList){
 				if(null!=assessmentPlan.getRiskPlan()){
@@ -608,6 +608,7 @@ public class AssessmentPlanService {
 			if (id.equals(assessmentPlan.getId()) && assessmentNames.contains(assessmentName)) {
 				throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE);
 			} else if (id.equals(assessmentPlan.getId()) && !assessmentNames.contains(assessmentName)) {
+				assessmentPlan.setLastModifiedDate(new Date());
 				assessmentPlan.setAssessmentName(assessmentName);
 				assessmentPlanRepository.save(assessmentPlan);
 			}
