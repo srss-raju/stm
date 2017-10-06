@@ -23,7 +23,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.RiskTaskTemplate;
-import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateIngrediant;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.RiskTaskRepository;
@@ -180,8 +179,7 @@ public class RiskTaskTemplateServiceTest {
 		}
 	}
 	@Test(expected = ApplicationException.class)
-	public void testupdateRiskTaskDuplicateName(){
-		try {
+	public void testupdateRiskTaskDuplicateName() throws ApplicationException{
 		List<RiskTaskTemplate> listTasks=new ArrayList<>();
 		RiskTaskTemplate taskTemplate=new RiskTaskTemplate();
 		taskTemplate.setId(1l);
@@ -192,9 +190,6 @@ public class RiskTaskTemplateServiceTest {
 		duplicateNames.add("testTemplate1");
 		given(this.riskTaskTemplateRepository.findByName("testTemplate1",1l)).willReturn(duplicateNames);
 		riskTaskTemplateService.updateRiskTaskName(1l, "testTemplate1");
-		} catch (ApplicationException ex) {
-			LOG.info(ex);
-		}
 	}
 	
 }

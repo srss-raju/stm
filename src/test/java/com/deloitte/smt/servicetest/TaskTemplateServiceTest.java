@@ -177,9 +177,8 @@ public class TaskTemplateServiceTest {
 			LOG.info(ex);
 		}
 	}
-	@Test(expected = ApplicationException.class)
-	public void testUpdateTaskTemplateDuplicateName(){
-		try {
+	@Test(expected = com.deloitte.smt.exception.ApplicationException.class)
+	public void testUpdateTaskTemplateDuplicateName()throws ApplicationException{
 		List<TaskTemplate> listTasks=new ArrayList<>();
 		TaskTemplate taskTemplate=new TaskTemplate();
 		taskTemplate.setId(1l);
@@ -190,8 +189,6 @@ public class TaskTemplateServiceTest {
 		duplicateNames.add("testTemplate1");
 		given(this.taskTemplateRepository.findByName("testTemplate1",1l)).willReturn(duplicateNames);
 			taskTemplateService.updateTaskTemplateName(1l, "testTemplate1");
-		} catch (ApplicationException ex) {
-			LOG.info(ex);
-		}
+		
 	}
 }
