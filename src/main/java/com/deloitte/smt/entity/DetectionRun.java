@@ -23,6 +23,7 @@ public class DetectionRun {
     private Date lastModifiedDate;
     private String message;
     private String jobId;
+    private String jobStatus;
     
 	public String getJobId() {
 		return jobId;
@@ -77,5 +78,11 @@ public class DetectionRun {
 	}
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
+	}
+	public String getJobStatus() {
+		return jobStatus;
+	}
+	public void setJobStatus(String jobStatus) {
+		this.jobStatus = jobStatus;
 	}
 }

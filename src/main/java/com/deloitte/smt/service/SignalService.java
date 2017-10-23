@@ -37,6 +37,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalConfiguration;
 import com.deloitte.smt.entity.SignalStatistics;
+import com.deloitte.smt.entity.SignalStrength;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskTemplate;
@@ -58,6 +59,7 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfigurationRepository;
+import com.deloitte.smt.repository.SignalStrengthRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
@@ -159,6 +161,8 @@ public class SignalService {
 	
 	@Autowired
 	SignalSearchService signalSearchService;
+	@Autowired
+	SignalStrengthRepository signalStrengthRepository;
 	
 	public NonSignal createOrupdateNonSignal(NonSignal nonSignal) {
 		Calendar c = Calendar.getInstance();
@@ -278,6 +282,7 @@ public class SignalService {
 		}
 		saveSoc(topicUpdated);
 		saveSignalUrl(topicUpdated);
+		saveSignalStrength(topicUpdated);
 		
 		List<Attachment> attchmentList = attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null,
 				topicUpdated.getFileMetadata(), topic.getCreatedBy());
@@ -313,6 +318,19 @@ public class SignalService {
 				url.setModifiedDate(topicUpdated.getLastModifiedDate());
 			}
 			signalURLRepository.save(topicUpdated.getSignalUrls());
+		}
+	}
+	
+	private void saveSignalStrength(Topic topicUpdated){
+		if (!CollectionUtils.isEmpty(topicUpdated.getSignalStrengthAtrributes())) {
+			for(SignalStrength signalStrength : topicUpdated.getSignalStrengthAtrributes()){
+				signalStrength.setTopicId(topicUpdated.getId());
+				signalStrength.setCreatedDate(topicUpdated.getCreatedDate());
+				signalStrength.setCreatedBy(topicUpdated.getCreatedBy());
+				signalStrength.setModifiedBy(topicUpdated.getModifiedBy());
+				signalStrength.setModifiedDate(topicUpdated.getLastModifiedDate());
+			}
+			signalStrengthRepository.save(topicUpdated.getSignalStrengthAtrributes());
 		}
 	}
 
