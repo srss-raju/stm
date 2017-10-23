@@ -146,7 +146,6 @@ public class SignalDetectionService {
 			if (!CollectionUtils.isEmpty(ingredients)) {
 				for (Ingredient ingredient : ingredients) {
 					ingredient.setDetectionId(signalDetection.getId());
-					//ingredientRepository.deleteByDetectionId(signalDetection.getId());
 				}
 				ingredients = ingredientRepository.save(ingredients);
 
