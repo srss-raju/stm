@@ -33,6 +33,7 @@ import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
+import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
@@ -41,6 +42,7 @@ import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
+import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.IngredientRepository;
@@ -97,6 +99,8 @@ public class AssessmentPlanService {
     
     @Autowired
     ExceptionBuilder exceptionBuilder;
+    @Autowired
+    AssessmentActionRepository assessmentActionRepository;
     
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
@@ -471,9 +475,30 @@ public class AssessmentPlanService {
         	}
         	signalURLRepository.save(assessmentPlan.getSignalUrls());
         }
+        setAssessmentTaskStatus(assessmentPlan);
         signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, assessmentPlanOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
     }
-
+    /**
+     * This method sets the assessment task status as completed 
+     * when all tasks are completed else not completed
+     * @param assessmentPlan
+     */
+    private void setAssessmentTaskStatus(AssessmentPlan assessmentPlan){
+    	boolean assessmentTaskStatus=false;
+       List<SignalAction> signalActionsStatus=assessmentActionRepository.findAllByAssessmentId(String.valueOf(assessmentPlan.getId()));
+       if(!CollectionUtils.isEmpty(signalActionsStatus)){
+    	   for(SignalAction signalAction:signalActionsStatus){
+    		   if(!signalAction.getActionStatus().equals("Completed")){
+    			   assessmentTaskStatus=true;
+    		   }
+    	   }
+       }
+    	   if(assessmentTaskStatus){
+    	   assessmentPlan.setAssessmentTaskStatus("Not Completed");
+    	   }
+    	 
+       
+    }
     public void finalAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException {
         if(assessmentPlan.getId() == null) {
             throw new ApplicationException("Failed to update Assessment. Invalid Id received");

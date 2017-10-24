@@ -484,7 +484,8 @@ public class SignalService {
 			if (assignmentConfiguration == null) {
 				assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSourceIsNull(assessmentPlan.getIngrediantName());
 			}
-			assessmentPlan.setAssessmentTaskStatus("Not Completed");
+			/**when no tasks and for newly created assessment assessmenttaskstatus is 'Completed' **/
+			assessmentPlan.setAssessmentTaskStatus("Completed");
 			Long assessmentPlanExist = assessmentPlanRepository.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());
 			if (assessmentPlanExist > 0) {
 				throw exceptionBuilder.buildException(ErrorType.ASSESSMENTPLAN_NAME_DUPLICATE, null);

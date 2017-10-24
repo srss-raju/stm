@@ -121,7 +121,7 @@ public class RiskPlanService {
 		Date d = new Date();
 		riskPlan.setCreatedDate(d);
 		riskPlan.setLastModifiedDate(d);
-		riskPlan.setRiskTaskStatus("Not Completed");
+		riskPlan.setRiskTaskStatus("Completed");
 		AssignmentConfiguration assignmentConfiguration = null;
 
 		RiskPlan riskPlanUpdated;
@@ -728,9 +728,29 @@ public class RiskPlanService {
 			}
 			signalURLRepository.save(riskPlan.getSignalUrls());
 		}
+		setRiskTaskStatus(riskPlan);
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
 	}
-
+	/**
+	 * This method sets the risk task status as completed 
+     * when all tasks are completed else Not completed
+	 * @param riskPlan
+	 */
+	private void setRiskTaskStatus(RiskPlan riskPlan){
+		boolean riskTaskStatus=false;
+		List<RiskTask> riskTaskStatues=	riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
+		 if(!CollectionUtils.isEmpty(riskTaskStatues)){
+			 for(RiskTask riskTask:riskTaskStatues){
+				 if(!riskTask.getStatus().equals(SmtConstant.COMPLETED.getDescription())){
+					 riskTaskStatus=true;
+				 }
+			 }
+			 if(riskTaskStatus){
+				 riskPlan.setRiskTaskStatus("Not Completed");
+			 }
+		 }
+	}
+		 
 	public List<RiskTask> associateRiskTemplateTasks(RiskPlan riskPlan) {
 		return associateRiskTasks(riskPlan);
 	}
