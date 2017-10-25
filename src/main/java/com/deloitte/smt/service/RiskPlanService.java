@@ -699,6 +699,7 @@ public class RiskPlanService {
 		riskPlan.setLastModifiedDate(new Date());
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT,
 				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
+		setRiskTaskStatus(riskPlan);
 		RiskPlan riskPlanUpdated = riskPlanRepository.save(riskPlan);
 		List<TopicRiskPlanAssignmentAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
 		if(!CollectionUtils.isEmpty(assigneeList)){
@@ -728,7 +729,7 @@ public class RiskPlanService {
 			}
 			signalURLRepository.save(riskPlan.getSignalUrls());
 		}
-		setRiskTaskStatus(riskPlan);
+	
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
 	}
 	/**

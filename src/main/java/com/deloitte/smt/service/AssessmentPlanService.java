@@ -456,6 +456,7 @@ public class AssessmentPlanService {
         String assessmentPlanOriginal = JsonUtil.converToJson(topicRepository.findOne(assessmentPlan.getId()));
         assessmentPlan.setLastModifiedDate(new Date());
         List<Attachment> attchmentList = attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata(), assessmentPlan.getCreatedBy());
+        setAssessmentTaskStatus(assessmentPlan);
         assessmentPlanRepository.save(assessmentPlan);
         List<Comments> list = assessmentPlan.getComments();
         if(!CollectionUtils.isEmpty(list)){
@@ -475,7 +476,7 @@ public class AssessmentPlanService {
         	}
         	signalURLRepository.save(assessmentPlan.getSignalUrls());
         }
-        setAssessmentTaskStatus(assessmentPlan);
+        
         signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, assessmentPlanOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
     }
     /**
