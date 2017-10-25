@@ -586,7 +586,7 @@ public class RiskPlanService {
 			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
 		}
 
-    	
+		checkRiskTaskStatus(riskTask);
 		
 		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
@@ -601,7 +601,27 @@ public class RiskPlanService {
 		
 		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 	}
-
+	/**
+	 * 
+	 * @param riskTask
+	 */
+	private void checkRiskTaskStatus(RiskTask riskTask){
+		List<RiskTask> risks = findAllByRiskId(riskTask.getRiskId(), null);
+		boolean allTasksCompletedFlag = true;
+		if (!CollectionUtils.isEmpty(risks)) {
+			for (RiskTask risk : risks) {
+				if (!SmtConstant.COMPLETED.getDescription().equals(risk.getStatus())) {
+					allTasksCompletedFlag = false;
+				}
+			}
+		}
+		if(allTasksCompletedFlag){
+			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
+		}
+		else{
+			riskPlanRepository.updateRiskTaskStatus("Not Completed", Long.valueOf(riskTask.getRiskId()));
+		}
+	}
 	public RiskTask findById(Long id) {
 		RiskTask riskTask = riskTaskRepository.findOne(id);
 		if ("New".equalsIgnoreCase(riskTask.getStatus())) {

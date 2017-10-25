@@ -54,7 +54,14 @@ public class AssessmentActionService {
     
     @Autowired
     SignalAuditService signalAuditService;
-
+    /**
+     * 
+     * @param signalAction
+     * @param attachments
+     * @return
+     * @throws IOException
+     * @throws ApplicationException
+     */
     public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
         
         Date d = new Date();
@@ -66,7 +73,7 @@ public class AssessmentActionService {
     	if (actionsExist > 0) {
 			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
 		}
-
+    	checkAssessmentTaskStatus(signalAction);
     	
         SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
         List<Attachment> attachmentList = attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata(), signalActionUpdated.getCreatedBy());
@@ -83,7 +90,12 @@ public class AssessmentActionService {
         signalAuditService.saveOrUpdateSignalActionAudit(signalActionUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
         return signalActionUpdated;
     }
-
+    /**
+     * 
+     * @param signalAction
+     * @param attachments
+     * @throws ApplicationException
+     */
     public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws ApplicationException {
         if(signalAction.getId() == null) {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
@@ -122,7 +134,24 @@ public class AssessmentActionService {
         }
         signalAuditService.saveOrUpdateSignalActionAudit(signalAction, assessmentActionOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
     }
-
+    
+    private void checkAssessmentTaskStatus(SignalAction signalAction){
+    	 List<SignalAction> actions = findAllByAssessmentId(signalAction.getAssessmentId(), null);
+         boolean allTasksCompletedFlag = true;
+         if(!CollectionUtils.isEmpty(actions)){
+         	for(SignalAction action:actions){
+         		if(!"Completed".equals(action.getActionStatus())){
+         			allTasksCompletedFlag = false;
+         		}
+         	}
+         }
+         if(allTasksCompletedFlag){
+         	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(signalAction.getAssessmentId()));
+         }else{
+        	 assessmentPlanRepository.updateAssessmentTaskStatus("Not Completed", Long.valueOf(signalAction.getAssessmentId()));
+         }
+    }
+    
     public SignalAction findById(Long id) {
         SignalAction signalAction = assessmentActionRepository.findOne(id);
         if("New".equalsIgnoreCase(signalAction.getActionStatus())){
