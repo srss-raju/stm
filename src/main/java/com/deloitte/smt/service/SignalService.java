@@ -549,9 +549,16 @@ public class SignalService {
 				createAssessmentActions(assessmentPlan, sort, signalActionList, actions);
 			}
 		}
+		checkAssessmentTaskStatus(assessmentPlan);
+		return signalActionList;
+	}
+	
+	private void checkAssessmentTaskStatus(AssessmentPlan assessmentPlan){
 		boolean allTasksCompletedFlag = false;
-		if(!CollectionUtils.isEmpty(signalActionList)){
-			for(SignalAction signalAction:signalActionList){
+		
+		List<SignalAction> actions=	assessmentActionRepository.findAllByAssessmentId(String.valueOf(assessmentPlan.getId()));
+		if(!CollectionUtils.isEmpty(actions)){
+			for(SignalAction signalAction:actions){
         		if(!"Completed".equals(signalAction.getActionStatus())){
         			allTasksCompletedFlag = true;
         		}
@@ -563,9 +570,7 @@ public class SignalService {
 	        }
 			
 		}
-		return signalActionList;
 	}
-
 	/**
 	 * @param assessmentPlan
 	 * @param sort
