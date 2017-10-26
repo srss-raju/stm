@@ -540,7 +540,7 @@ public class SignalService {
 	 */
 	public List<SignalAction> associateTemplateTasks(AssessmentPlan assessmentPlan) {
 		Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
-		 boolean allTasksCompletedFlag = false;
+		 
 		List<SignalAction> signalActionList = null;
 		if (!CollectionUtils.isEmpty(assessmentPlan.getTemplateIds())) {
 			for (Long id : assessmentPlan.getTemplateIds()) {
@@ -548,19 +548,19 @@ public class SignalService {
 				signalActionList = new ArrayList<>();
 				createAssessmentActions(assessmentPlan, sort, signalActionList, actions);
 			}
-			if(!CollectionUtils.isEmpty(signalActionList)){
-				for(SignalAction signalAction:signalActionList){
-	        		if(!"Completed".equals(signalAction.getActionStatus())){
-	        			allTasksCompletedFlag = true;
-	        		}
-	        	}
-				if(allTasksCompletedFlag){
-		        	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(assessmentPlan.getId()));
-		        }else{
-		       	 assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(assessmentPlan.getId()));
-		        }
-				
-			}
+		}
+		boolean allTasksCompletedFlag = false;
+		if(!CollectionUtils.isEmpty(signalActionList)){
+			for(SignalAction signalAction:signalActionList){
+        		if(!"Completed".equals(signalAction.getActionStatus())){
+        			allTasksCompletedFlag = true;
+        		}
+        	}
+			if(allTasksCompletedFlag){
+	        	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(assessmentPlan.getId()));
+	        }else{
+	       	 assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(assessmentPlan.getId()));
+	        }
 			
 		}
 		return signalActionList;
