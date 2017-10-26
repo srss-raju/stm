@@ -489,13 +489,13 @@ public class AssessmentPlanService {
        List<SignalAction> signalActionsStatus=assessmentActionRepository.findAllByAssessmentId(String.valueOf(assessmentPlan.getId()));
        if(!CollectionUtils.isEmpty(signalActionsStatus)){
     	   for(SignalAction signalAction:signalActionsStatus){
-    		   if(!signalAction.getActionStatus().equals("Completed")){
+    		   if(!signalAction.getActionStatus().equals(SmtConstant.COMPLETED.getDescription())){
     			   assessmentTaskStatus=true;
     		   }
     	   }
        }
     	   if(assessmentTaskStatus){
-    	   assessmentPlan.setAssessmentTaskStatus("Not Completed");
+    	   assessmentPlan.setAssessmentTaskStatus(SmtConstant.NOTCOMPLETED.getDescription());
     	   }
     	 
        

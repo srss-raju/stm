@@ -28,6 +28,7 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
@@ -180,11 +181,25 @@ public class RiskPlanService {
 	
 	public List<RiskTask> associateRiskTasks(RiskPlan riskPlan){
 		List<RiskTask> tasks = null;
+		boolean allTasksCompletedFlag=false;
 		if(!CollectionUtils.isEmpty(riskPlan.getRiskTemplateIds())){
 			List<RiskTask> riskTaskList = new ArrayList<>();
 			for(Long id:riskPlan.getRiskTemplateIds()){
 				List<RiskTask> riskTasks = riskTaskRepository.findAllByTemplateId(id);
 				tasks = createRiskTask(riskTaskList, riskTasks, riskPlan);
+			}
+			if(!CollectionUtils.isEmpty(tasks)){
+				for(RiskTask riskTask:tasks){
+	        		if(!"Completed".equals(riskTask.getStatus())){
+	        			allTasksCompletedFlag = true;
+	        		}
+	        	}
+				if(allTasksCompletedFlag){
+		        	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskPlan.getId()));
+		        }else{
+		       	 assessmentPlanRepository.updateAssessmentTaskStatus("Not Completed", Long.valueOf(riskPlan.getId()));
+		        }
+				
 			}
 		}
 		return tasks;

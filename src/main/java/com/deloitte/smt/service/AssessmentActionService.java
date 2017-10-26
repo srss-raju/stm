@@ -148,7 +148,7 @@ public class AssessmentActionService {
          if(allTasksCompletedFlag){
          	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(signalAction.getAssessmentId()));
          }else{
-        	 assessmentPlanRepository.updateAssessmentTaskStatus("Not Completed", Long.valueOf(signalAction.getAssessmentId()));
+        	 assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(signalAction.getAssessmentId()));
          }
     }
     
@@ -175,7 +175,7 @@ public class AssessmentActionService {
             throw new ApplicationException("Failed to delete Action. Invalid Id received");
         }
         assessmentActionRepository.delete(signalAction);
-        
+        checkAssessmentTaskStatus(signalAction);
         signalAuditService.saveOrUpdateSignalActionAudit(signalAction, null, null, SmtConstant.DELETE.getDescription());
     }
     

@@ -13,6 +13,7 @@ public enum SmtConstant {
     ASSESSMENT_DUE_DATE("assessmentDueDate"),
     CREATED_DATE("createdDate"),
     COMPLETED("Completed"),
+    NOTCOMPLETED("Not Completed"),
     INGREDIENT_NAME("ingredientName"),
     IN_PROGRESS("In Progress"),
     ASSESSMENT_TASK_STATUS("assessmentTaskStatus"),
