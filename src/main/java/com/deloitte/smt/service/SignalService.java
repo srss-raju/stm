@@ -554,13 +554,13 @@ public class SignalService {
 	}
 	
 	private void checkAssessmentTaskStatus(AssessmentPlan assessmentPlan){
-		boolean allTasksCompletedFlag = false;
+		boolean allTasksCompletedFlag = true;
 		
 		List<SignalAction> actions=	assessmentActionRepository.findAllByAssessmentId(String.valueOf(assessmentPlan.getId()));
 		if(!CollectionUtils.isEmpty(actions)){
 			for(SignalAction signalAction:actions){
         		if(!"Completed".equals(signalAction.getActionStatus())){
-        			allTasksCompletedFlag = true;
+        			allTasksCompletedFlag = false;
         		}
         	}
 			if(allTasksCompletedFlag){
