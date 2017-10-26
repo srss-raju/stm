@@ -181,28 +181,35 @@ public class RiskPlanService {
 	
 	public List<RiskTask> associateRiskTasks(RiskPlan riskPlan){
 		List<RiskTask> tasks = null;
-		boolean allTasksCompletedFlag=false;
+		
 		if(!CollectionUtils.isEmpty(riskPlan.getRiskTemplateIds())){
 			List<RiskTask> riskTaskList = new ArrayList<>();
 			for(Long id:riskPlan.getRiskTemplateIds()){
 				List<RiskTask> riskTasks = riskTaskRepository.findAllByTemplateId(id);
 				tasks = createRiskTask(riskTaskList, riskTasks, riskPlan);
 			}
-			if(!CollectionUtils.isEmpty(tasks)){
-				for(RiskTask riskTask:tasks){
-	        		if(!"Completed".equals(riskTask.getStatus())){
-	        			allTasksCompletedFlag = true;
-	        		}
-	        	}
-				if(allTasksCompletedFlag){
-		        	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskPlan.getId()));
-		        }else{
-		       	 assessmentPlanRepository.updateAssessmentTaskStatus("Not Completed", Long.valueOf(riskPlan.getId()));
-		        }
-				
-			}
+			
 		}
+		checkRiskTaskStatus(riskPlan);
 		return tasks;
+	}
+	
+	private void checkRiskTaskStatus(RiskPlan riskPlan){
+		boolean allTasksCompletedFlag=true;
+		List<RiskTask> riskTaskList=riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
+		if(!CollectionUtils.isEmpty(riskTaskList)){
+			for(RiskTask riskTask:riskTaskList){
+        		if(!"Completed".equals(riskTask.getStatus())){
+        			allTasksCompletedFlag = false;
+        		}
+        	}
+			if(allTasksCompletedFlag){
+	        	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskPlan.getId()));
+	        }else{
+	       	 assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(riskPlan.getId()));
+	        }
+			
+		}
 	}
 	
 	List<TopicRiskPlanAssignmentAssignees> associateRiskPlanAssignmentAssignees(List<RiskPlan> riskPlanList){
@@ -634,7 +641,7 @@ public class RiskPlanService {
 			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
 		}
 		else{
-			riskPlanRepository.updateRiskTaskStatus("Not Completed", Long.valueOf(riskTask.getRiskId()));
+			riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
 		}
 	}
 	public RiskTask findById(Long id) {
@@ -659,7 +666,9 @@ public class RiskPlanService {
 		if (riskTask == null) {
 			throw new ApplicationException("Failed to delete Action. Invalid Id received");
 		}
+		
 		riskTaskRepository.delete(riskTask);
+		checkRiskTaskStatus(riskTask);
 	}
 
 	public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
