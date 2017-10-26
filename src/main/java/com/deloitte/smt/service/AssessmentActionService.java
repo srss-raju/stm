@@ -73,7 +73,6 @@ public class AssessmentActionService {
     	if (actionsExist > 0) {
 			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
 		}
-    	checkAssessmentTaskStatus(signalAction);
     	
         SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
         List<Attachment> attachmentList = attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata(), signalActionUpdated.getCreatedBy());
@@ -87,6 +86,7 @@ public class AssessmentActionService {
         	}
         	signalURLRepository.save(signalActionUpdated.getSignalUrls());
         }
+    	checkAssessmentTaskStatus(signalAction);
         signalAuditService.saveOrUpdateSignalActionAudit(signalActionUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
         return signalActionUpdated;
     }

@@ -695,7 +695,10 @@ public class RiskPlanService {
 		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneesList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskId);
 		riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesList);
 		riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
-		riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskPlan.getId()));
+		riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskId));
+		AssessmentPlan assessmentPlan=riskPlan.getAssessmentPlan();
+		assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentPlan.getId()));
+		
 		return riskPlan;
 	}
 
