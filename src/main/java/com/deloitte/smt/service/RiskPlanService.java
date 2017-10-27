@@ -188,7 +188,6 @@ public class RiskPlanService {
 				List<RiskTask> riskTasks = riskTaskRepository.findAllByTemplateId(id);
 				tasks = createRiskTask(riskTaskList, riskTasks, riskPlan);
 			}
-			
 		}
 		checkRiskTaskStatus(riskPlan);
 		return tasks;
@@ -204,9 +203,9 @@ public class RiskPlanService {
         		}
         	}
 			if(allTasksCompletedFlag){
-	        	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskPlan.getId()));
+				riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(),riskPlan.getId());
 	        }else{
-	       	 assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(riskPlan.getId()));
+	        	riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(),riskPlan.getId());
 	        }
 			
 		}
@@ -722,7 +721,7 @@ public class RiskPlanService {
 		if(null!=assessmentPlan){
 		assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentPlan.getId()));
 		}
-		
+		checkRiskTaskStatus(riskPlan);
 		return riskPlan;
 	}
 
