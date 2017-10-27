@@ -606,8 +606,9 @@ public class RiskPlanService {
 		if (riskTaskExists > 0) {
 			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
 		}
-
+		
 		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
+		checkRiskTaskStatus(riskTaskUpdated);
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
 				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
 		if (!CollectionUtils.isEmpty(riskTaskUpdated.getSignalUrls())) {
@@ -617,7 +618,7 @@ public class RiskPlanService {
 			}
 			signalURLRepository.save(riskTaskUpdated.getSignalUrls());
 		}
-		checkRiskTaskStatus(riskTaskUpdated);
+		
 		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 	}
 	/**
@@ -635,10 +636,10 @@ public class RiskPlanService {
 			}
 		}
 		if(allTasksCompletedFlag){
-			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), riskTask.getId());
+			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
 		}
 		else{
-			riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), riskTask.getId());
+			riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(),  Long.valueOf(riskTask.getRiskId()));
 		}
 	}
 	public RiskTask findById(Long id) {
