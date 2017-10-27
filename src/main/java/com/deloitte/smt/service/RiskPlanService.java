@@ -636,10 +636,10 @@ public class RiskPlanService {
 			}
 		}
 		if(allTasksCompletedFlag){
-			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
+			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), riskTask.getId());
 		}
 		else{
-			riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
+			riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), riskTask.getId());
 		}
 	}
 	public RiskTask findById(Long id) {
