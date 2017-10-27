@@ -592,7 +592,7 @@ public class RiskPlanService {
 	 * @throws ApplicationException
 	 */
 	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException, ApplicationException {
-		
+		    
 		Date d = new Date();
 		riskTask.setCreatedDate(d);
 		riskTask.setLastUpdatedDate(d);
@@ -608,8 +608,6 @@ public class RiskPlanService {
 			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
 		}
 
-		checkRiskTaskStatus(riskTask);
-		
 		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
 				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
@@ -620,7 +618,7 @@ public class RiskPlanService {
 			}
 			signalURLRepository.save(riskTaskUpdated.getSignalUrls());
 		}
-		
+		checkRiskTaskStatus(riskTaskUpdated);
 		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 	}
 	/**
@@ -794,7 +792,7 @@ public class RiskPlanService {
 				 }
 			 }
 			 if(riskTaskStatus){
-				 riskPlan.setRiskTaskStatus("Not Completed");
+				 riskPlan.setRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription());
 			 }
 		 }
 	}
