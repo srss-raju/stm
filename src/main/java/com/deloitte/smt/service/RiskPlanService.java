@@ -719,7 +719,9 @@ public class RiskPlanService {
 		riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
 		riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskId));
 		AssessmentPlan assessmentPlan=riskPlan.getAssessmentPlan();
+		if(null!=assessmentPlan){
 		assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentPlan.getId()));
+		}
 		
 		return riskPlan;
 	}
