@@ -101,6 +101,26 @@ public class AssessmentActionServiceTest {
 	}
 	
 	@Test
+	public void testCreateAssessmentActionexists() {
+		try{
+			SignalAction signalAction = TestUtil.buildSignalAction();
+			CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
+			signalAction.setCaseInstanceId(instance.getCaseInstanceId());
+			signalAction.setActionStatus("Completed");
+			signalAction.setActionName("A");
+			signalAction.setAssessmentId("1");
+			List<SignalURL> urls = new ArrayList<>();
+			SignalURL url = new SignalURL();
+			urls.add(url);
+			signalAction.setSignalUrls(urls);
+			given(this.assessmentActionRepository.countByActionNameIgnoreCaseAndAssessmentId("A", "1")).willReturn(1l);
+			assessmentActionService.createAssessmentAction(signalAction, null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
 	public void testUpdateAssessmentActionWithNull() {
 		try{
 			SignalAction signalAction = new SignalAction();
