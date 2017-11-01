@@ -19,7 +19,7 @@ public class RiskTaskNameUpdateController {
 	RiskTaskTemplateService riskTaskTemplateService;
 	
 	@GetMapping(value = "/{taskId}/updateRiskTaskName/{name}")
-	public ResponseEntity<Void> updateAssessmentName(@PathVariable Long taskId,@PathVariable String name ) throws ApplicationException{
+	public ResponseEntity<Void> updateRiskTaskName(@PathVariable Long taskId,@PathVariable String name ) throws ApplicationException{
 		
 		riskTaskTemplateService.updateRiskTaskName(taskId, name);
 		
