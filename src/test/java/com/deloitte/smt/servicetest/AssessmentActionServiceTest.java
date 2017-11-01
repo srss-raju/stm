@@ -101,6 +101,44 @@ public class AssessmentActionServiceTest {
 	}
 	
 	@Test
+	public void testCreateAssessmentActionNoURL() {
+		try{
+			SignalAction signalAction = TestUtil.buildSignalAction();
+			CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
+			signalAction.setCaseInstanceId(instance.getCaseInstanceId());
+			signalAction.setActionStatus("Completed");
+			signalAction.setAssessmentId("1");
+			List<SignalAction> signalActions = new ArrayList<>();
+			signalActions.add(signalAction);
+			
+			given(this.assessmentActionRepository.save(signalAction)).willReturn(signalAction);
+			given(this.assessmentActionRepository.findAllByAssessmentId("1")).willReturn(signalActions);
+			assessmentActionService.createAssessmentAction(signalAction, null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testCreateAssessmentActionNoURL2() {
+		try{
+			SignalAction signalAction = TestUtil.buildSignalAction();
+			CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
+			signalAction.setCaseInstanceId(instance.getCaseInstanceId());
+			signalAction.setActionStatus("Completed");
+			signalAction.setAssessmentId("1");
+			List<SignalAction> signalActions = new ArrayList<>();
+			signalActions.add(signalAction);
+			
+			given(this.assessmentActionRepository.save(signalAction)).willReturn(signalAction);
+			given(this.assessmentActionRepository.findAllByAssessmentId("1")).willReturn(null);
+			assessmentActionService.createAssessmentAction(signalAction, null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
 	public void testCreateAssessmentActionexists() {
 		try{
 			SignalAction signalAction = TestUtil.buildSignalAction();
