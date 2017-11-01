@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -18,8 +19,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "sm_topic_assessment_assignment_assignees")
-public class TopicAssessmentAssignmentAssignees {
+public class TopicAssessmentAssignmentAssignees implements Serializable{
 	 
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6586959436931561167L;
+
 		public TopicAssessmentAssignmentAssignees(){
 			
 		}

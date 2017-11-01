@@ -29,9 +29,9 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	List<String> getAssessmentRiskStatus();
 	
 	@Transactional
-	@Modifying
+	@Modifying(clearAutomatically=true)
 	@Query(value = "UPDATE AssessmentPlan o SET o.assessmentTaskStatus=:assessmentTaskStatus WHERE id= :id")
-	void updateAssessmentTaskStatus(@Param("assessmentTaskStatus") String assessmentTaskStatus, @Param("id") Long id);
+	void updateAssessmentTaskStatus(@Param(value="assessmentTaskStatus") String assessmentTaskStatus, @Param(value="id") Long id);
 	
 	Long countByAssessmentNameIgnoreCase(String assessmentName);
 	

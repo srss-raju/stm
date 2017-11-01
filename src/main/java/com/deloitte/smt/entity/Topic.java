@@ -66,7 +66,14 @@ public class Topic implements Serializable{
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "topicId")
 	private List<TopicSignalValidationAssignmentAssignees> topicSignalValidationAssignmentAssignees;
-
+	
+	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "topicId")
+	private List<SignalStrength> signalStrengthAtrributes;
+	
+	/**Signal created Manual or Automated **/
+	private String sourceLabel;
+	
 	@Transient
 	private List<Comments> comments;
 	
@@ -410,6 +417,22 @@ public class Topic implements Serializable{
 	public void setTopicSignalValidationAssignmentAssignees(
 			List<TopicSignalValidationAssignmentAssignees> topicSignalValidationAssignmentAssignees) {
 		this.topicSignalValidationAssignmentAssignees = topicSignalValidationAssignmentAssignees;
+	}
+
+	public String getSourceLabel() {
+		return sourceLabel;
+	}
+
+	public void setSourceLabel(String sourceLabel) {
+		this.sourceLabel = sourceLabel;
+	}
+
+	public List<SignalStrength> getSignalStrengthAtrributes() {
+		return signalStrengthAtrributes;
+	}
+
+	public void setSignalStrengthAtrributes(List<SignalStrength> signalStrengthAtrributes) {
+		this.signalStrengthAtrributes = signalStrengthAtrributes;
 	}
 
 	

@@ -54,7 +54,14 @@ public class AssessmentActionService {
     
     @Autowired
     SignalAuditService signalAuditService;
-
+    /**
+     * 
+     * @param signalAction
+     * @param attachments
+     * @return
+     * @throws IOException
+     * @throws ApplicationException
+     */
     public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
         
         Date d = new Date();
@@ -80,10 +87,16 @@ public class AssessmentActionService {
         	}
         	signalURLRepository.save(signalActionUpdated.getSignalUrls());
         }
+    	checkAssessmentTaskStatus(signalAction);
         signalAuditService.saveOrUpdateSignalActionAudit(signalActionUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
         return signalActionUpdated;
     }
-
+    /**
+     * 
+     * @param signalAction
+     * @param attachments
+     * @throws ApplicationException
+     */
     public void updateAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws ApplicationException {
         if(signalAction.getId() == null) {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
@@ -122,7 +135,24 @@ public class AssessmentActionService {
         }
         signalAuditService.saveOrUpdateSignalActionAudit(signalAction, assessmentActionOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
     }
-
+    
+    private void checkAssessmentTaskStatus(SignalAction signalAction){
+    	 List<SignalAction> actions = findAllByAssessmentId(signalAction.getAssessmentId(), null);
+         boolean allTasksCompletedFlag = true;
+         if(!CollectionUtils.isEmpty(actions)){
+         	for(SignalAction action:actions){
+         		if(!"Completed".equals(action.getActionStatus())){
+         			allTasksCompletedFlag = false;
+         		}
+         	}
+         }
+         if(allTasksCompletedFlag){
+         	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(signalAction.getAssessmentId()));
+         }else{
+        	 assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(signalAction.getAssessmentId()));
+         }
+    }
+    
     public SignalAction findById(Long id) {
         SignalAction signalAction = assessmentActionRepository.findOne(id);
         if("New".equalsIgnoreCase(signalAction.getActionStatus())){
@@ -146,7 +176,7 @@ public class AssessmentActionService {
             throw new ApplicationException("Failed to delete Action. Invalid Id received");
         }
         assessmentActionRepository.delete(signalAction);
-        
+        checkAssessmentTaskStatus(signalAction);
         signalAuditService.saveOrUpdateSignalActionAudit(signalAction, null, null, SmtConstant.DELETE.getDescription());
     }
     
