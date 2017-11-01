@@ -70,7 +70,7 @@ public class AssessmentPlan  implements Serializable {
 	private List<Comments> comments;
 	private String owner;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "assessmentId")
 	private List<TopicAssessmentAssignmentAssignees> topicAssessmentAssignmentAssignees;
 	
