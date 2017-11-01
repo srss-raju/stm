@@ -25,6 +25,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.repository.AssessmentActionRepository;
@@ -185,6 +186,20 @@ public class AssessmentActionServiceTest {
 			signalAction.setTaskId("1");
 			list.add(signalAction);
 			given(this.assessmentActionRepository.findAllByAssessmentId("1")).willReturn(list);
+			assessmentActionService.updateAssessmentAction(signalAction, null);
+		}catch(Exception ex){
+			LOG.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateAssessmentActionTaskCompleted() {
+		try{
+			SignalAction signalAction = new SignalAction();
+			signalAction.setAssessmentId("1");
+			signalAction.setId(1l);
+			AssessmentPlan plan = new AssessmentPlan();
+			given(this.assessmentPlanRepository.findOne(Long.valueOf("1"))).willReturn(plan);
 			assessmentActionService.updateAssessmentAction(signalAction, null);
 		}catch(Exception ex){
 			LOG.info(ex);
