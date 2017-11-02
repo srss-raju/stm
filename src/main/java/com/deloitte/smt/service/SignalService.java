@@ -475,6 +475,7 @@ public class SignalService {
 			assessmentPlan.setCreatedDate(d);
 			assessmentPlan.setLastModifiedDate(d);
 			assessmentPlan.setAssessmentPlanStatus("New");
+			assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY.getDescription());
 	
 			if (!StringUtils.isEmpty(topic.getSourceName())) {
 				assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());

@@ -123,6 +123,7 @@ public class RiskPlanService {
 		riskPlan.setCreatedDate(d);
 		riskPlan.setLastModifiedDate(d);
 		riskPlan.setRiskTaskStatus("Completed");
+		riskPlan.setSummary(SmtConstant.SUMMARY.getDescription());
 		AssignmentConfiguration assignmentConfiguration = null;
 
 		RiskPlan riskPlanUpdated;
@@ -138,6 +139,7 @@ public class RiskPlanService {
 			if (riskPlanExist>0) {
 				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
 			}
+			
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 			assessmentPlanRepository.save(assessmentPlan);
 		} else {
@@ -744,6 +746,7 @@ public class RiskPlanService {
 		String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(riskPlan.getId()));
 		
 		riskPlan.setLastModifiedDate(new Date());
+		riskPlan.setSummary(riskPlan.getSummary());
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT,
 				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
 		setRiskTaskStatus(riskPlan);

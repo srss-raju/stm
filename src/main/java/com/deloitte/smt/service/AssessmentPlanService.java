@@ -1,5 +1,6 @@
 package com.deloitte.smt.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -457,6 +458,7 @@ public class AssessmentPlanService {
         assessmentPlan.setLastModifiedDate(new Date());
         List<Attachment> attchmentList = attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata(), assessmentPlan.getCreatedBy());
         setAssessmentTaskStatus(assessmentPlan);
+        assessmentPlan.setFinalAssessmentSummary(assessmentPlan.getFinalAssessmentSummary());
         assessmentPlanRepository.save(assessmentPlan);
         List<Comments> list = assessmentPlan.getComments();
         if(!CollectionUtils.isEmpty(list)){
@@ -500,6 +502,7 @@ public class AssessmentPlanService {
     	 
        
     }
+ 
     public void finalAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException {
         if(assessmentPlan.getId() == null) {
             throw new ApplicationException("Failed to update Assessment. Invalid Id received");
