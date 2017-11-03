@@ -458,7 +458,12 @@ public class AssessmentPlanService {
         assessmentPlan.setLastModifiedDate(new Date());
         List<Attachment> attchmentList = attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata(), assessmentPlan.getCreatedBy());
         setAssessmentTaskStatus(assessmentPlan);
+        if(null!=assessmentPlan.getFinalAssessmentSummary()){
         assessmentPlan.setFinalAssessmentSummary(assessmentPlan.getFinalAssessmentSummary());
+        }
+        else{
+        	 assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY.getDescription());
+        }
         assessmentPlanRepository.save(assessmentPlan);
         List<Comments> list = assessmentPlan.getComments();
         if(!CollectionUtils.isEmpty(list)){

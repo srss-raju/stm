@@ -22,7 +22,7 @@ public enum SmtConstant {
     UPDATE("UPDATE"),
     DELETE("DELETE"),
     ASSIGNEES_GROUP_KEY("-99"),
-    SUMMARY("{\"Heading1\":\"Content for heading1\",\"Heading2\":\"Content for heading2\",\"Heading3\":\"Content for heading3\"}"),
+    SUMMARY("{\"Heading1 <You can edit this>\":\"<Please enter appropriate description for this section>\",\"Heading2 <You can edit this>\":\"<Please enter appropriate description for this section>\",\"Heading3 <You can edit this>\":\"<Please enter appropriate description for this section>\"}"),
     OWNER("owner");
     private String description;
 

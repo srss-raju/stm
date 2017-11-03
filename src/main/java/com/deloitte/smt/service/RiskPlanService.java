@@ -746,7 +746,12 @@ public class RiskPlanService {
 		String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(riskPlan.getId()));
 		
 		riskPlan.setLastModifiedDate(new Date());
+		if(null!=riskPlan.getSummary()){
 		riskPlan.setSummary(riskPlan.getSummary());
+		}
+		else{
+			riskPlan.setSummary(SmtConstant.SUMMARY.getDescription());
+		}
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT,
 				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
 		setRiskTaskStatus(riskPlan);
