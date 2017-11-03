@@ -749,6 +749,9 @@ public class RiskPlanService {
 		
 		if(null==riskPlan.getSummary()|| riskPlan.getSummary().isEmpty()){
 		riskPlan.setSummary(SmtConstant.SUMMARY.getDescription());
+			if(riskPlan.getStatus().equals(SmtConstant.COMPLETED.getDescription())){
+				riskPlan.setSummary(SmtConstant.SUMMARY_COMPLETED.getDescription());
+			}
 		}
 		else{
 			riskPlan.setSummary(riskPlan.getSummary());

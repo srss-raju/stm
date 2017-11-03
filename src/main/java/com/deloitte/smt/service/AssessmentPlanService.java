@@ -1,6 +1,5 @@
 package com.deloitte.smt.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -112,6 +111,9 @@ public class AssessmentPlanService {
         if("New".equalsIgnoreCase(assessmentPlan.getAssessmentPlanStatus())) {
             assessmentPlan.setAssessmentPlanStatus("In Progress");
             assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
+        }
+        if(assessmentPlan.getAssessmentPlanStatus().equals(SmtConstant.COMPLETED.getDescription())){
+        	assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY_COMPLETED.getDescription());
         }
         assessmentAssignmentService.findAssignmentAssignees(assessmentPlan);
         assessmentPlan.setComments(commentsRepository.findByAssessmentId(assessmentId));
@@ -458,9 +460,12 @@ public class AssessmentPlanService {
         assessmentPlan.setLastModifiedDate(new Date());
         List<Attachment> attchmentList = attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata(), assessmentPlan.getCreatedBy());
         setAssessmentTaskStatus(assessmentPlan);
-        if(null==assessmentPlan.getFinalAssessmentSummary()|| assessmentPlan.getFinalAssessmentSummary().isEmpty()){
         
+        if(null==assessmentPlan.getFinalAssessmentSummary()|| assessmentPlan.getFinalAssessmentSummary().isEmpty()){
         assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY.getDescription());
+	        if(assessmentPlan.getAssessmentPlanStatus().equals(SmtConstant.COMPLETED.getDescription())){
+	        	 assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY_COMPLETED.getDescription());
+	        }
         }
         else{
         	assessmentPlan.setFinalAssessmentSummary(assessmentPlan.getFinalAssessmentSummary());
