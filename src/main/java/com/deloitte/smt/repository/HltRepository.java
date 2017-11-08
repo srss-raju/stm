@@ -26,4 +26,6 @@ public interface HltRepository  extends JpaRepository<Hlt, Long> {
 	List<Hlt> findBySocId(Long socId);
     @Transactional
     Long deleteByDetectionId(Long detectionId);
+    //@Query(value="SELECT distinct o.hltName FROM Hlt o WHERE o.hltName LIKE :searchText||'%'")
+    List<Hlt> findByHltNameContainingIgnoreCase(String searchText);
 }

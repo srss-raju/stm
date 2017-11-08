@@ -3,12 +3,16 @@ package com.deloitte.smt.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "sm_soc")
@@ -27,13 +31,16 @@ public class Soc implements Serializable {
 	private boolean hltSelected;
 	private boolean ptSelected;
 	
-	@Transient
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "socId")
     private List<Hlgt> hlgts;
 	
-	@Transient
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "socId")
     private List<Hlt> hlts;
 	
-	@Transient
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "socId")
     private List<Pt> pts;
 	
 	public Long getId() {

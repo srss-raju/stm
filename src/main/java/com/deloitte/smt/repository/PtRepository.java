@@ -1,11 +1,13 @@
 package com.deloitte.smt.repository;
 
 import com.deloitte.smt.entity.Pt;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+
 import java.util.List;
 import java.util.Set;
 
@@ -28,4 +30,7 @@ public interface PtRepository  extends JpaRepository<Pt, Long> {
     Long deleteByDetectionId(Long detectionId);
     
     List<Pt> findBySmqId(Long smqId);
+    
+    //@Query(value="SELECT distinct o.ptName FROM Pt o WHERE o.ptName LIKE :searchText||'%'")
+    List<Pt> findByPtNameContainingIgnoreCase(String searchText);
 }
