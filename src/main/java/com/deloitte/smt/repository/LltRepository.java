@@ -9,6 +9,6 @@ import com.deloitte.smt.entity.Llt;
 public interface LltRepository extends JpaRepository<Llt, Long> {
 	
 	//@Query(value="SELECT distinct o.lltName FROM Llt o WHERE o.lltName LIKE :searchText||'%'")
-    List<Llt> findByLltNameContainingIgnoreCase(String searchText);
+    List<String> findByLltNameContainingIgnoreCase(String searchText);
 
 }

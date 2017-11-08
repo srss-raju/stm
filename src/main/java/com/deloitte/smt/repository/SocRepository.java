@@ -1,11 +1,13 @@
 package com.deloitte.smt.repository;
 
 import com.deloitte.smt.entity.Soc;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+
 import java.util.List;
 import java.util.Set;
 
@@ -30,5 +32,8 @@ public interface SocRepository  extends JpaRepository<Soc, Long> {
 	Long deleteByDetectionId(Long detectionId);
 	
 	//@Query(value="SELECT distinct o.socName FROM Soc o WHERE o.socName LIKE :socName||'%'")
-	List<Soc> findBySocNameContainingIgnoreCase(String socName);
+	List<String> findBySocNameContainingIgnoreCase(String socName);
+	
+
+	List<Soc> findBySocName(String socName);
 }

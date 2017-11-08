@@ -20,7 +20,8 @@ public class SocService {
 	}
 	
 	
-	public List<Soc> getAllSocsByName(List<String> socs){
-		return socRepository.findAllBySocNameIn(socs);
+	public List<Soc> getAllSocsByName(String socName){
+		return socRepository.findBySocName(socName);
+		
 	}
 }

@@ -32,5 +32,5 @@ public interface PtRepository  extends JpaRepository<Pt, Long> {
     List<Pt> findBySmqId(Long smqId);
     
     //@Query(value="SELECT distinct o.ptName FROM Pt o WHERE o.ptName LIKE :searchText||'%'")
-    List<Pt> findByPtNameContainingIgnoreCase(String searchText);
+    List<String> findByPtNameContainingIgnoreCase(String searchText);
 }
