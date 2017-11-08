@@ -56,12 +56,7 @@ public class Pt implements Serializable {
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
 	}
-	public Long getSocId() {
-		return socId;
-	}
-	public void setSocId(Long socId) {
-		this.socId = socId;
-	}
+	
 	public String getPtName() {
 		return ptName;
 	}
