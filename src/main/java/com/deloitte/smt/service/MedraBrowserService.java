@@ -32,46 +32,91 @@ public class MedraBrowserService {
 	PtRepository ptRepository;
 	@Autowired
 	LltRepository lltRepository;
-
+	
+	/**
+	 * 
+	 * @param level
+	 * @param searchText
+	 * @return
+	 */
 	public MedraBrowserDTO getDetailsBySearchText(String level, String searchText) {
 		MedraBrowserDTO medraBrowserDTO = new MedraBrowserDTO();
+		
 
 		switch (level) {
 
 		case "ALL":
+			if(!searchText.isEmpty()){
 			medraBrowserDTO.setSocs(getSocsList(socRepository.findBySocNameContainingIgnoreCase(searchText)));
 			medraBrowserDTO.setHlgts(getHlgtsList(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText)));
 			medraBrowserDTO.setHlts(getHltList(hltRepository.findByHltNameContainingIgnoreCase(searchText)));
 			medraBrowserDTO.setPts(getPtList(ptRepository.findByPtNameContainingIgnoreCase(searchText)));
 			medraBrowserDTO.setLlts(getLltList(lltRepository.findByLltNameContainingIgnoreCase(searchText)));
+			}
+			else{
+				getAllData(medraBrowserDTO);
+			}
 			break;
 
 		case "SOC":
+			if(!searchText.isEmpty()){
 			medraBrowserDTO.setSocs(getSocsList(socRepository.findBySocNameContainingIgnoreCase(searchText)));
+			}
+			else{
+				medraBrowserDTO.setSocs(socRepository.findDistinctSocNames());
+			}
 			break;
 
 		case "HLGT":
+			if(!searchText.isEmpty()){
 			medraBrowserDTO.setHlgts(getHlgtsList(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText)));
+			}
+			else{
+				medraBrowserDTO.setHlgts(hlgtRepository.findDistinctHlgtNames());
+			}
 			break;
 
 		case "HLT":
+			if(!searchText.isEmpty()){
 			medraBrowserDTO.setHlts(getHltList(hltRepository.findByHltNameContainingIgnoreCase(searchText)));
+			}
+			else{
+				medraBrowserDTO.setHlts(hltRepository.findDistinctHltNames());
+			}
 			break;
 
 		case "PT":
+			if(!searchText.isEmpty()){
 			medraBrowserDTO.setPts(getPtList(ptRepository.findByPtNameContainingIgnoreCase(searchText)));
+			}
+			else{
+				medraBrowserDTO.setPts(ptRepository.findDistinctPtNames());
+			}
 			break;
 
 		case "LLT":
+			if(!searchText.isEmpty()){
 			medraBrowserDTO.setLlts(getLltList(lltRepository.findByLltNameContainingIgnoreCase(searchText)));
+			}
+			else{
+				medraBrowserDTO.setLlts(lltRepository.findDistinctLltNames());
+			}
 			break;
-
+		
 		default:
-			medraBrowserDTO.setSocs(getSocsList(socRepository.findBySocNameContainingIgnoreCase(searchText)));
+			getAllData(medraBrowserDTO);
 			break;
 		}
 
 		return medraBrowserDTO;
+	}
+	
+	private void getAllData(MedraBrowserDTO medraBrowserDTO){
+		medraBrowserDTO.setSocs(socRepository.findDistinctSocNames());
+		medraBrowserDTO.setHlgts(hlgtRepository.findDistinctHlgtNames());
+		medraBrowserDTO.setHlts(hltRepository.findDistinctHltNames());
+		medraBrowserDTO.setPts(ptRepository.findDistinctPtNames());
+		medraBrowserDTO.setLlts(lltRepository.findDistinctLltNames());
 	}
 
 	public List<String> getSocsList(List<Soc> socs) {

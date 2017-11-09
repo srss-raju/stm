@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Set;
 
 public interface PtRepository  extends JpaRepository<Pt, Long> {
+	
+	@Query(value="SELECT DISTINCT(o.ptName) FROM Pt o ")
+	List<String> findDistinctPtNames();
 
     List<Pt> findAllByPtNameIn(List<String> pts);
     List<Pt> findByDetectionId(Long topicId);

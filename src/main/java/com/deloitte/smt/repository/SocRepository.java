@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Set;
 
 public interface SocRepository  extends JpaRepository<Soc, Long> {
+	
+	@Query(value="SELECT DISTINCT(o.socName) FROM Soc o ")
+	List<String> findDistinctSocNames();
 
 	List<Soc> findAllBySocNameIn(List<String> socs);
 
