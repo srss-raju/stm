@@ -1,9 +1,18 @@
 package com.deloitte.smt.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dto.MedraBrowserDTO;
+import com.deloitte.smt.entity.Hlgt;
+import com.deloitte.smt.entity.Hlt;
+import com.deloitte.smt.entity.Llt;
+import com.deloitte.smt.entity.Pt;
+import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.repository.HlgtRepository;
 import com.deloitte.smt.repository.HltRepository;
 import com.deloitte.smt.repository.LltRepository;
@@ -12,7 +21,7 @@ import com.deloitte.smt.repository.SocRepository;
 
 @Service
 public class MedraBrowserService {
-	
+
 	@Autowired
 	SocRepository socRepository;
 	@Autowired
@@ -24,45 +33,104 @@ public class MedraBrowserService {
 	@Autowired
 	LltRepository lltRepository;
 
-	public MedraBrowserDTO getDetailsBySearchText(String level,String searchText){
-		MedraBrowserDTO medraBrowserDTO=new MedraBrowserDTO();
-		
-		switch(level){
-		
+	public MedraBrowserDTO getDetailsBySearchText(String level, String searchText) {
+		MedraBrowserDTO medraBrowserDTO = new MedraBrowserDTO();
+
+		switch (level) {
+
 		case "ALL":
-			medraBrowserDTO.setSocs(socRepository.findBySocNameContainingIgnoreCase(searchText));
-			medraBrowserDTO.setHlgts(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText));
-			medraBrowserDTO.setHlts(hltRepository.findByHltNameContainingIgnoreCase(searchText));
-			medraBrowserDTO.setPts(ptRepository.findByPtNameContainingIgnoreCase(searchText));
-			medraBrowserDTO.setLlts(lltRepository.findByLltNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setSocs(getSocsList(socRepository.findBySocNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setHlgts(getHlgtsList(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setHlts(getHltList(hltRepository.findByHltNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setPts(getPtList(ptRepository.findByPtNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setLlts(getLltList(lltRepository.findByLltNameContainingIgnoreCase(searchText)));
 			break;
-			
+
 		case "SOC":
-			medraBrowserDTO.setSocs(socRepository.findBySocNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setSocs(getSocsList(socRepository.findBySocNameContainingIgnoreCase(searchText)));
 			break;
-		
+
 		case "HLGT":
-			medraBrowserDTO.setHlgts(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setHlgts(getHlgtsList(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText)));
 			break;
-			
+
 		case "HLT":
-			medraBrowserDTO.setHlts(hltRepository.findByHltNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setHlts(getHltList(hltRepository.findByHltNameContainingIgnoreCase(searchText)));
 			break;
-			
+
 		case "PT":
-			medraBrowserDTO.setPts(ptRepository.findByPtNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setPts(getPtList(ptRepository.findByPtNameContainingIgnoreCase(searchText)));
 			break;
-			
+
 		case "LLT":
-			medraBrowserDTO.setLlts(lltRepository.findByLltNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setLlts(getLltList(lltRepository.findByLltNameContainingIgnoreCase(searchText)));
 			break;
-			
+
 		default:
-			medraBrowserDTO.setSocs(socRepository.findBySocNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setSocs(getSocsList(socRepository.findBySocNameContainingIgnoreCase(searchText)));
 			break;
 		}
-		
+
 		return medraBrowserDTO;
 	}
-	
+
+	public List<String> getSocsList(List<Soc> socs) {
+
+		List<String> socNames = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(socs)) {
+			for (Soc soc : socs) {
+				String socName = soc.getSocName();
+				socNames.add(socName);
+			}
+		}
+		return socNames;
+	}
+
+	public List<String> getHlgtsList(List<Hlgt> hlgts) {
+
+		List<String> hlgtNames = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(hlgts)) {
+			for (Hlgt hlgt : hlgts) {
+				String hlgtName = hlgt.getHlgtName();
+				hlgtNames.add(hlgtName);
+			}
+		}
+		return hlgtNames;
+	}
+
+	public List<String> getHltList(List<Hlt> hlts) {
+
+		List<String> hltNames = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(hlts)) {
+			for (Hlt hlt : hlts) {
+				String hltName = hlt.getHltName() ;
+				hltNames.add(hltName);
+			}
+		}
+		return hltNames;
+	}
+
+	public List<String> getPtList(List<Pt> pts) {
+
+		List<String> ptNames = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(pts)) {
+			for (Pt pt : pts) {
+				String ptName = pt.getPtName();
+				ptNames.add(ptName);
+			}
+		}
+		return ptNames;
+	}
+	public List<String> getLltList(List<Llt> llts) {
+
+		List<String> lltNames = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(llts)) {
+			for (Llt llt : llts) {
+				String lltName = llt.getLltName();
+				lltNames.add(lltName);
+			}
+		}
+		return lltNames;
+	}
+
 }

@@ -32,7 +32,7 @@ public interface SocRepository  extends JpaRepository<Soc, Long> {
 	Long deleteByDetectionId(Long detectionId);
 	
 	//@Query(value="SELECT distinct o.socName FROM Soc o WHERE o.socName LIKE :socName||'%'")
-	List<String> findBySocNameContainingIgnoreCase(String socName);
+	List<Soc> findBySocNameContainingIgnoreCase(String socName);
 	
 
 	List<Soc> findBySocName(String socName);
