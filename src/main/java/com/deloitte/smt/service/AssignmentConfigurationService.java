@@ -46,7 +46,7 @@ public class AssignmentConfigurationService {
     @Autowired
     RiskPlanAssignmentAssigneesRepository riskPlanAssignmentAssigneesRepository;
     
-    
+     
 
     public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
         assignmentConfiguration.setCreatedDate(new Date());
