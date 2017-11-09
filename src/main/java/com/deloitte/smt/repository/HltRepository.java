@@ -1,20 +1,20 @@
 package com.deloitte.smt.repository;
 
-import com.deloitte.smt.entity.Hlt;
+import java.util.List;
+import java.util.Set;
+
+import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import javax.transaction.Transactional;
-
-import java.util.List;
-import java.util.Set;
+import com.deloitte.smt.entity.Hlt;
 
 public interface HltRepository  extends JpaRepository<Hlt, Long> {
 	
 	@Query(value="SELECT DISTINCT(o.hltName) FROM Hlt o ")
-	List<String> findDistinctHltNames();
+	Set<String> findDistinctHltNames();
 
     List<Hlt> findAllByHltNameIn(List<String> hlts);
     List<Hlt> findByDetectionId(Long topicId);
@@ -31,6 +31,6 @@ public interface HltRepository  extends JpaRepository<Hlt, Long> {
 	List<Hlt> findBySocId(Long socId);
     @Transactional
     Long deleteByDetectionId(Long detectionId);
-    //@Query(value="SELECT distinct o.hltName FROM Hlt o WHERE o.hltName LIKE :searchText||'%'")
-    List<Hlt> findByHltNameContainingIgnoreCase(String searchText);
+    @Query(value="SELECT distinct o.hltName FROM Hlt o WHERE o.hltName LIKE concat('%',(:hltName),'%')")
+    Set<String> findByHltNameContainingIgnoreCase(@Param(value = "hltName") String searchText);
 }

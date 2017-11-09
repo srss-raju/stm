@@ -47,11 +47,11 @@ public class MedraBrowserService {
 
 		case "ALL":
 			if(!searchText.isEmpty()){
-			medraBrowserDTO.setSocs(getSocsList(socRepository.findBySocNameContainingIgnoreCase(searchText)));
-			medraBrowserDTO.setHlgts(getHlgtsList(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText)));
-			medraBrowserDTO.setHlts(getHltList(hltRepository.findByHltNameContainingIgnoreCase(searchText)));
-			medraBrowserDTO.setPts(getPtList(ptRepository.findByPtNameContainingIgnoreCase(searchText)));
-			medraBrowserDTO.setLlts(getLltList(lltRepository.findByLltNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setSocs(socRepository.findBySocNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setHlgts(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setHlts(hltRepository.findByHltNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setPts(ptRepository.findByPtNameContainingIgnoreCase(searchText));
+			medraBrowserDTO.setLlts(lltRepository.findByLltNameContainingIgnoreCase(searchText));
 			}
 			else{
 				getAllData(medraBrowserDTO);
@@ -60,7 +60,7 @@ public class MedraBrowserService {
 
 		case "SOC":
 			if(!searchText.isEmpty()){
-			medraBrowserDTO.setSocs(getSocsList(socRepository.findBySocNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setSocs(socRepository.findBySocNameContainingIgnoreCase(searchText));
 			}
 			else{
 				medraBrowserDTO.setSocs(socRepository.findDistinctSocNames());
@@ -69,7 +69,7 @@ public class MedraBrowserService {
 
 		case "HLGT":
 			if(!searchText.isEmpty()){
-			medraBrowserDTO.setHlgts(getHlgtsList(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setHlgts(hlgtRepository.findByHlgtNameContainingIgnoreCase(searchText));
 			}
 			else{
 				medraBrowserDTO.setHlgts(hlgtRepository.findDistinctHlgtNames());
@@ -78,7 +78,7 @@ public class MedraBrowserService {
 
 		case "HLT":
 			if(!searchText.isEmpty()){
-			medraBrowserDTO.setHlts(getHltList(hltRepository.findByHltNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setHlts(hltRepository.findByHltNameContainingIgnoreCase(searchText));
 			}
 			else{
 				medraBrowserDTO.setHlts(hltRepository.findDistinctHltNames());
@@ -87,7 +87,7 @@ public class MedraBrowserService {
 
 		case "PT":
 			if(!searchText.isEmpty()){
-			medraBrowserDTO.setPts(getPtList(ptRepository.findByPtNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setPts(ptRepository.findByPtNameContainingIgnoreCase(searchText));
 			}
 			else{
 				medraBrowserDTO.setPts(ptRepository.findDistinctPtNames());
@@ -96,7 +96,7 @@ public class MedraBrowserService {
 
 		case "LLT":
 			if(!searchText.isEmpty()){
-			medraBrowserDTO.setLlts(getLltList(lltRepository.findByLltNameContainingIgnoreCase(searchText)));
+			medraBrowserDTO.setLlts(lltRepository.findByLltNameContainingIgnoreCase(searchText));
 			}
 			else{
 				medraBrowserDTO.setLlts(lltRepository.findDistinctLltNames());

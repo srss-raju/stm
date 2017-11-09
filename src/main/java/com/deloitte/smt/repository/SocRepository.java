@@ -1,20 +1,20 @@
 package com.deloitte.smt.repository;
 
-import com.deloitte.smt.entity.Soc;
+import java.util.List;
+import java.util.Set;
+
+import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import javax.transaction.Transactional;
-
-import java.util.List;
-import java.util.Set;
+import com.deloitte.smt.entity.Soc;
 
 public interface SocRepository  extends JpaRepository<Soc, Long> {
 	
 	@Query(value="SELECT DISTINCT(o.socName) FROM Soc o ")
-	List<String> findDistinctSocNames();
+	Set<String> findDistinctSocNames();
 
 	List<Soc> findAllBySocNameIn(List<String> socs);
 
@@ -34,8 +34,8 @@ public interface SocRepository  extends JpaRepository<Soc, Long> {
 	@Transactional
 	Long deleteByDetectionId(Long detectionId);
 	
-	//@Query(value="SELECT distinct o.socName FROM Soc o WHERE o.socName LIKE :socName||'%'")
-	List<Soc> findBySocNameContainingIgnoreCase(String socName);
+	@Query(value="SELECT distinct o.socName FROM Soc o WHERE o.socName LIKE concat('%',(:socName),'%')")
+	Set<String> findBySocNameContainingIgnoreCase(@Param(value = "socName") String searchText);
 	
 
 	List<Soc> findBySocName(String socName);

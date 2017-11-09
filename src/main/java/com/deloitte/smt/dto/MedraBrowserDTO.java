@@ -1,12 +1,6 @@
 package com.deloitte.smt.dto;
 
-import java.util.List;
-
-import com.deloitte.smt.entity.Hlgt;
-import com.deloitte.smt.entity.Hlt;
-import com.deloitte.smt.entity.Llt;
-import com.deloitte.smt.entity.Pt;
-import com.deloitte.smt.entity.Soc;
+import java.util.Set;
 
 /**
  * 
@@ -16,41 +10,42 @@ import com.deloitte.smt.entity.Soc;
 public class MedraBrowserDTO {
 	
 	
-	List<String> socs;
-	List<String> hlgts;
-	List<String> hlts;
-	List<String> pts;
-	List<String> llts;
-	public List<String> getSocs() {
+	private Set<String> socs;
+	private Set<String> hlgts;
+	private Set<String> hlts;
+	private Set<String> pts;
+	private Set<String> llts;
+	public Set<String> getSocs() {
 		return socs;
 	}
-	public void setSocs(List<String> socs) {
+	public void setSocs(Set<String> socs) {
 		this.socs = socs;
 	}
-	public List<String> getHlgts() {
+	public Set<String> getHlgts() {
 		return hlgts;
 	}
-	public void setHlgts(List<String> hlgts) {
+	public void setHlgts(Set<String> hlgts) {
 		this.hlgts = hlgts;
 	}
-	public List<String> getHlts() {
+	public Set<String> getHlts() {
 		return hlts;
 	}
-	public void setHlts(List<String> hlts) {
+	public void setHlts(Set<String> hlts) {
 		this.hlts = hlts;
 	}
-	public List<String> getPts() {
+	public Set<String> getPts() {
 		return pts;
 	}
-	public void setPts(List<String> pts) {
+	public void setPts(Set<String> pts) {
 		this.pts = pts;
 	}
-	public List<String> getLlts() {
+	public Set<String> getLlts() {
 		return llts;
 	}
-	public void setLlts(List<String> llts) {
+	public void setLlts(Set<String> llts) {
 		this.llts = llts;
 	}
+	
 	
 	
 	
