@@ -1,15 +1,20 @@
 package com.deloitte.smt.repository;
 
-import com.deloitte.smt.entity.Pt;
+import java.util.List;
+import java.util.Set;
+
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Set;
+import com.deloitte.smt.entity.Pt;
 
 public interface PtRepository  extends JpaRepository<Pt, Long> {
+	
+	@Query(value="SELECT DISTINCT(o.ptName) FROM Pt o ")
+	Set<String> findDistinctPtNames();
 
     List<Pt> findAllByPtNameIn(List<String> pts);
     List<Pt> findByDetectionId(Long topicId);
@@ -28,4 +33,7 @@ public interface PtRepository  extends JpaRepository<Pt, Long> {
     Long deleteByDetectionId(Long detectionId);
     
     List<Pt> findBySmqId(Long smqId);
+    
+    @Query(value="SELECT distinct o.ptName FROM Pt o WHERE o.ptName LIKE concat('%',(:ptName),'%')")
+    Set<String> findByPtNameContainingIgnoreCase(@Param(value = "ptName") String searchText);
 }
