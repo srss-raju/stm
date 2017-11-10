@@ -14,7 +14,7 @@ import com.deloitte.smt.entity.Hlt;
 public interface HltRepository  extends JpaRepository<Hlt, Long> {
 	
 	@Query(value="SELECT DISTINCT(o.hltName) FROM Hlt o ")
-	Set<String> findDistinctHltNames();
+	List<String> findDistinctHltNames();
 
     List<Hlt> findAllByHltNameIn(List<String> hlts);
     List<Hlt> findByDetectionId(Long topicId);

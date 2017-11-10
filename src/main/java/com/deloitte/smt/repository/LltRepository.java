@@ -15,5 +15,5 @@ public interface LltRepository extends JpaRepository<Llt, Long> {
     Set<String> findByLltNameContainingIgnoreCase(@Param(value = "lltName") String searchText);
     
     @Query(value="SELECT DISTINCT(o.lltName) FROM Llt o ")
-	Set<String> findDistinctLltNames();
+	List<String> findDistinctLltNames();
 }

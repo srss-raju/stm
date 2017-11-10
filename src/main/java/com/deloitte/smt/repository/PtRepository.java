@@ -14,7 +14,7 @@ import com.deloitte.smt.entity.Pt;
 public interface PtRepository  extends JpaRepository<Pt, Long> {
 	
 	@Query(value="SELECT DISTINCT(o.ptName) FROM Pt o ")
-	Set<String> findDistinctPtNames();
+	List<String> findDistinctPtNames();
 
     List<Pt> findAllByPtNameIn(List<String> pts);
     List<Pt> findByDetectionId(Long topicId);

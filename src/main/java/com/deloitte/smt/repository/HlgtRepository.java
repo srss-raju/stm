@@ -14,7 +14,7 @@ import com.deloitte.smt.entity.Hlgt;
 public interface HlgtRepository  extends JpaRepository<Hlgt, Long> {
 	
 	@Query(value="SELECT DISTINCT(o.hlgtName) FROM Hlgt o ")
-	Set<String> findDistinctHlgtNames();
+	List<String> findDistinctHlgtNames();
 
     List<Hlgt> findAllByHlgtNameIn(List<String> hlgts);
 
@@ -32,6 +32,6 @@ public interface HlgtRepository  extends JpaRepository<Hlgt, Long> {
     @Transactional
     Long deleteByDetectionId(Long detectionId);
     
-    @Query(value="SELECT distinct o.hlgtName FROM Hlgt o WHERE o.hlgtName LIKE concat('%',(:hlgtName),'%') ")
+    @Query(value="SELECT distinct UPPER(o.hlgtName) FROM Hlgt o WHERE o.hlgtName LIKE concat('%',LOWER(:hlgtName),'%') ")
     Set<String> findByHlgtNameContainingIgnoreCase(@Param(value = "hlgtName") String searchText);
 }

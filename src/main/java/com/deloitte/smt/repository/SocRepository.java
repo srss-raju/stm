@@ -14,7 +14,7 @@ import com.deloitte.smt.entity.Soc;
 public interface SocRepository  extends JpaRepository<Soc, Long> {
 	
 	@Query(value="SELECT DISTINCT(o.socName) FROM Soc o ")
-	Set<String> findDistinctSocNames();
+	List<String> findDistinctSocNames();
 
 	List<Soc> findAllBySocNameIn(List<String> socs);
 
@@ -34,7 +34,7 @@ public interface SocRepository  extends JpaRepository<Soc, Long> {
 	@Transactional
 	Long deleteByDetectionId(Long detectionId);
 	
-	@Query(value="SELECT distinct o.socName FROM Soc o WHERE o.socName LIKE concat('%',(:socName),'%')")
+	@Query(value="SELECT distinct UPPER(o.socName) FROM Soc o WHERE o.socName LIKE concat('%',LOWER(:socName),'%')")
 	Set<String> findBySocNameContainingIgnoreCase(@Param(value = "socName") String searchText);
 	
 
