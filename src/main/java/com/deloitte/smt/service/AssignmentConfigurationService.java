@@ -51,10 +51,6 @@ public class AssignmentConfigurationService {
     public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
         assignmentConfiguration.setCreatedDate(new Date());
         assignmentConfiguration.setLastModifiedDate(new Date());
-        /*AssignmentConfiguration assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIngredientAndSignalSource(assignmentConfiguration.getIngredient(), assignmentConfiguration.getSignalSource());
-        if(assignmentConfigurationFromDB != null){
-        	throw new ApplicationException("Configuration already exists");
-        }*/
         AssignmentConfiguration assignmentConfigurationUpdated = assignmentConfigurationRepository.save(assignmentConfiguration);
         socAssignmentConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
         productAssignmentConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
@@ -181,5 +177,23 @@ public class AssignmentConfigurationService {
 			throw new ApplicationException("Risk Plan Assignment Configuration not found with the given Id : "+assigneeId);
 		}
 		riskPlanAssignmentAssigneesRepository.delete(assignee);
+	}
+
+	public void deleteSocAssignmentConfiguration(Long socAssignmentConfigurationId) throws ApplicationException {
+		SocAssignmentConfiguration socAssignmentConfiguration = socAssignmentConfigurationRepository.findOne(socAssignmentConfigurationId);
+		if (socAssignmentConfiguration == null) {
+			throw new ApplicationException("Soc Assignment Configuration not found with the given Id : "+socAssignmentConfigurationId);
+		}
+		socAssignmentConfigurationRepository.delete(socAssignmentConfiguration);
+		
+	}
+
+	public void deleteProductAssignmentConfiguration(Long productAssignmentConfigurationId) throws ApplicationException {
+		ProductAssignmentConfiguration productAssignmentConfiguration = productAssignmentConfigurationRepository.findOne(productAssignmentConfigurationId);
+		if (productAssignmentConfiguration == null) {
+			throw new ApplicationException("Product Assignment Configuration not found with the given Id : "+productAssignmentConfigurationId);
+		}
+		productAssignmentConfigurationRepository.delete(productAssignmentConfigurationId);
+		
 	}
 }
