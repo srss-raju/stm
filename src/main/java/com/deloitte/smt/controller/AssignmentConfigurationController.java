@@ -71,4 +71,16 @@ public class AssignmentConfigurationController {
         assignmentConfigurationService.deleteRiskPlanAssignmentAssignee(assigneeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    
+    @DeleteMapping(value = "/soc/{socAssignmentConfigurationId}")
+    public ResponseEntity<Void> deleteSocAssignmentConfiguration(@PathVariable Long socAssignmentConfigurationId) throws ApplicationException {
+        assignmentConfigurationService.deleteSocAssignmentConfiguration(socAssignmentConfigurationId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @DeleteMapping(value = "/product/{productAssignmentConfigurationId}")
+    public ResponseEntity<Void> deleteProductAssignmentConfiguration(@PathVariable Long productAssignmentConfigurationId) throws ApplicationException {
+        assignmentConfigurationService.deleteProductAssignmentConfiguration(productAssignmentConfigurationId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

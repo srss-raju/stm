@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
- * Created by myelleswarapu on 04-05-2017.
+ * Created by rkb on 04-05-2017.
  */
 @Entity
 @Table(name = "sm_assignment_configuration")
@@ -40,6 +40,12 @@ public class AssignmentConfiguration implements Serializable {
 	private List<AssessmentAssignmentAssignees> assessmentAssignmentAssignees;
     @Transient
 	private List<RiskPlanAssignmentAssignees> riskPlanAssignmentAssignees;
+    
+    @Transient
+	private List<SocAssignmentConfiguration> socsAssignmentConfiguration;
+    @Transient
+	private List<ProductAssignmentConfiguration> productsAssignmentConfiguration;
+    
     
     public Long getId() {
         return id;
@@ -147,6 +153,24 @@ public class AssignmentConfiguration implements Serializable {
 	public void setRiskPlanAssignmentAssignees(
 			List<RiskPlanAssignmentAssignees> riskPlanAssignmentAssignees) {
 		this.riskPlanAssignmentAssignees = riskPlanAssignmentAssignees;
+	}
+
+	public List<SocAssignmentConfiguration> getSocsAssignmentConfiguration() {
+		return socsAssignmentConfiguration;
+	}
+
+	public void setSocsAssignmentConfiguration(
+			List<SocAssignmentConfiguration> socsAssignmentConfiguration) {
+		this.socsAssignmentConfiguration = socsAssignmentConfiguration;
+	}
+
+	public List<ProductAssignmentConfiguration> getProductsAssignmentConfiguration() {
+		return productsAssignmentConfiguration;
+	}
+
+	public void setProductsAssignmentConfiguration(
+			List<ProductAssignmentConfiguration> productsAssignmentConfiguration) {
+		this.productsAssignmentConfiguration = productsAssignmentConfiguration;
 	}
 
 }
