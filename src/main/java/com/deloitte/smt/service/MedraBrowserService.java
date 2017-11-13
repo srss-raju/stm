@@ -199,7 +199,6 @@ public class MedraBrowserService {
 		@SuppressWarnings("unchecked")
 		List<String> llts=query.getResultList();
 		
-		
 		return llts;
 		
 	}
