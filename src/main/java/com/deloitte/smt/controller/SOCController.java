@@ -2,7 +2,6 @@ package com.deloitte.smt.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +15,6 @@ import com.deloitte.smt.service.SocService;
 @RestController
 @RequestMapping(value = "/camunda/api/signal")
 public class SOCController {
-	
-	private static final Logger LOG = Logger.getLogger(SOCController.class);
 	
 	@Autowired
 	SocService socSevice;

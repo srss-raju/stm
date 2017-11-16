@@ -19,6 +19,7 @@ public class DashboardCountService {
 	private String userKeyQuery = " OR A.USER_KEY IN (";
 	private String userGroupKeyQuery = " OR A.USER_GROUP_KEY IN (";
 
+	@SuppressWarnings("unchecked")
 	public Long getValidateAndPrioritizeCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
 		Long count = 0l;
 		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT S.* FROM SM_TOPIC S LEFT JOIN SM_TOPIC_SIGNAL_VALIDATION_ASSIGNEES A ON A.TOPIC_ID = S.ID WHERE ");
@@ -62,6 +63,7 @@ public class DashboardCountService {
 		return count;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Long getAssessmentCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
 		Long count = 0l;
 		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT S.* FROM SM_ASSESSMENT_PLAN S LEFT JOIN SM_TOPIC_ASSESSMENT_ASSIGNMENT_ASSIGNEES A ON A.ASSESSMENT_ID = S.ID WHERE ");
@@ -104,6 +106,7 @@ public class DashboardCountService {
 		return count;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Long getRiskCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
 		Long count = 0l;
 		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT S.* FROM SM_RISK_PLAN S LEFT JOIN SM_TOPIC_RISKPLAN_ASSIGNMENT_ASSIGNEES A ON A.RISK_ID = S.ID WHERE ");
