@@ -2,38 +2,36 @@ package com.deloitte.smt.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * Created by rkb on 09-11-2017.
  */
 @Entity
-@Table(name = "sm_product_assignment_configuration")
-public class ProductAssignmentConfiguration implements Serializable {
+@Table(name = "sm_soc_assignment_product")
+public class AssignmentProduct implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 274553099392305910L;
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Date createdDate;
     private String createdBy;
     private Date lastModifiedDate;
-    private String lastModifiedBy;
-    private String productName;
-    private String productKey;
+    private String category;
+    private String categoryCode;
+    private String categoryDesc;
     private Long assignmentConfigurationId;
-    @Transient
-    private List<AssignmentProduct> productValues;
+    private Long productAssignmentConfigurationId;
     
 	public Long getId() {
 		return id;
@@ -59,23 +57,23 @@ public class ProductAssignmentConfiguration implements Serializable {
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
+	public String getCategory() {
+		return category;
 	}
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
+	public void setCategory(String category) {
+		this.category = category;
 	}
-	public String getProductName() {
-		return productName;
+	public String getCategoryCode() {
+		return categoryCode;
 	}
-	public void setProductName(String productName) {
-		this.productName = productName;
+	public void setCategoryCode(String categoryCode) {
+		this.categoryCode = categoryCode;
 	}
-	public String getProductKey() {
-		return productKey;
+	public String getCategoryDesc() {
+		return categoryDesc;
 	}
-	public void setProductKey(String productKey) {
-		this.productKey = productKey;
+	public void setCategoryDesc(String categoryDesc) {
+		this.categoryDesc = categoryDesc;
 	}
 	public Long getAssignmentConfigurationId() {
 		return assignmentConfigurationId;
@@ -83,10 +81,12 @@ public class ProductAssignmentConfiguration implements Serializable {
 	public void setAssignmentConfigurationId(Long assignmentConfigurationId) {
 		this.assignmentConfigurationId = assignmentConfigurationId;
 	}
-	public List<AssignmentProduct> getProductValues() {
-		return productValues;
+	public Long getProductAssignmentConfigurationId() {
+		return productAssignmentConfigurationId;
 	}
-	public void setProductValues(List<AssignmentProduct> productValues) {
-		this.productValues = productValues;
+	public void setProductAssignmentConfigurationId(
+			Long productAssignmentConfigurationId) {
+		this.productAssignmentConfigurationId = productAssignmentConfigurationId;
 	}
+    
 }
