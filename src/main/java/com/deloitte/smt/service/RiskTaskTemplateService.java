@@ -11,7 +11,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.RiskTaskTemplate;
-import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateIngrediant;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;

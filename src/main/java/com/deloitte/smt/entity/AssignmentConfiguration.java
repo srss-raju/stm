@@ -28,21 +28,23 @@ public class AssignmentConfiguration implements Serializable {
     private Date createdDate;
     private String createdBy;
     private Date lastModifiedDate;
+    private String name;
+    private boolean isDefault;
     private String ingredient;
     private String signalSource;
     private String severity;
-    private String signalValidationAssignmentOwner;
-    private String assessmentAssignmentOwner;
-    private String riskPlanAssignmentOwner;
+    private String signalOwner;
+    private String assessmentOwner;
+    private String riskOwner;
     @Transient
-	private List<SignalValidationAssignmentAssignees> signalValidationAssignmentAssignees;
+	private List<SignalValidationAssignmentAssignees> signalAssignees;
     @Transient
-	private List<AssessmentAssignmentAssignees> assessmentAssignmentAssignees;
+	private List<AssessmentAssignmentAssignees> assessmentAssignees;
     @Transient
-	private List<RiskPlanAssignmentAssignees> riskPlanAssignmentAssignees;
+	private List<RiskPlanAssignmentAssignees> riskAssignees;
     
     @Transient
-	private List<SocAssignmentConfiguration> socsAssignmentConfiguration;
+	private List<SocAssignmentConfiguration> conditions;
     @Transient
 	private List<ProductAssignmentConfiguration> productsAssignmentConfiguration;
     
@@ -103,67 +105,6 @@ public class AssignmentConfiguration implements Serializable {
 		this.severity = severity;
 	}
 
-	public String getSignalValidationAssignmentOwner() {
-		return signalValidationAssignmentOwner;
-	}
-
-	public void setSignalValidationAssignmentOwner(
-			String signalValidationAssignmentOwner) {
-		this.signalValidationAssignmentOwner = signalValidationAssignmentOwner;
-	}
-
-	public String getAssessmentAssignmentOwner() {
-		return assessmentAssignmentOwner;
-	}
-
-	public void setAssessmentAssignmentOwner(String assessmentAssignmentOwner) {
-		this.assessmentAssignmentOwner = assessmentAssignmentOwner;
-	}
-
-	public String getRiskPlanAssignmentOwner() {
-		return riskPlanAssignmentOwner;
-	}
-
-	public void setRiskPlanAssignmentOwner(String riskPlanAssignmentOwner) {
-		this.riskPlanAssignmentOwner = riskPlanAssignmentOwner;
-	}
-
-	public List<SignalValidationAssignmentAssignees> getSignalValidationAssignmentAssignees() {
-		return signalValidationAssignmentAssignees;
-	}
-
-	public void setSignalValidationAssignmentAssignees(
-			List<SignalValidationAssignmentAssignees> signalValidationAssignmentAssignees) {
-		this.signalValidationAssignmentAssignees = signalValidationAssignmentAssignees;
-	}
-
-	public List<AssessmentAssignmentAssignees> getAssessmentAssignmentAssignees() {
-		return assessmentAssignmentAssignees;
-	}
-
-	public void setAssessmentAssignmentAssignees(
-			List<AssessmentAssignmentAssignees> assessmentAssignmentAssignees) {
-		this.assessmentAssignmentAssignees = assessmentAssignmentAssignees;
-	}
-
-	public List<RiskPlanAssignmentAssignees> getRiskPlanAssignmentAssignees() {
-		return riskPlanAssignmentAssignees;
-	}
-
-	public void setRiskPlanAssignmentAssignees(
-			List<RiskPlanAssignmentAssignees> riskPlanAssignmentAssignees) {
-		this.riskPlanAssignmentAssignees = riskPlanAssignmentAssignees;
-	}
-
-	public List<SocAssignmentConfiguration> getSocsAssignmentConfiguration() {
-		return socsAssignmentConfiguration;
-	}
-
-	public void setSocsAssignmentConfiguration(
-			List<SocAssignmentConfiguration> socsAssignmentConfiguration) {
-		this.socsAssignmentConfiguration = socsAssignmentConfiguration;
-	}
-
 	public List<ProductAssignmentConfiguration> getProductsAssignmentConfiguration() {
 		return productsAssignmentConfiguration;
 	}
@@ -171,6 +112,80 @@ public class AssignmentConfiguration implements Serializable {
 	public void setProductsAssignmentConfiguration(
 			List<ProductAssignmentConfiguration> productsAssignmentConfiguration) {
 		this.productsAssignmentConfiguration = productsAssignmentConfiguration;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isDefault() {
+		return isDefault;
+	}
+
+	public void setDefault(boolean isDefault) {
+		this.isDefault = isDefault;
+	}
+
+	public List<SocAssignmentConfiguration> getConditions() {
+		return conditions;
+	}
+
+	public void setConditions(List<SocAssignmentConfiguration> conditions) {
+		this.conditions = conditions;
+	}
+
+	public String getSignalOwner() {
+		return signalOwner;
+	}
+
+	public void setSignalOwner(String signalOwner) {
+		this.signalOwner = signalOwner;
+	}
+
+	public String getAssessmentOwner() {
+		return assessmentOwner;
+	}
+
+	public void setAssessmentOwner(String assessmentOwner) {
+		this.assessmentOwner = assessmentOwner;
+	}
+
+	public String getRiskOwner() {
+		return riskOwner;
+	}
+
+	public void setRiskOwner(String riskOwner) {
+		this.riskOwner = riskOwner;
+	}
+
+	public List<SignalValidationAssignmentAssignees> getSignalAssignees() {
+		return signalAssignees;
+	}
+
+	public void setSignalAssignees(
+			List<SignalValidationAssignmentAssignees> signalAssignees) {
+		this.signalAssignees = signalAssignees;
+	}
+
+	public List<AssessmentAssignmentAssignees> getAssessmentAssignees() {
+		return assessmentAssignees;
+	}
+
+	public void setAssessmentAssignees(
+			List<AssessmentAssignmentAssignees> assessmentAssignees) {
+		this.assessmentAssignees = assessmentAssignees;
+	}
+
+	public List<RiskPlanAssignmentAssignees> getRiskAssignees() {
+		return riskAssignees;
+	}
+
+	public void setRiskAssignees(List<RiskPlanAssignmentAssignees> riskAssignees) {
+		this.riskAssignees = riskAssignees;
 	}
 
 }

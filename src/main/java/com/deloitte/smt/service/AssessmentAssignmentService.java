@@ -31,7 +31,7 @@ public class AssessmentAssignmentService {
     
 
 	public AssessmentPlan saveAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, AssessmentPlan assessmentPlan) {
-        assignmentConfiguration.setAssessmentAssignmentAssignees(assessmentAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
+        assignmentConfiguration.setAssessmentAssignees(assessmentAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
 		return setAssessmentAssignmentConfigurationAssignees(assignmentConfiguration, assessmentPlan);
 	}
     
@@ -41,9 +41,9 @@ public class AssessmentAssignmentService {
 	 */
 	private AssessmentPlan setAssessmentAssignmentConfigurationAssignees(AssignmentConfiguration assignmentConfiguration, AssessmentPlan assessmentPlan) {
         
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getAssessmentAssignmentAssignees())){
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getAssessmentAssignees())){
 			List<TopicAssessmentAssignmentAssignees> list = new ArrayList<>();
-			for(AssessmentAssignmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignmentAssignees()){
+			for(AssessmentAssignmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignees()){
 				saveAssessmentAssignmentAssignees(aaAssignees,assessmentPlan, list);
         	}
 			assessmentPlan.setTopicAssessmentAssignmentAssignees(topicAssessmentAssignmentAssigneesRepository.save(list));

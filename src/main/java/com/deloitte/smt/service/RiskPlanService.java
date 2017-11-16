@@ -28,7 +28,6 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
@@ -172,8 +171,8 @@ public class RiskPlanService {
 		}
 
 		if (assignmentConfiguration != null) {
-			if(assignmentConfiguration.getRiskPlanAssignmentOwner()!=null){
-				riskPlan.setOwner(assignmentConfiguration.getRiskPlanAssignmentOwner());
+			if(assignmentConfiguration.getRiskOwner()!=null){
+				riskPlan.setOwner(assignmentConfiguration.getRiskOwner());
 			}
 			riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
 		}

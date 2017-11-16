@@ -1,6 +1,7 @@
 package com.deloitte.smt.repository;
 
 import com.deloitte.smt.entity.AssignmentConfiguration;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,5 @@ public interface AssignmentConfigurationRepository extends JpaRepository<Assignm
     AssignmentConfiguration findByIngredientAndSignalSource(String ingredient, String signalSource);
     AssignmentConfiguration findByIngredient(String ingredient);
     AssignmentConfiguration findByIngredientAndSignalSourceIsNull(String ingredient);
+	AssignmentConfiguration findByName(String name);
 }

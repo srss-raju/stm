@@ -2,21 +2,19 @@ package com.deloitte.smt.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * Created by rkb on 09-11-2017.
  */
 @Entity
-@Table(name = "sm_soc_assignment_configuration")
-public class SocAssignmentConfiguration implements Serializable {
+@Table(name = "sm_soc_assignment_condition")
+public class AssignmentCondition implements Serializable {
 
 	/**
 	 * 
@@ -29,11 +27,11 @@ public class SocAssignmentConfiguration implements Serializable {
     private Date createdDate;
     private String createdBy;
     private Date lastModifiedDate;
-    private String lastModifiedBy;
-    private String conditionKey;
+    private String category;
+    private String categoryCode;
+    private String categoryDesc;
     private Long assignmentConfigurationId;
-    @Transient
-    private List<AssignmentCondition> conditionValues;
+    private Long socAssignmentConfigurationId;
     
 	public Long getId() {
 		return id;
@@ -59,30 +57,35 @@ public class SocAssignmentConfiguration implements Serializable {
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
+	public String getCategory() {
+		return category;
 	}
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
+	public void setCategory(String category) {
+		this.category = category;
 	}
-	
+	public String getCategoryCode() {
+		return categoryCode;
+	}
+	public void setCategoryCode(String categoryCode) {
+		this.categoryCode = categoryCode;
+	}
+	public String getCategoryDesc() {
+		return categoryDesc;
+	}
+	public void setCategoryDesc(String categoryDesc) {
+		this.categoryDesc = categoryDesc;
+	}
 	public Long getAssignmentConfigurationId() {
 		return assignmentConfigurationId;
 	}
 	public void setAssignmentConfigurationId(Long assignmentConfigurationId) {
 		this.assignmentConfigurationId = assignmentConfigurationId;
 	}
-	public String getConditionKey() {
-		return conditionKey;
+	public Long getSocAssignmentConfigurationId() {
+		return socAssignmentConfigurationId;
 	}
-	public void setConditionKey(String conditionKey) {
-		this.conditionKey = conditionKey;
-	}
-	public List<AssignmentCondition> getConditionValues() {
-		return conditionValues;
-	}
-	public void setConditionValues(List<AssignmentCondition> conditionValues) {
-		this.conditionValues = conditionValues;
+	public void setSocAssignmentConfigurationId(Long socAssignmentConfigurationId) {
+		this.socAssignmentConfigurationId = socAssignmentConfigurationId;
 	}
     
 }

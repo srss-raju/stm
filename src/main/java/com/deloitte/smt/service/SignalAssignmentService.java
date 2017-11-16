@@ -46,7 +46,7 @@ public class SignalAssignmentService {
     TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 
 	public Topic saveSignalAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, Topic topicUpdated) {
-		assignmentConfiguration.setSignalValidationAssignmentAssignees(signalValidationAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
+		assignmentConfiguration.setSignalAssignees(signalValidationAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
 		return setTopicAssignmentConfigurationAssignees(assignmentConfiguration, topicUpdated);
 	}
     
@@ -55,9 +55,9 @@ public class SignalAssignmentService {
 	 * @param assignmentConfigurationUpdated
 	 */
 	private Topic setTopicAssignmentConfigurationAssignees(AssignmentConfiguration assignmentConfiguration, Topic topic) {
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getSignalValidationAssignmentAssignees())){
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getSignalAssignees())){
         	List<TopicSignalValidationAssignmentAssignees> list = new ArrayList<>();
-			for(SignalValidationAssignmentAssignees svaAssignees : assignmentConfiguration.getSignalValidationAssignmentAssignees()){
+			for(SignalValidationAssignmentAssignees svaAssignees : assignmentConfiguration.getSignalAssignees()){
         		saveTopicSignalValidationAssignmentAssignees(svaAssignees,topic,list);
         	}
 			topic.setTopicSignalValidationAssignmentAssignees(topicSignalValidationAssignmentAssigneesRepository.save(list));

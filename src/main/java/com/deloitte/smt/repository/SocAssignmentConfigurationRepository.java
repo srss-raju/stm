@@ -19,5 +19,7 @@ public interface SocAssignmentConfigurationRepository  extends JpaRepository< So
 	
 	@Transactional
 	Long deleteByAssignmentConfigurationId(Long assignmentConfigurationId);
+
+	SocAssignmentConfiguration findByConditionKey(String conditionKey);
 	
 }

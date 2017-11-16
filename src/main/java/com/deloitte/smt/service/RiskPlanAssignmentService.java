@@ -30,7 +30,7 @@ public class RiskPlanAssignmentService {
     TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 
 	public RiskPlan saveAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, RiskPlan riskPlan) {
-        assignmentConfiguration.setRiskPlanAssignmentAssignees(riskPlanAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
+        assignmentConfiguration.setRiskAssignees(riskPlanAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
 		return setAssessmentAssignmentConfigurationAssignees(assignmentConfiguration, riskPlan);
 	}
     
@@ -39,9 +39,9 @@ public class RiskPlanAssignmentService {
 	 * @param assignmentConfigurationUpdated
 	 */
 	private RiskPlan setAssessmentAssignmentConfigurationAssignees(AssignmentConfiguration assignmentConfiguration, RiskPlan riskPlan) {
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getRiskPlanAssignmentAssignees())){
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getRiskAssignees())){
 			List<TopicRiskPlanAssignmentAssignees> list = new ArrayList<>();
-			for(RiskPlanAssignmentAssignees rpaAssignees : assignmentConfiguration.getRiskPlanAssignmentAssignees()){
+			for(RiskPlanAssignmentAssignees rpaAssignees : assignmentConfiguration.getRiskAssignees()){
 				saveTopicRiskPlanAssignmentAssignees(rpaAssignees,riskPlan,list);
         	}
 			riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesRepository.save(list));
