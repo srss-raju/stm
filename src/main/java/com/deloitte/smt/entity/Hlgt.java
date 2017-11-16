@@ -1,21 +1,12 @@
 package com.deloitte.smt.entity;
 
 import java.io.Serializable;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "sm_hlgt")
@@ -30,24 +21,6 @@ public class Hlgt implements Serializable {
 	private Long topicId;
 	private Long socId;
 	private Long detectionId;
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "hlgtId")
-	private List<Hlt> hlts;
-
-	@Transient
-	@JsonIgnore
-	private Soc soc;
-	
-	@ManyToOne
-	@JoinColumn(name = "socId")
-	public Long getSocId() {
-		return socId;
-	}
-	public void setSocId(Long socId) {
-		this.socId = socId;
-	}
-
 	
 	public Long getId() {
 		return id;
@@ -67,23 +40,18 @@ public class Hlgt implements Serializable {
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
 	}
+	public Long getSocId() {
+		return socId;
+	}
+	public void setSocId(Long socId) {
+		this.socId = socId;
+	}
+
 	public Long getDetectionId() {
 		return detectionId;
 	}
 
 	public void setDetectionId(Long detectionId) {
 		this.detectionId = detectionId;
-	}
-	public List<Hlt> getHlts() {
-		return hlts;
-	}
-	public void setHlts(List<Hlt> hlts) {
-		this.hlts = hlts;
-	}
-	public Soc getSoc() {
-		return soc;
-	}
-	public void setSoc(Soc soc) {
-		this.soc = soc;
 	}
 }

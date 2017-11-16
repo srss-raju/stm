@@ -6,12 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "sm_pt")
@@ -25,23 +20,9 @@ public class Pt implements Serializable {
 	private String ptName;
 	private Long topicId;
 	private Long socId;
-	private Long hltId;
 	private Long detectionId;
 	private int ptId;
 	private Long smqId;
-	
-	@Transient
-	@JsonIgnore
-	private Soc soc;
-	
-	@ManyToOne
-	@JoinColumn(name = "socId")
-	public Long getSocId() {
-		return socId;
-	}
-	public void setSocId(Long socId) {
-		this.socId = socId;
-	}
 	
 	public Long getId() {
 		return id;
@@ -56,7 +37,12 @@ public class Pt implements Serializable {
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
 	}
-	
+	public Long getSocId() {
+		return socId;
+	}
+	public void setSocId(Long socId) {
+		this.socId = socId;
+	}
 	public String getPtName() {
 		return ptName;
 	}
@@ -83,13 +69,5 @@ public class Pt implements Serializable {
 	}
 	public void setSmqId(Long smqId) {
 		this.smqId = smqId;
-	}
-	@ManyToOne
-	@JoinColumn(name = "hltId")
-	public Long getHltId() {
-		return hltId;
-	}
-	public void setHltId(Long hltId) {
-		this.hltId = hltId;
 	}
 }

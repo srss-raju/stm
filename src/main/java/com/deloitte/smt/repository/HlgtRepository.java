@@ -31,7 +31,4 @@ public interface HlgtRepository  extends JpaRepository<Hlgt, Long> {
 	List<Hlgt> findBySocId(Long socId);
     @Transactional
     Long deleteByDetectionId(Long detectionId);
-    
-    @Query(value="SELECT distinct UPPER(o.hlgtName) FROM Hlgt o WHERE o.hlgtName LIKE concat('%',LOWER(:hlgtName),'%') ")
-    Set<String> findByHlgtNameContainingIgnoreCase(@Param(value = "hlgtName") String searchText);
 }

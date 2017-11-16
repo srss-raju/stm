@@ -1,6 +1,5 @@
 package com.deloitte.smt.dto;
 
-import java.util.List;
 
 /**
  * 
@@ -9,47 +8,63 @@ import java.util.List;
  */
 public class MedraBrowserDTO {
 	
+	private String versionNumber;
+	private String type;
+	private String scrollColumn;
+	private int scrollOffset;
+	private int scrollCount;
+	private String searchValue;
+	private String searchLevel;
+	private String selectLevel;
 	
-	private List<String> socs;
-	private List<String> hlgts;
-	private List<String> hlts;
-	private List<String> pts;
-	private List<String> llts;
-
-	public List<String> getSocs() {
-		return socs;
+	public String getVersionNumber() {
+		return versionNumber;
 	}
-	public void setSocs(List<String> socs) {
-		this.socs = socs;
+	public void setVersionNumber(String versionNumber) {
+		this.versionNumber = versionNumber;
 	}
-	public List<String> getHlgts() {
-		return hlgts;
+	public String getType() {
+		return type;
 	}
-	public void setHlgts(List<String> hlgts) {
-		this.hlgts = hlgts;
+	public void setType(String type) {
+		this.type = type;
 	}
-	public List<String> getHlts() {
-		return hlts;
+	public String getScrollColumn() {
+		return scrollColumn;
 	}
-	public void setHlts(List<String> hlts) {
-		this.hlts = hlts;
+	public void setScrollColumn(String scrollColumn) {
+		this.scrollColumn = scrollColumn;
 	}
-	public List<String> getPts() {
-		return pts;
+	public int getScrollOffset() {
+		return scrollOffset;
 	}
-	public void setPts(List<String> pts) {
-		this.pts = pts;
+	public void setScrollOffset(int scrollOffset) {
+		this.scrollOffset = scrollOffset;
 	}
-	public List<String> getLlts() {
-		return llts;
+	public int getScrollCount() {
+		return scrollCount;
 	}
-	public void setLlts(List<String> llts) {
-		this.llts = llts;
+	public void setScrollCount(int scrollCount) {
+		this.scrollCount = scrollCount;
+	}
+	public String getSearchValue() {
+		return searchValue;
+	}
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+	public String getSearchLevel() {
+		return searchLevel;
+	}
+	public void setSearchLevel(String searchLevel) {
+		this.searchLevel = searchLevel;
+	}
+	public String getSelectLevel() {
+		return selectLevel;
+	}
+	public void setSelectLevel(String selectLevel) {
+		this.selectLevel = selectLevel;
 	}
 	
 	
-	
-	
-	
-
-}
+	}
