@@ -188,10 +188,12 @@ public class AssignmentConfigurationService {
 	}
 
 	private void saveSocConfiguration(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated) {
+		socAssignmentConfigurationRepository.delete(assignmentConfiguration.getConditions());
 		for (SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()) {
 			socConfig.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 			SocAssignmentConfiguration socAssignmentConfigurationUpdated = socAssignmentConfigurationRepository.save(socConfig);
 			if(!CollectionUtils.isEmpty(socConfig.getConditionValues())){
+				assignmentConditionRepository.delete(socConfig.getConditionValues());
 				for(AssignmentCondition condition : socConfig.getConditionValues()){
 					condition.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 					condition.setSocAssignmentConfigurationId(socAssignmentConfigurationUpdated.getId());
@@ -202,10 +204,12 @@ public class AssignmentConfigurationService {
 	}
 	
 	private void saveProductConfiguration(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated) {
+		productAssignmentConfigurationRepository.delete(assignmentConfiguration.getProducts());
 		for (ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()) {
 			productConfig.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 			ProductAssignmentConfiguration productAssignmentConfigurationUpdated = productAssignmentConfigurationRepository.save(productConfig);
 			if(!CollectionUtils.isEmpty(productConfig.getProductValues())){
+				assignmentProductRepository.delete(productConfig.getProductValues());
 				for(AssignmentProduct product : productConfig.getProductValues()){
 					product.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 					product.setProductAssignmentConfigurationId(productAssignmentConfigurationUpdated.getId());
