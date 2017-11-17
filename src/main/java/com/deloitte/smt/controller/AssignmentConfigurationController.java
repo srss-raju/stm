@@ -50,7 +50,7 @@ public class AssignmentConfigurationController {
     }
 
     @GetMapping
-    public List<AssignmentConfiguration> findAll() {
+    public List<AssignmentConfiguration> findAll() throws ApplicationException {
         return assignmentConfigurationService.findAll();
     }
     
