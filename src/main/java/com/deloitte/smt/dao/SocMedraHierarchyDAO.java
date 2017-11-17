@@ -7,7 +7,7 @@ import com.deloitte.smt.dto.SocSearchDTO;
 
 public interface SocMedraHierarchyDAO {
 	
-	List<SocHierarchyDto> findAllByConditionName(String code,String columnName);
+	List<SocHierarchyDto> findAllByConditionName(String code,String columnName,int scrollOffset,int scrollCount);
 	
 	List<SocSearchDTO> findByMatchingSocName(String searchText);
 	
