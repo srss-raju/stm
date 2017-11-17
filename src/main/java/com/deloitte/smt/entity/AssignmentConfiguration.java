@@ -46,7 +46,7 @@ public class AssignmentConfiguration implements Serializable {
     @Transient
 	private List<SocAssignmentConfiguration> conditions;
     @Transient
-	private List<ProductAssignmentConfiguration> productsAssignmentConfiguration;
+	private List<ProductAssignmentConfiguration> products;
     
     
     public Long getId() {
@@ -103,15 +103,6 @@ public class AssignmentConfiguration implements Serializable {
 
 	public void setSeverity(String severity) {
 		this.severity = severity;
-	}
-
-	public List<ProductAssignmentConfiguration> getProductsAssignmentConfiguration() {
-		return productsAssignmentConfiguration;
-	}
-
-	public void setProductsAssignmentConfiguration(
-			List<ProductAssignmentConfiguration> productsAssignmentConfiguration) {
-		this.productsAssignmentConfiguration = productsAssignmentConfiguration;
 	}
 
 	public String getName() {
@@ -186,6 +177,14 @@ public class AssignmentConfiguration implements Serializable {
 
 	public void setRiskAssignees(List<RiskPlanAssignmentAssignees> riskAssignees) {
 		this.riskAssignees = riskAssignees;
+	}
+
+	public List<ProductAssignmentConfiguration> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<ProductAssignmentConfiguration> products) {
+		this.products = products;
 	}
 
 }
