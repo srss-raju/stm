@@ -128,8 +128,14 @@ public class AssignmentConfigurationService {
         return assignmentConfiguration;
     }
     
-    public List<AssignmentConfiguration> findAll() {
-        return assignmentConfigurationRepository.findAll(new Sort(Sort.Direction.DESC, "createdDate"));
+    public List<AssignmentConfiguration> findAll() throws ApplicationException {
+         List<AssignmentConfiguration> all = assignmentConfigurationRepository.findAll(new Sort(Sort.Direction.DESC, "createdDate"));
+         if(!CollectionUtils.isEmpty(all)){
+        	 for(AssignmentConfiguration aConfig : all){
+        		 setSocConfigurationAndCondition( aConfig.getId(), aConfig);
+        	 }
+         }
+         return all;
     }
     
     public void deleteSocAssignmentConfiguration(Long socAssignmentConfigurationId) throws ApplicationException {
