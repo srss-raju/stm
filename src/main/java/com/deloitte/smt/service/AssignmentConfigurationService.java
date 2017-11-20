@@ -143,6 +143,7 @@ public class AssignmentConfigurationService {
          if(!CollectionUtils.isEmpty(all)){
         	 for(AssignmentConfiguration aConfig : all){
         		 setSocConfigurationAndCondition( aConfig.getId(), aConfig);
+        		 setProductConfigurationAndCondition(aConfig.getId(), aConfig);
         	 }
          }
          return all;
