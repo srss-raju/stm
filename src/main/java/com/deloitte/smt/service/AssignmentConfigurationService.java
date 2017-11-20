@@ -181,7 +181,7 @@ public class AssignmentConfigurationService {
         		SocAssignmentConfiguration socAssignmentConfigurationExists = socAssignmentConfigurationRepository.findByConditionKey(socConfig.getConditionKey());
         		if(socAssignmentConfigurationExists != null){
         			isSocConfigExists = true;
-        			duplicateExceptionBuilder.append(socConfig.getConditionKey());
+        			duplicateExceptionBuilder.append(socConfig.getConditionKey()).append(" ");
         			
         		}
         	}
@@ -196,7 +196,7 @@ public class AssignmentConfigurationService {
         		ProductAssignmentConfiguration productAssignmentConfigurationExists = productAssignmentConfigurationRepository.findByProductKey(productConfig.getProductKey());
         		if(productAssignmentConfigurationExists != null){
         			isProductConfigExists = true;
-        			duplicateExceptionBuilder.append(productConfig.getProductKey());
+        			duplicateExceptionBuilder.append(productConfig.getProductKey()).append(" ");
         			
         		}
         	}
