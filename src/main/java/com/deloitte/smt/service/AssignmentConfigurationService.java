@@ -180,9 +180,10 @@ public class AssignmentConfigurationService {
         	for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
         		SocAssignmentConfiguration socAssignmentConfigurationExists = socAssignmentConfigurationRepository.findByConditionKey(socConfig.getConditionKey());
         		if(socAssignmentConfigurationExists != null){
-        			isSocConfigExists = true;
-        			duplicateExceptionBuilder.append(socConfig.getConditionKey()).append(" ");
-        			
+        			if(assignmentConfiguration.getId() != socAssignmentConfigurationExists.getAssignmentConfigurationId()){
+        				isSocConfigExists = true;
+            			duplicateExceptionBuilder.append(socConfig.getConditionKey());
+        			}
         		}
         	}
         }
@@ -195,8 +196,10 @@ public class AssignmentConfigurationService {
         	for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
         		ProductAssignmentConfiguration productAssignmentConfigurationExists = productAssignmentConfigurationRepository.findByProductKey(productConfig.getProductKey());
         		if(productAssignmentConfigurationExists != null){
-        			isProductConfigExists = true;
-        			duplicateExceptionBuilder.append(productConfig.getProductKey()).append(" ");
+        			if(assignmentConfiguration.getId() != productAssignmentConfigurationExists.getAssignmentConfigurationId()){
+        				isProductConfigExists = true;
+            			duplicateExceptionBuilder.append(productConfig.getProductKey());
+        			}
         			
         		}
         	}
