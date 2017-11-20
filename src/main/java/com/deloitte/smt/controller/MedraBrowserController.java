@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,19 +36,12 @@ public class MedraBrowserController {
 	 * @param searchText
 	 * @return
 	 */
-	@PostMapping(value="/condition")
-	public List<SocSearchDTO> searchByCondition(@RequestParam(value = "data") String searchBy){
+	@PostMapping(value="/condition/search")
+	public List<SocSearchDTO> searchByCondition(@RequestBody MedraBrowserDTO medraBrowserDto){
 		LOG.info("Entry : MedraBrowserController : searchByCondition() ::  search by the text and level");
-		MedraBrowserDTO medraBrowserDto;
 		 List<SocSearchDTO> socSearchList= new ArrayList<>();
-		try {
-			medraBrowserDto = new ObjectMapper().readValue(searchBy, MedraBrowserDTO.class);
-			
 			socSearchList =	socHierarchyService.getDetailsBySearchText(medraBrowserDto.getSearchLevel(),medraBrowserDto.getSearchValue());
-			}
-			catch (IOException e) {
-				LOG.info("Exception occured while updating "+e);
-			}
+			
 		LOG.info("Exit : MedraBrowserController : searchByCondition() ::  search by the text and level");
 	return	socSearchList;
 	}
@@ -61,17 +55,12 @@ public class MedraBrowserController {
 	 * @return
 	 */
 	@PostMapping(value="/condition/byConditionName")
-	public List<SocSearchDTO> getAllbySocName(@RequestParam(value = "data") String searchBy){
+	public List<SocSearchDTO> getAllbySocName(@RequestBody MedraBrowserDTO medraBrowserDto){
 		LOG.info("Entry: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
-		 MedraBrowserDTO medraBrowserDto;
 		 List<SocSearchDTO> socHierarchyList= new ArrayList<>();
-		try {
-			medraBrowserDto = new ObjectMapper().readValue(searchBy, MedraBrowserDTO.class);
-			
+		
 			socHierarchyList =	socHierarchyService.getHierarchyByCode(medraBrowserDto);
-		} catch (IOException e) {
-			LOG.info("Exception occured while updating "+e);
-		}
+		
 		LOG.info("Exit: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
 		return socHierarchyList;
 	}
