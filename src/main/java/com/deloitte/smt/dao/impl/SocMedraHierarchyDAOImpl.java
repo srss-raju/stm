@@ -26,8 +26,14 @@ public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {
 
 	@Override
 	public List<SocHierarchyDto> findAllByConditionName(String code,String columnName,int scrollOffset,int scrollCount) {
-		QUERY = "SELECT SOC_CODE,SOC_DESC,HLGT_CODE,HLGT_DESC,HLT_CODE,HLT_DESC,LLT_CODE,LLT_DESC,PT_CODE,PT_DESC,MEDDRA_VERSION_NUMBER,INTERNATIONAL_SOC_ORDER,PRIMARY_SOC_FLAG "
+	/*	if(columnName.equals("SOC_CODE")){
+		QUERY = "SELECT HLGT_CODE,HLGT_DESC,HLT_CODE,HLT_DESC,LLT_CODE,LLT_DESC,PT_CODE,PT_DESC,MEDDRA_VERSION_NUMBER,INTERNATIONAL_SOC_ORDER,PRIMARY_SOC_FLAG "
 				+ "FROM SOC_MEDDRA_HIERARCHY WHERE "+ columnName+" =:code" +" limit "+ scrollCount+" offset " +scrollOffset;
+		}
+		else{ */
+			QUERY = "SELECT SOC_CODE,SOC_DESC,HLGT_CODE,HLGT_DESC,HLT_CODE,HLT_DESC,LLT_CODE,LLT_DESC,PT_CODE,PT_DESC,MEDDRA_VERSION_NUMBER,INTERNATIONAL_SOC_ORDER,PRIMARY_SOC_FLAG "
+					+ "FROM SOC_MEDDRA_HIERARCHY WHERE "+ columnName+" =:code" +" limit "+ scrollCount+" offset " +scrollOffset;
+		
 		Map<String, Object> params = new HashMap<>();
 		params.put("code", code);
 		return namedParameterJdbcTemplate.query(QUERY, params, new SocHierarchyMapper());
