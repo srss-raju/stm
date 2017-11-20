@@ -77,7 +77,7 @@ public class AssignmentConfigurationService {
         		return assignmentConfigurationRepository.save(assignmentConfiguration);
         	}
         }
-        
+         
         boolean isSocConfigExists = socAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
         boolean isProductConfigExists = productAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
         if(isSocConfigExists || isProductConfigExists){
