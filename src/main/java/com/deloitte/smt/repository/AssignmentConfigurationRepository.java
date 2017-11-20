@@ -15,4 +15,5 @@ public interface AssignmentConfigurationRepository extends JpaRepository<Assignm
     AssignmentConfiguration findByIngredient(String ingredient);
     AssignmentConfiguration findByIngredientAndSignalSourceIsNull(String ingredient);
 	AssignmentConfiguration findByName(String name);
+	AssignmentConfiguration findByIsDefault(boolean isDefault);
 }

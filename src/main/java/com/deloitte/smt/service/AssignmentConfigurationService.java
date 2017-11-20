@@ -68,6 +68,16 @@ public class AssignmentConfigurationService {
         if(assignmentConfigurationExists != null){
         	throw new ApplicationException("AssignmentConfiguration is already exists with given name");
         }
+        
+        if(assignmentConfiguration.isDefault()){
+        	AssignmentConfiguration defaultAssignmentConfigurationExists = assignmentConfigurationRepository.findByIsDefault(assignmentConfiguration.isDefault());
+        	if(defaultAssignmentConfigurationExists != null){
+        		throw new ApplicationException("Default AssignmentConfiguration is already exists with name"+defaultAssignmentConfigurationExists.getName());
+        	}else{
+        		return assignmentConfigurationRepository.save(assignmentConfiguration);
+        	}
+        }
+        
         boolean isSocConfigExists = socAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
         boolean isProductConfigExists = productAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
         if(isSocConfigExists || isProductConfigExists){

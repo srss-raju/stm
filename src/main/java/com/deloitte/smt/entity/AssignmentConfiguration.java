@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by rkb on 04-05-2017.
  */
@@ -29,6 +31,7 @@ public class AssignmentConfiguration implements Serializable {
     private String createdBy;
     private Date lastModifiedDate;
     private String name;
+    @JsonProperty
     private boolean isDefault;
     private String ingredient;
     private String signalSource;
