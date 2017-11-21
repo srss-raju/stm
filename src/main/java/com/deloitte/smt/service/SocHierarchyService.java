@@ -32,49 +32,49 @@ public class SocHierarchyService {
 	 * @param socName
 	 * @return
 	 */
-	public List<SocSearchDTO> getHierarchyByCode( MedraBrowserDTO medraBrowserDto) {
-		List<SocHierarchyDto> socHierarchyList = new ArrayList<>();
-			socHierarchyList = socMedraHierarchyDAO.findAllByConditionName(medraBrowserDto.getSearchValue(),
-					medraBrowserDto.getSelectLevel(),medraBrowserDto.getScrollOffset(),medraBrowserDto.getScrollCount());
+	public List<SocSearchDTO> getHierarchyByCode(MedraBrowserDTO medraBrowserDto) {
+		List<SocHierarchyDto> socHierarchyList = null;
+		socHierarchyList = socMedraHierarchyDAO.findAllByConditionName(medraBrowserDto.getSearchValue(),
+				medraBrowserDto.getSelectLevel(), medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
 		return responseMapper(socHierarchyList);
 	}
 
-	private List<SocSearchDTO> responseMapper(List<SocHierarchyDto> socHierarchyList){
-		
-		List<SocSearchDTO> socDtoList=new ArrayList<>(); 
-		
-		if(!CollectionUtils.isEmpty(socHierarchyList)){
-			for(SocHierarchyDto socHierarchyDto:socHierarchyList){
-				SocSearchDTO socSearchdto=new SocSearchDTO();
-				if(null!=socHierarchyDto.getSoc_code()){
+	private List<SocSearchDTO> responseMapper(List<SocHierarchyDto> socHierarchyList) {
+
+		List<SocSearchDTO> socDtoList = new ArrayList<>();
+
+		if (!CollectionUtils.isEmpty(socHierarchyList)) {
+			for (SocHierarchyDto socHierarchyDto : socHierarchyList) {
+				SocSearchDTO socSearchdto = new SocSearchDTO();
+				if (null != socHierarchyDto.getSoc_code()) {
 					socSearchdto.setCategory(SmtConstant.SOC_CODE.getDescription());
 					socSearchdto.setCategoryCode(socHierarchyDto.getSoc_code());
 					socSearchdto.setCategoryDesc(socHierarchyDto.getSoc_desc());
 				}
 				socDtoList.add(socSearchdto);
-				SocSearchDTO hlgtSearchdto=new SocSearchDTO();
-				if(null!=socHierarchyDto.getHlgt_code()){
+				SocSearchDTO hlgtSearchdto = new SocSearchDTO();
+				if (null != socHierarchyDto.getHlgt_code()) {
 					hlgtSearchdto.setCategory(SmtConstant.HLGT_CODE.getDescription());
 					hlgtSearchdto.setCategoryCode(socHierarchyDto.getHlgt_code());
 					hlgtSearchdto.setCategoryDesc(socHierarchyDto.getHlgt_desc());
 				}
 				socDtoList.add(hlgtSearchdto);
-				SocSearchDTO hltSearchdto=new SocSearchDTO();
-				if(null!=socHierarchyDto.getHlt_code()){
+				SocSearchDTO hltSearchdto = new SocSearchDTO();
+				if (null != socHierarchyDto.getHlt_code()) {
 					hltSearchdto.setCategory(SmtConstant.HLT_CODE.getDescription());
 					hltSearchdto.setCategoryCode(socHierarchyDto.getHlt_code());
 					hltSearchdto.setCategoryDesc(socHierarchyDto.getHlt_desc());
 				}
 				socDtoList.add(hltSearchdto);
-				SocSearchDTO lltSearchdto=new SocSearchDTO();
-				if(null!=socHierarchyDto.getLlt_code()){
+				SocSearchDTO lltSearchdto = new SocSearchDTO();
+				if (null != socHierarchyDto.getLlt_code()) {
 					lltSearchdto.setCategory(SmtConstant.LLT_CODE.getDescription());
 					lltSearchdto.setCategoryCode(socHierarchyDto.getLlt_code());
 					lltSearchdto.setCategoryDesc(socHierarchyDto.getLlt_desc());
 				}
 				socDtoList.add(lltSearchdto);
-				SocSearchDTO ptSearchdto=new SocSearchDTO();
-				if(null!=socHierarchyDto.getPt_code()){
+				SocSearchDTO ptSearchdto = new SocSearchDTO();
+				if (null != socHierarchyDto.getPt_code()) {
 					ptSearchdto.setCategory(SmtConstant.PT_CODE.getDescription());
 					ptSearchdto.setCategoryCode(socHierarchyDto.getPt_code());
 					ptSearchdto.setCategoryDesc(socHierarchyDto.getPt_desc());
@@ -83,8 +83,9 @@ public class SocHierarchyService {
 			}
 		}
 		return socDtoList;
-		
+
 	}
+
 	/**
 	 * This method is invoked medra browser search by keyword
 	 * 
@@ -92,45 +93,46 @@ public class SocHierarchyService {
 	 * @param searchText
 	 * @return
 	 */
-	public List<SocSearchDTO> getDetailsBySearchText(String level, String searchText) {
+	public List<SocSearchDTO> getDetailsBySearchText(MedraBrowserDTO medraBrowserDto) {
 		List<SocSearchDTO> socSearchDtoList;
-		switch (level) {
+		switch (medraBrowserDto.getSearchLevel()) {
 
 		case "ALL":
-			socSearchDtoList=searchAllByName(searchText);
+			socSearchDtoList = searchAllByName(medraBrowserDto);
 			break;
 
 		case "SOC_CODE":
-				socSearchDtoList = searchBySocName(searchText);
+			socSearchDtoList = searchBySocName(medraBrowserDto);
 			break;
 
 		case "HLGT_CODE":
-				socSearchDtoList = searchByHlgtName(searchText);
+			socSearchDtoList = searchByHlgtName(medraBrowserDto);
 			break;
 
 		case "HLT_CODE":
-				socSearchDtoList = searchByHltName(searchText);
+			socSearchDtoList = searchByHltName(medraBrowserDto);
 			break;
 
 		case "PT_CODE":
-				socSearchDtoList = searchByPtName(searchText);
+			socSearchDtoList = searchByPtName(medraBrowserDto);
 			break;
 
 		case "LLT_CODE":
-				socSearchDtoList = searchBylltName(searchText);
+			socSearchDtoList = searchBylltName(medraBrowserDto);
 			break;
 
 		default:
-			socSearchDtoList = searchBySocName(searchText);
+			socSearchDtoList = searchBySocName(medraBrowserDto);
 			break;
 		}
 
 		return socSearchDtoList;
 	}
 
-	private List<SocSearchDTO> searchBySocName(String searchText) {
+	private List<SocSearchDTO> searchBySocName(MedraBrowserDTO medraBrowserDto) {
 
-		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByMatchingSocName(searchText);
+		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByMatchingSocName(medraBrowserDto.getSearchValue(),
+												medraBrowserDto.getScrollOffset(),medraBrowserDto.getScrollCount());
 		if (!CollectionUtils.isEmpty(socSearchDtoList)) {
 			for (SocSearchDTO searchDto : socSearchDtoList) {
 				searchDto.setCategory(SmtConstant.SOC_CODE.getDescription());
@@ -139,9 +141,10 @@ public class SocHierarchyService {
 		return socSearchDtoList;
 	}
 
-	private List<SocSearchDTO> searchByHlgtName(String searchText) {
+	private List<SocSearchDTO> searchByHlgtName(MedraBrowserDTO medraBrowserDto) {
 
-		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByHlgtName(searchText);
+		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByHlgtName(medraBrowserDto.getSearchValue(),
+				medraBrowserDto.getScrollOffset(),medraBrowserDto.getScrollCount());
 		if (!CollectionUtils.isEmpty(socSearchDtoList)) {
 			for (SocSearchDTO searchDto : socSearchDtoList) {
 				searchDto.setCategory(SmtConstant.HLGT_CODE.getDescription());
@@ -150,9 +153,10 @@ public class SocHierarchyService {
 		return socSearchDtoList;
 	}
 
-	private List<SocSearchDTO> searchByHltName(String searchText) {
+	private List<SocSearchDTO> searchByHltName(MedraBrowserDTO medraBrowserDto) {
 
-		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByHltName(searchText);
+		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByHltName(medraBrowserDto.getSearchValue(),
+				medraBrowserDto.getScrollOffset(),medraBrowserDto.getScrollCount());
 		if (!CollectionUtils.isEmpty(socSearchDtoList)) {
 			for (SocSearchDTO searchDto : socSearchDtoList) {
 				searchDto.setCategory(SmtConstant.HLT_CODE.getDescription());
@@ -161,9 +165,10 @@ public class SocHierarchyService {
 		return socSearchDtoList;
 	}
 
-	private List<SocSearchDTO> searchBylltName(String searchText) {
+	private List<SocSearchDTO> searchBylltName(MedraBrowserDTO medraBrowserDto) {
 
-		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByLltName(searchText);
+		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByLltName(medraBrowserDto.getSearchValue(),
+				medraBrowserDto.getScrollOffset(),medraBrowserDto.getScrollCount());
 		if (!CollectionUtils.isEmpty(socSearchDtoList)) {
 			for (SocSearchDTO searchDto : socSearchDtoList) {
 				searchDto.setCategory(SmtConstant.LLT_CODE.getDescription());
@@ -172,9 +177,10 @@ public class SocHierarchyService {
 		return socSearchDtoList;
 	}
 
-	private List<SocSearchDTO> searchByPtName(String searchText) {
+	private List<SocSearchDTO> searchByPtName(MedraBrowserDTO medraBrowserDto) {
 
-		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByPtName(searchText);
+		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByPtName(medraBrowserDto.getSearchValue(),
+				medraBrowserDto.getScrollOffset(),medraBrowserDto.getScrollCount());
 		if (!CollectionUtils.isEmpty(socSearchDtoList)) {
 			for (SocSearchDTO searchDto : socSearchDtoList) {
 				searchDto.setCategory(SmtConstant.PT_CODE.getDescription());
@@ -183,29 +189,29 @@ public class SocHierarchyService {
 		return socSearchDtoList;
 	}
 
-	private List<SocSearchDTO> searchAllByName(String searchText) {
+	private List<SocSearchDTO> searchAllByName(MedraBrowserDTO medraBrowserDto) {
 		List<SocSearchDTO> socSearchDtoAllList = new ArrayList<>();
-		List<SocSearchDTO> 	socSearchDtoList = searchBySocName(searchText);
-		for(SocSearchDTO socSearchDto:socSearchDtoList){
+		List<SocSearchDTO> socSearchDtoList = searchBySocName(medraBrowserDto);
+		for (SocSearchDTO socSearchDto : socSearchDtoList) {
 			socSearchDtoAllList.add(socSearchDto);
 		}
-		List<SocSearchDTO> socSearchDtoHlgtList = searchByHlgtName(searchText);
-		for(SocSearchDTO socSearchDto:socSearchDtoHlgtList){
+		List<SocSearchDTO> socSearchDtoHlgtList = searchByHlgtName(medraBrowserDto);
+		for (SocSearchDTO socSearchDto : socSearchDtoHlgtList) {
 			socSearchDtoAllList.add(socSearchDto);
 		}
-		List<SocSearchDTO> socSearchDtoHltList = searchByHltName(searchText);
-		for(SocSearchDTO socSearchDto:socSearchDtoHltList){
+		List<SocSearchDTO> socSearchDtoHltList = searchByHltName(medraBrowserDto);
+		for (SocSearchDTO socSearchDto : socSearchDtoHltList) {
 			socSearchDtoAllList.add(socSearchDto);
 		}
-		List<SocSearchDTO> socSearchDtoPtList = searchByPtName(searchText);
-		for(SocSearchDTO socSearchDto:socSearchDtoPtList){
+		List<SocSearchDTO> socSearchDtoPtList = searchByPtName(medraBrowserDto);
+		for (SocSearchDTO socSearchDto : socSearchDtoPtList) {
 			socSearchDtoAllList.add(socSearchDto);
 		}
-		List<SocSearchDTO> socSearchDtoLltList = searchBylltName(searchText);
-		for(SocSearchDTO socSearchDto:socSearchDtoLltList){
+		List<SocSearchDTO> socSearchDtoLltList = searchBylltName(medraBrowserDto);
+		for (SocSearchDTO socSearchDto : socSearchDtoLltList) {
 			socSearchDtoAllList.add(socSearchDto);
 		}
-		
+
 		return socSearchDtoAllList;
 	}
 

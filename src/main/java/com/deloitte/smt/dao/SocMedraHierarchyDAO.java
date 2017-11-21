@@ -9,17 +9,16 @@ public interface SocMedraHierarchyDAO {
 	
 	List<SocHierarchyDto> findAllByConditionName(String code,String columnName,int scrollOffset,int scrollCount);
 	
-	List<SocSearchDTO> findByMatchingSocName(String searchText);
+	List<SocSearchDTO> findByMatchingSocName(String searchText,int scrollOffset,int scrollCount);
 	
-	List<SocSearchDTO> findByHlgtName(String searchText);
+	List<SocSearchDTO> findByHlgtName(String searchText,int scrollOffset,int scrollCount);
 	
-	List<SocSearchDTO> findByHltName(String searchText);
+	List<SocSearchDTO> findByHltName(String searchText,int scrollOffset,int scrollCount);
 	
-	List<SocSearchDTO> findByPtName(String searchText);
+	List<SocSearchDTO> findByPtName(String searchText,int scrollOffset,int scrollCount);
 	
-	List<SocSearchDTO> findByLltName(String searchText);
+	List<SocSearchDTO> findByLltName(String searchText,int scrollOffset,int scrollCount);
 	
-	List<SocSearchDTO> findByAll(String searchText);
 	
 	
 

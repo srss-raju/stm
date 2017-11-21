@@ -51,8 +51,7 @@ public class MedraBrowserController {
 		}
 		else{
 			//This method is invoked for search by text in medra browser
-			socList=	socHierarchyService.getDetailsBySearchText(medraBrowserDto.getSearchLevel(),
-					medraBrowserDto.getSearchValue());
+			socList=	socHierarchyService.getDetailsBySearchText(medraBrowserDto);
 		}
 
 		LOG.info("Exit: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
