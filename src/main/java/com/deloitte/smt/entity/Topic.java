@@ -100,16 +100,6 @@ public class Topic implements Serializable{
     @Transient
     private List<AssessmentPlan> assessmentPlans;
     
-    private boolean socSelected;
-    
-    public boolean isSocSelected() {
-		return socSelected;
-	}
-
-	public void setSocSelected(boolean socSelected) {
-		this.socSelected = socSelected;
-	}
-
 	public Topic() {
         this.startDate = new Date();
     }
