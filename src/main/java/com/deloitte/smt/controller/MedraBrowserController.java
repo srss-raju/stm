@@ -44,7 +44,7 @@ public class MedraBrowserController {
 	@PostMapping(value = "/condition")
 	public List<SocSearchDTO> getAllbySocName(@RequestBody MedraBrowserDTO medraBrowserDto) {
 		LOG.info("Entry: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
-		List<SocSearchDTO> socList = null;
+		List<SocSearchDTO> socList;
 		if (null != medraBrowserDto.getSelectLevel()) {
 			//This method is invoked for getting Hierarchy by socname
 			socList = socHierarchyService.getHierarchyByCode(medraBrowserDto);
