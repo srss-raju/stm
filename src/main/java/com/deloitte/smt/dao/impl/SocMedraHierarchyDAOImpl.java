@@ -18,7 +18,7 @@ public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {
 	
 	private String query;
 	
-	private static final String OFFSET="offset";
+	private static final String OFFSET=" offset ";
 	
 	private static final String SEARCHVALUE="searchText";
 
