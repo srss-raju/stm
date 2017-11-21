@@ -31,7 +31,7 @@ public class TaskTemplateController {
 	private TaskTemplateService taskTemplateService;
 	
 	@PostMapping(value = "/createTaskTemplate")
-	public TaskTemplate createTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
+	public TaskTemplate createTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
 		
 		TaskTemplate taskTemplate = null;
 		try {

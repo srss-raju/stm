@@ -44,7 +44,7 @@ public class SignalController {
 
 	@PostMapping(value = "/createTopic")
 	public Topic createTopic(@RequestParam(value = "data") String topicString,
-							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
+							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
         
 		Topic topic = null;
         try {
