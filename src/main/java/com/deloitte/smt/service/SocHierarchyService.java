@@ -75,70 +75,60 @@ public class SocHierarchyService {
 
 	private String setPtCode(List<SocSearchDTO> socDtoList, String prevPtCode, SocHierarchyDto socHierarchyDto, SocSearchDTO ptSearchdto) {
 		String prevTempPtCode = prevPtCode;
-		if (null != socHierarchyDto.getPt_code()) {
-			if(!socHierarchyDto.getPt_code().equals(prevTempPtCode)){
+		if (null != socHierarchyDto.getPt_code() && (!socHierarchyDto.getPt_code().equals(prevTempPtCode))) {
 				ptSearchdto.setCategory(SmtConstant.PT_CODE.getDescription());
 				ptSearchdto.setCategoryCode(socHierarchyDto.getPt_code());
 				ptSearchdto.setCategoryDesc(socHierarchyDto.getPt_desc());
 				prevTempPtCode = socHierarchyDto.getPt_code();
 				socDtoList.add(ptSearchdto);
-			}
 		}
 		return prevTempPtCode;
 	}
 
 	private String setLltCode(List<SocSearchDTO> socDtoList, String prevLltCode, SocHierarchyDto socHierarchyDto, SocSearchDTO lltSearchdto) {
 		String prevTempLltCode = prevLltCode;
-		if (null != socHierarchyDto.getLlt_code()) {
-			if(!socHierarchyDto.getLlt_code().equals(prevTempLltCode)){
+		if (null != socHierarchyDto.getLlt_code() && (!socHierarchyDto.getLlt_code().equals(prevTempLltCode))) {
 				lltSearchdto.setCategory(SmtConstant.LLT_CODE.getDescription());
 				lltSearchdto.setCategoryCode(socHierarchyDto.getLlt_code());
 				lltSearchdto.setCategoryDesc(socHierarchyDto.getLlt_desc());
 				prevTempLltCode = socHierarchyDto.getLlt_code();
 				socDtoList.add(lltSearchdto);
-			}
 		}
 		return prevTempLltCode;
 	}
 
 	private String setHltCode(List<SocSearchDTO> socDtoList, String prevHltCode, SocHierarchyDto socHierarchyDto, SocSearchDTO hltSearchdto) {
 		String prevTempHltCode = prevHltCode;
-		if (null != socHierarchyDto.getHlt_code()) {
-			if(!socHierarchyDto.getHlt_code().equals(prevTempHltCode)){
+		if (null != socHierarchyDto.getHlt_code() && (!socHierarchyDto.getHlt_code().equals(prevTempHltCode))) {
 				hltSearchdto.setCategory(SmtConstant.HLT_CODE.getDescription());
 				hltSearchdto.setCategoryCode(socHierarchyDto.getHlt_code());
 				hltSearchdto.setCategoryDesc(socHierarchyDto.getHlt_desc());
 				prevTempHltCode = socHierarchyDto.getHlt_code();
 				socDtoList.add(hltSearchdto);
-			}
 		}
 		return prevTempHltCode;
 	}
 
 	private String setHlgtCode(List<SocSearchDTO> socDtoList, String prevHlgtCode, SocHierarchyDto socHierarchyDto, SocSearchDTO hlgtSearchdto) {
 		String prevTempHlgtCode = prevHlgtCode;
-		if (null != socHierarchyDto.getHlgt_code()) {
-			if(!socHierarchyDto.getHlgt_code().equals(prevTempHlgtCode)){
+		if (null != socHierarchyDto.getHlgt_code() && (!socHierarchyDto.getHlgt_code().equals(prevTempHlgtCode))) {
 				hlgtSearchdto.setCategory(SmtConstant.HLGT_CODE.getDescription());
 				hlgtSearchdto.setCategoryCode(socHierarchyDto.getHlgt_code());
 				hlgtSearchdto.setCategoryDesc(socHierarchyDto.getHlgt_desc());
 				prevTempHlgtCode = socHierarchyDto.getHlgt_code();
 				socDtoList.add(hlgtSearchdto);
-			}
 		}
 		return prevTempHlgtCode;
 	}
 
 	private String setSocCode(List<SocSearchDTO> socDtoList, String prevSocCode, SocHierarchyDto socHierarchyDto, SocSearchDTO socSearchdto) {
 		String prevTempSocCode = prevSocCode;
-		if (null != socHierarchyDto.getSoc_code()) {
-			if(!socHierarchyDto.getSoc_code().equals(prevTempSocCode)){
+		if (null != socHierarchyDto.getSoc_code() && (!socHierarchyDto.getSoc_code().equals(prevTempSocCode))) {
 				socSearchdto.setCategory(SmtConstant.SOC_CODE.getDescription());
 				socSearchdto.setCategoryCode(socHierarchyDto.getSoc_code());
 				socSearchdto.setCategoryDesc(socHierarchyDto.getSoc_desc());
 				prevTempSocCode = socHierarchyDto.getSoc_code();
 				socDtoList.add(socSearchdto);
-			}
 		}
 		return prevTempSocCode;
 	}
