@@ -142,7 +142,7 @@ public class RiskControllerTest {
 	
 	@Test
 	public void testDeleteById() throws Exception{
-		doNothing().when(riskPlanServiceMock).delete(anyLong(),anyString());
+		doNothing().when(riskPlanServiceMock).delete(anyLong());
 		
 		this.mockMvc
 		.perform(delete("/camunda/api/signal/risk/task/{riskTaskId}/{taskId}",1,1)

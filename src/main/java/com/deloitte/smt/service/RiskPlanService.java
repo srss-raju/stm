@@ -591,7 +591,7 @@ public class RiskPlanService {
 	 * @throws IOException
 	 * @throws ApplicationException
 	 */
-	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws IOException, ApplicationException {
+	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
 		    
 		Date d = new Date();
 		riskTask.setCreatedDate(d);
@@ -660,7 +660,7 @@ public class RiskPlanService {
 		return riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(riskId);
 	}
 
-	public void delete(Long riskTaskId, String taskId) throws ApplicationException {
+	public void delete(Long riskTaskId) throws ApplicationException {
 		RiskTask riskTask = riskTaskRepository.findOne(riskTaskId);
 		if (riskTask == null) {
 			throw new ApplicationException("Failed to delete Action. Invalid Id received");

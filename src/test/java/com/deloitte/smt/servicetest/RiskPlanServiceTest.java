@@ -343,7 +343,7 @@ public class RiskPlanServiceTest {
 		try{
 			RiskTask riskTask = new RiskTask();
 			given(this.riskTaskRepository.findOne(1l)).willReturn(riskTask);
-			riskPlanService.delete(1l, "1");
+			riskPlanService.delete(1l);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -352,7 +352,7 @@ public class RiskPlanServiceTest {
 	@Test
 	public void testDelete() {
 		try{
-			riskPlanService.delete(1l, "1");
+			riskPlanService.delete(1l);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
