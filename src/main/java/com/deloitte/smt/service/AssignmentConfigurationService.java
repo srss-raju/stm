@@ -179,14 +179,19 @@ public class AssignmentConfigurationService {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
         	for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
         		SocAssignmentConfiguration socAssignmentConfigurationExists = socAssignmentConfigurationRepository.findByConditionKey(socConfig.getConditionKey());
-        		if(socAssignmentConfigurationExists != null){
-        			if(!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(socAssignmentConfigurationExists.getAssignmentConfigurationId())))){
-        				isSocConfigExists = true;
-            			duplicateExceptionBuilder.append(socConfig.getConditionKey()).append(" ");
-        			}
-        		}
+        		isSocConfigExists = checkSameSocConfigId(assignmentConfiguration, duplicateExceptionBuilder, socConfig, socAssignmentConfigurationExists);
         	}
         }
+		return isSocConfigExists;
+	}
+
+	private boolean checkSameSocConfigId(AssignmentConfiguration assignmentConfiguration,StringBuilder duplicateExceptionBuilder,
+			SocAssignmentConfiguration socConfig, SocAssignmentConfiguration socAssignmentConfigurationExists) {
+		boolean isSocConfigExists = false;
+		if(socAssignmentConfigurationExists != null && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(socAssignmentConfigurationExists.getAssignmentConfigurationId()))))){
+				isSocConfigExists = true;
+				duplicateExceptionBuilder.append(socConfig.getConditionKey()).append(" ");
+		}
 		return isSocConfigExists;
 	}
 	
@@ -195,14 +200,18 @@ public class AssignmentConfigurationService {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
         	for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
         		ProductAssignmentConfiguration productAssignmentConfigurationExists = productAssignmentConfigurationRepository.findByProductKey(productConfig.getProductKey());
-        		if(productAssignmentConfigurationExists != null){
-        				if(!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(productAssignmentConfigurationExists.getAssignmentConfigurationId())))){
-        				isProductConfigExists = true;
-            			duplicateExceptionBuilder.append(productConfig.getProductKey()).append(" ");
-        			}
-        		}
+        		isProductConfigExists = checkSameProductConfigId(assignmentConfiguration, duplicateExceptionBuilder, productConfig, productAssignmentConfigurationExists);
         	}
         }
+		return isProductConfigExists;
+	}
+
+	private boolean checkSameProductConfigId(AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateExceptionBuilder, ProductAssignmentConfiguration productConfig, ProductAssignmentConfiguration productAssignmentConfigurationExists) {
+		boolean isProductConfigExists = false;
+		if(productAssignmentConfigurationExists != null && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(productAssignmentConfigurationExists.getAssignmentConfigurationId()))))){
+				isProductConfigExists = true;
+				duplicateExceptionBuilder.append(productConfig.getProductKey()).append(" ");
+		}
 		return isProductConfigExists;
 	}
 

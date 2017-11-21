@@ -41,13 +41,13 @@ public class RiskController {
     @PostMapping()
     public RiskPlan createRiskPlan(@RequestParam("data") String riskPlanString,
                                                @RequestParam(value = "assessmentId", required = false) Long assessmentId,
-                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments)throws Exception {
+                                               @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws Exception {
     	RiskPlan riskPlan = null;
     	try {
         	riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
 			riskPlan = riskPlanService.insert(riskPlan, attachments, assessmentId);
 		} catch (IOException | ApplicationException e) {
-			LOG.info("Exception occured while creating "+e);
+			LOG.info("Exception occured while creating Risk Plan"+e);
 			throw e;
 		}
         return riskPlan;
@@ -62,8 +62,13 @@ public class RiskController {
     @PostMapping(value = "/task/create")
     public ResponseEntity<Void> createRiskAction(@RequestParam("data") String riskPlanActionString,
                                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
-        RiskTask riskTask = new ObjectMapper().readValue(riskPlanActionString, RiskTask.class);
-    	riskPlanService.createRiskTask(riskTask, attachments);
+        
+    	try {
+    		RiskTask riskTask = new ObjectMapper().readValue(riskPlanActionString, RiskTask.class);
+        	riskPlanService.createRiskTask(riskTask, attachments);
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured while creating Risk Action "+e);
+		}
     	return new ResponseEntity<>(HttpStatus.OK);
     }
     

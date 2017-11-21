@@ -3,6 +3,7 @@ package com.deloitte.smt.controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/camunda/api/signal/risktemplate")
 public class RiskTaskTemplateController {
 	
+	private static final Logger LOG = Logger.getLogger(RiskTaskTemplateController.class);
+	
 	@Autowired
 	private RiskTaskTemplateService riskTaskTemplateService;
 	
 	@PostMapping(value = "/createTaskTemplate")
-	public RiskTaskTemplate createTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
-		RiskTaskTemplate taskTemplate = new ObjectMapper().readValue(taskTemplateString, RiskTaskTemplate.class);
+	public RiskTaskTemplate createTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
+		
+		RiskTaskTemplate taskTemplate = null;
+		try {
+			taskTemplate = new ObjectMapper().readValue(taskTemplateString, RiskTaskTemplate.class);
+		} catch (IOException e) {
+			LOG.info("Exception occured while updating "+e);
+		}
+		
+		
 		return riskTaskTemplateService.createTaskTemplate(taskTemplate);
 	}
 	

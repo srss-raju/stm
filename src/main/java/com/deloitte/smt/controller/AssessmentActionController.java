@@ -35,13 +35,18 @@ public class AssessmentActionController    {
 
     @PostMapping(value = "/createAssessmentAction")
     public SignalAction createAssessmentAction(@RequestParam("data") String signalActionString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException, ApplicationException {
-        SignalAction signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
-        if(signalAction.getTemplateId() != 0){
-        	signalAction = assessmentActionService.createOrphanAssessmentAction(signalAction, attachments);
-        }else{
-        	signalAction = assessmentActionService.createAssessmentAction(signalAction, attachments);
-        }
+                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
+    	SignalAction signalAction = null;
+		try {
+			signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
+			if (signalAction.getTemplateId() != 0) {
+				signalAction = assessmentActionService.createOrphanAssessmentAction(signalAction, attachments);
+			} else {
+				signalAction = assessmentActionService.createAssessmentAction(signalAction, attachments);
+			}
+		} catch (ApplicationException | IOException e) {
+			LOG.info("Exception occured while updating " + e);
+		}
         return signalAction;
     }
 
