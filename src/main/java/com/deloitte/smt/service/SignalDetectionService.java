@@ -731,30 +731,30 @@ public class SignalDetectionService {
 			  
 			  if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) &&!CollectionUtils.isEmpty(searchDto.getOwners()) ){
 				   
-				   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userKey").in(searchDto.getUserKeys())),
-						   criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
-						   criteriaBuilder.isTrue(rootSignalDetection.get("owner").in(searchDto.getOwners())))));
+				   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+						   criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
+						   criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())))));
 				   
 				  }else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userKey").in(searchDto.getUserKeys())),
-							   criteriaBuilder.isTrue(joinDetectionAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys()))));
+					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+							   criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
 				  }
 				  else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userKey").in(searchDto.getUserKeys()))));
+					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys()))));
 							  
 				  }else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys()))));
+					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
 					     
 				  }else if(!CollectionUtils.isEmpty(searchDto.getOwners())&&CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getUserKeys())){
 					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())),
 							  criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).isNull())));
 					   
 				  }else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) ){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userKey").in(searchDto.getUserKeys())),
+					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
 							   criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
 				  }
 				  else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserKeys())){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
+					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(joinDetectionAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
 							   criteriaBuilder.isTrue(rootSignalDetection.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
 				  }
 			
