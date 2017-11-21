@@ -260,7 +260,7 @@ public class SignalDetectionService {
 	 * @param ingredient
 	 */
 	private void saveProduct(SignalDetection signalDetection, List<Ingredient> ingredients) {
-		List<Product> products = null;
+		List<Product> products;
 		if (!CollectionUtils.isEmpty(ingredients)) {
 			for (Ingredient ingredient : ingredients) {
 				products = ingredient.getProducts();
@@ -268,7 +268,6 @@ public class SignalDetectionService {
 					for (Product singleProduct : products) {
 						singleProduct.setIngredientId(ingredient.getId());
 						singleProduct.setDetectionId(signalDetection.getId());
-						//productRepository.deleteByIngredientId(ingredient.getId());
 					}
 					productRepository.save(products);
 				}
@@ -290,7 +289,6 @@ public class SignalDetectionService {
 						singleLicense.setIngredientId(ingredient.getId());
 						singleLicense.setDetectionId(signalDetection.getId());
 					}
-				//	licenseRepository.deleteByDetectionId(signalDetection.getId());
 					licenseRepository.save(licenses);
 				}
 			}
@@ -643,8 +641,8 @@ public class SignalDetectionService {
 	private void addOtherInfoToSignalDetection(SignalDetection signalDetection) {
 	
 		List<Ingredient> ingredients = ingredientRepository.findByDetectionId(signalDetection.getId());
-		List<Product> products = null;
-		List<License> licenses = null;
+		List<Product> products;
+		List<License> licenses;
 		
 		if (!CollectionUtils.isEmpty(ingredients)) {
 			for (Ingredient ingredient : ingredients) {
