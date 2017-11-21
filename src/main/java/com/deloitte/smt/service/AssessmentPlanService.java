@@ -38,7 +38,6 @@ import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicAssessmentAssignmentAssignees;
-import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -101,6 +100,9 @@ public class AssessmentPlanService {
     ExceptionBuilder exceptionBuilder;
     @Autowired
     AssessmentActionRepository assessmentActionRepository;
+    
+    @Autowired
+	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
     
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
@@ -204,16 +206,13 @@ public class AssessmentPlanService {
 		}
 		return smtResponse;
 	}
-	@Autowired
-	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+	
 	
 	private void associateAssignees(List<AssessmentPlan> assessmentPlanList){
-		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneeList=new ArrayList<TopicRiskPlanAssignmentAssignees>();
 		if (!CollectionUtils.isEmpty(assessmentPlanList)) {
 			for(AssessmentPlan assessmentPlan :assessmentPlanList){
 				if(null!=assessmentPlan.getRiskPlan()){
-				topicRiskPlanAssignmentAssigneeList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(assessmentPlan.getRiskPlan().getId());
-				assessmentPlan.getRiskPlan().setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneeList);
+				assessmentPlan.getRiskPlan().setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesRepository.findByRiskId(assessmentPlan.getRiskPlan().getId()));
 				}
 			}
 		}
@@ -529,30 +528,30 @@ public class AssessmentPlanService {
 			
 			  if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) &&!CollectionUtils.isEmpty(searchDto.getOwners()) ){
 				   
-				   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())),
-						   criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
-						   criteriaBuilder.isTrue(rootTopic.get("owner").in(searchDto.getOwners())))));
+				   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+						   criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
+						   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())))));
 				   
 				  }else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())),
-							   criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys()))));
+					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+							   criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
 				  }
 				  else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys()))));
+					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys()))));
 							  
 				  }else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys()))));
+					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
 					     
 				  }else if(!CollectionUtils.isEmpty(searchDto.getOwners())&&CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getUserKeys())){
 					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())),
 							  criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).isNull())));
 					   
 				  }else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) ){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userKey").in(searchDto.getUserKeys())),
+					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
 							   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
 				  }
 				  else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserKeys())){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get("userGroupKey").in(searchDto.getUserGroupKeys())),
+					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
 							   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
 				  }
 			
