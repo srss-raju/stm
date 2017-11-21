@@ -62,7 +62,7 @@ public class AssessmentActionService {
      * @throws IOException
      * @throws ApplicationException
      */
-    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
+    public SignalAction createAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws ApplicationException {
         
         Date d = new Date();
         signalAction.setCreatedDate(d);
@@ -109,7 +109,7 @@ public class AssessmentActionService {
         boolean allTasksCompletedFlag = true;
         if(!CollectionUtils.isEmpty(actions)){
         	for(SignalAction action:actions){
-        		if(!"Completed".equals(action.getActionStatus())){
+        		if(!SmtConstant.COMPLETED.getDescription().equals(action.getActionStatus())){
         			allTasksCompletedFlag = false;
         		}
         	}
@@ -169,7 +169,7 @@ public class AssessmentActionService {
         return assessmentActionRepository.findAllByAssessmentId(assessmentId);
     }
 
-    public void delete(Long assessmentActionId, String taskId) throws ApplicationException {
+    public void delete(Long assessmentActionId) throws ApplicationException {
         SignalAction signalAction = assessmentActionRepository.findOne(assessmentActionId);
         if(signalAction == null) {
             throw new ApplicationException("Failed to delete Action. Invalid Id received");
