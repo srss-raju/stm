@@ -54,7 +54,6 @@ public class ExportToExcelController {
 			workbook.write(out);
 			out.flush();
 			out.close();
-			// response.flushBuffer();
 
 		} catch (IOException e) {
 			LOG.info("Exception occured while exporting excel sheet " + e);
