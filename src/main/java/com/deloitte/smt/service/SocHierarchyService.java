@@ -34,8 +34,10 @@ public class SocHierarchyService {
 	 */
 	public List<SocSearchDTO> getHierarchyByCode(MedraBrowserDTO medraBrowserDto) {
 		List<SocHierarchyDto> socHierarchyList = null;
+		String level=getLevel(medraBrowserDto);
+		
 		socHierarchyList = socMedraHierarchyDAO.findAllByConditionName(medraBrowserDto.getSearchValue(),
-				medraBrowserDto.getSelectLevel(), medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
+				level, medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
 		return responseMapper(socHierarchyList);
 	}
 
@@ -153,8 +155,10 @@ public class SocHierarchyService {
 	 * @return
 	 */
 	public List<SocSearchDTO> getDetailsBySearchText(MedraBrowserDTO medraBrowserDto) {
-		List<SocSearchDTO> socSearchDtoList;
-		switch (medraBrowserDto.getSearchLevel()) {
+		List<SocSearchDTO> socSearchDtoList=new ArrayList<>();
+		String level=getLevel(medraBrowserDto);
+		if(null!=level){
+		switch (level) {
 
 		case "ALL":
 			socSearchDtoList = searchAllByName(medraBrowserDto);
@@ -184,7 +188,7 @@ public class SocHierarchyService {
 			socSearchDtoList = searchBySocName(medraBrowserDto);
 			break;
 		}
-
+		}
 		return socSearchDtoList;
 	}
 
@@ -272,6 +276,19 @@ public class SocHierarchyService {
 		}
 
 		return socSearchDtoAllList;
+	}
+	private String getLevel(MedraBrowserDTO medraBrowserDto){
+		String level=null;
+		if(null!=medraBrowserDto.getSearchLevel()){
+			level=medraBrowserDto.getSearchLevel();
+		}
+		else if(null!=medraBrowserDto.getSelectLevel()){
+			level=medraBrowserDto.getSelectLevel();
+		}
+		else if(null!=medraBrowserDto.getScrollColumn()){
+			level=medraBrowserDto.getScrollColumn();
+		}
+		return level;
 	}
 
 }

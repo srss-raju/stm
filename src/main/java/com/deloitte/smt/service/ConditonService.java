@@ -34,9 +34,14 @@ public class ConditonService {
 			}
 		}
 		
-		Versions versions=new Versions();
-		versions.setVersionNumber(conditionVersions);
-		response.setVersions(versions);
+		List<Versions> versionsList=new ArrayList<>();
+		Versions version=new Versions();
+		
+		for(String versionNum:conditionVersions){
+			version.setVersionNumber(versionNum);
+		}
+		versionsList.add(version);
+		response.setVersions(versionsList);
 		response.setLevels(levelsList);
 		
 		return response;
