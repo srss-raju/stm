@@ -106,8 +106,12 @@ public class AssignmentConfigurationService {
     	}
         
         AssignmentConfiguration assignmentConfigurationUpdated = assignmentConfigurationRepository.save(assignmentConfiguration);
-        saveSocConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
-        saveProductConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
+        if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+        	saveSocConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
+        }
+        if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
+        	saveProductConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
+        }
         
         setAssignmentConfigurationAssignees(assignmentConfiguration, assignmentConfiguration);
         return assignmentConfiguration;
@@ -197,7 +201,7 @@ public class AssignmentConfigurationService {
 	
 	private boolean productAssignmentConfigurationDuplicateCheck(AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateExceptionBuilder) throws ApplicationException {
 		boolean isProductConfigExists = false;
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
         	for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
         		ProductAssignmentConfiguration productAssignmentConfigurationExists = productAssignmentConfigurationRepository.findByProductKey(productConfig.getProductKey());
         		isProductConfigExists = checkSameProductConfigId(assignmentConfiguration, duplicateExceptionBuilder, productConfig, productAssignmentConfigurationExists);
