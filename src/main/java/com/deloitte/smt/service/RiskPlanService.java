@@ -45,6 +45,7 @@ import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
+import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SignalUtil;
 import com.deloitte.smt.util.SmtResponse;
 
@@ -107,6 +108,9 @@ public class RiskPlanService {
 	SignalAuditService signalAuditService;
 	@Autowired
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+	
+	@Autowired
+	private SearchFilters searchFilters;
 	/**
 	 * 
 	 * @param riskPlan
@@ -149,16 +153,8 @@ public class RiskPlanService {
 		}
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlanUpdated.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null,
 				riskPlanUpdated.getFileMetadata(), riskPlanUpdated.getCreatedBy());
-		if (!CollectionUtils.isEmpty(riskPlanUpdated.getSignalUrls())) {
-			for (SignalURL url : riskPlanUpdated.getSignalUrls()) {
-				url.setTopicId(riskPlanUpdated.getId());
-				url.setCreatedDate(riskPlanUpdated.getCreatedDate());
-				url.setCreatedBy(riskPlanUpdated.getCreatedBy());
-				url.setModifiedBy(riskPlanUpdated.getModifiedBy());
-				url.setModifiedDate(riskPlanUpdated.getLastModifiedDate());
-			}
-			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
-		}
+		updateSignalUrl(riskPlanUpdated);
+		
 		if (!StringUtils.isEmpty(riskPlan.getSource())) {
 			assignmentConfiguration = assignmentConfigurationRepository
 					.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource());
@@ -179,7 +175,22 @@ public class RiskPlanService {
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 		return riskPlanUpdated;
 	}
-	
+	/**
+	 * 
+	 * @param riskPlanUpdated
+	 */
+	private void updateSignalUrl(RiskPlan riskPlanUpdated) {
+		if (!CollectionUtils.isEmpty(riskPlanUpdated.getSignalUrls())) {
+			for (SignalURL url : riskPlanUpdated.getSignalUrls()) {
+				url.setTopicId(riskPlanUpdated.getId());
+				url.setCreatedDate(riskPlanUpdated.getCreatedDate());
+				url.setCreatedBy(riskPlanUpdated.getCreatedBy());
+				url.setModifiedBy(riskPlanUpdated.getModifiedBy());
+				url.setModifiedDate(riskPlanUpdated.getLastModifiedDate());
+			}
+			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
+		}
+	}
 	public List<RiskTask> associateRiskTasks(RiskPlan riskPlan){
 		List<RiskTask> tasks = null;
 		
@@ -416,6 +427,12 @@ public class RiskPlanService {
 			addRiskTaskStatus(searchDto, whereClauses);
 			addStartDate(searchDto, whereClauses);
 			addEndDate(searchDto, whereClauses);
+			addSearchKeys(searchDto, whereClauses);
+			addOwners(searchDto, whereClauses);
+			addUserGroupUserKeys(searchDto, whereClauses);
+			addUserKeys(searchDto, whereClauses);
+			addOwnerUserKey(searchDto, whereClauses);
+			addOwnerUserGroupKey(searchDto, whereClauses);
 			addUserGroupKey(searchDto, whereClauses);
 		}
 	}
@@ -472,33 +489,76 @@ public class RiskPlanService {
 		}
 	}
 	
+
 	/**
 	 * @param searchDto
 	 * @param whereClauses
 	 */
 	private void addUserGroupKey(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && !CollectionUtils.isEmpty(searchDto.getOwners()) && !CollectionUtils.isEmpty(searchDto.getUserKeys()) ) {
-			whereClauses.add("( r.owner in :owners or ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys)");
-		}else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getOwners())&& !CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add("( ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys)");
-		}
-		else if(CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners()) && CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add("(r.owner in :owners)");
-		}
-		else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners()) && CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add("( ra.user_group_key in :userGroupKeys )");
-		}
-		else if(CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners()) && !CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add("( ra.user_key in :userKeys )");
-		}
-		else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners()) && CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add("( ra.user_group_key in :userGroupKeys or r.owner in :owners )");
-		}
-		else if(CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners()) && !CollectionUtils.isEmpty(searchDto.getUserKeys())) {
-			whereClauses.add("( ra.user_key in :userKeys or r.owner in :owners )");
+		 if(searchFilters.ifUserGroupKey(searchDto)&& ! searchFilters.isOwnerUserKey(searchDto)){
+			whereClauses.add(" ra.user_group_key in :userGroupKeys ");
 		}
 	}
-	
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addSearchKeys(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.ifUserGroupKey(searchDto) && searchFilters.isOwnerUserKey(searchDto)){
+			whereClauses.add(" r.owner in :owners or ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
+		}
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addOwners(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.ifOwner(searchDto) && !searchFilters.isGroupKeyUserKey(searchDto)){
+			whereClauses.add("r.owner in :owners");
+		}
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addUserGroupUserKeys(SearchDto searchDto, List<String> whereClauses){
+		 if(searchFilters.isGroupKeyUserKey(searchDto)&& !searchFilters.ifOwner(searchDto)){
+		whereClauses.add(" ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
+		 }
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addUserKeys(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.ifUserKey(searchDto)&& !searchFilters.isOwnerUserGRoupKey(searchDto)){
+			whereClauses.add(" ra.user_key in :userKeys ");
+		}
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addOwnerUserKey(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.isOwnerUserKey(searchDto)&& !searchFilters.ifUserGroupKey(searchDto)){
+		whereClauses.add(" ra.user_key in :userKeys or r.owner in :owners ");
+		}
+	}
+	/**
+	 * 
+	 * @param searchDto
+	 * @param whereClauses
+	 */
+	private void addOwnerUserGroupKey(SearchDto searchDto, List<String> whereClauses){
+		if(searchFilters.isOwnerUserGRoupKey(searchDto)&& !searchFilters.ifUserKey(searchDto)){
+			whereClauses.add(" ra.user_group_key in :userGroupKeys or r.owner in :owners ");
+		}
+	}
 
 	private void setParameters(String queryStr, SearchDto searchDto, Query query) {
 		setInitialParameters(queryStr, searchDto, query);
@@ -776,20 +836,12 @@ public class RiskPlanService {
 			}
 		}
 		commentsRepository.save(riskPlan.getComments());
-
-		if (!CollectionUtils.isEmpty(riskPlan.getSignalUrls())) {
-			for (SignalURL url : riskPlan.getSignalUrls()) {
-				url.setTopicId(riskPlan.getId());
-				url.setCreatedDate(riskPlan.getCreatedDate());
-				url.setCreatedBy(riskPlan.getCreatedBy());
-				url.setModifiedBy(riskPlan.getModifiedBy());
-				url.setModifiedDate(riskPlan.getLastModifiedDate());
-			}
-			signalURLRepository.save(riskPlan.getSignalUrls());
-		}
-	
+		
+		updateSignalUrl(riskPlan);
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
 	}
+	
+	
 	/**
 	 * This method sets the risk task status as completed 
      * when all tasks are completed else Not completed

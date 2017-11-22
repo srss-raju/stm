@@ -51,6 +51,7 @@ import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
+import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SmtResponse;
 
 /**
@@ -100,6 +101,9 @@ public class AssessmentPlanService {
     ExceptionBuilder exceptionBuilder;
     @Autowired
     AssessmentActionRepository assessmentActionRepository;
+    
+    @Autowired
+	private SearchFilters searchFilters;
     
     @Autowired
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
@@ -169,7 +173,13 @@ public class AssessmentPlanService {
 			addStartOrDueDate(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			addAssessmentRiskStatus(searchDto, criteriaBuilder, topicAssignmentJoin, predicates);
 			/**TopicAssessmentAssignmentAssignees **/
-			addUserGroupKeys(searchDto, criteriaBuilder,joinAssignmentAssignees,topic,predicates);
+			addSearchKeys(searchDto, criteriaBuilder,joinAssignmentAssignees,topic,predicates);
+			addUserKey(searchDto, criteriaBuilder,joinAssignmentAssignees,predicates);
+			addOwners(searchDto, criteriaBuilder,topic,predicates);
+			addOwnersUserKeys(searchDto, criteriaBuilder,joinAssignmentAssignees,topic,predicates);
+			addOwnersUserGroupKeys(searchDto, criteriaBuilder,joinAssignmentAssignees,topic,predicates);
+			addUserGroupKeysUserKeys(searchDto, criteriaBuilder,joinAssignmentAssignees,predicates);
+			addUserGroupKey(searchDto, criteriaBuilder,joinAssignmentAssignees,predicates);
 			
 			Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			
@@ -515,48 +525,113 @@ public class AssessmentPlanService {
         signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlanUpdated, assessmentPlanOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
     }
     
-	/**
-	 * 
-	 * @param searchDto
-	 * @param criteriaBuilder
-	 * @param query
-	 * @param rootTopic
-	 * @param predicates
-	 */
-	private void addUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
-			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees, Root<Topic> rootTopic,List<Predicate> predicates) {
-			
-			  if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) &&!CollectionUtils.isEmpty(searchDto.getOwners()) ){
-				   
-				   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
-						   criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
-						   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())))));
-				   
-				  }else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
-							   criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
-				  }
-				  else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys()))));
-							  
-				  }else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& CollectionUtils.isEmpty(searchDto.getUserKeys())&& CollectionUtils.isEmpty(searchDto.getOwners())){
-					   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
-					     
-				  }else if(!CollectionUtils.isEmpty(searchDto.getOwners())&&CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) && CollectionUtils.isEmpty(searchDto.getUserKeys())){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())),
-							  criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).isNull())));
-					   
-				  }else if(!CollectionUtils.isEmpty(searchDto.getUserKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserGroupKeys()) ){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
-							   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
-				  }
-				  else if(!CollectionUtils.isEmpty(searchDto.getUserGroupKeys())&& !CollectionUtils.isEmpty(searchDto.getOwners())&& CollectionUtils.isEmpty(searchDto.getUserKeys())){
-					  predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
-							   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
-				  }
-			
-			  
-	 }
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addSearchKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees, Root<Topic> rootTopic,List<Predicate> predicates){
+    	 if(searchFilters.ifUserGroupKey(searchDto) && searchFilters.isOwnerUserKey(searchDto)){
+  		   predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+					   criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
+					   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())))));
+  	 }
+    }
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addUserKey(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees, List<Predicate> predicates){
+    	 if(searchFilters.ifUserKey(searchDto)&& !searchFilters.isOwnerUserGRoupKey(searchDto)){
+    		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys()))));
+    	 }
+    }
+    
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addOwners(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+			 Root<Topic> rootTopic,List<Predicate> predicates){
+    	if(searchFilters.ifOwner(searchDto) && !searchFilters.isGroupKeyUserKey(searchDto)){
+   		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners())),
+					  criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).isNull()))); 
+   	 }
+    }
+    
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addOwnersUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees, Root<Topic> rootTopic,List<Predicate> predicates){
+    	if(searchFilters.isOwnerUserKey(searchDto)&& !searchFilters.ifUserGroupKey(searchDto)){
+   		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+					   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
+   	 }
+    }
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addOwnersUserGroupKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees, Root<Topic> rootTopic,List<Predicate> predicates){
+    	 if(searchFilters.isOwnerUserGRoupKey(searchDto)&& !searchFilters.ifUserKey(searchDto)){
+    		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys())),
+					   criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(searchDto.getOwners()))));
+    	 }
+    }
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addUserGroupKeysUserKeys(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees, List<Predicate> predicates){
+    	 if(searchFilters.isGroupKeyUserKey(searchDto)&& !searchFilters.ifOwner(searchDto)){
+    		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_KEY.getDescription()).in(searchDto.getUserKeys())),
+					   criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
+    	 }
+    }
+    /**
+     * 
+     * @param searchDto
+     * @param criteriaBuilder
+     * @param assignmentAssignees
+     * @param rootTopic
+     * @param predicates
+     */
+    private void addUserGroupKey(SearchDto searchDto, CriteriaBuilder criteriaBuilder, 
+			Join<AssessmentPlan,TopicAssessmentAssignmentAssignees> assignmentAssignees,List<Predicate> predicates){
+    	
+    	 if(searchFilters.ifUserGroupKey(searchDto) && !searchFilters.isOwnerUserKey(searchDto)){
+    		 predicates.add(criteriaBuilder.or(criteriaBuilder.isTrue(assignmentAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(searchDto.getUserGroupKeys()))));
+    	 }
+    	}
 	
 	/**
 	 * * @param id
