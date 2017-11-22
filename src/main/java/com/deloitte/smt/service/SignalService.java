@@ -449,6 +449,7 @@ public class SignalService {
 		if (topic.getId() == null) {
 			throw new ApplicationException("Update failed for Topic, since it does not have any valid Id field.");
 		}
+		ownerCheck(topic);
 		topic.setLastModifiedDate(new Date());
 		setTopicIdForSignalStatistics(topic);
 		List<Attachment> attchmentList = attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT,
@@ -459,6 +460,13 @@ public class SignalService {
 		saveSignalUrl(topic);
 		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
 		return "Update Success";
+	}
+
+	private void ownerCheck(Topic topic) throws ApplicationException {
+		Topic topicFromDB = topicRepository.findOne(topic.getId());
+		if(topicFromDB != null && topicFromDB.getOwner() != null && (!topicFromDB.getOwner().equalsIgnoreCase(topic.getOwner()))){
+				throw new ApplicationException("Unable to make you as a Owner");
+		}
 	}
 
 	public AssessmentPlan validateAndPrioritize(Long topicId, AssessmentPlan assessmentPlan)

@@ -455,6 +455,10 @@ public class AssessmentPlanService {
         if(assessmentPlan.getId() == null) {
             throw new ApplicationException("Failed to update Assessment. Invalid Id received");
         }
+        
+        AssessmentPlan assessmentPlanFromDB = assessmentPlanRepository.findOne(assessmentPlan.getId());
+        ownerCheck(assessmentPlan, assessmentPlanFromDB);
+        
         String assessmentPlanOriginal = JsonUtil.converToJson(topicRepository.findOne(assessmentPlan.getId()));
         assessmentPlan.setLastModifiedDate(new Date());
         List<Attachment> attchmentList = attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata(), assessmentPlan.getCreatedBy());
@@ -491,6 +495,12 @@ public class AssessmentPlanService {
         
         signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, assessmentPlanOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
     }
+
+	private void ownerCheck(AssessmentPlan assessmentPlan, AssessmentPlan assessmentPlanFromDB) throws ApplicationException {
+		if(assessmentPlanFromDB != null && assessmentPlanFromDB.getOwner() != null && (!assessmentPlanFromDB.getOwner().equalsIgnoreCase(assessmentPlan.getOwner()))){
+        	throw new ApplicationException("Unable to make you as a Owner");
+        }
+	}
     /**
      * This method sets the assessment task status as completed 
      * when all tasks are completed else not completed
