@@ -37,7 +37,7 @@ public class ExportToExcelController {
 	public void generateExcel(
 			@RequestParam(value = "data") String detectionDetails,
 			HttpServletRequest request, HttpServletResponse response)
-			throws JsonParseException, JsonMappingException, IOException {
+			throws IOException {
 
 		List<SignalAlgorithmDTO> signalAlgorithmDtoList = new ObjectMapper()
 				.readValue(detectionDetails,
