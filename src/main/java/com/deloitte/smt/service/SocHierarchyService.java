@@ -114,7 +114,7 @@ public class SocHierarchyService {
 	public List<SocSearchDTO> getDetailsBySearchText(MedraBrowserDTO medraBrowserDto) {
 		List<SocSearchDTO> socSearchDtoList = new ArrayList<>();
 		
-		String level = null;
+		String level;
 		if(null==medraBrowserDto.getScrollColumn()){
 			level=medraBrowserDto.getSearchLevel();
 		}
