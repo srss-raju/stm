@@ -39,14 +39,18 @@ public class SignalDetectionController {
 	SmqService smqService;
 
 	@PostMapping(value = "/createSignalDetection")
-	public SignalDetection  createSignalDetection(@RequestParam(value = "data") String topicString) throws Exception {
+	public SignalDetection  createSignalDetection(@RequestParam(value = "data") String topicString) throws ApplicationException {
+		SignalDetection signalDetection = null;
 		try {
-			SignalDetection signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
-			return signalDetectionService.createOrUpdateSignalDetection(signalDetection);
-		} catch (ApplicationException | IOException e) {
-			LOG.info("Exception occured while creating "+e);
-			throw e;
+			signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
+		} catch (IOException e) {
+			try {
+				throw e;
+			} catch (IOException e1) {
+				LOG.info("Exception occured while creating "+e1);
+			}
 		}
+		return signalDetectionService.createOrUpdateSignalDetection(signalDetection);
 	}
 	
 	
