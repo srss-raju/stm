@@ -34,9 +34,8 @@ public class SocHierarchyService {
 	 */
 	public List<SocSearchDTO> getHierarchyByCode(MedraBrowserDTO medraBrowserDto) {
 		List<SocHierarchyDto> socHierarchyList;
-		String level = getLevel(medraBrowserDto);
 
-		socHierarchyList = socMedraHierarchyDAO.findAllByConditionName(medraBrowserDto.getSearchValue(), level,
+		socHierarchyList = socMedraHierarchyDAO.findAllByConditionName(medraBrowserDto.getSearchValue(), medraBrowserDto.getSelectLevel(),
 				medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
 		return responseMapper(socHierarchyList);
 	}
@@ -245,10 +244,10 @@ public class SocHierarchyService {
 
 	private String getLevel(MedraBrowserDTO medraBrowserDto) {
 		String level = null;
-
-		if (null != medraBrowserDto.getSearchLevel()) {
-			level = medraBrowserDto.getSearchLevel();
-		} else if (null != medraBrowserDto.getSelectLevel()) {
+		if (null != medraBrowserDto.getScrollColumn()) {
+			level=medraBrowserDto.getScrollColumn();
+		}
+		 else if (null != medraBrowserDto.getSelectLevel()) {
 			level = medraBrowserDto.getSelectLevel();
 		}
 		return level;
