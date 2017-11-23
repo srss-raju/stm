@@ -268,14 +268,19 @@ public class SignalDetectionService {
 		if (!CollectionUtils.isEmpty(ingredients)) {
 			for (Ingredient ingredient : ingredients) {
 				products = ingredient.getProducts();
-				if (!CollectionUtils.isEmpty(products)) {
-					for (Product singleProduct : products) {
-						singleProduct.setIngredientId(ingredient.getId());
-						singleProduct.setDetectionId(signalDetection.getId());
-					}
-					productRepository.save(products);
-				}
+				saveProductCheck(signalDetection, products, ingredient);
 			}
+		}
+	}
+
+	private void saveProductCheck(SignalDetection signalDetection,
+			List<Product> products, Ingredient ingredient) {
+		if (!CollectionUtils.isEmpty(products)) {
+			for (Product singleProduct : products) {
+				singleProduct.setIngredientId(ingredient.getId());
+				singleProduct.setDetectionId(signalDetection.getId());
+			}
+			productRepository.save(products);
 		}
 	}
 
@@ -288,14 +293,19 @@ public class SignalDetectionService {
 			for (Ingredient ingredient : ingredients) {
 
 				List<License> licenses = ingredient.getLicenses();
-				if (!CollectionUtils.isEmpty(licenses)) {
-					for (License singleLicense : licenses) {
-						singleLicense.setIngredientId(ingredient.getId());
-						singleLicense.setDetectionId(signalDetection.getId());
-					}
-					licenseRepository.save(licenses);
-				}
+				saveLicenseCheck(signalDetection, ingredient, licenses);
 			}
+		}
+	}
+
+	private void saveLicenseCheck(SignalDetection signalDetection,
+			Ingredient ingredient, List<License> licenses) {
+		if (!CollectionUtils.isEmpty(licenses)) {
+			for (License singleLicense : licenses) {
+				singleLicense.setIngredientId(ingredient.getId());
+				singleLicense.setDetectionId(signalDetection.getId());
+			}
+			licenseRepository.save(licenses);
 		}
 	}
 

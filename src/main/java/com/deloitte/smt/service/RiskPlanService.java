@@ -802,6 +802,10 @@ public class RiskPlanService {
 		if (riskPlan.getId() == null) {
 			throw new ApplicationException("Failed to update Risk. Invalid Id received");
 		}
+		
+		RiskPlan riskPlanFromDB = riskPlanRepository.findOne(riskPlan.getId());
+		ownerCheck(riskPlan, riskPlanFromDB);
+		
 		String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(riskPlan.getId()));
 		
 		riskPlan.setLastModifiedDate(new Date());
@@ -839,6 +843,12 @@ public class RiskPlanService {
 		
 		updateSignalUrl(riskPlan);
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
+	}
+	private void ownerCheck(RiskPlan riskPlan, RiskPlan riskPlanFromDB)
+			throws ApplicationException {
+		if(riskPlanFromDB != null && riskPlanFromDB.getOwner() != null && (!riskPlanFromDB.getOwner().equalsIgnoreCase(riskPlan.getOwner()))){
+			throw new ApplicationException("Unable to make you as a Owner");
+		}
 	}
 	
 	

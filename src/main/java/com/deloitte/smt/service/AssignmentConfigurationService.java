@@ -69,15 +69,6 @@ public class AssignmentConfigurationService {
         	throw new ApplicationException("AssignmentConfiguration is already exists with given name");
         }
         
-        if(assignmentConfiguration.isDefault()){
-        	AssignmentConfiguration defaultAssignmentConfigurationExists = assignmentConfigurationRepository.findByIsDefault(assignmentConfiguration.isDefault());
-        	if(defaultAssignmentConfigurationExists != null){
-        		throw new ApplicationException("Default AssignmentConfiguration is already exists with name"+defaultAssignmentConfigurationExists.getName());
-        	}else{
-        		return assignmentConfigurationRepository.save(assignmentConfiguration);
-        	}
-        }
-         
         boolean isSocConfigExists = socAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
         boolean isProductConfigExists = productAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
         if(isSocConfigExists || isProductConfigExists){
@@ -98,13 +89,15 @@ public class AssignmentConfigurationService {
             throw new ApplicationException("Required field Id is no present in the given request.");
         }
         assignmentConfiguration.setLastModifiedDate(new Date());
-        boolean isSocConfigExists = socAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
-        boolean isProductConfigExists = productAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
-        if(isSocConfigExists || isProductConfigExists){
-    		duplicateExceptionBuilder.append("  is already exists");
-    		throw new ApplicationException(duplicateExceptionBuilder.toString());
-    	}
         
+        if(!assignmentConfiguration.isDefault()){
+        	boolean isSocConfigExists = socAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
+        	boolean isProductConfigExists = productAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
+	        if(isSocConfigExists || isProductConfigExists){
+	    		duplicateExceptionBuilder.append("  is already exists");
+	    		throw new ApplicationException(duplicateExceptionBuilder.toString());
+	    	}
+        }
         AssignmentConfiguration assignmentConfigurationUpdated = assignmentConfigurationRepository.save(assignmentConfiguration);
         if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
         	saveSocConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
