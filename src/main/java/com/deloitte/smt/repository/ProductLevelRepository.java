@@ -1,0 +1,15 @@
+package com.deloitte.smt.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.deloitte.smt.entity.ProductLevels;
+
+public interface ProductLevelRepository extends JpaRepository<ProductLevels, Long> {
+	
+	@Query(value="select distinct(o.versions) from ProductLevels o where o.versions is not null")
+	List<String> findByVersions();
+	
+}

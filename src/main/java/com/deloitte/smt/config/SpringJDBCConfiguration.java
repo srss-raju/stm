@@ -10,9 +10,11 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import com.deloitte.smt.dao.ProductMedraHierarchyDAO;
 import com.deloitte.smt.dao.PtDAO;
 import com.deloitte.smt.dao.SmqDAO;
 import com.deloitte.smt.dao.SocMedraHierarchyDAO;
+import com.deloitte.smt.dao.impl.ProductMedraHierarchyDAOImpl;
 import com.deloitte.smt.dao.impl.PtDAOImpl;
 import com.deloitte.smt.dao.impl.SmqDAOImpl;
 import com.deloitte.smt.dao.impl.SocMedraHierarchyDAOImpl;
@@ -63,6 +65,13 @@ public class SpringJDBCConfiguration {
     	SocMedraHierarchyDAOImpl socDto = new SocMedraHierarchyDAOImpl();
     	socDto.setNamedParameterJdbcTemplate(namedParameterJdbcTemplate());
         return socDto;
+    }
+    
+    @Bean
+    public ProductMedraHierarchyDAO productMedraHierarchyDAOImpl(){
+    	ProductMedraHierarchyDAOImpl productDto = new ProductMedraHierarchyDAOImpl();
+    	productDto.setNamedParameterJdbcTemplate(namedParameterJdbcTemplate());
+        return productDto;
     }
  
 }

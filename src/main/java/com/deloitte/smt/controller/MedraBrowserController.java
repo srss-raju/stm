@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.dto.ConditionResponse;
 import com.deloitte.smt.dto.MedraBrowserDTO;
+import com.deloitte.smt.dto.ProductResponse;
+import com.deloitte.smt.dto.ProductSearchDTO;
 import com.deloitte.smt.dto.SocSearchDTO;
 import com.deloitte.smt.service.ConditonService;
+import com.deloitte.smt.service.ProductHierarchyService;
+import com.deloitte.smt.service.ProductService;
 import com.deloitte.smt.service.SocHierarchyService;
 
 /**
@@ -31,6 +35,10 @@ public class MedraBrowserController {
 	SocHierarchyService socHierarchyService;
 	@Autowired
 	ConditonService condtionService;
+	@Autowired
+	ProductHierarchyService productHierarchyService;
+	@Autowired
+	ProductService productService;
 
 	
 	/**
@@ -62,6 +70,29 @@ public class MedraBrowserController {
 	public ConditionResponse getAllConditionsLevel() {
 		return condtionService.getAllConditionLevels();
 
+	}
+	
+	@GetMapping(value = "/product/product")
+	public ProductResponse getAllProductsLevel() {
+		return productService.getAllProductsLevel();
+
+	}
+	
+	@PostMapping(value = "/product")
+	public List<ProductSearchDTO> getAllbyProductName(@RequestBody MedraBrowserDTO medraBrowserDto) {
+		LOG.info("Entry: MedraBrowserController : getAllbyProductName() :: hierarchy on level and code ");
+		List<ProductSearchDTO> socList;
+		if (null != medraBrowserDto.getSelectLevel()) {
+			//This method is invoked for getting Hierarchy by ProductName
+			socList = productHierarchyService.getHierarchyByCode(medraBrowserDto);
+		}
+		else{
+			//This method is invoked for search by text in medra browser
+			socList=	productHierarchyService.getDetailsBySearchText(medraBrowserDto);
+		}
+
+		LOG.info("Exit: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
+		return socList;
 	}
 
 }
