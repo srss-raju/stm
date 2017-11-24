@@ -34,9 +34,8 @@ public class ProductHierarchyService {
 	 */
 	public List<ProductSearchDTO> getHierarchyByCode(MedraBrowserDTO medraBrowserDto) {
 		List<ProductHierarchyDto> productHierarchyList;
-		String level = getLevel(medraBrowserDto);
 
-		productHierarchyList = productMedraHierarchyDAO.findAllByActLvel(medraBrowserDto.getSearchValue(), level, medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
+		productHierarchyList = productMedraHierarchyDAO.findAllByActLvel(medraBrowserDto.getSearchValue(), medraBrowserDto.getSelectLevel(), medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
 		return responseMapper(productHierarchyList);
 	}
 
@@ -250,17 +249,6 @@ public class ProductHierarchyService {
 		}
 
 		return productSearchDtoAllList;
-	}
-
-	private String getLevel(MedraBrowserDTO medraBrowserDto) {
-		String level = null;
-
-		if (null != medraBrowserDto.getSearchLevel()) {
-			level = medraBrowserDto.getSearchLevel();
-		} else if (null != medraBrowserDto.getSelectLevel()) {
-			level = medraBrowserDto.getSelectLevel();
-		}
-		return level;
 	}
 
 }
