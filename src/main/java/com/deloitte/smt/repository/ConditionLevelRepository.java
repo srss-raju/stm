@@ -12,4 +12,6 @@ public interface ConditionLevelRepository extends JpaRepository<ConditionLevels,
 	@Query(value="select distinct(o.versions) from ConditionLevels o where o.versions is not null")
 	List<String> findByVersions();
 	
+	List<ConditionLevels> findAllByOrderByIdAsc();
+	
 }

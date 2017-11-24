@@ -21,7 +21,7 @@ public class ConditonService {
 	
 	public ConditionResponse getAllConditionLevels(){
 		ConditionResponse response=new ConditionResponse();
-		List<ConditionLevels> conditionLevelList=conditionLevelRepository.findAll();
+		List<ConditionLevels> conditionLevelList=conditionLevelRepository.findAllByOrderByIdAsc();
 		List<String> conditionVersions=conditionLevelRepository.findByVersions();
 		
 		List<Levels> levelsList=new ArrayList<>();
