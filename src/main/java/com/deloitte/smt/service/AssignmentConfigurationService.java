@@ -102,9 +102,13 @@ public class AssignmentConfigurationService {
         Long id = assignmentConfigurationUpdated.getId();
         if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
         	saveSocConfiguration(assignmentConfiguration, assignmentConfigurationUpdated, id);
+        }else{
+        	socAssignmentConfigurationRepository.deleteByAssignmentConfigurationId(id);
         }
         if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
         	saveProductConfiguration(assignmentConfiguration, assignmentConfigurationUpdated, id);
+        }else{
+        	productAssignmentConfigurationRepository.deleteByAssignmentConfigurationId(id);
         }
         
         setAssignmentConfigurationAssignees(assignmentConfiguration, assignmentConfiguration);
