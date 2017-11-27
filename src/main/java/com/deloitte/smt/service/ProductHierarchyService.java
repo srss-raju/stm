@@ -233,19 +233,19 @@ public class ProductHierarchyService {
 		}
 		List<ProductSearchDTO> productSearchDtoLevelTwoList = searchByLevelTwoName(medraBrowserDto);
 		for (ProductSearchDTO productSearchDtoLevelTwo : productSearchDtoLevelTwoList) {
-			productSearchDtoLevelTwoList.add(productSearchDtoLevelTwo);
+			productSearchDtoAllList.add(productSearchDtoLevelTwo);
 		}
 		List<ProductSearchDTO> productSearchDtoLevelThreeList = searchByLevelThreeName(medraBrowserDto);
 		for (ProductSearchDTO productSearchDtoLevelThree : productSearchDtoLevelThreeList) {
-			productSearchDtoLevelThreeList.add(productSearchDtoLevelThree);
+			productSearchDtoAllList.add(productSearchDtoLevelThree);
 		}
 		List<ProductSearchDTO> productSearchDtoLevelFourList = searchByLevelFourName(medraBrowserDto);
 		for (ProductSearchDTO productSearchDtoLevelFour : productSearchDtoLevelFourList) {
-			productSearchDtoLevelFourList.add(productSearchDtoLevelFour);
+			productSearchDtoAllList.add(productSearchDtoLevelFour);
 		}
 		List<ProductSearchDTO> productSearchDtoLevelFiveList = searchByLevelFiveName(medraBrowserDto);
 		for (ProductSearchDTO productSearchDtoLevelFive : productSearchDtoLevelFiveList) {
-			productSearchDtoLevelFourList.add(productSearchDtoLevelFive);
+			productSearchDtoAllList.add(productSearchDtoLevelFive);
 		}
 
 		return productSearchDtoAllList;
