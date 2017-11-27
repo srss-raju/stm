@@ -59,7 +59,7 @@ public class AssignmentConfigurationService {
      
 
     public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
-    	
+    	Long id = assignmentConfiguration.getId();
     	StringBuilder duplicateExceptionBuilder = new StringBuilder();
     	assignmentConfiguration.setCreatedDate(new Date());
         assignmentConfiguration.setLastModifiedDate(new Date());
@@ -77,8 +77,8 @@ public class AssignmentConfigurationService {
     	}
         
         AssignmentConfiguration assignmentConfigurationUpdated = assignmentConfigurationRepository.save(assignmentConfiguration);
-        saveSocConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
-        saveProductConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
+        saveSocConfiguration(assignmentConfiguration, assignmentConfigurationUpdated,id);
+        saveProductConfiguration(assignmentConfiguration, assignmentConfigurationUpdated,id);
         setAssignmentConfigurationAssignees(assignmentConfiguration, assignmentConfigurationUpdated);
         return assignmentConfigurationUpdated;
     }
@@ -99,11 +99,12 @@ public class AssignmentConfigurationService {
 	    	}
         }
         AssignmentConfiguration assignmentConfigurationUpdated = assignmentConfigurationRepository.save(assignmentConfiguration);
+        Long id = assignmentConfigurationUpdated.getId();
         if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
-        	saveSocConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
+        	saveSocConfiguration(assignmentConfiguration, assignmentConfigurationUpdated, id);
         }
         if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-        	saveProductConfiguration(assignmentConfiguration, assignmentConfigurationUpdated);
+        	saveProductConfiguration(assignmentConfiguration, assignmentConfigurationUpdated, id);
         }
         
         setAssignmentConfigurationAssignees(assignmentConfiguration, assignmentConfiguration);
@@ -212,10 +213,10 @@ public class AssignmentConfigurationService {
 		return isProductConfigExists;
 	}
 
-	private void saveSocConfiguration(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated) {
+	private void saveSocConfiguration(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated, Long id) {
 		
 		for (SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()) {
-			socAssignmentConfigurationRepository.deleteByAssignmentConfigurationId(assignmentConfiguration.getId());
+			socAssignmentConfigurationRepository.deleteByAssignmentConfigurationId(id);
 			socConfig.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 			SocAssignmentConfiguration socAssignmentConfigurationUpdated = socAssignmentConfigurationRepository.save(socConfig);
 			if(!CollectionUtils.isEmpty(socConfig.getConditionValues())){
@@ -229,9 +230,9 @@ public class AssignmentConfigurationService {
 		}
 	}
 	
-	private void saveProductConfiguration(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated) {
+	private void saveProductConfiguration(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated, Long id) {
 		for (ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()) {
-			productAssignmentConfigurationRepository.deleteByAssignmentConfigurationId(assignmentConfiguration.getId());
+			productAssignmentConfigurationRepository.deleteByAssignmentConfigurationId(id);
 			productConfig.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 			ProductAssignmentConfiguration productAssignmentConfigurationUpdated = productAssignmentConfigurationRepository.save(productConfig);
 			if(!CollectionUtils.isEmpty(productConfig.getProductValues())){
