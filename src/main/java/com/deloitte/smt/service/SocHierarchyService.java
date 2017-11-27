@@ -53,10 +53,10 @@ public class SocHierarchyService {
 				socDtoList.add(hlgtSearchdto);
 				SocSearchDTO hltSearchdto = addHlts(socHierarchyDto);
 				socDtoList.add(hltSearchdto);
-				SocSearchDTO lltSearchdto = addLlts(socHierarchyDto);
-				socDtoList.add(lltSearchdto);
 				SocSearchDTO ptSearchdto = addPts(socHierarchyDto);
 				socDtoList.add(ptSearchdto);
+				SocSearchDTO lltSearchdto = addLlts(socHierarchyDto);
+				socDtoList.add(lltSearchdto);
 			}
 		}
 		return socDtoList;
@@ -192,17 +192,7 @@ public class SocHierarchyService {
 		return socSearchDtoList;
 	}
 
-	private List<SocSearchDTO> searchBylltName(MedraBrowserDTO medraBrowserDto) {
-
-		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByLltName(medraBrowserDto.getSearchValue(),
-				medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
-		if (!CollectionUtils.isEmpty(socSearchDtoList)) {
-			for (SocSearchDTO searchDto : socSearchDtoList) {
-				searchDto.setCategory(SmtConstant.LLT_CODE.getDescription());
-			}
-		}
-		return socSearchDtoList;
-	}
+	
 
 	private List<SocSearchDTO> searchByPtName(MedraBrowserDTO medraBrowserDto) {
 
@@ -211,6 +201,18 @@ public class SocHierarchyService {
 		if (!CollectionUtils.isEmpty(socSearchDtoList)) {
 			for (SocSearchDTO searchDto : socSearchDtoList) {
 				searchDto.setCategory(SmtConstant.PT_CODE.getDescription());
+			}
+		}
+		return socSearchDtoList;
+	}
+	
+	private List<SocSearchDTO> searchBylltName(MedraBrowserDTO medraBrowserDto) {
+
+		List<SocSearchDTO> socSearchDtoList = socMedraHierarchyDAO.findByLltName(medraBrowserDto.getSearchValue(),
+				medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
+		if (!CollectionUtils.isEmpty(socSearchDtoList)) {
+			for (SocSearchDTO searchDto : socSearchDtoList) {
+				searchDto.setCategory(SmtConstant.LLT_CODE.getDescription());
 			}
 		}
 		return socSearchDtoList;
