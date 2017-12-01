@@ -107,9 +107,9 @@ public class AssignmentConfigurationService {
 			duplicateConfigBuilderUI.append(socConfig.getRecordKey());
 			SocAssignmentConfiguration socAssignmentConfigurationFromDB = socAssignmentConfigurationRepository.findByRecordKey(socConfig.getRecordKey());
 			if(socAssignmentConfigurationFromDB != null){
-				if(socProductFlag){
+				if(socProductFlag  && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(socAssignmentConfigurationFromDB.getAssignmentConfigurationId()))))){
 					duplicateConfigBuilderDB.append(socAssignmentConfigurationFromDB.getRecordKey());
-				}else{
+				}else if(!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(socAssignmentConfigurationFromDB.getAssignmentConfigurationId())))){
 					duplicateSocFlag = socAssignmentConfigurationFromDB.getRecordKey().equalsIgnoreCase(socConfig.getRecordKey());
 				}
 			}
@@ -123,9 +123,9 @@ public class AssignmentConfigurationService {
 			duplicateConfigBuilderUI.append(productConfig.getRecordKey());
 			ProductAssignmentConfiguration productAssignmentConfigurationFromDB = productAssignmentConfigurationRepository.findByRecordKey(productConfig.getRecordKey());
 			if(productAssignmentConfigurationFromDB != null){
-				if(socProductFlag){
+				if(socProductFlag  && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(productAssignmentConfigurationFromDB.getAssignmentConfigurationId()))))){
 					duplicateConfigBuilderDB.append(productAssignmentConfigurationFromDB.getRecordKey());
-				}else{
+				}else if(!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(productAssignmentConfigurationFromDB.getAssignmentConfigurationId())))){
 					duplicateProductFlag = productAssignmentConfigurationFromDB.getRecordKey().equalsIgnoreCase(productConfig.getRecordKey());
 				}
 			}
