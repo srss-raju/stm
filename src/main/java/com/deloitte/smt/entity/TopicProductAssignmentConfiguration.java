@@ -15,14 +15,13 @@ import javax.persistence.Transient;
  * Created by rkb on 09-11-2017.
  */
 @Entity
-@Table(name = "sm_soc_assignment_configuration")
-public class SocAssignmentConfiguration implements Serializable {
+@Table(name = "sm_topic_product_assignment_configuration")
+public class TopicProductAssignmentConfiguration implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 274553099392305910L;
-	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -30,10 +29,13 @@ public class SocAssignmentConfiguration implements Serializable {
     private String createdBy;
     private Date lastModifiedDate;
     private String lastModifiedBy;
+    private String productName;
     private String recordKey;
     private Long assignmentConfigurationId;
+    private Long topicId;
     @Transient
-    private List<AssignmentCondition> recordValues;
+    private List<TopicAssignmentProduct> recordValues;
+    
 	public Long getId() {
 		return id;
 	}
@@ -64,23 +66,36 @@ public class SocAssignmentConfiguration implements Serializable {
 	public void setLastModifiedBy(String lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
 	}
-	public String getRecordKey() {
-		return recordKey;
+	public String getProductName() {
+		return productName;
 	}
-	public void setRecordKey(String recordKey) {
-		this.recordKey = recordKey;
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
+	
 	public Long getAssignmentConfigurationId() {
 		return assignmentConfigurationId;
 	}
 	public void setAssignmentConfigurationId(Long assignmentConfigurationId) {
 		this.assignmentConfigurationId = assignmentConfigurationId;
 	}
-	public List<AssignmentCondition> getRecordValues() {
+	public String getRecordKey() {
+		return recordKey;
+	}
+	public void setRecordKey(String recordKey) {
+		this.recordKey = recordKey;
+	}
+	public List<TopicAssignmentProduct> getRecordValues() {
 		return recordValues;
 	}
-	public void setRecordValues(List<AssignmentCondition> recordValues) {
+	public void setRecordValues(List<TopicAssignmentProduct> recordValues) {
 		this.recordValues = recordValues;
 	}
-    
+	public Long getTopicId() {
+		return topicId;
+	}
+	public void setTopicId(Long topicId) {
+		this.topicId = topicId;
+	}
+	
 }

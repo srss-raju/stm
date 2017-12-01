@@ -20,6 +20,6 @@ public interface ProductAssignmentConfigurationRepository  extends JpaRepository
 	@Transactional
 	Long deleteByAssignmentConfigurationId(Long assignmentConfigurationId);
 
-	ProductAssignmentConfiguration findByProductKey(String productKey);
+	ProductAssignmentConfiguration findByRecordKey(String productKey);
 	
 }

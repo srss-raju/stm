@@ -15,8 +15,8 @@ import javax.persistence.Transient;
  * Created by rkb on 09-11-2017.
  */
 @Entity
-@Table(name = "sm_soc_assignment_configuration")
-public class SocAssignmentConfiguration implements Serializable {
+@Table(name = "sm_topic_soc_assignment_configuration")
+public class TopicSocAssignmentConfiguration implements Serializable {
 
 	/**
 	 * 
@@ -32,8 +32,10 @@ public class SocAssignmentConfiguration implements Serializable {
     private String lastModifiedBy;
     private String recordKey;
     private Long assignmentConfigurationId;
+    private Long topicId;
     @Transient
-    private List<AssignmentCondition> recordValues;
+    private List<TopicAssignmentCondition> recordValues;
+    
 	public Long getId() {
 		return id;
 	}
@@ -64,23 +66,30 @@ public class SocAssignmentConfiguration implements Serializable {
 	public void setLastModifiedBy(String lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
 	}
-	public String getRecordKey() {
-		return recordKey;
-	}
-	public void setRecordKey(String recordKey) {
-		this.recordKey = recordKey;
-	}
+	
 	public Long getAssignmentConfigurationId() {
 		return assignmentConfigurationId;
 	}
 	public void setAssignmentConfigurationId(Long assignmentConfigurationId) {
 		this.assignmentConfigurationId = assignmentConfigurationId;
 	}
-	public List<AssignmentCondition> getRecordValues() {
+	public String getRecordKey() {
+		return recordKey;
+	}
+	public void setRecordKey(String recordKey) {
+		this.recordKey = recordKey;
+	}
+	public List<TopicAssignmentCondition> getRecordValues() {
 		return recordValues;
 	}
-	public void setRecordValues(List<AssignmentCondition> recordValues) {
+	public void setRecordValues(List<TopicAssignmentCondition> recordValues) {
 		this.recordValues = recordValues;
 	}
-    
+	public Long getTopicId() {
+		return topicId;
+	}
+	public void setTopicId(Long topicId) {
+		this.topicId = topicId;
+	}
+	
 }

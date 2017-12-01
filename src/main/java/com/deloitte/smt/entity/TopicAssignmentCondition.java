@@ -2,21 +2,19 @@ package com.deloitte.smt.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * Created by rkb on 09-11-2017.
  */
 @Entity
-@Table(name = "sm_soc_assignment_configuration")
-public class SocAssignmentConfiguration implements Serializable {
+@Table(name = "sm_topic_soc_assignment_condition")
+public class TopicAssignmentCondition implements Serializable {
 
 	/**
 	 * 
@@ -29,11 +27,12 @@ public class SocAssignmentConfiguration implements Serializable {
     private Date createdDate;
     private String createdBy;
     private Date lastModifiedDate;
-    private String lastModifiedBy;
-    private String recordKey;
+    private String category;
+    private String categoryCode;
+    private String categoryDesc;
     private Long assignmentConfigurationId;
-    @Transient
-    private List<AssignmentCondition> recordValues;
+    private Long topicSocAssignmentConfigurationId;
+    
 	public Long getId() {
 		return id;
 	}
@@ -58,17 +57,23 @@ public class SocAssignmentConfiguration implements Serializable {
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
+	public String getCategory() {
+		return category;
 	}
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
+	public void setCategory(String category) {
+		this.category = category;
 	}
-	public String getRecordKey() {
-		return recordKey;
+	public String getCategoryCode() {
+		return categoryCode;
 	}
-	public void setRecordKey(String recordKey) {
-		this.recordKey = recordKey;
+	public void setCategoryCode(String categoryCode) {
+		this.categoryCode = categoryCode;
+	}
+	public String getCategoryDesc() {
+		return categoryDesc;
+	}
+	public void setCategoryDesc(String categoryDesc) {
+		this.categoryDesc = categoryDesc;
 	}
 	public Long getAssignmentConfigurationId() {
 		return assignmentConfigurationId;
@@ -76,11 +81,12 @@ public class SocAssignmentConfiguration implements Serializable {
 	public void setAssignmentConfigurationId(Long assignmentConfigurationId) {
 		this.assignmentConfigurationId = assignmentConfigurationId;
 	}
-	public List<AssignmentCondition> getRecordValues() {
-		return recordValues;
+	public Long getTopicSocAssignmentConfigurationId() {
+		return topicSocAssignmentConfigurationId;
 	}
-	public void setRecordValues(List<AssignmentCondition> recordValues) {
-		this.recordValues = recordValues;
+	public void setTopicSocAssignmentConfigurationId(
+			Long topicSocAssignmentConfigurationId) {
+		this.topicSocAssignmentConfigurationId = topicSocAssignmentConfigurationId;
 	}
     
 }

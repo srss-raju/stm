@@ -69,9 +69,8 @@ public class AssignmentConfigurationService {
         	throw new ApplicationException("AssignmentConfiguration is already exists with given name");
         }
         
-        boolean isSocConfigExists = socAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
-        boolean isProductConfigExists = productAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
-        if(isSocConfigExists || isProductConfigExists){
+        boolean isExists = duplicateCheck(assignmentConfiguration);
+        if(isExists){
     		duplicateExceptionBuilder.append("  is already exists");
     		throw new ApplicationException(duplicateExceptionBuilder.toString());
     	}
@@ -82,8 +81,52 @@ public class AssignmentConfigurationService {
         setAssignmentConfigurationAssignees(assignmentConfiguration, assignmentConfigurationUpdated);
         return assignmentConfigurationUpdated;
     }
+
+	private boolean duplicateCheck(AssignmentConfiguration assignmentConfiguration) {
+		StringBuilder duplicateConfigBuilderDB = new StringBuilder();
+		StringBuilder duplicateConfigBuilderUI = new StringBuilder();
+		
+		if((!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())) && (!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()))){
+			duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI);
+			duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI);
+			
+        }else if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+        	duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI);
+        }else {
+        	duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI);
+        }
+		
+		return (duplicateConfigBuilderUI.toString()).equalsIgnoreCase(duplicateConfigBuilderDB.toString());
+	}
+
+	private void duplicateProductCheck(
+			AssignmentConfiguration assignmentConfiguration,
+			StringBuilder duplicateConfigBuilderDB,
+			StringBuilder duplicateConfigBuilderUI) {
+		for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+			duplicateConfigBuilderUI.append(productConfig.getRecordKey());
+			ProductAssignmentConfiguration productAssignmentConfigurationFromDB = productAssignmentConfigurationRepository.findByRecordKey(productConfig.getRecordKey());
+			if(productAssignmentConfigurationFromDB != null){
+				duplicateConfigBuilderDB.append(productAssignmentConfigurationFromDB.getRecordKey());
+			}
+		}
+	}
+
+	private void duplicateSocCheck(
+			AssignmentConfiguration assignmentConfiguration,
+			StringBuilder duplicateConfigBuilderDB,
+			StringBuilder duplicateConfigBuilderUI) {
+		for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+			duplicateConfigBuilderUI.append(socConfig.getRecordKey());
+			SocAssignmentConfiguration socAssignmentConfigurationFromDB = socAssignmentConfigurationRepository.findByRecordKey(socConfig.getRecordKey());
+			if(socAssignmentConfigurationFromDB != null){
+				duplicateConfigBuilderDB.append(socAssignmentConfigurationFromDB.getRecordKey());
+			}
+		}
+	}
     
     public AssignmentConfiguration update(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
+    	
     	StringBuilder duplicateExceptionBuilder = new StringBuilder();
     	if(assignmentConfiguration.getId() == null) {
             throw new ApplicationException("Required field Id is no present in the given request.");
@@ -91,9 +134,8 @@ public class AssignmentConfigurationService {
         assignmentConfiguration.setLastModifiedDate(new Date());
         
         if(!assignmentConfiguration.isDefault()){
-        	boolean isSocConfigExists = socAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
-        	boolean isProductConfigExists = productAssignmentConfigurationDuplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
-	        if(isSocConfigExists || isProductConfigExists){
+        	 boolean isExists = duplicateCheck(assignmentConfiguration);
+        	if(isExists){
 	    		duplicateExceptionBuilder.append("  is already exists");
 	    		throw new ApplicationException(duplicateExceptionBuilder.toString());
 	    	}
@@ -175,47 +217,6 @@ public class AssignmentConfigurationService {
 		productAssignmentConfigurationRepository.delete(productAssignmentConfiguration);
 	}
     
-
-	private boolean socAssignmentConfigurationDuplicateCheck(AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateExceptionBuilder) throws ApplicationException {
-		boolean isSocConfigExists = false;
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
-        	for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
-        		SocAssignmentConfiguration socAssignmentConfigurationExists = socAssignmentConfigurationRepository.findByConditionKey(socConfig.getRecordKey());
-        		isSocConfigExists = checkSameSocConfigId(assignmentConfiguration, duplicateExceptionBuilder, socConfig, socAssignmentConfigurationExists);
-        	}
-        }
-		return isSocConfigExists;
-	}
-
-	private boolean checkSameSocConfigId(AssignmentConfiguration assignmentConfiguration,StringBuilder duplicateExceptionBuilder,
-			SocAssignmentConfiguration socConfig, SocAssignmentConfiguration socAssignmentConfigurationExists) {
-		boolean isSocConfigExists = false;
-		if(socAssignmentConfigurationExists != null && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(socAssignmentConfigurationExists.getAssignmentConfigurationId()))))){
-				isSocConfigExists = true;
-				duplicateExceptionBuilder.append(socConfig.getRecordKey()).append(" ");
-		}
-		return isSocConfigExists;
-	}
-	
-	private boolean productAssignmentConfigurationDuplicateCheck(AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateExceptionBuilder) throws ApplicationException {
-		boolean isProductConfigExists = false;
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-        	for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
-        		ProductAssignmentConfiguration productAssignmentConfigurationExists = productAssignmentConfigurationRepository.findByProductKey(productConfig.getRecordKey());
-        		isProductConfigExists = checkSameProductConfigId(assignmentConfiguration, duplicateExceptionBuilder, productConfig, productAssignmentConfigurationExists);
-        	}
-        }
-		return isProductConfigExists;
-	}
-
-	private boolean checkSameProductConfigId(AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateExceptionBuilder, ProductAssignmentConfiguration productConfig, ProductAssignmentConfiguration productAssignmentConfigurationExists) {
-		boolean isProductConfigExists = false;
-		if(productAssignmentConfigurationExists != null && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(productAssignmentConfigurationExists.getAssignmentConfigurationId()))))){
-				isProductConfigExists = true;
-				duplicateExceptionBuilder.append(productConfig.getRecordKey()).append(" ");
-		}
-		return isProductConfigExists;
-	}
 
 	private void saveSocConfiguration(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated, Long id) {
 		socAssignmentConfigurationRepository.deleteByAssignmentConfigurationId(id);
