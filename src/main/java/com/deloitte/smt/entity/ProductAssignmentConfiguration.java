@@ -30,10 +30,10 @@ public class ProductAssignmentConfiguration implements Serializable {
     private Date lastModifiedDate;
     private String lastModifiedBy;
     private String productName;
-    private String productKey;
+    private String recordKey;
     private Long assignmentConfigurationId;
     @Transient
-    private List<AssignmentProduct> productValues;
+    private List<AssignmentProduct> recordValues;
     
 	public Long getId() {
 		return id;
@@ -71,22 +71,24 @@ public class ProductAssignmentConfiguration implements Serializable {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-	public String getProductKey() {
-		return productKey;
-	}
-	public void setProductKey(String productKey) {
-		this.productKey = productKey;
-	}
+	
 	public Long getAssignmentConfigurationId() {
 		return assignmentConfigurationId;
 	}
 	public void setAssignmentConfigurationId(Long assignmentConfigurationId) {
 		this.assignmentConfigurationId = assignmentConfigurationId;
 	}
-	public List<AssignmentProduct> getProductValues() {
-		return productValues;
+	public String getRecordKey() {
+		return recordKey;
 	}
-	public void setProductValues(List<AssignmentProduct> productValues) {
-		this.productValues = productValues;
+	public void setRecordKey(String recordKey) {
+		this.recordKey = recordKey;
 	}
+	public List<AssignmentProduct> getRecordValues() {
+		return recordValues;
+	}
+	public void setRecordValues(List<AssignmentProduct> recordValues) {
+		this.recordValues = recordValues;
+	}
+	
 }

@@ -149,7 +149,6 @@ public class SocHierarchyService {
 				break;
 
 			default:
-				socSearchDtoList = searchBySocName(medraBrowserDto);
 				break;
 			}
 		}
@@ -242,17 +241,6 @@ public class SocHierarchyService {
 		}
 
 		return socSearchDtoAllList;
-	}
-
-	private String getLevel(MedraBrowserDTO medraBrowserDto) {
-		String level = null;
-		if (null != medraBrowserDto.getScrollColumn()) {
-			level=medraBrowserDto.getScrollColumn();
-		}
-		 else if (null != medraBrowserDto.getSelectLevel()) {
-			level = medraBrowserDto.getSelectLevel();
-		}
-		return level;
 	}
 
 }

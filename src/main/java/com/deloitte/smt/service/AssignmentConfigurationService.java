@@ -180,7 +180,7 @@ public class AssignmentConfigurationService {
 		boolean isSocConfigExists = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
         	for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
-        		SocAssignmentConfiguration socAssignmentConfigurationExists = socAssignmentConfigurationRepository.findByConditionKey(socConfig.getConditionKey());
+        		SocAssignmentConfiguration socAssignmentConfigurationExists = socAssignmentConfigurationRepository.findByConditionKey(socConfig.getRecordKey());
         		isSocConfigExists = checkSameSocConfigId(assignmentConfiguration, duplicateExceptionBuilder, socConfig, socAssignmentConfigurationExists);
         	}
         }
@@ -192,7 +192,7 @@ public class AssignmentConfigurationService {
 		boolean isSocConfigExists = false;
 		if(socAssignmentConfigurationExists != null && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(socAssignmentConfigurationExists.getAssignmentConfigurationId()))))){
 				isSocConfigExists = true;
-				duplicateExceptionBuilder.append(socConfig.getConditionKey()).append(" ");
+				duplicateExceptionBuilder.append(socConfig.getRecordKey()).append(" ");
 		}
 		return isSocConfigExists;
 	}
@@ -201,7 +201,7 @@ public class AssignmentConfigurationService {
 		boolean isProductConfigExists = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
         	for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
-        		ProductAssignmentConfiguration productAssignmentConfigurationExists = productAssignmentConfigurationRepository.findByProductKey(productConfig.getProductKey());
+        		ProductAssignmentConfiguration productAssignmentConfigurationExists = productAssignmentConfigurationRepository.findByProductKey(productConfig.getRecordKey());
         		isProductConfigExists = checkSameProductConfigId(assignmentConfiguration, duplicateExceptionBuilder, productConfig, productAssignmentConfigurationExists);
         	}
         }
@@ -212,7 +212,7 @@ public class AssignmentConfigurationService {
 		boolean isProductConfigExists = false;
 		if(productAssignmentConfigurationExists != null && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(productAssignmentConfigurationExists.getAssignmentConfigurationId()))))){
 				isProductConfigExists = true;
-				duplicateExceptionBuilder.append(productConfig.getProductKey()).append(" ");
+				duplicateExceptionBuilder.append(productConfig.getRecordKey()).append(" ");
 		}
 		return isProductConfigExists;
 	}
@@ -222,13 +222,13 @@ public class AssignmentConfigurationService {
 		for (SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()) {
 			socConfig.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 			SocAssignmentConfiguration socAssignmentConfigurationUpdated = socAssignmentConfigurationRepository.save(socConfig);
-			if(!CollectionUtils.isEmpty(socConfig.getConditionValues())){
-				assignmentConditionRepository.delete(socConfig.getConditionValues());
-				for(AssignmentCondition condition : socConfig.getConditionValues()){
+			if(!CollectionUtils.isEmpty(socConfig.getRecordValues())){
+				assignmentConditionRepository.delete(socConfig.getRecordValues());
+				for(AssignmentCondition condition : socConfig.getRecordValues()){
 					condition.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 					condition.setSocAssignmentConfigurationId(socAssignmentConfigurationUpdated.getId());
 				}
-				assignmentConditionRepository.save(socConfig.getConditionValues());
+				assignmentConditionRepository.save(socConfig.getRecordValues());
 			}
 		}
 	}
@@ -238,13 +238,13 @@ public class AssignmentConfigurationService {
 		for (ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()) {
 			productConfig.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 			ProductAssignmentConfiguration productAssignmentConfigurationUpdated = productAssignmentConfigurationRepository.save(productConfig);
-			if(!CollectionUtils.isEmpty(productConfig.getProductValues())){
-				assignmentProductRepository.delete(productConfig.getProductValues());
-				for(AssignmentProduct product : productConfig.getProductValues()){
+			if(!CollectionUtils.isEmpty(productConfig.getRecordValues())){
+				assignmentProductRepository.delete(productConfig.getRecordValues());
+				for(AssignmentProduct product : productConfig.getRecordValues()){
 					product.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 					product.setProductAssignmentConfigurationId(productAssignmentConfigurationUpdated.getId());
 				}
-				assignmentProductRepository.save(productConfig.getProductValues());
+				assignmentProductRepository.save(productConfig.getRecordValues());
 			}
 		}
 	}
@@ -279,7 +279,7 @@ public class AssignmentConfigurationService {
 		List<SocAssignmentConfiguration> socAssignmentConfigurations =  socAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
         if(!CollectionUtils.isEmpty(socAssignmentConfigurations)){
         	for(SocAssignmentConfiguration socConfig : socAssignmentConfigurations){
-        		socConfig.setConditionValues(assignmentConditionRepository.findBySocAssignmentConfigurationId(socConfig.getId()));
+        		socConfig.setRecordValues(assignmentConditionRepository.findBySocAssignmentConfigurationId(socConfig.getId()));
         	}
         	assignmentConfiguration.setConditions(socAssignmentConfigurations);
         }
@@ -289,7 +289,7 @@ public class AssignmentConfigurationService {
 		List<ProductAssignmentConfiguration> productAssignmentConfigurations =  productAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
         if(!CollectionUtils.isEmpty(productAssignmentConfigurations)){
         	for(ProductAssignmentConfiguration productConfig : productAssignmentConfigurations){
-        		productConfig.setProductValues(assignmentProductRepository.findByProductAssignmentConfigurationId(productConfig.getId()));
+        		productConfig.setRecordValues(assignmentProductRepository.findByProductAssignmentConfigurationId(productConfig.getId()));
         	}
         	assignmentConfiguration.setProducts(productAssignmentConfigurations);
         }
