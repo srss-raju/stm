@@ -85,44 +85,52 @@ public class AssignmentConfigurationService {
 	private boolean duplicateCheck(AssignmentConfiguration assignmentConfiguration) {
 		StringBuilder duplicateConfigBuilderDB = new StringBuilder();
 		StringBuilder duplicateConfigBuilderUI = new StringBuilder();
+		boolean duplicateRecordFlag;
 		
 		if((!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())) && (!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()))){
-			duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI);
-			duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI);
-			
+			duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, true);
+			duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, true);
+			duplicateRecordFlag = (duplicateConfigBuilderUI.toString()).equalsIgnoreCase(duplicateConfigBuilderDB.toString());
         }else if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
-        	duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI);
+        	duplicateRecordFlag = duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, false);
         }else {
-        	duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI);
+        	duplicateRecordFlag = duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, false);
         }
 		
-		return (duplicateConfigBuilderUI.toString()).equalsIgnoreCase(duplicateConfigBuilderDB.toString());
+		return duplicateRecordFlag;
 	}
 
-	private void duplicateProductCheck(
-			AssignmentConfiguration assignmentConfiguration,
-			StringBuilder duplicateConfigBuilderDB,
-			StringBuilder duplicateConfigBuilderUI) {
-		for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
-			duplicateConfigBuilderUI.append(productConfig.getRecordKey());
-			ProductAssignmentConfiguration productAssignmentConfigurationFromDB = productAssignmentConfigurationRepository.findByRecordKey(productConfig.getRecordKey());
-			if(productAssignmentConfigurationFromDB != null){
-				duplicateConfigBuilderDB.append(productAssignmentConfigurationFromDB.getRecordKey());
-			}
-		}
-	}
 
-	private void duplicateSocCheck(
-			AssignmentConfiguration assignmentConfiguration,
-			StringBuilder duplicateConfigBuilderDB,
-			StringBuilder duplicateConfigBuilderUI) {
+	private boolean duplicateSocCheck(AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateConfigBuilderDB, StringBuilder duplicateConfigBuilderUI, boolean socProductFlag) {
+		boolean duplicateSocFlag = false;
 		for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
 			duplicateConfigBuilderUI.append(socConfig.getRecordKey());
 			SocAssignmentConfiguration socAssignmentConfigurationFromDB = socAssignmentConfigurationRepository.findByRecordKey(socConfig.getRecordKey());
 			if(socAssignmentConfigurationFromDB != null){
-				duplicateConfigBuilderDB.append(socAssignmentConfigurationFromDB.getRecordKey());
+				if(socProductFlag){
+					duplicateConfigBuilderDB.append(socAssignmentConfigurationFromDB.getRecordKey());
+				}else{
+					duplicateSocFlag = socAssignmentConfigurationFromDB.getRecordKey().equalsIgnoreCase(socConfig.getRecordKey());
+				}
 			}
 		}
+		return duplicateSocFlag;
+	}
+	
+	private boolean duplicateProductCheck( AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateConfigBuilderDB, StringBuilder duplicateConfigBuilderUI, boolean socProductFlag) {
+		boolean duplicateProductFlag = false;
+		for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+			duplicateConfigBuilderUI.append(productConfig.getRecordKey());
+			ProductAssignmentConfiguration productAssignmentConfigurationFromDB = productAssignmentConfigurationRepository.findByRecordKey(productConfig.getRecordKey());
+			if(productAssignmentConfigurationFromDB != null){
+				if(socProductFlag){
+					duplicateConfigBuilderDB.append(productAssignmentConfigurationFromDB.getRecordKey());
+				}else{
+					duplicateProductFlag = productAssignmentConfigurationFromDB.getRecordKey().equalsIgnoreCase(productConfig.getRecordKey());
+				}
+			}
+		}
+		return duplicateProductFlag;
 	}
     
     public AssignmentConfiguration update(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
