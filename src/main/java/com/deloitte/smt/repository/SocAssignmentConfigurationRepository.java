@@ -22,4 +22,7 @@ public interface SocAssignmentConfigurationRepository  extends JpaRepository< So
 
 	SocAssignmentConfiguration findByRecordKey(String conditionKey);
 	
+	List<SocAssignmentConfiguration> findDistinctByRecordKey(String conditionKey);
+	
+	
 }

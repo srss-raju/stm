@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -51,6 +52,8 @@ public class AssignmentConfiguration implements Serializable {
     @Transient
 	private List<ProductAssignmentConfiguration> products;
     
+    @JsonIgnore
+    private String totalRecordKey;
     
     public Long getId() {
         return id;
@@ -188,6 +191,14 @@ public class AssignmentConfiguration implements Serializable {
 
 	public void setProducts(List<ProductAssignmentConfiguration> products) {
 		this.products = products;
+	}
+
+	public String getTotalRecordKey() {
+		return totalRecordKey;
+	}
+
+	public void setTotalRecordKey(String totalRecordKey) {
+		this.totalRecordKey = totalRecordKey;
 	}
 
 }

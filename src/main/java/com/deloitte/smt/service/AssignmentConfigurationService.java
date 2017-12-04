@@ -3,6 +3,10 @@ package com.deloitte.smt.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,9 @@ import com.deloitte.smt.repository.SocAssignmentConfigurationRepository;
  */
 @Service
 public class AssignmentConfigurationService {
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 
     @Autowired
     AssignmentConfigurationRepository assignmentConfigurationRepository;
@@ -60,23 +67,17 @@ public class AssignmentConfigurationService {
 
     public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
     	Long id = assignmentConfiguration.getId();
-    	StringBuilder duplicateExceptionBuilder = new StringBuilder();
+    	StringBuilder totalRecordKeyFromUI = new StringBuilder();
     	assignmentConfiguration.setCreatedDate(new Date());
         assignmentConfiguration.setLastModifiedDate(new Date());
         
-        AssignmentConfiguration assignmentConfigurationExists = assignmentConfigurationRepository.findByNameIgnoreCase(assignmentConfiguration.getName());
-        if(assignmentConfigurationExists != null){
-        	if(assignmentConfiguration.getName().equalsIgnoreCase(assignmentConfigurationExists.getName())){
-        		throw new ApplicationException("AssignmentConfiguration is already exists with given name");
-        	}
-        }
+        duplicateConfigurationCheck(assignmentConfiguration);
         
-        boolean isExists = duplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
+        boolean isExists = duplicateCheck(assignmentConfiguration);
         if(isExists){
-    		duplicateExceptionBuilder.append("  is already exists");
-    		throw new ApplicationException(duplicateExceptionBuilder.toString());
+    		throw new ApplicationException("Record already exists");
     	}
-        
+        assignmentConfiguration.setTotalRecordKey(totalRecordKeyFromUI.toString());
         AssignmentConfiguration assignmentConfigurationUpdated = assignmentConfigurationRepository.save(assignmentConfiguration);
         saveSocConfiguration(assignmentConfiguration, assignmentConfigurationUpdated,id);
         saveProductConfiguration(assignmentConfiguration, assignmentConfigurationUpdated,id);
@@ -84,75 +85,32 @@ public class AssignmentConfigurationService {
         return assignmentConfigurationUpdated;
     }
 
-	private boolean duplicateCheck(AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateExceptionBuilder) {
-		StringBuilder duplicateConfigBuilderDB = new StringBuilder();
-		StringBuilder duplicateConfigBuilderUI = new StringBuilder();
-		boolean duplicateRecordFlag;
-		
-		if((!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())) && (!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()))){
-			duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, true);
-			duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, true);
-			duplicateRecordFlag = (duplicateConfigBuilderUI.toString()).equalsIgnoreCase(duplicateConfigBuilderDB.toString());
-			duplicateExceptionBuilder.append("Product and Condition");
-        }else if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
-        	duplicateRecordFlag = duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, false);
-        	duplicateExceptionBuilder.append("Condition");
-        }else {
-        	duplicateRecordFlag = duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, false);
-        	duplicateExceptionBuilder.append("Product");
+	private void duplicateConfigurationCheck(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
+		AssignmentConfiguration assignmentConfigurationExists = assignmentConfigurationRepository.findByNameIgnoreCase(assignmentConfiguration.getName());
+        if(assignmentConfigurationExists != null && assignmentConfiguration.getName().equalsIgnoreCase(assignmentConfigurationExists.getName())){
+        		throw new ApplicationException("AssignmentConfiguration is already exists with given name");
         }
-		
-		return duplicateRecordFlag;
 	}
 
-
-	private boolean duplicateSocCheck(AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateConfigBuilderDB, StringBuilder duplicateConfigBuilderUI, boolean socProductFlag) {
-		boolean duplicateSocFlag = false;
-		for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
-			duplicateConfigBuilderUI.append(socConfig.getRecordKey());
-			SocAssignmentConfiguration socAssignmentConfigurationFromDB = socAssignmentConfigurationRepository.findByRecordKey(socConfig.getRecordKey());
-			if(socAssignmentConfigurationFromDB != null){
-				if(socProductFlag  && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(socAssignmentConfigurationFromDB.getAssignmentConfigurationId()))))){
-					duplicateConfigBuilderDB.append(socAssignmentConfigurationFromDB.getRecordKey());
-				}else if(!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(socAssignmentConfigurationFromDB.getAssignmentConfigurationId())))){
-					duplicateSocFlag = socAssignmentConfigurationFromDB.getRecordKey().equalsIgnoreCase(socConfig.getRecordKey());
-				}
-			}
-		}
-		return duplicateSocFlag;
+	private boolean duplicateCheck(AssignmentConfiguration assignmentConfiguration) {
+		return getProductsAndConditions(assignmentConfiguration);
 	}
 	
-	private boolean duplicateProductCheck( AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateConfigBuilderDB, StringBuilder duplicateConfigBuilderUI, boolean socProductFlag) {
-		boolean duplicateProductFlag = false;
-		for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
-			duplicateConfigBuilderUI.append(productConfig.getRecordKey());
-			ProductAssignmentConfiguration productAssignmentConfigurationFromDB = productAssignmentConfigurationRepository.findByRecordKey(productConfig.getRecordKey());
-			if(productAssignmentConfigurationFromDB != null){
-				if(socProductFlag  && (!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(productAssignmentConfigurationFromDB.getAssignmentConfigurationId()))))){
-					duplicateConfigBuilderDB.append(productAssignmentConfigurationFromDB.getRecordKey());
-				}else if(!(String.valueOf(assignmentConfiguration.getId()).equalsIgnoreCase(String.valueOf(productAssignmentConfigurationFromDB.getAssignmentConfigurationId())))){
-					duplicateProductFlag = productAssignmentConfigurationFromDB.getRecordKey().equalsIgnoreCase(productConfig.getRecordKey());
-				}
-			}
-		}
-		return duplicateProductFlag;
-	}
-    
-    public AssignmentConfiguration update(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
+	public AssignmentConfiguration update(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
     	
-    	StringBuilder duplicateExceptionBuilder = new StringBuilder();
+		StringBuilder totalRecordKeyFromUI = new StringBuilder();
     	if(assignmentConfiguration.getId() == null) {
             throw new ApplicationException("Required field Id is no present in the given request.");
         }
         assignmentConfiguration.setLastModifiedDate(new Date());
         
         if(!assignmentConfiguration.isDefault()){
-        	boolean isExists = duplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
+        	boolean isExists = duplicateCheck(assignmentConfiguration);
         	if(isExists){
-	    		duplicateExceptionBuilder.append("  is already exists");
-	    		throw new ApplicationException(duplicateExceptionBuilder.toString());
+	    		throw new ApplicationException("Record is already exists");
 	    	}
         }
+        assignmentConfiguration.setTotalRecordKey(totalRecordKeyFromUI.toString());
         AssignmentConfiguration assignmentConfigurationUpdated = assignmentConfigurationRepository.save(assignmentConfiguration);
         Long id = assignmentConfigurationUpdated.getId();
         if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
@@ -365,6 +323,36 @@ public class AssignmentConfigurationService {
 			throw new ApplicationException("Risk Plan Assignment Configuration not found with the given Id : "+assigneeId);
 		}
 		riskPlanAssignmentAssigneesRepository.delete(assignee);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean getProductsAndConditions(AssignmentConfiguration assignmentConfiguration) {
+		StringBuilder queryBuilder = new StringBuilder("select a.id, a.name, c.id as cid,c.record_key as crecordkey,p.id as pid,p.record_key as precordkey from sm_assignment_configuration a LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id where ");
+		StringBuilder socBuilder = new StringBuilder();
+		StringBuilder productBuilder = new StringBuilder();
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
+			}
+			queryBuilder.append(" c.record_key IN (");
+			queryBuilder.append(socBuilder.toString());
+			queryBuilder.append(")");
+		}
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
+			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
+			}
+			queryBuilder.append(" and p.record_key IN (");
+			queryBuilder.append(productBuilder.toString());
+			queryBuilder.append(")");
+		}
+		Query query = entityManager.createNativeQuery(queryBuilder.toString());
+		List<Object> records = query.getResultList();
+		if(records != null){
+			return true;
+		}
+		
+		return false;
 	}
 
 }

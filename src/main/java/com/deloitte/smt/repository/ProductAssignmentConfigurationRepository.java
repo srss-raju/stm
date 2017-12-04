@@ -22,4 +22,6 @@ public interface ProductAssignmentConfigurationRepository  extends JpaRepository
 
 	ProductAssignmentConfiguration findByRecordKey(String productKey);
 	
+	List<ProductAssignmentConfiguration> findDistinctByRecordKey(String productKey);
+	
 }
