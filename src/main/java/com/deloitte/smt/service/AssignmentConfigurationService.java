@@ -66,10 +66,12 @@ public class AssignmentConfigurationService {
         
         AssignmentConfiguration assignmentConfigurationExists = assignmentConfigurationRepository.findByName(assignmentConfiguration.getName());
         if(assignmentConfigurationExists != null){
-        	throw new ApplicationException("AssignmentConfiguration is already exists with given name");
+        	if(assignmentConfiguration.getName().equalsIgnoreCase(assignmentConfigurationExists.getName())){
+        		throw new ApplicationException("AssignmentConfiguration is already exists with given name");
+        	}
         }
         
-        boolean isExists = duplicateCheck(assignmentConfiguration);
+        boolean isExists = duplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
         if(isExists){
     		duplicateExceptionBuilder.append("  is already exists");
     		throw new ApplicationException(duplicateExceptionBuilder.toString());
@@ -82,7 +84,7 @@ public class AssignmentConfigurationService {
         return assignmentConfigurationUpdated;
     }
 
-	private boolean duplicateCheck(AssignmentConfiguration assignmentConfiguration) {
+	private boolean duplicateCheck(AssignmentConfiguration assignmentConfiguration, StringBuilder duplicateExceptionBuilder) {
 		StringBuilder duplicateConfigBuilderDB = new StringBuilder();
 		StringBuilder duplicateConfigBuilderUI = new StringBuilder();
 		boolean duplicateRecordFlag;
@@ -91,10 +93,13 @@ public class AssignmentConfigurationService {
 			duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, true);
 			duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, true);
 			duplicateRecordFlag = (duplicateConfigBuilderUI.toString()).equalsIgnoreCase(duplicateConfigBuilderDB.toString());
+			duplicateExceptionBuilder.append("Product and Condition");
         }else if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
         	duplicateRecordFlag = duplicateSocCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, false);
+        	duplicateExceptionBuilder.append("Condition");
         }else {
         	duplicateRecordFlag = duplicateProductCheck(assignmentConfiguration, duplicateConfigBuilderDB, duplicateConfigBuilderUI, false);
+        	duplicateExceptionBuilder.append("Product");
         }
 		
 		return duplicateRecordFlag;
@@ -142,7 +147,7 @@ public class AssignmentConfigurationService {
         assignmentConfiguration.setLastModifiedDate(new Date());
         
         if(!assignmentConfiguration.isDefault()){
-        	 boolean isExists = duplicateCheck(assignmentConfiguration);
+        	boolean isExists = duplicateCheck(assignmentConfiguration, duplicateExceptionBuilder);
         	if(isExists){
 	    		duplicateExceptionBuilder.append("  is already exists");
 	    		throw new ApplicationException(duplicateExceptionBuilder.toString());
