@@ -64,7 +64,7 @@ public class AssignmentConfigurationService {
     	assignmentConfiguration.setCreatedDate(new Date());
         assignmentConfiguration.setLastModifiedDate(new Date());
         
-        AssignmentConfiguration assignmentConfigurationExists = assignmentConfigurationRepository.findByName(assignmentConfiguration.getName());
+        AssignmentConfiguration assignmentConfigurationExists = assignmentConfigurationRepository.findByNameIgnoreCase(assignmentConfiguration.getName());
         if(assignmentConfigurationExists != null){
         	if(assignmentConfiguration.getName().equalsIgnoreCase(assignmentConfigurationExists.getName())){
         		throw new ApplicationException("AssignmentConfiguration is already exists with given name");
