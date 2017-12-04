@@ -330,6 +330,8 @@ public class AssignmentConfigurationService {
 		StringBuilder queryBuilder = new StringBuilder("select a.id, a.name, c.id as cid,c.record_key as crecordkey,p.id as pid,p.record_key as precordkey from sm_assignment_configuration a LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id where ");
 		StringBuilder socBuilder = new StringBuilder();
 		StringBuilder productBuilder = new StringBuilder();
+		boolean noSocFlag = false;
+		boolean noProductFlag = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
 			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
@@ -337,6 +339,7 @@ public class AssignmentConfigurationService {
 			queryBuilder.append(" c.record_key IN (");
 			queryBuilder.append(socBuilder.toString());
 			queryBuilder.append(")");
+			noSocFlag = true;
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
 			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
@@ -345,10 +348,17 @@ public class AssignmentConfigurationService {
 			queryBuilder.append(" and p.record_key IN (");
 			queryBuilder.append(productBuilder.toString());
 			queryBuilder.append(")");
+			noProductFlag = true;
+		}
+		if(!noSocFlag){
+			queryBuilder.append(" and c.record_key is null");
+		}
+		if(!noProductFlag){
+			queryBuilder.append(" and p.record_key is null");
 		}
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		List<Object> records = query.getResultList();
-		if(records != null){
+		if(!CollectionUtils.isEmpty(records)){
 			return true;
 		}
 		
