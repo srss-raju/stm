@@ -88,7 +88,7 @@ public class AssignmentConfigurationService {
 	private void duplicateConfigurationCheck(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationExists = assignmentConfigurationRepository.findByNameIgnoreCase(assignmentConfiguration.getName());
         if(assignmentConfigurationExists != null && assignmentConfiguration.getName().equalsIgnoreCase(assignmentConfigurationExists.getName())){
-        		throw new ApplicationException("AssignmentConfiguration is already exists with given name");
+        		throw new ApplicationException("Assignment Configuration is already exists with given name");
         }
 	}
 
@@ -104,8 +104,8 @@ public class AssignmentConfigurationService {
         }
         assignmentConfiguration.setLastModifiedDate(new Date());
         AssignmentConfiguration assignmentConfigurationExists = assignmentConfigurationRepository.findByNameIgnoreCase(assignmentConfiguration.getName());
-        if(assignmentConfigurationExists != null && (assignmentConfigurationExists.getId() != assignmentConfiguration.getId())){
-        	throw new ApplicationException("AssignmentConfiguration is already exists with given name");
+        if(assignmentConfigurationExists != null && (assignmentConfigurationExists.getId().longValue() != assignmentConfiguration.getId().longValue())){
+        	throw new ApplicationException("Assignment Configuration is already exists with given name");
         }
         if(!assignmentConfiguration.isDefault()){
         	boolean isExists = duplicateCheck(assignmentConfiguration);
