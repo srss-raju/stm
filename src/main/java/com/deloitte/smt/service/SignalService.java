@@ -249,8 +249,9 @@ public class SignalService {
 		Topic topicUpdated = topicRepository.save(topic);
 		
 		AssignmentConfiguration assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(signalAssignmentService.convertToAssignmentConfiguration(topic));
-		
-		topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
+		if(assignmentConfiguration != null){
+			topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
+		}
 		saveSignalUrl(topicUpdated);
 		saveSignalStrength(topicUpdated);
 		
