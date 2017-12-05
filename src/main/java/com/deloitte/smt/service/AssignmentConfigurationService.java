@@ -103,7 +103,10 @@ public class AssignmentConfigurationService {
             throw new ApplicationException("Required field Id is no present in the given request.");
         }
         assignmentConfiguration.setLastModifiedDate(new Date());
-        
+        AssignmentConfiguration assignmentConfigurationExists = assignmentConfigurationRepository.findByNameIgnoreCase(assignmentConfiguration.getName());
+        if(assignmentConfigurationExists != null && (assignmentConfigurationExists.getId() != assignmentConfiguration.getId())){
+        	throw new ApplicationException("AssignmentConfiguration is already exists with given name");
+        }
         if(!assignmentConfiguration.isDefault()){
         	boolean isExists = duplicateCheck(assignmentConfiguration);
         	if(isExists){
