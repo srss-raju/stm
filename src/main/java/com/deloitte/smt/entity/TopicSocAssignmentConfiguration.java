@@ -31,6 +31,7 @@ public class TopicSocAssignmentConfiguration implements Serializable {
     private Date lastModifiedDate;
     private String lastModifiedBy;
     private String recordKey;
+    private String conditionName;
     private Long assignmentConfigurationId;
     private Long topicId;
     @Transient
@@ -90,6 +91,12 @@ public class TopicSocAssignmentConfiguration implements Serializable {
 	}
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
+	}
+	public String getConditionName() {
+		return conditionName;
+	}
+	public void setConditionName(String conditionName) {
+		this.conditionName = conditionName;
 	}
 	
 }

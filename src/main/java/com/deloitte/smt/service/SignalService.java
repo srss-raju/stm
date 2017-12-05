@@ -26,13 +26,10 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
-import com.deloitte.smt.entity.Hlgt;
-import com.deloitte.smt.entity.Hlt;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.Product;
-import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalConfiguration;
@@ -250,37 +247,10 @@ public class SignalService {
 		}
 
 		Topic topicUpdated = topicRepository.save(topic);
-		Ingredient ingredient = topicUpdated.getIngredient();
-		if (ingredient != null) {
-			AssignmentConfiguration assignmentConfiguration = null;
-			if (!StringUtils.isEmpty(topicUpdated.getSourceName())) {
-				assignmentConfiguration = assignmentConfigurationRepository
-						.findByIngredientAndSignalSource(ingredient.getIngredientName(), topicUpdated.getSourceName());
-			}
-			// If Source is null and combination not available we have to
-			// fetch
-			// with Ingredient
-			if (assignmentConfiguration == null) {
-				assignmentConfiguration = assignmentConfigurationRepository
-						.findByIngredientAndSignalSourceIsNull(ingredient.getIngredientName());
-			}
-
-			if (assignmentConfiguration != null) {
-				if(assignmentConfiguration.getSignalOwner()!=null){
-					topicUpdated.setOwner(assignmentConfiguration.getSignalOwner());
-				}
-				topicUpdated = topicRepository.save(topicUpdated);
-				topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
-			}
-			
-			ingredient.setTopicId(topicUpdated.getId());
-			ingredient = ingredientRepository.save(ingredient);
-
-			saveProducts(topicUpdated, ingredient);
-
-			saveLicenses(topicUpdated, ingredient);
-		}
-		saveSoc(topicUpdated);
+		
+		AssignmentConfiguration assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(signalAssignmentService.convertToAssignmentConfiguration(topic));
+		
+		topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
 		saveSignalUrl(topicUpdated);
 		saveSignalStrength(topicUpdated);
 		
@@ -331,106 +301,6 @@ public class SignalService {
 				signalStrength.setModifiedDate(topicUpdated.getLastModifiedDate());
 			}
 			signalStrengthRepository.save(topicUpdated.getSignalStrengthAtrributes());
-		}
-	}
-
-	/**
-	 * @param topicUpdated
-	 */
-	private void saveSoc(Topic topicUpdated) {
-		List<Soc> socs = topicUpdated.getSocs();
-		if (!CollectionUtils.isEmpty(socs)) {
-			for (Soc soc : socs) {
-				soc.setTopicId(topicUpdated.getId());
-			}
-			socs = socRepository.save(socs);
-			List<Hlgt> hlgts;
-			List<Hlt> hlts;
-			List<Pt> pts;
-
-			for (Soc soc : socs) {
-				hlgts = soc.getHlgts();
-				hlts = soc.getHlts();
-				pts = soc.getPts();
-				saveHlgt(topicUpdated, hlgts, soc);
-				saveHlt(topicUpdated, hlts, soc);
-				savePt(topicUpdated, pts, soc);
-			}
-		}
-	}
-
-	/**
-	 * @param topicUpdated
-	 * @param pts
-	 * @param soc
-	 */
-	private void savePt(Topic topicUpdated, List<Pt> pts, Soc soc) {
-		if (!CollectionUtils.isEmpty(pts)) {
-			for (Pt pt : pts) {
-				pt.setSocId(soc.getId());
-				pt.setTopicId(topicUpdated.getId());
-			}
-			ptRepository.save(pts);
-		}
-	}
-
-	/**
-	 * @param topicUpdated
-	 * @param hlts
-	 * @param soc
-	 */
-	private void saveHlt(Topic topicUpdated, List<Hlt> hlts, Soc soc) {
-		if (!CollectionUtils.isEmpty(hlts)) {
-			for (Hlt hlt : hlts) {
-				hlt.setSocId(soc.getId());
-				hlt.setTopicId(topicUpdated.getId());
-			}
-			hltRepository.save(hlts);
-		}
-	}
-
-	/**
-	 * @param topicUpdated
-	 * @param hlgts
-	 * @param soc
-	 */
-	private void saveHlgt(Topic topicUpdated, List<Hlgt> hlgts, Soc soc) {
-		if (!CollectionUtils.isEmpty(hlgts)) {
-			for (Hlgt hlgt : hlgts) {
-				hlgt.setSocId(soc.getId());
-				hlgt.setTopicId(topicUpdated.getId());
-			}
-			hlgtRepository.save(hlgts);
-		}
-	}
-
-	/**
-	 * @param topicUpdated
-	 * @param ingredient
-	 */
-	private void saveLicenses(Topic topicUpdated, Ingredient ingredient) {
-		List<License> licenses = ingredient.getLicenses();
-		if (!CollectionUtils.isEmpty(licenses)) {
-			for (License singleLicense : licenses) {
-				singleLicense.setIngredientId(ingredient.getId());
-				singleLicense.setTopicId(topicUpdated.getId());
-			}
-			licenseRepository.save(licenses);
-		}
-	}
-
-	/**
-	 * @param topicUpdated
-	 * @param ingredient
-	 */
-	private void saveProducts(Topic topicUpdated, Ingredient ingredient) {
-		List<Product> products = ingredient.getProducts();
-		if (!CollectionUtils.isEmpty(products)) {
-			for (Product singleProduct : products) {
-				singleProduct.setIngredientId(ingredient.getId());
-				singleProduct.setTopicId(topicUpdated.getId());
-			}
-			productRepository.save(products);
 		}
 	}
 

@@ -100,6 +100,12 @@ public class Topic implements Serializable{
     @Transient
     private List<AssessmentPlan> assessmentPlans;
     
+    
+    @Transient
+	private List<TopicSocAssignmentConfiguration> conditions;
+    @Transient
+	private List<TopicProductAssignmentConfiguration> products;
+    
 	public Topic() {
         this.startDate = new Date();
     }
@@ -423,6 +429,22 @@ public class Topic implements Serializable{
 
 	public void setSignalStrengthAtrributes(List<SignalStrength> signalStrengthAtrributes) {
 		this.signalStrengthAtrributes = signalStrengthAtrributes;
+	}
+
+	public List<TopicSocAssignmentConfiguration> getConditions() {
+		return conditions;
+	}
+
+	public void setConditions(List<TopicSocAssignmentConfiguration> conditions) {
+		this.conditions = conditions;
+	}
+
+	public List<TopicProductAssignmentConfiguration> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<TopicProductAssignmentConfiguration> products) {
+		this.products = products;
 	}
 
 	

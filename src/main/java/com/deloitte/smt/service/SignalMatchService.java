@@ -20,8 +20,9 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.SignalURL;
-import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
+import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
@@ -68,35 +69,46 @@ public class SignalMatchService {
 
 	@SuppressWarnings("unchecked")
 	public List<Topic> getMatchingSignals(Topic topic) {
-		StringBuilder ptBuilder = new StringBuilder();
-		String tempPt = null;
-		
-		List<Soc> socs = topic.getSocs();
-		if (!CollectionUtils.isEmpty(socs)) {
-			List<Pt> pts;
-			for (Soc soc : socs) {
-				pts = soc.getPts();
-				tempPt = buildPts(ptBuilder, pts);
-			}
-		}
+		StringBuilder socBuilder = new StringBuilder();
+		StringBuilder productBuilder = new StringBuilder();
+		boolean noSocFlag = false;
+		boolean noProductFlag = false;
 		
 		StringBuilder queryBuilder = new StringBuilder(
-				"select distinct signal.* from sm_topic signal INNER JOIN sm_ingredient ing ON  (signal.id = ing.topic_id) LEFT OUTER JOIN  sm_pt pt ON (signal.id = pt.topic_id )  where signal.created_date < ?  and ing.ingredient_name=? ");
+				"select DISTINCT a.* from sm_topic a LEFT JOIN sm_topic_product_assignment_configuration p ON a.id = p.topic_id LEFT JOIN sm_topic_soc_assignment_configuration c ON a.id = c.topic_id  where a.created_date < ? ");
 
-		if (topic.getSourceName() != null) {
-			queryBuilder.append(" and source_name =\'");
-			queryBuilder.append(topic.getSourceName());
-			queryBuilder.append("\'");
-		}
-		if (null!=tempPt) {
-			queryBuilder.append(" and pt.pt_name IN (");
-			queryBuilder.append(tempPt);
+		if(!CollectionUtils.isEmpty(topic.getConditions())){
+			for(TopicSocAssignmentConfiguration socConfig : topic.getConditions()){
+				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
+			}
+			queryBuilder.append(" and c.record_key IN (");
+			queryBuilder.append(socBuilder.toString());
 			queryBuilder.append(")");
+			noSocFlag = true;
 		}
-		queryBuilder.append(" order by signal.created_date desc");
+		if(!CollectionUtils.isEmpty(topic.getProducts())){
+			for(TopicProductAssignmentConfiguration productConfig : topic.getProducts()){
+				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
+			}
+			queryBuilder.append(" and p.record_key IN (");
+			queryBuilder.append(productBuilder.toString());
+			queryBuilder.append(")");
+			noProductFlag = true;
+		}
+		if(!noSocFlag){
+			queryBuilder.append(" and c.record_key is null");
+		}
+		if(!noProductFlag){
+			queryBuilder.append(" and p.record_key is null");
+		}
+		if(topic.getSourceName() != null){
+			queryBuilder.append(" and a.source_name = '");
+			queryBuilder.append(topic.getSourceName());
+			queryBuilder.append("'");
+		}
+		queryBuilder.append(" order by a.created_date desc");
 		Query q = entityManager.createNativeQuery(queryBuilder.toString(), Topic.class);
 		q.setParameter(1, topic.getCreatedDate());
-		q.setParameter(2, topic.getIngredient().getIngredientName());
 		return q.getResultList();
 	}
 
