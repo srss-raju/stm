@@ -30,6 +30,7 @@ public class SocAssignmentConfiguration implements Serializable {
     private String createdBy;
     private Date lastModifiedDate;
     private String lastModifiedBy;
+    private String conditionName;
     private String recordKey;
     private Long assignmentConfigurationId;
     @Transient
@@ -81,6 +82,12 @@ public class SocAssignmentConfiguration implements Serializable {
 	}
 	public void setRecordValues(List<AssignmentCondition> recordValues) {
 		this.recordValues = recordValues;
+	}
+	public String getConditionName() {
+		return conditionName;
+	}
+	public void setConditionName(String conditionName) {
+		this.conditionName = conditionName;
 	}
     
 }
