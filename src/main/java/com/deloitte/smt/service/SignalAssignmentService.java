@@ -226,6 +226,8 @@ public class SignalAssignmentService {
 				BigInteger id = (BigInteger) records.get(0);
 				assignmentConfigurationFromDB = assignmentConfigurationRepository.findOne(id.longValue());
 			}
+		}else{
+			assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 		}
 		return assignmentConfigurationFromDB;
 	}
