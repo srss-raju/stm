@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.deloitte.smt.entity.AssessmentAssignmentAssignees;
 import com.deloitte.smt.entity.AssignmentCondition;
@@ -333,31 +334,45 @@ public class AssignmentConfigurationService {
 		StringBuilder queryBuilder = new StringBuilder("select a.id, a.name, c.id as cid,c.record_key as crecordkey,p.id as pid,p.record_key as precordkey from sm_assignment_configuration a LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id where ");
 		StringBuilder socBuilder = new StringBuilder();
 		StringBuilder productBuilder = new StringBuilder();
-		boolean noSocFlag = false;
-		boolean noProductFlag = false;
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
-			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
-				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
-			}
-			queryBuilder.append(" c.record_key IN (");
-			queryBuilder.append(socBuilder.toString());
-			queryBuilder.append(")");
-			noSocFlag = true;
+		boolean noSocFlag;
+		boolean noProductFlag;
+		
+		StringBuilder socUpdateBuilder = new StringBuilder();
+		StringBuilder productUpdateBuilder = new StringBuilder();
+		String socUpdateString = null;
+		String productUpdateString = null;
+		
+		noSocFlag = addConditions(assignmentConfiguration, queryBuilder, socBuilder, socUpdateBuilder);
+		noProductFlag = addProducts(assignmentConfiguration, queryBuilder, productBuilder, noSocFlag, productUpdateBuilder);
+		
+		if(!StringUtils.isEmpty(socUpdateBuilder.toString())){
+			socUpdateString = socUpdateBuilder.toString().substring(0, socUpdateBuilder.lastIndexOf(","));
 		}
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
-				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
-			}
-			queryBuilder.append(" and p.record_key IN (");
-			queryBuilder.append(productBuilder.toString());
-			queryBuilder.append(")");
-			noProductFlag = true;
+		
+		if(!StringUtils.isEmpty(productUpdateBuilder.toString())){
+			productUpdateString = productUpdateBuilder.toString().substring(0, productUpdateBuilder.lastIndexOf(","));
 		}
+		
+		
 		if(!noSocFlag){
 			queryBuilder.append(" and c.record_key is null");
+			queryBuilder.append(" and c.id is null");
+		}else{
+			if(!StringUtils.isEmpty(socUpdateString)){
+				queryBuilder.append(" and c.id not in (");
+				queryBuilder.append(socUpdateString);
+				queryBuilder.append(")");
+			}
 		}
 		if(!noProductFlag){
 			queryBuilder.append(" and p.record_key is null");
+			queryBuilder.append(" and p.id is null");
+		}else{
+			if(!StringUtils.isEmpty(productUpdateString)){
+				queryBuilder.append(" and p.id not in (");
+				queryBuilder.append(productUpdateString);
+				queryBuilder.append(")");
+			}
 		}
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		List<Object> records = query.getResultList();
@@ -366,6 +381,47 @@ public class AssignmentConfigurationService {
 		}
 		
 		return false;
+	}
+
+	private boolean addProducts(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder, StringBuilder productBuilder, boolean noSocFlag, StringBuilder productUpdateBuilder) {
+		boolean noProductFlag = false;
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
+			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
+				if(productConfig.getId() != null){
+					productUpdateBuilder.append(productConfig.getId());
+					productUpdateBuilder.append(",");
+				}
+			}
+			if(noSocFlag){
+				queryBuilder.append(" and p.record_key IN (");
+			}else{
+				queryBuilder.append(" p.record_key IN (");
+			}
+			
+			queryBuilder.append(productBuilder.toString());
+			queryBuilder.append(")");
+			noProductFlag = true;
+		}
+		return noProductFlag;
+	}
+
+	private boolean addConditions(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder, StringBuilder socBuilder, StringBuilder socUpdateBuilder) {
+		boolean noSocFlag = false;
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
+				if(socConfig.getId() != null){
+					socUpdateBuilder.append(socConfig.getId());
+					socUpdateBuilder.append(",");
+				}
+			}
+			queryBuilder.append(" c.record_key IN (");
+			queryBuilder.append(socBuilder.toString());
+			queryBuilder.append(")");
+			noSocFlag = true;
+		}
+		return noSocFlag;
 	}
 
 }
