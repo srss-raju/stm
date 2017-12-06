@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.deloitte.smt.dto.AssignmentDTO;
 import com.deloitte.smt.entity.AssessmentAssignmentAssignees;
 import com.deloitte.smt.entity.AssignmentCondition;
 import com.deloitte.smt.entity.AssignmentConfiguration;
@@ -330,37 +331,63 @@ public class AssignmentConfigurationService {
 	
 	@SuppressWarnings("unchecked")
 	public boolean getProductsAndConditions(AssignmentConfiguration assignmentConfiguration) {
-		StringBuilder queryBuilder = new StringBuilder("select a.id, a.name, c.id as cid,c.record_key as crecordkey,p.id as pid,p.record_key as precordkey from sm_assignment_configuration a LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id where ");
+		StringBuilder queryBuilder = new StringBuilder("select a.id as id, a.id as assignment_id, a.name as assignment_name, c.id as cid,c.record_key as crecordkey,p.id as pid,p.record_key as precordkey from sm_assignment_configuration a LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id where ");
 		StringBuilder socBuilder = new StringBuilder();
 		StringBuilder productBuilder = new StringBuilder();
+		StringBuilder productIdBuilder = new StringBuilder();
+		StringBuilder socIdBuilder = new StringBuilder();
+		String socIds = null;
+		String productIds = null;
 		boolean noSocFlag = false;
 		boolean noProductFlag = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
 			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
+				if(socConfig.getId() != null){
+					socIdBuilder.append(socConfig.getId());
+					socIdBuilder.append(",");
+				}
 			}
 			queryBuilder.append(" c.record_key IN (");
 			queryBuilder.append(socBuilder.toString());
 			queryBuilder.append(")");
 			noSocFlag = true;
+			socIds = socIdBuilder.toString().substring(0, socIdBuilder.lastIndexOf(","));
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
 			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
 				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
+				if(productConfig.getId() != null){
+					productIdBuilder.append(productConfig.getId());
+					productIdBuilder.append(",");
+				}
 			}
 			queryBuilder.append(" and p.record_key IN (");
 			queryBuilder.append(productBuilder.toString());
 			queryBuilder.append(")");
 			noProductFlag = true;
+			productIds = productIdBuilder.toString().substring(0, productIdBuilder.lastIndexOf(","));
 		}
 		if(!noSocFlag){
 			queryBuilder.append(" and c.record_key is null");
 		}
 		if(!noProductFlag){
 			queryBuilder.append(" and p.record_key is null");
+		} 
+		
+		if(socIds != null){
+			queryBuilder.append(" and c.id NOT IN (");
+			queryBuilder.append(socIds);
+			queryBuilder.append(") ");
 		}
-		Query query = entityManager.createNativeQuery(queryBuilder.toString());
-		List<Object> records = query.getResultList();
+		if(productIds != null){
+			queryBuilder.append(" and p.id NOT IN (");
+			queryBuilder.append(productIds);
+			queryBuilder.append(") ");
+		}
+		
+		Query query = entityManager.createNativeQuery(queryBuilder.toString(), AssignmentDTO.class);
+		List<AssignmentDTO> records = query.getResultList();
 		if(!CollectionUtils.isEmpty(records)){
 			return true;
 		}

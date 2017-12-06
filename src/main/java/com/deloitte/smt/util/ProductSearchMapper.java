@@ -13,8 +13,8 @@ public class ProductSearchMapper implements RowMapper<ProductSearchDTO> {
 	public ProductSearchDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 		
 		ProductSearchDTO productSearchDto=new ProductSearchDTO();
-		productSearchDto.setCategoryCode(rs.getString(1));
-		productSearchDto.setCategoryDesc(rs.getString(2));
+		productSearchDto.setCategoryCode(rs.getString(1).trim());
+		productSearchDto.setCategoryDesc(rs.getString(2).trim());
 		return productSearchDto;
 	}
 

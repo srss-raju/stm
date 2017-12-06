@@ -39,6 +39,10 @@ import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicAssignmentCondition;
+import com.deloitte.smt.entity.TopicAssignmentProduct;
+import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
+import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -61,7 +65,11 @@ import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
+import com.deloitte.smt.repository.TopicAssignmentConditionRepository;
+import com.deloitte.smt.repository.TopicAssignmentProductRepository;
+import com.deloitte.smt.repository.TopicProductAssignmentConfigurationRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import com.deloitte.smt.repository.TopicSocAssignmentConfigurationRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 import com.deloitte.smt.util.SmtResponse;
@@ -160,6 +168,16 @@ public class SignalService {
 	SignalSearchService signalSearchService;
 	@Autowired
 	SignalStrengthRepository signalStrengthRepository;
+	@Autowired
+	TopicSocAssignmentConfigurationRepository topicSocAssignmentConfigurationRepository;
+	@Autowired
+	TopicProductAssignmentConfigurationRepository topicProductAssignmentConfigurationRepository;
+	
+	@Autowired
+	TopicAssignmentConditionRepository topicAssignmentConditionRepository;
+	
+	@Autowired
+	TopicAssignmentProductRepository topicAssignmentProductRepository;
 	
 	public NonSignal createOrupdateNonSignal(NonSignal nonSignal) {
 		Calendar c = Calendar.getInstance();
@@ -195,17 +213,11 @@ public class SignalService {
 			topic.setSignalStatus(SmtConstant.IN_PROGRESS.getDescription());
 			topic = topicRepository.save(topic);
 		}
+		
+		setTopicConditionsAndProducts(topicId, topic);
+		
 		signalAssignmentService.findSignalAssignmentAssignees(topic);
-		Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
-		List<Product> products = productRepository.findByTopicId(topic.getId());
-		List<License> licenses = licenseRepository.findByTopicId(topic.getId());
-		List<Soc> socs = socRepository.findByTopicId(topic.getId());
-		if (ingredient != null) {
-			ingredient.setProducts(products);
-			ingredient.setLicenses(licenses);
-			topic.setIngredient(ingredient);
-			topic.setSocs(socs);
-		}
+		
 		topic.setSignalUrls(signalURLRepository.findByTopicId(topicId));
 		findSoc(topic);
 		if (!SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(topic.getSignalStatus())) {
@@ -213,6 +225,25 @@ public class SignalService {
 			topic = signalMatchService.findMatchingSignal(topic);
 		}
 		return topic;
+	}
+
+	private void setTopicConditionsAndProducts(Long topicId, Topic topic) {
+		List<TopicSocAssignmentConfiguration> socList = topicSocAssignmentConfigurationRepository.findByTopicId(topicId);
+		List<TopicProductAssignmentConfiguration> productList = topicProductAssignmentConfigurationRepository.findByTopicId(topicId);
+		
+		if(!CollectionUtils.isEmpty(socList)){
+			for(TopicSocAssignmentConfiguration socConfig:socList){
+				socConfig.setRecordValues(topicAssignmentConditionRepository.findByTopicSocAssignmentConfigurationId(socConfig.getId()));
+			}
+		}
+		
+		if(!CollectionUtils.isEmpty(productList)){
+			for(TopicProductAssignmentConfiguration productConfig:productList){
+				productConfig.setRecordValues(topicAssignmentProductRepository.findByTopicProductAssignmentConfigurationId(productConfig.getId()));
+			}
+		}
+		topic.setConditions(socList);
+		topic.setProducts(productList);
 	}
 	
 	public List<Comments> getTopicComments(Long topicId){
@@ -247,6 +278,7 @@ public class SignalService {
 		}
 
 		Topic topicUpdated = topicRepository.save(topic);
+		saveProductsAndConditions(topic, topicUpdated);
 		
 		AssignmentConfiguration assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(signalAssignmentService.convertToAssignmentConfiguration(topic));
 		if(assignmentConfiguration != null){
@@ -263,6 +295,37 @@ public class SignalService {
 	}
 	
 	
+
+	private void saveProductsAndConditions(Topic topic, Topic topicUpdated) {
+		if(!CollectionUtils.isEmpty(topic.getConditions())){
+			for(TopicSocAssignmentConfiguration socConfig : topic.getConditions()){
+				socConfig.setTopicId(topicUpdated.getId());
+			}
+			List<TopicSocAssignmentConfiguration> updatedConditionList = topicSocAssignmentConfigurationRepository.save(topic.getConditions());
+			for(TopicSocAssignmentConfiguration updateConditionConfig : updatedConditionList){
+				if(!CollectionUtils.isEmpty(updateConditionConfig.getRecordValues())){
+					for(TopicAssignmentCondition record : updateConditionConfig.getRecordValues()){
+						record.setTopicSocAssignmentConfigurationId(updateConditionConfig.getId());
+					}
+					topicAssignmentConditionRepository.save(updateConditionConfig.getRecordValues());
+				}
+			}
+		}
+		if(!CollectionUtils.isEmpty(topic.getProducts())){
+			for(TopicProductAssignmentConfiguration productConfig : topic.getProducts()){
+				productConfig.setTopicId(topicUpdated.getId());
+			}
+			List<TopicProductAssignmentConfiguration> updatedProductList = topicProductAssignmentConfigurationRepository.save(topic.getProducts());
+			for(TopicProductAssignmentConfiguration updatedProductConfig : updatedProductList){
+				if(!CollectionUtils.isEmpty(updatedProductConfig.getRecordValues())){
+					for(TopicAssignmentProduct record : updatedProductConfig.getRecordValues()){
+						record.setTopicProductAssignmentConfigurationId(updatedProductConfig.getId());
+					}
+					topicAssignmentProductRepository.save(updatedProductConfig.getRecordValues());
+				}
+			}
+		}
+	}
 
 	public List<Comments> updateComments(Topic topic){
 		List<Comments> list = topic.getComments();
