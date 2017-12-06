@@ -12,4 +12,6 @@ public interface ProductLevelRepository extends JpaRepository<ProductLevels, Lon
 	@Query(value="select distinct(o.versions) from ProductLevels o where o.versions is not null")
 	List<String> findByVersions();
 	
+	List<ProductLevels> findAllByOrderByIdAsc();
+	
 }

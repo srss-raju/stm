@@ -21,7 +21,7 @@ public class ProductService {
 	
 	public ProductResponse getAllProductsLevel(){
 		ProductResponse response=new ProductResponse();
-		List<ProductLevels> productLevelList=productLevelRepository.findAll();
+		List<ProductLevels> productLevelList=productLevelRepository.findAllByOrderByIdAsc();
 		List<String> productVersions=productLevelRepository.findByVersions();
 		
 		List<Levels> levelsList=new ArrayList<>();
