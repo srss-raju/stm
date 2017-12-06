@@ -297,33 +297,50 @@ public class SignalService {
 	
 
 	private void saveProductsAndConditions(Topic topic, Topic topicUpdated) {
-		if(!CollectionUtils.isEmpty(topic.getConditions())){
-			for(TopicSocAssignmentConfiguration socConfig : topic.getConditions()){
-				socConfig.setTopicId(topicUpdated.getId());
-			}
-			List<TopicSocAssignmentConfiguration> updatedConditionList = topicSocAssignmentConfigurationRepository.save(topic.getConditions());
-			for(TopicSocAssignmentConfiguration updateConditionConfig : updatedConditionList){
-				if(!CollectionUtils.isEmpty(updateConditionConfig.getRecordValues())){
-					for(TopicAssignmentCondition record : updateConditionConfig.getRecordValues()){
-						record.setTopicSocAssignmentConfigurationId(updateConditionConfig.getId());
-					}
-					topicAssignmentConditionRepository.save(updateConditionConfig.getRecordValues());
-				}
-			}
-		}
+		saveConditions(topic, topicUpdated);
+		saveProducts(topic, topicUpdated);
+	}
+
+	private void saveProducts(Topic topic, Topic topicUpdated) {
 		if(!CollectionUtils.isEmpty(topic.getProducts())){
 			for(TopicProductAssignmentConfiguration productConfig : topic.getProducts()){
 				productConfig.setTopicId(topicUpdated.getId());
 			}
 			List<TopicProductAssignmentConfiguration> updatedProductList = topicProductAssignmentConfigurationRepository.save(topic.getProducts());
 			for(TopicProductAssignmentConfiguration updatedProductConfig : updatedProductList){
-				if(!CollectionUtils.isEmpty(updatedProductConfig.getRecordValues())){
-					for(TopicAssignmentProduct record : updatedProductConfig.getRecordValues()){
-						record.setTopicProductAssignmentConfigurationId(updatedProductConfig.getId());
-					}
-					topicAssignmentProductRepository.save(updatedProductConfig.getRecordValues());
-				}
+				saveAssignmentProduct(updatedProductConfig);
 			}
+		}
+	}
+
+	private void saveAssignmentProduct(TopicProductAssignmentConfiguration updatedProductConfig) {
+		if(!CollectionUtils.isEmpty(updatedProductConfig.getRecordValues())){
+			for(TopicAssignmentProduct record : updatedProductConfig.getRecordValues()){
+				record.setTopicProductAssignmentConfigurationId(updatedProductConfig.getId());
+			}
+			topicAssignmentProductRepository.save(updatedProductConfig.getRecordValues());
+		}
+	}
+
+	private void saveConditions(Topic topic, Topic topicUpdated) {
+		if(!CollectionUtils.isEmpty(topic.getConditions())){
+			for(TopicSocAssignmentConfiguration socConfig : topic.getConditions()){
+				socConfig.setTopicId(topicUpdated.getId());
+			}
+			List<TopicSocAssignmentConfiguration> updatedConditionList = topicSocAssignmentConfigurationRepository.save(topic.getConditions());
+			for(TopicSocAssignmentConfiguration updateConditionConfig : updatedConditionList){
+				savecAssignmentCondition(updateConditionConfig);
+			}
+		}
+	}
+
+	private void savecAssignmentCondition(
+			TopicSocAssignmentConfiguration updateConditionConfig) {
+		if(!CollectionUtils.isEmpty(updateConditionConfig.getRecordValues())){
+			for(TopicAssignmentCondition record : updateConditionConfig.getRecordValues()){
+				record.setTopicSocAssignmentConfigurationId(updateConditionConfig.getId());
+			}
+			topicAssignmentConditionRepository.save(updateConditionConfig.getRecordValues());
 		}
 	}
 
