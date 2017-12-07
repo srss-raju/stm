@@ -1,8 +1,8 @@
 package com.deloitte.smt.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import com.deloitte.smt.dto.ProductResponse;
 import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.repository.ProductLevelRepository;
+import com.deloitte.smt.util.Levels;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,29 +25,31 @@ public class ProductService {
 	ProductLevelRepository productLevelRepository;
 	
 	public ProductResponse getAllProductsLevel(){
-		ProductResponse response=new ProductResponse();
-		List<ProductLevels> productLevelList=productLevelRepository.findAllByOrderByIdAsc();
-		LinkedHashMap<String, String> levelMap = null;
-		Map<String,String> versions=new HashMap<>();
-		if(!CollectionUtils.isEmpty(productLevelList)){
-			levelMap = new LinkedHashMap<>();
-			for(ProductLevels productlevel:productLevelList){
-				levelMap.put(productlevel.getKey(), productlevel.getValue());
-			}
-			ProductLevels plevel = productLevelList.get(0);
-			versions.put("versionNumber", plevel.getVersions());
-			response.setShowCodes(plevel.isShowCodes());
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		String strLevels = null;
 		String strVersions = null;
+		ProductResponse response = null;
+		List<Levels> levelsList=null;
 		try {
-			strLevels = mapper.writeValueAsString(levelMap);
+			response=new ProductResponse();
+			Map<String,String> versions=new HashMap<>();
+			List<ProductLevels> productLevelList=productLevelRepository.findAllByOrderByIdAsc();
+			ObjectMapper mapper = new ObjectMapper();
+			levelsList =new ArrayList<>();
+			if (!CollectionUtils.isEmpty(productLevelList)) {
+				for (ProductLevels productlevel : productLevelList) {
+					Levels level=new Levels();
+					level.setKey(productlevel.getKey());
+					level.setValue(productlevel.getValue());
+					levelsList.add(level);
+				}
+				ProductLevels plevel = productLevelList.get(0);
+				versions.put("versionNumber", plevel.getVersions());
+				response.setShowCodes(plevel.isShowCodes());
+			}
 			strVersions = mapper.writeValueAsString(versions);
 		} catch (JsonProcessingException e) {
 			LOGGER.error(e);
 		}
-		response.setLevels(Arrays.asList(strLevels));
+		response.setLevels(levelsList);
 		response.setVersions(Arrays.asList(strVersions));
 		
 		/*List<String> productVersions=productLevelRepository.findByVersions();
