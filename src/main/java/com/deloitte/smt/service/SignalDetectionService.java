@@ -38,7 +38,11 @@ import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Smq;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.TopicAssignmentCondition;
+import com.deloitte.smt.entity.TopicAssignmentProduct;
+import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 import com.deloitte.smt.entity.TopicSignalDetectionAssignmentAssignees;
+import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -54,7 +58,11 @@ import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SmqRepository;
 import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.repository.TopicAssignmentConditionRepository;
+import com.deloitte.smt.repository.TopicAssignmentProductRepository;
+import com.deloitte.smt.repository.TopicProductAssignmentConfigurationRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.TopicSocAssignmentConfigurationRepository;
 import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SignalUtil;
 import com.deloitte.smt.util.SmtResponse;
@@ -118,6 +126,17 @@ public class SignalDetectionService {
 	
 	@Autowired
 	private SearchFilters searchFilters;
+	
+	@Autowired
+	TopicSocAssignmentConfigurationRepository topicSocAssignmentConfigurationRepository;
+	@Autowired
+	TopicProductAssignmentConfigurationRepository topicProductAssignmentConfigurationRepository;
+	
+	@Autowired
+	TopicAssignmentConditionRepository topicAssignmentConditionRepository;
+	
+	@Autowired
+	TopicAssignmentProductRepository topicAssignmentProductRepository;
 
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
@@ -139,6 +158,7 @@ public class SignalDetectionService {
 					SignalUtil.getNextRunDate(signalDetection.getRunFrequency(), signalDetection.getCreatedDate()));
 			SignalDetection clone = signalDetection;
 			clone = signalDetectionRepository.save(clone);
+			saveProductsAndConditions(signalDetection, clone);
 			List<TopicSignalDetectionAssignmentAssignees>  detectionAssigneesList = clone.getTopicSignalDetectionAssignmentAssignees();
 			if(!CollectionUtils.isEmpty(detectionAssigneesList)){
 				for(TopicSignalDetectionAssignmentAssignees assignee:detectionAssigneesList){
@@ -164,6 +184,54 @@ public class SignalDetectionService {
 			return signalDetection;
 		} catch (ApplicationException ex) {
 				throw new ApplicationException("Problem Creating Signal Detection",  ex);
+		}
+	}
+	
+	private void saveProductsAndConditions(SignalDetection signalDetection, SignalDetection signalDetectionUpdated) {
+		saveConditions(signalDetection, signalDetectionUpdated);
+		saveProducts(signalDetection, signalDetectionUpdated);
+	}
+	
+	
+	private void saveProducts(SignalDetection signalDetection, SignalDetection signalDetectionUpdated) {
+		if(!CollectionUtils.isEmpty(signalDetection.getProducts())){
+			for(TopicProductAssignmentConfiguration productConfig : signalDetection.getProducts()){
+				productConfig.setDetectionId(signalDetectionUpdated.getId());
+			}
+			List<TopicProductAssignmentConfiguration> updatedProductList = topicProductAssignmentConfigurationRepository.save(signalDetection.getProducts());
+			for(TopicProductAssignmentConfiguration updatedProductConfig : updatedProductList){
+				saveAssignmentProduct(updatedProductConfig);
+			}
+		}
+	}
+
+	private void saveAssignmentProduct(TopicProductAssignmentConfiguration updatedProductConfig) {
+		if(!CollectionUtils.isEmpty(updatedProductConfig.getRecordValues())){
+			for(TopicAssignmentProduct record : updatedProductConfig.getRecordValues()){
+				record.setTopicProductAssignmentConfigurationId(updatedProductConfig.getId());
+			}
+			topicAssignmentProductRepository.save(updatedProductConfig.getRecordValues());
+		}
+	}
+
+	private void saveConditions(SignalDetection signalDetection, SignalDetection signalDetectionUpdated) {
+		if(!CollectionUtils.isEmpty(signalDetection.getConditions())){
+			for(TopicSocAssignmentConfiguration socConfig : signalDetection.getConditions()){
+				socConfig.setDetectionId(signalDetectionUpdated.getId());
+			}
+			List<TopicSocAssignmentConfiguration> updatedConditionList = topicSocAssignmentConfigurationRepository.save(signalDetection.getConditions());
+			for(TopicSocAssignmentConfiguration updateConditionConfig : updatedConditionList){
+				savecAssignmentCondition(updateConditionConfig);
+			}
+		}
+	}
+	
+	private void savecAssignmentCondition(TopicSocAssignmentConfiguration updateConditionConfig) {
+		if(!CollectionUtils.isEmpty(updateConditionConfig.getRecordValues())){
+			for(TopicAssignmentCondition record : updateConditionConfig.getRecordValues()){
+				record.setTopicSocAssignmentConfigurationId(updateConditionConfig.getId());
+			}
+			topicAssignmentConditionRepository.save(updateConditionConfig.getRecordValues());
 		}
 	}
 
@@ -373,8 +441,28 @@ public class SignalDetectionService {
 			throw new ApplicationException("Signal Detection not found with given Id :" + id);
 		}
 		addOtherInfoToSignalDetection(signalDetection);
+		setTopicConditionsAndProducts(signalDetection);
 		signalDetection.setTopicSignalDetectionAssignmentAssignees(topicSignalDetectionAssignmentAssigneesRepository.findByDetectionId(id));
 		return signalDetection;
+	}
+	
+	private void setTopicConditionsAndProducts(SignalDetection signalDetection) {
+		List<TopicSocAssignmentConfiguration> socList = topicSocAssignmentConfigurationRepository.findByDetectionId(signalDetection.getId());
+		List<TopicProductAssignmentConfiguration> productList = topicProductAssignmentConfigurationRepository.findByDetectionId(signalDetection.getId());
+		
+		if(!CollectionUtils.isEmpty(socList)){
+			for(TopicSocAssignmentConfiguration socConfig:socList){
+				socConfig.setRecordValues(topicAssignmentConditionRepository.findByTopicSocAssignmentConfigurationId(socConfig.getId()));
+			}
+		}
+		
+		if(!CollectionUtils.isEmpty(productList)){
+			for(TopicProductAssignmentConfiguration productConfig:productList){
+				productConfig.setRecordValues(topicAssignmentProductRepository.findByTopicProductAssignmentConfigurationId(productConfig.getId()));
+			}
+		}
+		signalDetection.setConditions(socList);
+		signalDetection.setProducts(productList);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -57,6 +57,11 @@ public class RiskPlan implements Serializable {
  	@Transient
 	private List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssignees;
  	
+ 	@Transient
+	private List<TopicSocAssignmentConfiguration> conditions;
+    @Transient
+	private List<TopicProductAssignmentConfiguration> products;
+ 	
     public RiskPlan(){
     	//Do Nothing
     }
@@ -283,5 +288,21 @@ public class RiskPlan implements Serializable {
 	public void setTopicRiskPlanAssignmentAssignees(
 			List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssignees) {
 		this.topicRiskPlanAssignmentAssignees = topicRiskPlanAssignmentAssignees;
+	}
+
+	public List<TopicSocAssignmentConfiguration> getConditions() {
+		return conditions;
+	}
+
+	public void setConditions(List<TopicSocAssignmentConfiguration> conditions) {
+		this.conditions = conditions;
+	}
+
+	public List<TopicProductAssignmentConfiguration> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<TopicProductAssignmentConfiguration> products) {
+		this.products = products;
 	}
 }

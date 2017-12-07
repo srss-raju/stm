@@ -15,7 +15,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
@@ -338,8 +337,7 @@ public class SignalService {
 		}
 	}
 
-	private void savecAssignmentCondition(
-			TopicSocAssignmentConfiguration updateConditionConfig) {
+	private void savecAssignmentCondition(TopicSocAssignmentConfiguration updateConditionConfig) {
 		if(!CollectionUtils.isEmpty(updateConditionConfig.getRecordValues())){
 			for(TopicAssignmentCondition record : updateConditionConfig.getRecordValues()){
 				record.setTopicSocAssignmentConfigurationId(updateConditionConfig.getId());
@@ -439,15 +437,10 @@ public class SignalService {
 			assessmentPlan.setLastModifiedDate(d);
 			assessmentPlan.setAssessmentPlanStatus("New");
 			assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY.getDescription());
-	
-			if (!StringUtils.isEmpty(topic.getSourceName())) {
-				assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSource(assessmentPlan.getIngrediantName(), assessmentPlan.getSource());
-			}
-			// If Source is not null and combination not available we have to fetch
-			// with Ingredient
-			if (assignmentConfiguration == null) {
-				assignmentConfiguration = assignmentConfigurationRepository.findByIngredientAndSignalSourceIsNull(assessmentPlan.getIngrediantName());
-			}
+			
+			Topic topicWithConditionsAndProducts = findById(topicId);
+			assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(signalAssignmentService.convertToAssignmentConfiguration(topicWithConditionsAndProducts));
+			
 			/**when no tasks and for newly created assessment assessmenttaskstatus is 'Completed' **/
 			assessmentPlan.setAssessmentTaskStatus("Completed");
 			Long assessmentPlanExist = assessmentPlanRepository.countByAssessmentNameIgnoreCase(assessmentPlan.getAssessmentName());

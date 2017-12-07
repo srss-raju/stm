@@ -34,6 +34,7 @@ public class TopicSocAssignmentConfiguration implements Serializable {
     private String conditionName;
     private Long assignmentConfigurationId;
     private Long topicId;
+    private Long detectionId;
     @Transient
     private List<TopicAssignmentCondition> recordValues;
     
@@ -97,6 +98,12 @@ public class TopicSocAssignmentConfiguration implements Serializable {
 	}
 	public void setConditionName(String conditionName) {
 		this.conditionName = conditionName;
+	}
+	public Long getDetectionId() {
+		return detectionId;
+	}
+	public void setDetectionId(Long detectionId) {
+		this.detectionId = detectionId;
 	}
 	
 }

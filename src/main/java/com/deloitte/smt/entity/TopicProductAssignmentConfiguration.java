@@ -33,6 +33,7 @@ public class TopicProductAssignmentConfiguration implements Serializable {
     private String recordKey;
     private Long assignmentConfigurationId;
     private Long topicId;
+    private Long detectionId;
     @Transient
     private List<TopicAssignmentProduct> recordValues;
     
@@ -96,6 +97,12 @@ public class TopicProductAssignmentConfiguration implements Serializable {
 	}
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
+	}
+	public Long getDetectionId() {
+		return detectionId;
+	}
+	public void setDetectionId(Long detectionId) {
+		this.detectionId = detectionId;
 	}
 	
 }

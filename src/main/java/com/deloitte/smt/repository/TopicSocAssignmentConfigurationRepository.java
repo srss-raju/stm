@@ -23,6 +23,8 @@ public interface TopicSocAssignmentConfigurationRepository  extends JpaRepositor
 	TopicSocAssignmentConfiguration findByRecordKey(String conditionKey);
 	
 	List<TopicSocAssignmentConfiguration> findDistinctByRecordKey(String conditionKey);
+
+	List<TopicSocAssignmentConfiguration> findByDetectionId(Long id);
 	
 	
 }

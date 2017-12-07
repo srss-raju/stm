@@ -23,6 +23,8 @@ public interface TopicProductAssignmentConfigurationRepository  extends JpaRepos
 	TopicProductAssignmentConfiguration findByRecordKey(String conditionKey);
 	
 	List<TopicProductAssignmentConfiguration> findDistinctByRecordKey(String conditionKey);
+
+	List<TopicProductAssignmentConfiguration> findByDetectionId(Long id);
 	
 	
 }

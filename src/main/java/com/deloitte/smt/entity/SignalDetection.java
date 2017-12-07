@@ -16,9 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * Created by Rajesh on 21-04-2017.
  */
@@ -47,15 +44,7 @@ public class SignalDetection implements Serializable {
 	private String caselistId;
 	private Long casesCount;
 	private Long minCases;
-	private boolean socSelected;
 	
-	public boolean isSocSelected() {
-		return socSelected;
-	}
-
-	public void setSocSelected(boolean socSelected) {
-		this.socSelected = socSelected;
-	}
 
 	@Transient
 	private List<QueryBuilder> queryBuilder;
@@ -66,20 +55,11 @@ public class SignalDetection implements Serializable {
     @JoinColumn(name = "detectionId")
 	private List<TopicSignalDetectionAssignmentAssignees> topicSignalDetectionAssignmentAssignees;
 
-	public static void main(String[] args) throws JsonProcessingException {
-		ObjectMapper mapper=new ObjectMapper();
-		
-		SignalDetection signalDetection=new SignalDetection();
-		String json=mapper.writeValueAsString(signalDetection);
-		
-		System.out.println(json);
-	}
-
+	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "signalDetection")
 	private Set<SignalDetectionStatistics> signalDetectionStatistics;
 
-	/*@Transient
-	private Ingredient ingredient;*/
+	
 	@Transient
 	private List<Ingredient> ingredients;
 	@Transient
@@ -96,6 +76,11 @@ public class SignalDetection implements Serializable {
 
 	@Transient
 	private List<Date> nextRunDates;
+	
+    @Transient
+	private List<TopicSocAssignmentConfiguration> conditions;
+    @Transient
+	private List<TopicProductAssignmentConfiguration> products;
 
 	public Long getId() {
 		return id;
@@ -176,14 +161,6 @@ public class SignalDetection implements Serializable {
 	public void setSignalDetectionStatistics(Set<SignalDetectionStatistics> signalDetectionStatistics) {
 		this.signalDetectionStatistics = signalDetectionStatistics;
 	}
-
-	/*public Ingredient getIngredient() {
-		return ingredient;
-	}
-
-	public void setIngredient(Ingredient ingredient) {
-		this.ingredient = ingredient;
-	}*/
 
 	public List<Soc> getSocs() {
 		return socs;
@@ -312,6 +289,22 @@ public class SignalDetection implements Serializable {
 
 	public void setIngredients(List<Ingredient> ingredients) {
 		this.ingredients = ingredients;
+	}
+
+	public List<TopicSocAssignmentConfiguration> getConditions() {
+		return conditions;
+	}
+
+	public void setConditions(List<TopicSocAssignmentConfiguration> conditions) {
+		this.conditions = conditions;
+	}
+
+	public List<TopicProductAssignmentConfiguration> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<TopicProductAssignmentConfiguration> products) {
+		this.products = products;
 	}
 
 }
