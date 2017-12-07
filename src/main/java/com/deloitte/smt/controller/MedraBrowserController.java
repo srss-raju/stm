@@ -75,6 +75,11 @@ public class MedraBrowserController {
 
 	}
 	
+	@PutMapping(value = "/condition/product")
+	public void updateShowCodes(@RequestBody ConditionResponse conditionResponse) {
+		condtionService.updateShowCodes(conditionResponse);
+
+	}
 	@GetMapping(value = "/product/product")
 	public ProductResponse getAllProductsLevel() {
 		return productService.getAllProductsLevel();

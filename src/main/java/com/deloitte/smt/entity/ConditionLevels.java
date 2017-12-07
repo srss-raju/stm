@@ -2,6 +2,7 @@ package com.deloitte.smt.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,6 +27,9 @@ public class ConditionLevels implements Serializable {
 	private String key;
 	
 	private String value;
+	
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private boolean showCodes;
 
 	public Long getId() {
 		return id;
@@ -58,6 +62,14 @@ public class ConditionLevels implements Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public boolean isShowCodes() {
+		return showCodes;
+	}
+
+	public void setShowCodes(boolean showCodes) {
+		this.showCodes = showCodes;
 	}
 
 	
