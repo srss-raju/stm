@@ -474,20 +474,20 @@ public class SignalDetectionService {
 		Join<SignalDetection,TopicSignalDetectionAssignmentAssignees> joinDetectionAssignees = rootSignalDetection.join("topicSignalDetectionAssignmentAssignees", JoinType.LEFT); //left outer join
 
 		if (null != searchDto) {
-			Root<Ingredient> rootIngredient = criteriaQuery.from(Ingredient.class);
+			//Root<Ingredient> rootIngredient = criteriaQuery.from(Ingredient.class);
 			List<Predicate> predicates = new ArrayList<>(10);
-			predicates.add(criteriaBuilder.equal(rootSignalDetection.get("id"),
-					rootIngredient.get(SmtConstant.DETECTION_ID.getDescription())));
+			/*predicates.add(criteriaBuilder.equal(rootSignalDetection.get("id"),
+					rootIngredient.get(SmtConstant.DETECTION_ID.getDescription())));*/
 
 			addDescription(searchDto, criteriaBuilder, rootSignalDetection, predicates);
 			addFrequency(searchDto, criteriaBuilder, rootSignalDetection, predicates);
-			addIngredients(searchDto, criteriaBuilder, rootIngredient, predicates);
+			/*addIngredients(searchDto, criteriaBuilder, rootIngredient, predicates);
 			addProducts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addLicenses(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addSocs(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addHlts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
 			addHlgts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
-			addPts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);
+			addPts(searchDto, criteriaBuilder, criteriaQuery, rootSignalDetection, predicates);*/
 			addCreatedOrLastRunDate(searchDto, criteriaBuilder, rootSignalDetection, predicates);
 			/**TopicSignalValidationAssignmentAssignees **/
 			addSearchKeys(searchDto, criteriaBuilder, joinDetectionAssignees,rootSignalDetection,predicates);
@@ -576,7 +576,7 @@ public class SignalDetectionService {
 	 * @param rootSignalDetection
 	 * @param predicates
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	/*@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void addPts(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
 			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getPts())) {
@@ -591,13 +591,13 @@ public class SignalDetectionService {
 		}
 	}
 
-	/**
+	*//**
 	 * @param searchDto
 	 * @param criteriaBuilder
 	 * @param criteriaQuery
 	 * @param rootSignalDetection
 	 * @param predicates
-	 */
+	 *//*
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void addHlgts(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
 			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
@@ -613,13 +613,13 @@ public class SignalDetectionService {
 		}
 	}
 
-	/**
+	*//**
 	 * @param searchDto
 	 * @param criteriaBuilder
 	 * @param criteriaQuery
 	 * @param rootSignalDetection
 	 * @param predicates
-	 */
+	 *//*
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void addHlts(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
 			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
@@ -635,13 +635,13 @@ public class SignalDetectionService {
 		}
 	}
 
-	/**
+	*//**
 	 * @param searchDto
 	 * @param criteriaBuilder
 	 * @param criteriaQuery
 	 * @param rootSignalDetection
 	 * @param predicates
-	 */
+	 *//*
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void addSocs(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
 			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
@@ -657,13 +657,13 @@ public class SignalDetectionService {
 		}
 	}
 
-	/**
+	*//**
 	 * @param searchDto
 	 * @param criteriaBuilder
 	 * @param criteriaQuery
 	 * @param rootIngredient
 	 * @param predicates
-	 */
+	 *//*
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void addLicenses(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
 			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
@@ -680,13 +680,13 @@ public class SignalDetectionService {
 		}
 	}
 
-	/**
+	*//**
 	 * @param searchDto
 	 * @param criteriaBuilder
 	 * @param criteriaQuery
 	 * @param rootIngredient
 	 * @param predicates
-	 */
+	 *//*
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void addProducts(SearchDto searchDto, CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery,
 			Root<SignalDetection> rootSignalDetection, List<Predicate> predicates) {
@@ -703,12 +703,12 @@ public class SignalDetectionService {
 		}
 	}
 
-	/**
+	*//**
 	 * @param searchDto
 	 * @param criteriaBuilder
 	 * @param rootIngredient
 	 * @param predicates
-	 */
+	 *//*
 	private void addIngredients(SearchDto searchDto, CriteriaBuilder criteriaBuilder, Root<Ingredient> rootIngredient,
 			List<Predicate> predicates) {
 		if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
@@ -716,7 +716,7 @@ public class SignalDetectionService {
 					.isTrue(rootIngredient.get("ingredientName").in(searchDto.getIngredients()));
 			predicates.add(ingredientNameEquals);
 		}
-	}
+	}*/
 
 	/**
 	 * @param searchDto
