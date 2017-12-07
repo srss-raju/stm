@@ -30,6 +30,7 @@ public class TopicAssignmentCondition implements Serializable {
     private String category;
     private String categoryCode;
     private String categoryDesc;
+    private String categoryName;
     private Long assignmentConfigurationId;
     private Long topicSocAssignmentConfigurationId;
     
@@ -87,6 +88,12 @@ public class TopicAssignmentCondition implements Serializable {
 	public void setTopicSocAssignmentConfigurationId(
 			Long topicSocAssignmentConfigurationId) {
 		this.topicSocAssignmentConfigurationId = topicSocAssignmentConfigurationId;
+	}
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
     
 }

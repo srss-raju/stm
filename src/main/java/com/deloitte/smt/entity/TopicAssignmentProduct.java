@@ -30,6 +30,7 @@ public class TopicAssignmentProduct implements Serializable {
     private String category;
     private String categoryCode;
     private String categoryDesc;
+    private String categoryName;
     private Long assignmentConfigurationId;
     private Long topicProductAssignmentConfigurationId;
     
@@ -88,5 +89,12 @@ public class TopicAssignmentProduct implements Serializable {
 			Long topicProductAssignmentConfigurationId) {
 		this.topicProductAssignmentConfigurationId = topicProductAssignmentConfigurationId;
 	}
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	
 	
 }
