@@ -282,6 +282,10 @@ public class SignalService {
 		
 		AssignmentConfiguration assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(signalAssignmentService.convertToAssignmentConfiguration(topic));
 		if(assignmentConfiguration != null){
+			if(assignmentConfiguration.getSignalOwner()!=null){
+				topicUpdated.setOwner(assignmentConfiguration.getSignalOwner());
+			}
+			topicUpdated = topicRepository.save(topicUpdated);
 			topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
 		}
 		saveSignalUrl(topicUpdated);
