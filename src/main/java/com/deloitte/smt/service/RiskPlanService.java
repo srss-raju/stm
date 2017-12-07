@@ -10,12 +10,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
@@ -29,6 +29,7 @@ import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
@@ -55,6 +56,7 @@ import com.deloitte.smt.util.SmtResponse;
 @Transactional
 @Service
 public class RiskPlanService {
+	private static final Logger LOG = Logger.getLogger(RiskPlanService.class);
 	
 	@Autowired
 	MessageSource messageSource;
@@ -85,6 +87,15 @@ public class RiskPlanService {
 
 	@Autowired
 	SearchService searchService;
+	
+	@Autowired
+	SignalService signalService;
+	
+	@Autowired
+	private SignalAssignmentService signalAssignmentService;
+	
+	 @Autowired
+	 AssessmentPlanService assessmentPlanService;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -154,23 +165,38 @@ public class RiskPlanService {
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlanUpdated.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null,
 				riskPlanUpdated.getFileMetadata(), riskPlanUpdated.getCreatedBy());
 		updateSignalUrl(riskPlanUpdated);
+		AssessmentPlan assessmentPlan = null;
+		try{
+			assessmentPlan = assessmentPlanService.findById(0l);
+		}catch(Exception ex){
+			LOG.error(ex);
+		}
+		Topic topic = null;
+		if(assessmentPlan != null){
+			if(CollectionUtils.isEmpty(assessmentPlan.getTopics())){
+				for(Topic signal : assessmentPlan.getTopics()){
+					topic = signal;
+					break;
+				}
+			}
+		}
 		
-		if (!StringUtils.isEmpty(riskPlan.getSource())) {
-			assignmentConfiguration = assignmentConfigurationRepository
-					.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource());
+		if(topic != null){
+			Topic topicWithConditionsAndProducts = signalService.findById(topic.getId());
+			assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(signalAssignmentService.convertToAssignmentConfiguration(topicWithConditionsAndProducts));
 		}
-		// If Source is not null and combination not available we have to fetch
-		// with Ingredient
-		if (assignmentConfiguration == null) {
-			assignmentConfiguration = assignmentConfigurationRepository
-					.findByIngredientAndSignalSourceIsNull(riskPlan.getIngredient());
+		if(assignmentConfiguration == null){
+			assignmentConfiguration = assignmentConfigurationRepository.findByIsDefault(true);
 		}
-
+		
+		
 		if (assignmentConfiguration != null) {
 			if(assignmentConfiguration.getRiskOwner()!=null){
 				riskPlan.setOwner(assignmentConfiguration.getRiskOwner());
+				riskPlanUpdated.setOwner(assignmentConfiguration.getRiskOwner());
 			}
 			riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
+			//riskPlanUpdated = riskPlanRepository.save(riskPlanUpdated);
 		}
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 		return riskPlanUpdated;
