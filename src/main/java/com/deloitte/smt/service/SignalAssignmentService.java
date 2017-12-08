@@ -226,22 +226,26 @@ public class SignalAssignmentService {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
 			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
+				socBuilder.append(",");
 			}
+			String socBuilderValue = socBuilder.toString().substring(0, socBuilder.lastIndexOf(","));
 			queryBuilder2.append(" c.record_key IN (");
-			queryBuilder2.append(socBuilder.toString());
+			queryBuilder2.append(socBuilderValue);
 			queryBuilder2.append(")");
 			noSocFlag = true;
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
 			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
 				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
+				productBuilder.append(",");
 			}
 			if(noSocFlag){
 				queryBuilder2.append(" and p.record_key IN (");
 			}else{
 				queryBuilder2.append("  p.record_key IN (");
 			}
-			queryBuilder2.append(productBuilder.toString());
+			String productBuilderValue = productBuilder.toString().substring(0, productBuilder.lastIndexOf(","));
+			queryBuilder2.append(productBuilderValue);
 			queryBuilder2.append(")");
 			noProductFlag = true;
 		}
