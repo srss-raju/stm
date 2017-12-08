@@ -45,6 +45,8 @@ public class RiskPlan implements Serializable {
     private String riskTaskStatus;
     @Transient
 	private List<Comments> comments;
+    
+    private Long assessmentId;
 
  	@Transient
     private List<SignalURL> signalUrls;
@@ -304,5 +306,13 @@ public class RiskPlan implements Serializable {
 
 	public void setProducts(List<TopicProductAssignmentConfiguration> products) {
 		this.products = products;
+	}
+
+	public Long getAssessmentId() {
+		return assessmentId;
+	}
+
+	public void setAssessmentId(Long assessmentId) {
+		this.assessmentId = assessmentId;
 	}
 }

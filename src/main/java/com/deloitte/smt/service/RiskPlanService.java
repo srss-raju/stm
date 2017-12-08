@@ -167,7 +167,7 @@ public class RiskPlanService {
 		updateSignalUrl(riskPlanUpdated);
 		AssessmentPlan assessmentPlan = null;
 		try{
-			assessmentPlan = assessmentPlanService.findById(0l);
+			assessmentPlan = assessmentPlanService.findById(riskPlan.getAssessmentId());
 		}catch(Exception ex){
 			LOG.error(ex);
 		}
