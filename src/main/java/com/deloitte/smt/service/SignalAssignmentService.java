@@ -25,10 +25,13 @@ import com.deloitte.smt.entity.TopicAssignmentProduct;
 import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 import com.deloitte.smt.entity.TopicSignalValidationAssignmentAssignees;
 import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
+import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
+import com.deloitte.smt.repository.ProductAssignmentConfigurationRepository;
 import com.deloitte.smt.repository.RiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.SignalValidationAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.SocAssignmentConfigurationRepository;
 import com.deloitte.smt.repository.TopicAssessmentAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.TopicSignalValidationAssignmentAssigneesRepository;
@@ -63,6 +66,15 @@ public class SignalAssignmentService {
     
     @Autowired
     TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+    
+    @Autowired
+    AssignmentConfigurationService assignmentConfigurationService;
+    
+    @Autowired
+    SocAssignmentConfigurationRepository socAssignmentConfigurationRepository;
+    
+    @Autowired
+    ProductAssignmentConfigurationRepository productAssignmentConfigurationRepository;
 
 	public Topic saveSignalAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, Topic topicUpdated) {
 		assignmentConfiguration.setSignalAssignees(signalValidationAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
@@ -186,47 +198,81 @@ public class SignalAssignmentService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public AssignmentConfiguration getAssignmentConfiguration(AssignmentConfiguration assignmentConfiguration) {
+	public AssignmentConfiguration getAssignmentConfiguration(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDB = null;
 		StringBuilder queryBuilder = new StringBuilder("select DISTINCT a.id from sm_assignment_configuration a INNER JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id INNER JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id where ");
+		
+		StringBuilder queryBuilder2 = new StringBuilder("select DISTINCT a.id from sm_assignment_configuration a ");
+		
 		StringBuilder socBuilder = new StringBuilder();
 		StringBuilder productBuilder = new StringBuilder();
 		boolean noSocFlag = false;
 		boolean noProductFlag = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+			queryBuilder2.append(" INNER JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
+		}
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
+			queryBuilder2.append(" INNER JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
+		}
+		queryBuilder2.append(" where ");
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
 			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
 			}
-			queryBuilder.append(" c.record_key IN (");
-			queryBuilder.append(socBuilder.toString());
-			queryBuilder.append(")");
+			queryBuilder2.append(" c.record_key IN (");
+			queryBuilder2.append(socBuilder.toString());
+			queryBuilder2.append(")");
 			noSocFlag = true;
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
 			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
 				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
 			}
-			queryBuilder.append(" and p.record_key IN (");
-			queryBuilder.append(productBuilder.toString());
-			queryBuilder.append(")");
+			if(noSocFlag){
+				queryBuilder2.append(" and p.record_key IN (");
+			}else{
+				queryBuilder2.append("  p.record_key IN (");
+			}
+			queryBuilder2.append(productBuilder.toString());
+			queryBuilder2.append(")");
 			noProductFlag = true;
 		}
-		if(!noSocFlag){
-			queryBuilder.append(" and c.record_key is null");
+	/*	if(!noSocFlag){
+			queryBuilder2.append(" and c.record_key is null");
 		}
 		if(!noProductFlag){
-			queryBuilder.append(" and p.record_key is null");
-		}
-		Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			queryBuilder2.append(" and p.record_key is null");
+		}*/
+		Query query = entityManager.createNativeQuery(queryBuilder2.toString());
 		List<Object> records = query.getResultList();
 		if(!CollectionUtils.isEmpty(records)){
 			if(records.size() > 1){
 				assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 			}else{
 				BigInteger id = (BigInteger) records.get(0);
-				assignmentConfigurationFromDB = assignmentConfigurationRepository.findOne(id.longValue());
+				if(!noSocFlag){
+					if(!CollectionUtils.isEmpty(socAssignmentConfigurationRepository.findByAssignmentConfigurationId(id.longValue()))){
+						assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
+					}
+				}
+				if(!noProductFlag){
+					if(!CollectionUtils.isEmpty(productAssignmentConfigurationRepository.findByAssignmentConfigurationId(id.longValue()))){
+						assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
+					}
+				}
+				if(assignmentConfigurationFromDB == null){
+					assignmentConfigurationFromDB = assignmentConfigurationService.findById(id.longValue());
+				}
 			}
 		}else{
+			if(!noProductFlag){
+				// Only Socs
+			}
+			
+			if(!noSocFlag){
+				// Only Products
+			}
+			
 			assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 		}
 		return assignmentConfigurationFromDB;
