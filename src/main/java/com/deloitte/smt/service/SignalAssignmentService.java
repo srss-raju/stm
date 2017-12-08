@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.deloitte.smt.entity.AssignmentCondition;
 import com.deloitte.smt.entity.AssignmentConfiguration;
@@ -35,6 +36,7 @@ import com.deloitte.smt.repository.SocAssignmentConfigurationRepository;
 import com.deloitte.smt.repository.TopicAssessmentAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.TopicSignalValidationAssignmentAssigneesRepository;
+import com.deloitte.smt.util.AssignmentUtil;
 
 /**
  * Created by RKB on 31-07-2017.
@@ -208,11 +210,17 @@ public class SignalAssignmentService {
 		StringBuilder productBuilder = new StringBuilder();
 		boolean noSocFlag = false;
 		boolean noProductFlag = false;
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()) ){
 			queryBuilder2.append(" INNER JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
+		}
+		if(assignmentConfiguration.isConditionFlag()){
+			queryBuilder2.append(" LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
 			queryBuilder2.append(" INNER JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
+		}
+		if(assignmentConfiguration.isProductFlag()){
+			queryBuilder2.append(" LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
 		}
 		queryBuilder2.append(" where ");
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
@@ -237,12 +245,12 @@ public class SignalAssignmentService {
 			queryBuilder2.append(")");
 			noProductFlag = true;
 		}
-	/*	if(!noSocFlag){
+		if(assignmentConfiguration.isConditionFlag()){
 			queryBuilder2.append(" and c.record_key is null");
 		}
-		if(!noProductFlag){
+		if(assignmentConfiguration.isProductFlag()){
 			queryBuilder2.append(" and p.record_key is null");
-		}*/
+		}
 		Query query = entityManager.createNativeQuery(queryBuilder2.toString());
 		List<Object> records = query.getResultList();
 		if(!CollectionUtils.isEmpty(records)){
@@ -265,15 +273,49 @@ public class SignalAssignmentService {
 				}
 			}
 		}else{
+			boolean emptyFlag = false;
 			if(!noProductFlag){
 				// Only Socs
+				if(assignmentConfiguration.getConditions().size() == 1){
+					for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+						 String key = AssignmentUtil.getRecordKey(socConfig.getRecordKey());
+						if(!StringUtils.isEmpty(key)){
+							socConfig.setRecordKey(key);
+							assignmentConfiguration.setProductFlag(true);
+						}else{
+							emptyFlag = true;
+							assignmentConfiguration.setProductFlag(false);
+						}
+					}
+				}
+				if(!emptyFlag){
+					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration);
+				}
+				
 			}
 			
 			if(!noSocFlag){
 				// Only Products
+				if(assignmentConfiguration.getProducts().size() == 1){
+					for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+						 String key = AssignmentUtil.getRecordKey(productConfig.getRecordKey());
+						if(!StringUtils.isEmpty(key)){
+							productConfig.setRecordKey(key);
+							assignmentConfiguration.setConditionFlag(true);
+						}else{
+							emptyFlag = true;
+							assignmentConfiguration.setConditionFlag(false);
+						}
+					}
+				}
+				if(!emptyFlag){
+					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration);
+				}
+			}
+			if(assignmentConfigurationFromDB == null){
+				assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 			}
 			
-			assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 		}
 		return assignmentConfigurationFromDB;
 	}

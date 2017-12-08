@@ -53,6 +53,14 @@ public class AssignmentConfiguration implements Serializable {
 	private List<ProductAssignmentConfiguration> products;
     
     @JsonIgnore
+    @Transient
+    private boolean conditionFlag;
+    
+    @JsonIgnore
+    @Transient
+    private boolean productFlag;
+    
+    @JsonIgnore
     private String totalRecordKey;
     
     public Long getId() {
@@ -199,6 +207,22 @@ public class AssignmentConfiguration implements Serializable {
 
 	public void setTotalRecordKey(String totalRecordKey) {
 		this.totalRecordKey = totalRecordKey;
+	}
+
+	public boolean isConditionFlag() {
+		return conditionFlag;
+	}
+
+	public void setConditionFlag(boolean conditionFlag) {
+		this.conditionFlag = conditionFlag;
+	}
+
+	public boolean isProductFlag() {
+		return productFlag;
+	}
+
+	public void setProductFlag(boolean productFlag) {
+		this.productFlag = productFlag;
 	}
 
 }
