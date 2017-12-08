@@ -7,6 +7,7 @@ public class SocSearchDTO {
 	private String categoryCode;
 	
 	private String categoryDesc;
+	private String categoryName;
 
 	public String getCategory() {
 		return category;
@@ -30,6 +31,14 @@ public class SocSearchDTO {
 
 	public void setCategoryDesc(String categoryDesc) {
 		this.categoryDesc = categoryDesc;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 

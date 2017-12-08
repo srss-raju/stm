@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.deloitte.smt.entity.ConditionLevels;
+import com.deloitte.smt.entity.ProductLevels;
 
 public interface ConditionLevelRepository extends JpaRepository<ConditionLevels, Long> {
 	
@@ -13,5 +14,7 @@ public interface ConditionLevelRepository extends JpaRepository<ConditionLevels,
 	List<String> findByVersions();
 	
 	List<ConditionLevels> findAllByOrderByIdAsc();
+
+	ConditionLevels findByKey(String keyName);
 	
 }
