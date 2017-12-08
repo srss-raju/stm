@@ -248,7 +248,7 @@ public class SignalAssignmentService {
 			queryBuilder2.append(productBuilderValue);
 			queryBuilder2.append(")");
 			noProductFlag = true;
-		}
+		} 
 		if(assignmentConfiguration.isConditionFlag()){
 			queryBuilder2.append(" and c.record_key is null");
 		}
