@@ -291,6 +291,8 @@ public class SignalAssignmentService {
 							assignmentConfiguration.setProductFlag(false);
 						}
 					}
+				}else{
+					emptyFlag = true;
 				}
 				if(!emptyFlag){
 					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration);
@@ -311,10 +313,19 @@ public class SignalAssignmentService {
 							assignmentConfiguration.setConditionFlag(false);
 						}
 					}
+				}else{
+					emptyFlag = true;
 				}
 				if(!emptyFlag){
 					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration);
 				}
+			}
+			
+			//if records not available for product and condition 
+			if(noSocFlag && noProductFlag){
+				assignmentConfiguration.setProducts(null);
+				assignmentConfiguration.setProductFlag(true);
+				assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration);
 			}
 			if(assignmentConfigurationFromDB == null){
 				assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
