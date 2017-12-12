@@ -2,12 +2,10 @@ package com.deloitte.smt.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
+import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -16,8 +14,6 @@ import com.deloitte.smt.dto.ConditionResponse;
 import com.deloitte.smt.entity.ConditionLevels;
 import com.deloitte.smt.repository.ConditionLevelRepository;
 import com.deloitte.smt.util.Levels;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ConditonService {
