@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
@@ -118,7 +119,7 @@ public class AssessmentPlanService {
             assessmentPlan.setAssessmentPlanStatus("In Progress");
             assessmentPlan = assessmentPlanRepository.save(assessmentPlan);
         }
-        if(assessmentPlan.getAssessmentPlanStatus().equals(SmtConstant.COMPLETED.getDescription())){
+        if(assessmentPlan.getAssessmentPlanStatus().equals(SmtConstant.COMPLETED.getDescription()) && StringUtils.isEmpty(assessmentPlan.getFinalAssessmentSummary())){
         	assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY_COMPLETED.getDescription());
         }
         assessmentAssignmentService.findAssignmentAssignees(assessmentPlan);
