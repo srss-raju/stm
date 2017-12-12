@@ -1,6 +1,5 @@
 package com.deloitte.smt.dto;
 
-
 public class Versions {
 	
 	private String versionNumber;
@@ -12,6 +11,4 @@ public class Versions {
 	public void setVersionNumber(String versionNumber) {
 		this.versionNumber = versionNumber;
 	}
-
-	
 }

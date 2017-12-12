@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -32,9 +33,9 @@ public class ConditonService {
 		List<Levels> levelsList=null;
 		try {
 			response=new ConditionResponse();
-			Map<String,String> versions=new HashMap<>();
+			JSONObject  versions=new JSONObject();
 			List<ConditionLevels> conditionLevelList=conditionLevelRepository.findAllByOrderByIdAsc();
-			ObjectMapper mapper = new ObjectMapper();
+			//ObjectMapper mapper = new ObjectMapper();
 			levelsList =new ArrayList<>();
 			if (!CollectionUtils.isEmpty(conditionLevelList)) {
 				for (ConditionLevels condLevel : conditionLevelList) {
@@ -47,8 +48,8 @@ public class ConditonService {
 				versions.put("versionNumber", cLevel.getVersions());
 				response.setShowCodes(cLevel.isShowCodes());
 			}
-			strVersions = mapper.writeValueAsString(versions);
-		} catch (JsonProcessingException e) {
+			strVersions = versions.toString();
+		} catch (Exception e) {
 			LOGGER.error(e);
 		}
 		response.setLevels(levelsList);
