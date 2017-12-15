@@ -63,6 +63,18 @@ public class Topic implements Serializable{
 	private Long cohortPercentage;
 	private String owner;
 	
+	public Topic(Long id, String name, String description, String sourceName,
+			String signalConfirmation, String signalStatus, Date createdDate) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.sourceName = sourceName;
+		this.createdDate = createdDate;
+		this.signalConfirmation = signalConfirmation;
+		this.signalStatus = signalStatus;
+	}
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "topicId")
 	private List<TopicSignalValidationAssignmentAssignees> topicSignalValidationAssignmentAssignees;

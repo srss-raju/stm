@@ -2,10 +2,11 @@ package com.deloitte.smt.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -14,6 +15,8 @@ import com.deloitte.smt.dto.ConditionResponse;
 import com.deloitte.smt.entity.ConditionLevels;
 import com.deloitte.smt.repository.ConditionLevelRepository;
 import com.deloitte.smt.util.Levels;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ConditonService {
@@ -29,9 +32,9 @@ public class ConditonService {
 		List<Levels> levelsList=null;
 		try {
 			response=new ConditionResponse();
-			JSONObject  versions=new JSONObject();
+			Map<String,String> versions=new HashMap<>();
 			List<ConditionLevels> conditionLevelList=conditionLevelRepository.findAllByOrderByIdAsc();
-			//ObjectMapper mapper = new ObjectMapper();
+			ObjectMapper mapper = new ObjectMapper();
 			levelsList =new ArrayList<>();
 			if (!CollectionUtils.isEmpty(conditionLevelList)) {
 				for (ConditionLevels condLevel : conditionLevelList) {
@@ -44,8 +47,8 @@ public class ConditonService {
 				versions.put("versionNumber", cLevel.getVersions());
 				response.setShowCodes(cLevel.isShowCodes());
 			}
-			strVersions = versions.toString();
-		} catch (Exception e) {
+			strVersions = mapper.writeValueAsString(versions);
+		} catch (JsonProcessingException e) {
 			LOGGER.error(e);
 		}
 		response.setLevels(levelsList);
