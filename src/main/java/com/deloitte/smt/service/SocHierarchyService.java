@@ -15,7 +15,6 @@ import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.SocHierarchyDto;
 import com.deloitte.smt.dto.SocSearchDTO;
 import com.deloitte.smt.entity.ConditionLevels;
-import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.repository.ConditionLevelRepository;
 
 /**

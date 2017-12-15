@@ -41,6 +41,7 @@ public class ProductHierarchyService {
 	 * @return
 	 */
 	public List<ProductSearchDTO> getHierarchyByCode(MedraBrowserDTO medraBrowserDto) {
+		LOGGER.info("getHierarchyByCode");
 		List<ProductHierarchyDto> productHierarchyList;
 		productHierarchyList = productMedraHierarchyDAO.findAllByActLvel(medraBrowserDto.getSearchValue(), medraBrowserDto.getSelectLevel(), medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
 		return responseMapper(productHierarchyList);

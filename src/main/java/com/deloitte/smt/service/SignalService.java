@@ -47,7 +47,6 @@ import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.HlgtRepository;
@@ -154,8 +153,6 @@ public class SignalService {
 	@Autowired
 	NonSignalRepository nonSignalRepository;
 
-	@Autowired
-	private AssignmentConfigurationRepository assignmentConfigurationRepository;
 	
 	@Autowired
 	CommentsRepository commentsRepository;
