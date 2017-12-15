@@ -202,36 +202,35 @@ public class SignalAssignmentService {
 	@SuppressWarnings("unchecked")
 	public AssignmentConfiguration getAssignmentConfiguration(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDB = null;
-		StringBuilder queryBuilder = new StringBuilder("select DISTINCT a.id from sm_assignment_configuration a INNER JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id INNER JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id where ");
 		
-		StringBuilder queryBuilder2 = new StringBuilder("select DISTINCT a.id from sm_assignment_configuration a ");
+		StringBuilder queryBuilder = new StringBuilder("select DISTINCT a.id from sm_assignment_configuration a ");
 		
 		StringBuilder socBuilder = new StringBuilder();
 		StringBuilder productBuilder = new StringBuilder();
 		boolean noSocFlag = false;
 		boolean noProductFlag = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()) ){
-			queryBuilder2.append(" INNER JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
+			queryBuilder.append(" INNER JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
 		}
 		if(assignmentConfiguration.isConditionFlag()){
-			queryBuilder2.append(" LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
+			queryBuilder.append(" LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-			queryBuilder2.append(" INNER JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
+			queryBuilder.append(" INNER JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
 		}
 		if(assignmentConfiguration.isProductFlag()){
-			queryBuilder2.append(" LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
+			queryBuilder.append(" LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
 		}
-		queryBuilder2.append(" where ");
+		queryBuilder.append(" where ");
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
 			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
 				socBuilder.append(",");
 			}
 			String socBuilderValue = socBuilder.toString().substring(0, socBuilder.lastIndexOf(","));
-			queryBuilder2.append(" c.record_key IN (");
-			queryBuilder2.append(socBuilderValue);
-			queryBuilder2.append(")");
+			queryBuilder.append(" c.record_key IN (");
+			queryBuilder.append(socBuilderValue);
+			queryBuilder.append(")");
 			noSocFlag = true;
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
@@ -240,22 +239,22 @@ public class SignalAssignmentService {
 				productBuilder.append(",");
 			}
 			if(noSocFlag){
-				queryBuilder2.append(" and p.record_key IN (");
+				queryBuilder.append(" and p.record_key IN (");
 			}else{
-				queryBuilder2.append("  p.record_key IN (");
+				queryBuilder.append("  p.record_key IN (");
 			}
 			String productBuilderValue = productBuilder.toString().substring(0, productBuilder.lastIndexOf(","));
-			queryBuilder2.append(productBuilderValue);
-			queryBuilder2.append(")");
+			queryBuilder.append(productBuilderValue);
+			queryBuilder.append(")");
 			noProductFlag = true;
 		} 
 		if(assignmentConfiguration.isConditionFlag()){
-			queryBuilder2.append(" and c.record_key is null");
+			queryBuilder.append(" and c.record_key is null");
 		}
 		if(assignmentConfiguration.isProductFlag()){
-			queryBuilder2.append(" and p.record_key is null");
+			queryBuilder.append(" and p.record_key is null");
 		}
-		Query query = entityManager.createNativeQuery(queryBuilder2.toString());
+		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		List<Object> records = query.getResultList();
 		if(!CollectionUtils.isEmpty(records)){
 			if(records.size() > 1){
