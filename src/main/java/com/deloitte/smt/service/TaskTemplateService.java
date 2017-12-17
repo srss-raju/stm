@@ -17,6 +17,7 @@ import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
+import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 
 @Transactional
@@ -31,6 +32,10 @@ public class TaskTemplateService {
 	
 	@Autowired
 	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
+	
+	@Autowired
+	private TaskTemplateProductsRepository taskTemplateProductsRepository;
+	
 	
 	@Autowired
 	ExceptionBuilder  exceptionBuilder;
@@ -56,6 +61,10 @@ public class TaskTemplateService {
 		if(template.getDeletedIngrediantIds() != null){
 			deleteIngrediants(template.getDeletedIngrediantIds());
 		}
+		if(template.getDeletedProductIds() != null){
+			deleteProducts(template.getDeletedProductIds());
+		}
+		
 		if(!CollectionUtils.isEmpty(template.getTaskTemplateIngrediant())){
 			for(TaskTemplateIngrediant ingrediant : template.getTaskTemplateIngrediant()){
 				ingrediant.setTaskTemplateId(template.getId());
@@ -78,6 +87,12 @@ public class TaskTemplateService {
 	void deleteIngrediants(List<Long> ids){
 		for(Long id:ids){
 			taskTemplateIngrediantRepository.deleteById(id);
+		}
+	}
+	
+	void deleteProducts(List<Long> ids){
+		for(Long id:ids){
+			taskTemplateProductsRepository.deleteById(id);
 		}
 	}
 	
