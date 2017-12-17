@@ -16,8 +16,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * Created by rkb on 17-12-2017.
  */
 @Entity
-@Table(name = "sm_task_template_product_values")
-public class TaskTemplateProductValues implements Serializable {
+@Table(name = "sm_risk_task_template_product_values")
+public class RiskTaskTemplateProductValues implements Serializable {
 
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class TaskTemplateProductValues implements Serializable {
     
 	@Transient
 	@JsonIgnore
-	private TaskTemplateProducts taskTemplateProducts;
+	private RiskTaskTemplateProducts riskTaskTemplateProducts;
     
 	
 	public Long getId() {
@@ -83,17 +83,17 @@ public class TaskTemplateProductValues implements Serializable {
 		this.categoryDesc = categoryDesc;
 	}
 	
-	public TaskTemplateProducts getTaskTemplateProducts() {
-		return taskTemplateProducts;
-	}
-	public void setTaskTemplateProducts(TaskTemplateProducts taskTemplateProducts) {
-		this.taskTemplateProducts = taskTemplateProducts;
-	}
-	
     public String getCategoryName() {
 		return categoryName;
 	}
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
+	}
+	public RiskTaskTemplateProducts getRiskTaskTemplateProducts() {
+		return riskTaskTemplateProducts;
+	}
+	public void setRiskTaskTemplateProducts(
+			RiskTaskTemplateProducts riskTaskTemplateProducts) {
+		this.riskTaskTemplateProducts = riskTaskTemplateProducts;
 	}
 }
