@@ -67,8 +67,8 @@ public class TaskTemplateService {
 		return taskTemplateRepository.save(template);
 	}
 
-	public void delete(Long taskId) throws ApplicationException {
-		TaskTemplate taskTemplate = taskTemplateRepository.findOne(taskId);
+	public void delete(Long templateId) throws ApplicationException {
+		TaskTemplate taskTemplate = taskTemplateRepository.findOne(templateId);
 		if(taskTemplate == null) {
             throw new ApplicationException("Failed to delete Task. Invalid Id received");
         }

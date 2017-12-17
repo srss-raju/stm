@@ -48,9 +48,9 @@ public class TaskTemplateController {
 		return taskTemplateService.updateTaskTemplate(taskTemplate);
 	}
 	
-	@DeleteMapping(value = "/{taskId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long taskId) throws ApplicationException {
-		taskTemplateService.delete(taskId);
+	@DeleteMapping(value = "/{templateId}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long templateId) throws ApplicationException {
+		taskTemplateService.delete(templateId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 	

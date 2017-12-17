@@ -3,10 +3,14 @@ package com.deloitte.smt.entity;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -24,7 +28,18 @@ public class TaskTemplate {
 	private List<Long> deletedIngrediantIds;
 	@Transient
 	private List<TaskTemplateIngrediant> taskTemplateIngrediant;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "taskTemplateId")
+	private List<TaskTemplateProducts> products;
 
+	
+	public List<TaskTemplateProducts> getProducts() {
+		return products;
+	}
+	public void setProducts(List<TaskTemplateProducts> products) {
+		this.products = products;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -62,4 +77,6 @@ public class TaskTemplate {
 	public void setDeletedIngrediantIds(List<Long> deletedIngrediantIds) {
 		this.deletedIngrediantIds = deletedIngrediantIds;
 	}
+	
+	
 }
