@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -173,8 +174,9 @@ public class RiskPlanService {
 		}
 		Topic topic = null;
 		if(assessmentPlan != null){
-			if(CollectionUtils.isEmpty(assessmentPlan.getTopics())){
-				for(Topic signal : assessmentPlan.getTopics()){
+			Set<Topic> topics = assessmentPlanRepository.findAllSignals(assessmentPlan.getId());
+			if(!CollectionUtils.isEmpty(topics)){
+				for(Topic signal : topics){
 					topic = signal;
 					break;
 				}

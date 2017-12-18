@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Topic;
 
 public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, Long> {
 
@@ -40,5 +41,8 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	
 	@Query("SELECT o.assessmentName from AssessmentPlan o where o.assessmentName not in (select a.assessmentName from AssessmentPlan a where a.assessmentName= :assessmentName AND a.id=:id)")
 	List<String> findByAssessmentName(@Param(value = "assessmentName") String assessmentName,@Param(value = "id") Long id);
+	
+	@Query(value = "SELECT t FROM AssessmentPlan o inner join o.topics t  WHERE o.id= :id order by t.id desc")
+	Set<Topic> findAllSignals(@Param(value="id") Long id);
 	
 }
