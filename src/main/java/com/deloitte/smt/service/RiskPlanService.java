@@ -872,7 +872,7 @@ public class RiskPlanService {
 	}
 	private void ownerCheck(RiskPlan riskPlan, RiskPlan riskPlanFromDB)
 			throws ApplicationException {
-		if(riskPlanFromDB != null && riskPlanFromDB.getOwner() != null && (!riskPlanFromDB.getOwner().equalsIgnoreCase(riskPlan.getOwner()))){
+		if(riskPlanFromDB != null && riskPlan.getOwner()!=null && riskPlanFromDB.getOwner() != null && (!riskPlanFromDB.getOwner().equalsIgnoreCase(riskPlan.getOwner()))){
 			throw new ApplicationException("Unable to make you as a Owner");
 		}
 	}
