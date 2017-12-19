@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
@@ -42,6 +43,9 @@ public class TaskTemplateService {
 
 	public TaskTemplate createTaskTemplate(TaskTemplate taskTemplate) throws ApplicationException {
 		taskTemplate.setCreatedDate(new Date());
+		if(StringUtils.isEmpty(taskTemplate.getName())){
+			throw exceptionBuilder.buildException(ErrorType.NO_NAME, null);
+		}
 		Long taskTemplateExists=taskTemplateRepository.countTaskTemplateByNameIgnoreCase(taskTemplate.getName());
 		if(taskTemplateExists>0){
 			throw exceptionBuilder.buildException(ErrorType.ASSESSMENT_TASK_NAME_DUPLICATE, null);
