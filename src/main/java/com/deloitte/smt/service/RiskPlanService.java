@@ -736,11 +736,13 @@ public class RiskPlanService {
 				}
 			}
 		}
-		if(allTasksCompletedFlag){
-			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
-		}
-		else{
-			riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(),  Long.valueOf(riskTask.getRiskId()));
+		if(riskTask.getRiskId() != null){
+			if(allTasksCompletedFlag){
+				riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
+			}
+			else{
+				riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(),  Long.valueOf(riskTask.getRiskId()));
+			}
 		}
 	}
 	public RiskTask findById(Long id) {
