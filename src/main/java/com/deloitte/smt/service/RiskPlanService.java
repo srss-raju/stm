@@ -30,7 +30,10 @@ import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.TaskTemplate;
+import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
@@ -45,6 +48,8 @@ import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
+import com.deloitte.smt.repository.TaskTemplateProductsRepository;
+import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SearchFilters;
@@ -123,6 +128,13 @@ public class RiskPlanService {
 	
 	@Autowired
 	private SearchFilters searchFilters;
+	
+    @Autowired
+    TaskTemplateRepository taskTemplateRepository;
+	    
+	@Autowired
+	TaskTemplateProductsRepository taskTemplateProductsRepository;
+	    
 	/**
 	 * 
 	 * @param riskPlan
@@ -924,5 +936,47 @@ public class RiskPlanService {
 				riskPlanRepository.save(riskPlan);
 			}
 		}
+	}
+	public List<TaskTemplate> getTaskTamplatesOfRiskProducts(Long riskPlanId) throws ApplicationException {
+		List<TaskTemplate> taskTemplates = new ArrayList<>();
+		AssessmentPlan assessmentPlan = null;
+		RiskPlan riskPlanFromDB = findByRiskId(riskPlanId);
+		try{
+			assessmentPlan = assessmentPlanService.findById(riskPlanFromDB.getAssessmentPlan().getId());
+		}catch(Exception ex){
+			LOG.error(ex);
+		}
+		Topic topic = null;
+		if(assessmentPlan != null){
+			Set<Topic> topics = assessmentPlanRepository.findAllSignals(assessmentPlan.getId());
+			if(!CollectionUtils.isEmpty(topics)){
+				for(Topic signal : topics){
+					topic = signal;
+					break;
+				}
+			}
+		}
+		if(topic != null){
+			Topic topicWithConditionsAndProducts = signalService.findById(topic.getId());
+			if(!CollectionUtils.isEmpty(topicWithConditionsAndProducts.getProducts())){
+				getTaskTemplates(taskTemplates, topicWithConditionsAndProducts);
+			}
+		}
+		//AssignmentUtil
+		return taskTemplates;
+	}
+
+	private void getTaskTemplates(List<TaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
+		for(TopicProductAssignmentConfiguration recordKey : topicWithConditionsAndProducts.getProducts()){
+			TaskTemplateProducts taskTemplateProducts = getTaskTemplateProduct(recordKey);
+			if(taskTemplateProducts != null){
+				Long taskTemplateId = taskTemplateProductsRepository.findTemplateId(taskTemplateProducts.getId());
+				taskTemplates.add(taskTemplateRepository.findOne(taskTemplateId));
+			}
+		}
+	}
+
+	private TaskTemplateProducts getTaskTemplateProduct(TopicProductAssignmentConfiguration recordKey) {
+		return taskTemplateProductsRepository.findByRecordKey(recordKey.getRecordKey());
 	}
 }

@@ -3,6 +3,7 @@ package com.deloitte.smt.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -37,8 +39,11 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.TaskTemplate;
+import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicAssessmentAssignmentAssignees;
+import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -49,6 +54,8 @@ import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
+import com.deloitte.smt.repository.TaskTemplateProductsRepository;
+import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
@@ -62,7 +69,10 @@ import com.deloitte.smt.util.SmtResponse;
 @Service
 public class AssessmentPlanService {
 
-    @Autowired
+
+	private static final Logger LOG = Logger.getLogger(RiskPlanService.class);
+	
+	@Autowired
     AssessmentPlanRepository assessmentPlanRepository;
 
     @Autowired
@@ -99,6 +109,9 @@ public class AssessmentPlanService {
     RiskPlanService riskPlanService;
     
     @Autowired
+    SignalService signalService;
+    
+    @Autowired
     ExceptionBuilder exceptionBuilder;
     @Autowired
     AssessmentActionRepository assessmentActionRepository;
@@ -108,6 +121,12 @@ public class AssessmentPlanService {
     
     @Autowired
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+    
+    @Autowired
+    TaskTemplateProductsRepository taskTemplateProductsRepository;
+    
+    @Autowired
+    TaskTemplateRepository taskTemplateRepository;
     
     public AssessmentPlan findById(Long assessmentId) throws ApplicationException {
         AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
@@ -666,5 +685,47 @@ public class AssessmentPlanService {
 			}
 		}
 
+	}
+
+	public List<TaskTemplate> getTaskTamplatesOfAssessmentProducts(Long assessmentId) throws ApplicationException {
+		List<TaskTemplate> taskTemplates = new ArrayList<>();
+		AssessmentPlan assessmentPlan = null;
+		try{
+			assessmentPlan = findById(assessmentId);
+		}catch(Exception ex){
+			LOG.error(ex);
+		}
+		Topic topic = null;
+		if(assessmentPlan != null){
+			Set<Topic> topics = assessmentPlanRepository.findAllSignals(assessmentPlan.getId());
+			if(!CollectionUtils.isEmpty(topics)){
+				for(Topic signal : topics){
+					topic = signal;
+					break;
+				}
+			}
+		}
+		if(topic != null){
+			Topic topicWithConditionsAndProducts = signalService.findById(topic.getId());
+			if(!CollectionUtils.isEmpty(topicWithConditionsAndProducts.getProducts())){
+				getTaskTemplates(taskTemplates, topicWithConditionsAndProducts);
+			}
+		}
+		//AssignmentUtil
+		return taskTemplates;
+	}
+
+	private void getTaskTemplates(List<TaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
+		for(TopicProductAssignmentConfiguration recordKey : topicWithConditionsAndProducts.getProducts()){
+			TaskTemplateProducts taskTemplateProducts = getTaskTemplateProduct(recordKey);
+			if(taskTemplateProducts != null){
+				Long taskTemplateId = taskTemplateProductsRepository.findTemplateId(taskTemplateProducts.getId());
+				taskTemplates.add(taskTemplateRepository.findOne(taskTemplateId));
+			}
+		}
+	}
+
+	private TaskTemplateProducts getTaskTemplateProduct(TopicProductAssignmentConfiguration recordKey) {
+		return taskTemplateProductsRepository.findByRecordKey(recordKey.getRecordKey());
 	}
 }

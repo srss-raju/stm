@@ -1,6 +1,7 @@
 package com.deloitte.smt.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.AssessmentPlanService;
@@ -83,4 +85,10 @@ public class AssessmentController {
 		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    
+    @GetMapping(value = "/assessmentPlan/getTemplates/{assessmentId}")
+	public List<TaskTemplate> getTaskTamplatesOfAssessmentProducts(@PathVariable Long assessmentId) throws ApplicationException{
+		return assessmentPlanService.getTaskTamplatesOfAssessmentProducts(assessmentId);
+	}
+    
 }

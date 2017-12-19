@@ -21,6 +21,7 @@ import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.RiskPlanService;
 import com.deloitte.smt.util.SmtResponse;
@@ -140,4 +141,10 @@ public class RiskController {
     public List<RiskTask> associateRiskTemplateTasks(@RequestBody RiskPlan riskPlan) {
         return riskPlanService.associateRiskTemplateTasks(riskPlan);
     }
+    
+    @GetMapping(value = "/getTemplates/{riskPlanId}")
+   	public List<TaskTemplate> getTaskTamplatesOfRiskProducts(@PathVariable Long riskPlanId) throws ApplicationException{
+   		return riskPlanService.getTaskTamplatesOfRiskProducts(riskPlanId);
+   	}
+    
 }

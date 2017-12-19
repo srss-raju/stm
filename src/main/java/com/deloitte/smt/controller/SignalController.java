@@ -26,7 +26,6 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.SignalAction;
-import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SignalService;
@@ -87,10 +86,6 @@ public class SignalController {
 		return signalService.findTopics(dto);
 	}
 
-	@GetMapping(value = "/getTemplates/{ingrediantName}")
-	public List<TaskTemplate> getTaskTamplatesOfIngrediant(@PathVariable String ingrediantName){
-		return signalService.getTaskTamplatesOfIngrediant(ingrediantName);
-	}
 	
 	@PostMapping(value = "/template/associateTemplateTasks")
     public List<SignalAction> associateTemplateTasks(@RequestBody AssessmentPlan assessmentPlan) {
