@@ -3,6 +3,9 @@ package com.deloitte.smt.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.util.StringUtils;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateIngrediant;
+import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -37,9 +41,11 @@ public class TaskTemplateService {
 	@Autowired
 	private TaskTemplateProductsRepository taskTemplateProductsRepository;
 	
-	
 	@Autowired
 	ExceptionBuilder  exceptionBuilder;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	public TaskTemplate createTaskTemplate(TaskTemplate taskTemplate) throws ApplicationException {
 		taskTemplate.setCreatedDate(new Date());
@@ -49,6 +55,9 @@ public class TaskTemplateService {
 		Long taskTemplateExists=taskTemplateRepository.countTaskTemplateByNameIgnoreCase(taskTemplate.getName());
 		if(taskTemplateExists>0){
 			throw exceptionBuilder.buildException(ErrorType.ASSESSMENT_TASK_NAME_DUPLICATE, null);
+		}
+		if(duplicateRecordCheck(taskTemplate)){
+			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
 		}
 		TaskTemplate template = taskTemplateRepository.save(taskTemplate);
 		if(!CollectionUtils.isEmpty(template.getTaskTemplateIngrediant())){
@@ -61,7 +70,40 @@ public class TaskTemplateService {
 		return template;
 	}
 
-	public TaskTemplate updateTaskTemplate(TaskTemplate template) {
+	@SuppressWarnings("unchecked")
+	private boolean duplicateRecordCheck(TaskTemplate taskTemplate) {
+		boolean duplicateFlag = false;
+		StringBuilder queryBuilder = new StringBuilder("select DISTINCT a.id from sm_task_template_products a where a.record_key IN (");
+		List<TaskTemplateProducts> products = taskTemplate.getProducts();
+		StringBuilder productBuilder = new StringBuilder();
+		if(!CollectionUtils.isEmpty(products)){
+			for(TaskTemplateProducts product : products){
+				if(product.getId() == null){
+					productBuilder.append("'").append(product.getRecordKey()).append("'");
+					productBuilder.append(",");
+				}
+			}
+			String productBuilderValue = null;
+			if(!StringUtils.isEmpty(productBuilder.toString())){
+				productBuilderValue = productBuilder.toString().substring(0, productBuilder.lastIndexOf(","));
+				queryBuilder.append(productBuilderValue);
+			}
+			queryBuilder.append(")");
+			if(!StringUtils.isEmpty(productBuilderValue)){
+				Query query = entityManager.createNativeQuery(queryBuilder.toString());
+				List<Object> records = query.getResultList();
+				if(!CollectionUtils.isEmpty(records)){
+					duplicateFlag = true;
+				}
+			}
+		}
+		return duplicateFlag;
+	}
+
+	public TaskTemplate updateTaskTemplate(TaskTemplate template) throws ApplicationException {
+		if(duplicateRecordCheck(template)){
+			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
+		}
 		if(template.getDeletedIngrediantIds() != null){
 			deleteIngrediants(template.getDeletedIngrediantIds());
 		}

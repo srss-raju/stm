@@ -15,7 +15,8 @@ public enum ErrorType {
 	DETECTION_NAME_DUPLICATE(105,"error.detection.name.duplicate","Detection with Same Name Existed"),
 	ASSESSMENT_TASK_NAME_DUPLICATE(106,"error.assessment.task.name.duplicate","Assessment Task with Same Name Existed"),
 	RISKTASK_NAME_DUPLICATE(107,"error.risk.task.name.duplicate","Risk Task with Same Name Existed"),
-	NO_NAME(108,"error.risk.task.name.noname","Name is not provided");
+	NO_NAME(108,"error.task.noname","Name is not provided"),
+	DUPLICATE_RECORD(109,"error.duplicate.record","Record already exists"),;
 	
 	private final Integer code;
 	private final String label;

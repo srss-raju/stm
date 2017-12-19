@@ -40,14 +40,18 @@ public class RiskTaskTemplateController {
 		} catch (IOException e) {
 			LOG.info("Exception occured while updating "+e);
 		}
-		
-		
 		return riskTaskTemplateService.createTaskTemplate(taskTemplate);
 	}
 	
 	@PostMapping(value = "/updateTaskTemplate")
-	public RiskTaskTemplate updateTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
-		RiskTaskTemplate taskTemplate = new ObjectMapper().readValue(taskTemplateString, RiskTaskTemplate.class);
+	public RiskTaskTemplate updateTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
+		
+		RiskTaskTemplate taskTemplate = null;
+		try {
+			taskTemplate = new ObjectMapper().readValue(taskTemplateString, RiskTaskTemplate.class);
+		} catch (IOException e) {
+			LOG.info("Exception occured while updating "+e);
+		}
 		return riskTaskTemplateService.updateTaskTemplate(taskTemplate);
 	}
 	

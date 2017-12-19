@@ -3,6 +3,9 @@ package com.deloitte.smt.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.RiskTaskTemplate;
+import com.deloitte.smt.entity.RiskTaskTemplateProducts;
 import com.deloitte.smt.entity.TaskTemplateIngrediant;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
@@ -34,6 +38,9 @@ public class RiskTaskTemplateService {
 	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
 	@Autowired
 	private ExceptionBuilder exceptionBuilder;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	public RiskTaskTemplate createTaskTemplate(RiskTaskTemplate riskTaskTemplate) throws ApplicationException {
 		if(StringUtils.isEmpty(riskTaskTemplate.getName())){
@@ -43,6 +50,9 @@ public class RiskTaskTemplateService {
 		Long countRiskTask=riskTaskTemplateRepository.countRiskTaskTemplateByNameIgnoreCase(riskTaskTemplate.getName());
 		if(countRiskTask>0){
 			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
+		}
+		if(duplicateRecordCheck(riskTaskTemplate)){
+			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
 		}
 		RiskTaskTemplate template = riskTaskTemplateRepository.save(riskTaskTemplate);
 		if(!CollectionUtils.isEmpty(template.getTaskTemplateIngrediant())){
@@ -54,8 +64,39 @@ public class RiskTaskTemplateService {
 		}
 		return template;
 	}
+	
+	@SuppressWarnings("unchecked")
+	private boolean duplicateRecordCheck(RiskTaskTemplate taskTemplate) {
+		boolean duplicateFlag = false;
+		StringBuilder queryBuilder = new StringBuilder("select DISTINCT a.id from sm_risk_task_template_products a where a.record_key IN (");
+		List<RiskTaskTemplateProducts> products = taskTemplate.getProducts();
+		StringBuilder productBuilder = new StringBuilder();
+		if(!CollectionUtils.isEmpty(products)){
+			for(RiskTaskTemplateProducts product : products){
+				if(product.getId() == null){
+					productBuilder.append("'").append(product.getRecordKey()).append("'");
+					productBuilder.append(",");
+				}
+			}
+			String productBuilderValue = productBuilder.toString().substring(0, productBuilder.lastIndexOf(","));
+			queryBuilder.append(productBuilderValue);
+			queryBuilder.append(")");
+			if(!StringUtils.isEmpty(productBuilderValue)){
+				Query query = entityManager.createNativeQuery(queryBuilder.toString());
+				List<Object> records = query.getResultList();
+				if(!CollectionUtils.isEmpty(records)){
+					duplicateFlag = true;
+				}
+			}
+		}
+		return duplicateFlag;
+	}
+	
 
-	public RiskTaskTemplate updateTaskTemplate(RiskTaskTemplate template) {
+	public RiskTaskTemplate updateTaskTemplate(RiskTaskTemplate template) throws ApplicationException {
+		if(duplicateRecordCheck(template)){
+			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
+		}
 		if(template.getDeletedIngrediantIds() != null){
 			deleteIngrediants(template.getDeletedIngrediantIds());
 		}

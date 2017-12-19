@@ -43,8 +43,13 @@ public class TaskTemplateController {
 	}
 	
 	@PostMapping(value = "/updateTaskTemplate")
-	public TaskTemplate updateTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
-		TaskTemplate taskTemplate = new ObjectMapper().readValue(taskTemplateString, TaskTemplate.class);
+	public TaskTemplate updateTaskTemplate(@RequestParam("data") String taskTemplateString, @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
+		TaskTemplate taskTemplate = null;
+		try {
+			taskTemplate = new ObjectMapper().readValue(taskTemplateString, TaskTemplate.class);
+		} catch (IOException e) {
+			LOG.info("Exception occured while creating "+e);
+		}
 		return taskTemplateService.updateTaskTemplate(taskTemplate);
 	}
 	
