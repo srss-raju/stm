@@ -14,7 +14,8 @@ public enum ErrorType {
 	RISKPACTION_NAME_DUPLICATE(104,"error.riskaction.task.name.duplicate","Risk Action with Same Name Existed"),
 	DETECTION_NAME_DUPLICATE(105,"error.detection.name.duplicate","Detection with Same Name Existed"),
 	ASSESSMENT_TASK_NAME_DUPLICATE(106,"error.assessment.task.name.duplicate","Assessment Task with Same Name Existed"),
-	RISKTASK_NAME_DUPLICATE(107,"error.risk.task.name.duplicate","Risk Task with Same Name Existed");
+	RISKTASK_NAME_DUPLICATE(107,"error.risk.task.name.duplicate","Risk Task with Same Name Existed"),
+	NO_NAME(108,"error.risk.task.name.noname","Name is not provided");
 	
 	private final Integer code;
 	private final String label;

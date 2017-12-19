@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.RiskTaskTemplate;
@@ -35,6 +36,9 @@ public class RiskTaskTemplateService {
 	private ExceptionBuilder exceptionBuilder;
 
 	public RiskTaskTemplate createTaskTemplate(RiskTaskTemplate riskTaskTemplate) throws ApplicationException {
+		if(StringUtils.isEmpty(riskTaskTemplate.getName())){
+			throw exceptionBuilder.buildException(ErrorType.NO_NAME, null);
+		}
 		riskTaskTemplate.setCreatedDate(new Date());
 		Long countRiskTask=riskTaskTemplateRepository.countRiskTaskTemplateByNameIgnoreCase(riskTaskTemplate.getName());
 		if(countRiskTask>0){
