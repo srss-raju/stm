@@ -241,8 +241,6 @@ public class FiltersServiceImpl implements FiltersService  {
 						.distinct(true);
 			}
 			FilterResponse smtResponse=new FilterResponse();
-			query.multiselect(rootTopic.get("id"), rootTopic.get("name"),rootTopic.get("signalStatus"),
-					rootTopic.get("description"),rootTopic.get("signalConfirmation"),rootTopic.get("sourceName"),rootTopic.get("createdDate"));
 			TypedQuery<Topic> q = entityManager.createQuery(query);
 			
 			if (!CollectionUtils.isEmpty(q.getResultList())) {
@@ -252,6 +250,8 @@ public class FiltersServiceImpl implements FiltersService  {
 					q.setMaxResults(searchCriteria.getFetchSize());
 					List<Topic> q1 = q.getResultList();
 					List<FilterDataObject> fres = prepareSignalResponse(q1);
+					smtResponse.setFetchSize(searchCriteria.getFetchSize());
+					smtResponse.setFromRecord(searchCriteria.getFromRecord());
 					smtResponse.setResult(fres);
 				}
 			}
@@ -286,9 +286,6 @@ public class FiltersServiceImpl implements FiltersService  {
 			break;	
 		default:
 			break;
-
-
-			
 		}
 	}
 
@@ -296,13 +293,13 @@ public class FiltersServiceImpl implements FiltersService  {
 		List<FilterDataObject> fres = new ArrayList<>();
 		for (Topic topic : q1) {
 			FilterDataObject res = new FilterDataObject();
-			res.setName(topic.getName());
 			res.setSignalId(topic.getId());
+			res.setName(topic.getName());
+			res.setSignalStatus(topic.getSignalStatus());
 			res.setDescription(topic.getDescription());
 			res.setSignalConfirmation(topic.getSignalConfirmation());
-			res.setSignalStatus(topic.getSignalStatus());
-			res.setCreatedDate(topic.getCreatedDate());
 			res.setSourceName(topic.getSourceName());
+			res.setCreatedDate(topic.getCreatedDate());
 			fres.add(res);
 		}
 		return fres;
@@ -366,6 +363,8 @@ public class FiltersServiceImpl implements FiltersService  {
 	private void addStatuses(Object statusValue, CriteriaBuilder criteriaBuilder, Root<Topic> rootTopic,
 			List<Predicate> predicates) {
 		 Set<String> statusList = prepareFieldValuesSet(statusValue);
+		 System.out.println("------statusList----"+statusList);
+		 
 		 if (!CollectionUtils.isEmpty(statusList)) {
 				predicates.add(criteriaBuilder.isTrue(rootTopic.get("signalStatus").in(statusList)));
 			}

@@ -13,5 +13,6 @@ import lombok.Data;
 public class FilterResponse {
 	private List<FilterDataObject> result;
 	private int totalRecords;
-	private int startIndex;
+	private int fetchSize;
+	private int fromRecord;
 }
