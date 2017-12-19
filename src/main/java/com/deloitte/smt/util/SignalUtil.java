@@ -1,12 +1,18 @@
 package com.deloitte.smt.util;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class SignalUtil {
+	private static final Logger LOGGER = Logger.getLogger(SignalUtil.class);
 	
 	private SignalUtil(){}
 	
@@ -42,5 +48,16 @@ public class SignalUtil {
 		calendar.add(Calendar.DATE, inDays);
 		return calendar.getTime();
 	}
-	
+	public static Date convertStringToDate(String date) {
+		Date frmDate = null;
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		if (date != null) {
+			try {
+				frmDate = sdf.parse(date);
+			} catch (ParseException e) {
+				LOGGER.error(e);
+			}
+		}
+		return frmDate;
+	}
 }

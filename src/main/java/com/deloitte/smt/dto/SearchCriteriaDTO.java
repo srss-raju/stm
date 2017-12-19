@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class SearchCriteriaDTO {
 	private List<FilterDTO> filters;
-	private int startIndex;
+	private int fetchSize;
+	private int fromRecord;
+	private int totalRecords;
 	
 }

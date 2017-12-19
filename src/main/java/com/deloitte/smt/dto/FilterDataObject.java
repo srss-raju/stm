@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class FilterDataObject {
-	private long topicId;
-	private String signalName;
+	private long signalId;
+	private String name;
 	private String signalStatus;
 	private String description;
 	private String signalConfirmation;
