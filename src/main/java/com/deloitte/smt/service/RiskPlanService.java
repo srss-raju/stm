@@ -29,9 +29,9 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.RiskTaskTemplate;
+import com.deloitte.smt.entity.RiskTaskTemplateProducts;
 import com.deloitte.smt.entity.SignalURL;
-import com.deloitte.smt.entity.TaskTemplate;
-import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
@@ -47,9 +47,9 @@ import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
+import com.deloitte.smt.repository.RiskTaskTemplateProductsRepository;
+import com.deloitte.smt.repository.RiskTaskTemplateRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.repository.TaskTemplateProductsRepository;
-import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SearchFilters;
@@ -130,10 +130,10 @@ public class RiskPlanService {
 	private SearchFilters searchFilters;
 	
     @Autowired
-    TaskTemplateRepository taskTemplateRepository;
+    RiskTaskTemplateRepository riskTaskTemplateRepository;
 	    
 	@Autowired
-	TaskTemplateProductsRepository taskTemplateProductsRepository;
+	RiskTaskTemplateProductsRepository riskTaskTemplateProductsRepository;
 	    
 	/**
 	 * 
@@ -937,8 +937,8 @@ public class RiskPlanService {
 			}
 		}
 	}
-	public List<TaskTemplate> getTaskTamplatesOfRiskProducts(Long riskPlanId) throws ApplicationException {
-		List<TaskTemplate> taskTemplates = new ArrayList<>();
+	public List<RiskTaskTemplate> getTaskTamplatesOfRiskProducts(Long riskPlanId) throws ApplicationException {
+		List<RiskTaskTemplate> taskTemplates = new ArrayList<>();
 		AssessmentPlan assessmentPlan = null;
 		RiskPlan riskPlanFromDB = findByRiskId(riskPlanId);
 		try{
@@ -966,17 +966,17 @@ public class RiskPlanService {
 		return taskTemplates;
 	}
 
-	private void getTaskTemplates(List<TaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
+	private void getTaskTemplates(List<RiskTaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
 		for(TopicProductAssignmentConfiguration recordKey : topicWithConditionsAndProducts.getProducts()){
-			TaskTemplateProducts taskTemplateProducts = getTaskTemplateProduct(recordKey);
+			RiskTaskTemplateProducts taskTemplateProducts = getTaskTemplateProduct(recordKey);
 			if(taskTemplateProducts != null){
-				Long taskTemplateId = taskTemplateProductsRepository.findTemplateId(taskTemplateProducts.getId());
-				taskTemplates.add(taskTemplateRepository.findOne(taskTemplateId));
+				Long taskTemplateId = riskTaskTemplateProductsRepository.findTemplateId(taskTemplateProducts.getId());
+				taskTemplates.add(riskTaskTemplateRepository.findOne(taskTemplateId));
 			}
 		}
 	}
 
-	private TaskTemplateProducts getTaskTemplateProduct(TopicProductAssignmentConfiguration recordKey) {
-		return taskTemplateProductsRepository.findByRecordKey(recordKey.getRecordKey());
+	private RiskTaskTemplateProducts getTaskTemplateProduct(TopicProductAssignmentConfiguration recordKey) {
+		return riskTaskTemplateProductsRepository.findByRecordKey(recordKey.getRecordKey());
 	}
 }
