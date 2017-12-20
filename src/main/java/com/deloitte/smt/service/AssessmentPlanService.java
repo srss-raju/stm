@@ -58,6 +58,7 @@ import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
+import com.deloitte.smt.util.AssignmentUtil;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SmtResponse;
@@ -716,16 +717,21 @@ public class AssessmentPlanService {
 	}
 
 	private void getTaskTemplates(List<TaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
-		for(TopicProductAssignmentConfiguration recordKey : topicWithConditionsAndProducts.getProducts()){
-			TaskTemplateProducts taskTemplateProducts = getTaskTemplateProduct(recordKey);
-			if(taskTemplateProducts != null){
-				Long taskTemplateId = taskTemplateProductsRepository.findTemplateId(taskTemplateProducts.getId());
+		for(TopicProductAssignmentConfiguration record : topicWithConditionsAndProducts.getProducts()){
+			String recordKey = record.getRecordKey();
+			TaskTemplateProducts taskTemplateProduct = getTaskTemplateProduct(recordKey);
+			while(recordKey != null && taskTemplateProduct == null){
+				recordKey = AssignmentUtil.getRecordKey(recordKey);
+				taskTemplateProduct = getTaskTemplateProduct(recordKey);
+			}
+			if(taskTemplateProduct != null){
+				Long taskTemplateId = taskTemplateProductsRepository.findTemplateId(taskTemplateProduct.getId());
 				taskTemplates.add(taskTemplateRepository.findOne(taskTemplateId));
 			}
 		}
 	}
 
-	private TaskTemplateProducts getTaskTemplateProduct(TopicProductAssignmentConfiguration recordKey) {
-		return taskTemplateProductsRepository.findByRecordKey(recordKey.getRecordKey());
+	private TaskTemplateProducts getTaskTemplateProduct(String recordKey) {
+		return taskTemplateProductsRepository.findByRecordKey(recordKey);
 	}
 }
