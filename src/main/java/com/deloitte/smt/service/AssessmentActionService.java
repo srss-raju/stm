@@ -145,10 +145,12 @@ public class AssessmentActionService {
          		}
          	}
          }
-         if(allTasksCompletedFlag){
-         	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(signalAction.getAssessmentId()));
-         }else{
-        	 assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(signalAction.getAssessmentId()));
+         if(signalAction.getAssessmentId() != null){
+	         if(allTasksCompletedFlag){
+	         	assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(signalAction.getAssessmentId()));
+	         }else{
+	        	 assessmentPlanRepository.updateAssessmentTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(), Long.valueOf(signalAction.getAssessmentId()));
+	         }
          }
     }
     
