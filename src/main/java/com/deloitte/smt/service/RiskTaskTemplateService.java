@@ -78,8 +78,11 @@ public class RiskTaskTemplateService {
 					productBuilder.append(",");
 				}
 			}
-			String productBuilderValue = productBuilder.toString().substring(0, productBuilder.lastIndexOf(","));
-			queryBuilder.append(productBuilderValue);
+			String productBuilderValue = null;
+			if(!StringUtils.isEmpty(productBuilder.toString())){
+				productBuilderValue = productBuilder.toString().substring(0, productBuilder.lastIndexOf(","));
+				queryBuilder.append(productBuilderValue);
+			}
 			queryBuilder.append(")");
 			if(!StringUtils.isEmpty(productBuilderValue)){
 				Query query = entityManager.createNativeQuery(queryBuilder.toString());
