@@ -280,12 +280,15 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 			}
 			FilterResponse smtResponse=new FilterResponse();
 			TypedQuery<E> q = entityManager.createQuery(query);
-			if (!CollectionUtils.isEmpty(q.getResultList())) {
-				if (searchCriteria.getFetchSize() >= 0) {
-					q.setFirstResult(searchCriteria.getFromRecord());
-					q.setMaxResults(searchCriteria.getFetchSize());
-					smtResponse.setTotalRecords(q.getResultList().size());
-					List<FilterDataObject> fres = prepareSignalResponse( q.getResultList(),type);
+			if (searchCriteria.getFetchSize() >= 0) {
+				q.setFirstResult(searchCriteria.getFromRecord());
+				q.setMaxResults(searchCriteria.getFetchSize());
+				List<E> list = q.getResultList();
+				LOGGER.info("FILTER DATA FROM DB----"+list+"----"+list.size());
+				if(!CollectionUtils.isEmpty(list))
+				{
+					smtResponse.setTotalRecords(list.size());
+					List<FilterDataObject> fres = prepareSignalResponse(list,type);
 					smtResponse.setFetchSize(searchCriteria.getFetchSize());
 					smtResponse.setFromRecord(searchCriteria.getFromRecord());
 					smtResponse.setResult(fres);
