@@ -51,7 +51,7 @@ public class RiskPlanAssignmentService {
 
 	private void saveTopicRiskPlanAssignmentAssignees(RiskPlanAssignmentAssignees rpaAssignees, RiskPlan riskPlan, List<TopicRiskPlanAssignmentAssignees> list) {
 		TopicRiskPlanAssignmentAssignees assignee = new TopicRiskPlanAssignmentAssignees();
-		assignee.setRiskId(riskPlan.getId());
+		//assignee.setRiskId(riskPlan.getId());
 		assignee.setAssignTo(rpaAssignees.getAssignTo());
 		assignee.setUserGroupKey(rpaAssignees.getUserGroupKey());
 		assignee.setUserKey(rpaAssignees.getUserKey());

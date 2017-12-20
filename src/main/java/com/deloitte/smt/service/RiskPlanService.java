@@ -51,7 +51,6 @@ import com.deloitte.smt.repository.RiskTaskTemplateProductsRepository;
 import com.deloitte.smt.repository.RiskTaskTemplateRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
-import com.deloitte.smt.util.AssignmentUtil;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SignalUtil;
@@ -737,13 +736,11 @@ public class RiskPlanService {
 				}
 			}
 		}
-		if(riskTask.getRiskId() != null){
-			if(allTasksCompletedFlag){
-				riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
-			}
-			else{
-				riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(),  Long.valueOf(riskTask.getRiskId()));
-			}
+		if(allTasksCompletedFlag){
+			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
+		}
+		else{
+			riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(),  Long.valueOf(riskTask.getRiskId()));
 		}
 	}
 	public RiskTask findById(Long id) {
@@ -965,25 +962,21 @@ public class RiskPlanService {
 				getTaskTemplates(taskTemplates, topicWithConditionsAndProducts);
 			}
 		}
+		//AssignmentUtil
 		return taskTemplates;
 	}
 
 	private void getTaskTemplates(List<RiskTaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
-		for(TopicProductAssignmentConfiguration record : topicWithConditionsAndProducts.getProducts()){
-			String recordKey = record.getRecordKey();
-			RiskTaskTemplateProducts taskTemplateProduct = getTaskTemplateProduct(recordKey);
-			while(recordKey != null && taskTemplateProduct == null){
-				recordKey = AssignmentUtil.getRecordKey(recordKey);
-				taskTemplateProduct = getTaskTemplateProduct(recordKey);
-			}
-			if(taskTemplateProduct != null){
-				Long taskTemplateId = riskTaskTemplateProductsRepository.findTemplateId(taskTemplateProduct.getId());
+		for(TopicProductAssignmentConfiguration recordKey : topicWithConditionsAndProducts.getProducts()){
+			RiskTaskTemplateProducts taskTemplateProducts = getTaskTemplateProduct(recordKey);
+			if(taskTemplateProducts != null){
+				Long taskTemplateId = riskTaskTemplateProductsRepository.findTemplateId(taskTemplateProducts.getId());
 				taskTemplates.add(riskTaskTemplateRepository.findOne(taskTemplateId));
 			}
 		}
 	}
 
-	private RiskTaskTemplateProducts getTaskTemplateProduct(String recordKey) {
-		return riskTaskTemplateProductsRepository.findByRecordKey(recordKey);
+	private RiskTaskTemplateProducts getTaskTemplateProduct(TopicProductAssignmentConfiguration recordKey) {
+		return riskTaskTemplateProductsRepository.findByRecordKey(recordKey.getRecordKey());
 	}
 }
