@@ -218,6 +218,7 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 	public ServerResponseObject getSignalDataByFilter(String type, SearchCriteriaDTO searchCriteria) {
 		LOGGER.info("SignalDataByFilter....."+searchCriteria);
 		CriteriaQuery<E> query = null;
+		ServerResponseObject response =null;
 		Root<E> rootTopic = null;
 		Join<E,E> joinAssignees=null;
 		CriteriaBuilder criteriaBuilder=null;
@@ -280,28 +281,25 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 			}
 			FilterResponse smtResponse=new FilterResponse();
 			TypedQuery<E> q = entityManager.createQuery(query);
-			if (searchCriteria.getFetchSize() >= 0) {
+			if (!CollectionUtils.isEmpty(q.getResultList())) {
+				smtResponse.setTotalRecords(q.getResultList().size());
+			}
+			if(searchCriteria.getFetchSize() >= 0){
 				q.setFirstResult(searchCriteria.getFromRecord());
 				q.setMaxResults(searchCriteria.getFetchSize());
-				List<E> list = q.getResultList();
-				LOGGER.info("FILTER DATA FROM DB----"+list+"----"+list.size());
-				if(!CollectionUtils.isEmpty(list))
-				{
-					smtResponse.setTotalRecords(list.size());
-					List<FilterDataObject> fres = prepareSignalResponse(list,type);
-					smtResponse.setFetchSize(searchCriteria.getFetchSize());
-					smtResponse.setFromRecord(searchCriteria.getFromRecord());
-					smtResponse.setResult(fres);
-				}
+				smtResponse.setFetchSize(searchCriteria.getFetchSize());
+				smtResponse.setFromRecord(searchCriteria.getFromRecord());
+				List<FilterDataObject> fres = prepareSignalResponse(q.getResultList(),type);
+				smtResponse.setResult(fres);
 			}
-			ServerResponseObject response = new ServerResponseObject();
+			response = new ServerResponseObject();
 			response.setResponse(smtResponse);
 			response.setStatus("SUCCESS");
 			return response;
 		}catch (Exception e) {
 			LOGGER.error(e);
 		}
-		return null;
+		return response;
 	}
 
 	private List<FilterDataObject> prepareSignalResponse(List<E> resultList, String type) {
