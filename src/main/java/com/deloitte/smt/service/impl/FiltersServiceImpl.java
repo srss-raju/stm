@@ -32,17 +32,13 @@ import com.deloitte.smt.dto.FilterDataObject;
 import com.deloitte.smt.dto.FilterResponse;
 import com.deloitte.smt.dto.SearchCriteriaDTO;
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.ConditionLevels;
 import com.deloitte.smt.entity.Filters;
 import com.deloitte.smt.entity.FiltersStatus;
-import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.ConditionLevelRepository;
 import com.deloitte.smt.repository.FilterRepository;
-import com.deloitte.smt.repository.ProductLevelRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.service.FiltersService;
@@ -62,11 +58,12 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 	@Autowired
 	private TopicSignalDetectionAssignmentAssigneesRepository topicSignalDetectionAssignmentAssigneesRepository;
 
-	@Autowired
-	private ConditionLevelRepository conditionLevelRepository;
 	
 	@Autowired
-	private ProductLevelRepository productLevelRepository;
+	private ProductFilterServiceImpl productFilterServiceImpl;
+	
+	@Autowired
+	private ConditionFilterServiceImpl conditionFilterServiceImpl;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -78,8 +75,8 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 			LOGGER.info("typeList.." + typeList);
 			List<Filters> listfi = filterRepository.findByFilterTypes(typeList);
 			if (!CollectionUtils.isEmpty(listfi)) {
-				LOGGER.info(listfi.size());
-				filterList = getAllFiltersTypes(listfi);
+				LOGGER.info("RESULT......"+listfi);
+				filterList = getAllFiltersTypes(listfi,type);
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -87,7 +84,7 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 		return filterList;
 	}
 
-	private List<FilterDTO> getAllFiltersTypes(List<Filters> listfi) {
+	private List<FilterDTO> getAllFiltersTypes(List<Filters> listfi, String type) {
 		List<FilterDTO> filterList = null;
 		try {
 			filterList = new ArrayList<>();
@@ -96,7 +93,7 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 				dto.setFilterKey(filter.getKey());
 				dto.setFilterName(filter.getName());
 				String name = filter.getName();
-				getFiltersList(filterList, filter, dto, name);
+				getFiltersList(filterList, filter, dto, name,type);
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -104,7 +101,7 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 		return filterList;
 	}
 
-	private void getFiltersList(List<FilterDTO> filterList, Filters filter, FilterDTO dto, String name) {
+	private void getFiltersList(List<FilterDTO> filterList, Filters filter, FilterDTO dto, String name,String type) {
 		List<?> data;
 		LOGGER.info("name...."+name);
 		switch (name) {
@@ -115,14 +112,15 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 			filterList.add(getFiltersType(filter));
 			break;
 		case "Product":
-			productLevelFilter(filterList);
+			productFilterServiceImpl.productLevelFilter(filterList,type);
 			break;
 		case "Condition":
-			conditionLevelFilter(filterList);
+			conditionFilterServiceImpl.conditionLevelFilter(filterList,type);
 			break;
 		case "Owner":
 			data = topicRepository.findDistinctOwnerNames();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
+			filterList.add(dto);
 			break;
 		case "Assigned To":
 			data = topicSignalDetectionAssignmentAssigneesRepository.getDetectionAssignedUsers();
@@ -157,35 +155,6 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 		}
 	}
 	
-
-	private void productLevelFilter(List<FilterDTO> filterList) {
-		FilterDTO dto;
-		List<ProductLevels> productLevels = productLevelRepository.findAllByOrderByIdAsc();
-		if (!CollectionUtils.isEmpty(productLevels)) {
-			for (ProductLevels productLevel : productLevels) {
-				dto = new FilterDTO();
-				dto.setFilterKey(productLevel.getValue().replace(" ", ""));
-				dto.setFilterName(productLevel.getValue());
-				dto.setFilterValues(new ArrayList<>());
-				filterList.add(dto);
-			}
-		}
-	}
-
-	private void conditionLevelFilter(List<FilterDTO> filterList) {
-		FilterDTO dto;
-		List<ConditionLevels> conditionLevelList = conditionLevelRepository.findAllByOrderByIdAsc();
-		if (!CollectionUtils.isEmpty(conditionLevelList)) {
-			for (ConditionLevels condLevel : conditionLevelList) {
-				dto = new FilterDTO();
-				dto.setFilterKey(condLevel.getValue().replace(" ", ""));
-				dto.setFilterName(condLevel.getValue());
-				dto.setFilterValues(new ArrayList<>());
-				filterList.add(dto);
-			}
-		}
-	}
-
 	private void getEmptyFilterValues(Filters filter, List<FilterDTO> filterList) {
 		LOGGER.info("getEmptyFilterValues----"+filter.getName());
 		FilterDTO dto;
@@ -283,6 +252,8 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 			TypedQuery<E> q = entityManager.createQuery(query);
 			if (!CollectionUtils.isEmpty(q.getResultList())) {
 				smtResponse.setTotalRecords(q.getResultList().size());
+				
+				
 			}
 			if(searchCriteria.getFetchSize() >= 0){
 				q.setFirstResult(searchCriteria.getFromRecord());

@@ -2,6 +2,7 @@ package com.deloitte.smt.repository;
 
 import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,6 +35,8 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	
 	@Query("SELECT DISTINCT(o.owner) FROM Topic o WHERE o.owner IS NOT NULL ")
 	List<String> findDistinctOwnerNames();
+	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas, Topic t where t.id = pas.topicId")
+	List<String> getProductFilterValues();
 	
 }
 
