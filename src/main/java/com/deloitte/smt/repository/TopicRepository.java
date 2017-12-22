@@ -37,6 +37,8 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	List<String> findDistinctOwnerNames();
 	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas, Topic t where t.id = pas.topicId")
 	List<String> getProductFilterValues();
+	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas, Topic t where t.id = pas.topicId")
+	List<String> getConditionFilterValues();
 	
 }
 
