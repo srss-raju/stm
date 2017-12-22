@@ -15,26 +15,25 @@ import com.deloitte.smt.repository.ConditionLevelRepository;
 public class ConditionFilterServiceImpl {
 	@Autowired
 	private ConditionLevelRepository conditionLevelRepository;
-	
+
 	public void conditionLevelFilter(List<FilterDTO> filterList, String type) {
-		
-			FilterDTO dto;
-			List<ConditionLevels> conditionLevelList = conditionLevelRepository.findAllByOrderByIdAsc();
-			if (!CollectionUtils.isEmpty(conditionLevelList)) {
-				for (ConditionLevels condLevel : conditionLevelList) {
-					dto = new FilterDTO();
-					dto.setFilterKey(condLevel.getValue().replace(" ", ""));
-					dto.setFilterName(condLevel.getValue());
-					dto.setFilterValues(conditionLevelValuesCodes(type));
-					filterList.add(dto);
-				}
+
+		FilterDTO dto;
+		List<ConditionLevels> conditionLevelList = conditionLevelRepository.findAllByOrderByIdAsc();
+		if (!CollectionUtils.isEmpty(conditionLevelList)) {
+			for (ConditionLevels condLevel : conditionLevelList) {
+				dto = new FilterDTO();
+				dto.setFilterKey(condLevel.getValue().replace(" ", ""));
+				dto.setFilterName(condLevel.getValue());
+				dto.setFilterValues(conditionLevelValuesCodes(type));
+				dto.setFilterType("condition");
+				filterList.add(dto);
 			}
 		}
+	}
 
-		private List<?> conditionLevelValuesCodes(String type) {
-			
-			return new ArrayList<>();
-		}
-
+	private List<?> conditionLevelValuesCodes(String type) {
+		return new ArrayList<>();
+	}
 
 }

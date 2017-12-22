@@ -9,4 +9,5 @@ public class FilterDTO {
 	private String filterKey;
 	private String filterName;
 	private List<?> filterValues;
+	private String filterType="";
 }

@@ -43,6 +43,7 @@ public class ProductFilterServiceImpl {
 					dto = new FilterDTO();
 					dto.setFilterKey(productLevel.getValue().replace(" ", ""));
 					dto.setFilterName(productLevel.getValue());
+					dto.setFilterType("product");
 					boolean exists=false;
 					List<?>	existList=null;
 					for (Map<String, List<Levels>> prlevelMap : prlevels) {
