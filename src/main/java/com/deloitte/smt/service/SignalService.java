@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SignalConfigurationType;
 import com.deloitte.smt.constant.SmtConstant;
+import com.deloitte.smt.dto.ConditionProductDTO;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
@@ -29,6 +30,7 @@ import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.Product;
+import com.deloitte.smt.entity.ProductAssignmentConfiguration;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalConfiguration;
@@ -36,6 +38,7 @@ import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalStrength;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.SocAssignmentConfiguration;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicAssignmentCondition;
@@ -95,6 +98,9 @@ public class SignalService {
 	
 	@Autowired
 	private SignalAssignmentService signalAssignmentService;
+	
+	@Autowired
+	AssignmentService assignmentService;
 
 	@Autowired
 	private TopicRepository topicRepository;
@@ -275,8 +281,45 @@ public class SignalService {
 
 		Topic topicUpdated = topicRepository.save(topic);
 		saveProductsAndConditions(topic, topicUpdated);
+		AssignmentConfiguration assignmentConfiguration = signalAssignmentService.convertToAssignmentConfiguration(topic);
 		
-		AssignmentConfiguration assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(signalAssignmentService.convertToAssignmentConfiguration(topic));
+		List<SocAssignmentConfiguration> cList = new ArrayList<>();
+		List<ProductAssignmentConfiguration> pList = new ArrayList<>();
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+				SocAssignmentConfiguration config = new SocAssignmentConfiguration();
+				config.setAssignmentConfigurationId(socConfig.getAssignmentConfigurationId());
+				config.setConditionName(socConfig.getConditionName());
+				config.setCreatedBy(socConfig.getCreatedBy());
+				config.setCreatedDate(socConfig.getCreatedDate());
+				config.setId(socConfig.getId());
+				config.setLastModifiedBy(socConfig.getLastModifiedBy());
+				config.setLastModifiedDate(socConfig.getLastModifiedDate());
+				config.setRecordKey(socConfig.getRecordKey());
+				config.setRecordValues(socConfig.getRecordValues());
+				cList.add(config);
+			}
+		}
+		
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
+			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+				ProductAssignmentConfiguration config = new ProductAssignmentConfiguration();
+				config.setAssignmentConfigurationId(productConfig.getAssignmentConfigurationId());
+				config.setProductName(productConfig.getProductName());
+				config.setCreatedBy(productConfig.getCreatedBy());
+				config.setCreatedDate(productConfig.getCreatedDate());
+				config.setId(productConfig.getId());
+				config.setLastModifiedBy(productConfig.getLastModifiedBy());
+				config.setLastModifiedDate(productConfig.getLastModifiedDate());
+				config.setRecordKey(productConfig.getRecordKey());
+				config.setRecordValues(productConfig.getRecordValues());
+				pList.add(config);
+			}
+		}
+		ConditionProductDTO conditionProductDTO = new ConditionProductDTO();
+		conditionProductDTO.setConditions(cList);
+		conditionProductDTO.setProducts(pList);
+		assignmentConfiguration = assignmentService.getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
 		if(assignmentConfiguration != null){
 			if(assignmentConfiguration.getSignalOwner()!=null){
 				topicUpdated.setOwner(assignmentConfiguration.getSignalOwner());
@@ -436,7 +479,11 @@ public class SignalService {
 			assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY.getDescription());
 			
 			Topic topicWithConditionsAndProducts = findById(topicId);
-			assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(signalAssignmentService.convertToAssignmentConfiguration(topicWithConditionsAndProducts));
+			assignmentConfiguration = signalAssignmentService.convertToAssignmentConfiguration(topicWithConditionsAndProducts);
+			ConditionProductDTO conditionProductDTO = new ConditionProductDTO();
+			conditionProductDTO.setConditions(assignmentConfiguration.getConditions());
+			conditionProductDTO.setProducts(assignmentConfiguration.getProducts());
+			assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
 			
 			/**when no tasks and for newly created assessment assessmenttaskstatus is 'Completed' **/
 			assessmentPlan.setAssessmentTaskStatus("Completed");

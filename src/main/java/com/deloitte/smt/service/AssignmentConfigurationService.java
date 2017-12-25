@@ -392,14 +392,15 @@ public class AssignmentConfigurationService {
 					productUpdateBuilder.append(productConfig.getId());
 					productUpdateBuilder.append(",");
 				}
+				productBuilder.append(",");
 			}
 			if(noSocFlag){
 				queryBuilder.append(" and p.record_key IN (");
 			}else{
 				queryBuilder.append(" p.record_key IN (");
 			}
-			
-			queryBuilder.append(productBuilder.toString());
+			String productBuilderValue = productBuilder.toString().substring(0, productBuilder.lastIndexOf(","));
+			queryBuilder.append(productBuilderValue.toString());
 			queryBuilder.append(")");
 			noProductFlag = true;
 		}
@@ -415,9 +416,12 @@ public class AssignmentConfigurationService {
 					socUpdateBuilder.append(socConfig.getId());
 					socUpdateBuilder.append(",");
 				}
+				socBuilder.append(",");
+				
 			}
+			String socBuilderValue = socBuilder.toString().substring(0, socBuilder.lastIndexOf(","));
 			queryBuilder.append(" c.record_key IN (");
-			queryBuilder.append(socBuilder.toString());
+			queryBuilder.append(socBuilderValue.toString());
 			queryBuilder.append(")");
 			noSocFlag = true;
 		}

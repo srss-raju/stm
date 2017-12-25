@@ -61,6 +61,22 @@ public class AssignmentConfiguration implements Serializable {
     private boolean productFlag;
     
     @JsonIgnore
+    @Transient
+    private boolean repeatProductFlag;
+    
+    @JsonIgnore
+    @Transient
+    private boolean repeatSocFlag;
+    
+    @JsonIgnore
+    @Transient
+    private boolean conditionEmptyFlag;
+    
+    @JsonIgnore
+    @Transient
+    private boolean productEmptyFlag;
+    
+    @JsonIgnore
     private String totalRecordKey;
     
     public Long getId() {
@@ -223,6 +239,38 @@ public class AssignmentConfiguration implements Serializable {
 
 	public void setProductFlag(boolean productFlag) {
 		this.productFlag = productFlag;
+	}
+
+	public boolean isRepeatProductFlag() {
+		return repeatProductFlag;
+	}
+
+	public void setRepeatProductFlag(boolean repeatProductFlag) {
+		this.repeatProductFlag = repeatProductFlag;
+	}
+
+	public boolean isRepeatSocFlag() {
+		return repeatSocFlag;
+	}
+
+	public void setRepeatSocFlag(boolean repeatSocFlag) {
+		this.repeatSocFlag = repeatSocFlag;
+	}
+
+	public boolean isConditionEmptyFlag() {
+		return conditionEmptyFlag;
+	}
+
+	public void setConditionEmptyFlag(boolean conditionEmptyFlag) {
+		this.conditionEmptyFlag = conditionEmptyFlag;
+	}
+
+	public boolean isProductEmptyFlag() {
+		return productEmptyFlag;
+	}
+
+	public void setProductEmptyFlag(boolean productEmptyFlag) {
+		this.productEmptyFlag = productEmptyFlag;
 	}
 
 }

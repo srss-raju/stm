@@ -12,8 +12,8 @@ public class AssignmentUtil {
 		
 	}
 	public static String getRecordKey(String recordKey){
-		if(recordKey.contains("@#$")){
-			int latIndex = recordKey.lastIndexOf("@#$");
+		if(recordKey.contains("@#")){
+			int latIndex = recordKey.lastIndexOf("@#");
 			return recordKey.substring(0, latIndex);
 		}
 		return null;

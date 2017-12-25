@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.deloitte.smt.dto.ConditionProductDTO;
 import com.deloitte.smt.entity.AssignmentCondition;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.AssignmentProduct;
@@ -77,7 +78,7 @@ public class SignalAssignmentService {
     
     @Autowired
     ProductAssignmentConfigurationRepository productAssignmentConfigurationRepository;
-
+    
 	public Topic saveSignalAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, Topic topicUpdated) {
 		assignmentConfiguration.setSignalAssignees(signalValidationAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
 		return setTopicAssignmentConfigurationAssignees(assignmentConfiguration, topicUpdated);
@@ -200,15 +201,15 @@ public class SignalAssignmentService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public AssignmentConfiguration getAssignmentConfiguration(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
+	public AssignmentConfiguration getAssignmentConfiguration(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDB = null;
-		
 		StringBuilder queryBuilder = new StringBuilder("select DISTINCT a.id from sm_assignment_configuration a ");
 		
 		StringBuilder socBuilder = new StringBuilder();
 		StringBuilder productBuilder = new StringBuilder();
 		boolean noSocFlag = false;
 		boolean noProductFlag = false;
+		
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()) ){
 			queryBuilder.append(" INNER JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
 		}
@@ -294,7 +295,7 @@ public class SignalAssignmentService {
 					emptyFlag = true;
 				}
 				if(!emptyFlag){
-					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration);
+					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
 				}
 				
 			}
@@ -316,15 +317,63 @@ public class SignalAssignmentService {
 					emptyFlag = true;
 				}
 				if(!emptyFlag){
-					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration);
+					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
 				}
 			}
 			
 			//if records not available for product and condition 
 			if(noSocFlag && noProductFlag){
-				assignmentConfiguration.setProducts(null);
-				assignmentConfiguration.setProductFlag(true);
-				assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration);
+				if(!assignmentConfiguration.isRepeatProductFlag()){
+					for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+						String recordKey = productConfig.getRecordKey();
+						if(assignmentConfigurationFromDB == null){
+							while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatProductFlag())){
+								recordKey = AssignmentUtil.getRecordKey(recordKey);
+								if(recordKey != null){
+									productConfig.setRecordKey(recordKey);
+									assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+								}else{
+									assignmentConfiguration.setRepeatProductFlag(true);
+								}
+								
+							}
+						}
+					}
+				}
+				
+				if(!assignmentConfiguration.isRepeatSocFlag()){
+					if(assignmentConfigurationFromDB == null){
+						assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
+						for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+							String recordKey = socConfig.getRecordKey();
+							if(assignmentConfigurationFromDB == null){
+								while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatSocFlag())){
+									recordKey = AssignmentUtil.getRecordKey(recordKey);
+									if(recordKey != null){
+										socConfig.setRecordKey(recordKey);
+										assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+									}else{
+										assignmentConfiguration.setRepeatSocFlag(true);
+									}
+								}
+							}
+						}
+					}
+				}
+				
+				/*if(assignmentConfigurationFromDB == null && (!assignmentConfiguration.isProductEmptyFlag())){
+					assignmentConfiguration.setConditions(conditionProductDTO.getConditions());
+					assignmentConfiguration.setProducts(null);
+					assignmentConfiguration.setProductEmptyFlag(true);
+					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+				}
+				
+				if(assignmentConfigurationFromDB == null && (!assignmentConfiguration.isConditionEmptyFlag())){
+					assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
+					assignmentConfiguration.setConditions(null);
+					assignmentConfiguration.setConditionEmptyFlag(true);
+					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+				}*/
 			}
 			if(assignmentConfigurationFromDB == null){
 				assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);

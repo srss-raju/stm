@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.DateKeyType;
 import com.deloitte.smt.constant.SmtConstant;
+import com.deloitte.smt.dto.ConditionProductDTO;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
@@ -196,8 +197,13 @@ public class RiskPlanService {
 		}
 		
 		if(topic != null){
+			
 			Topic topicWithConditionsAndProducts = signalService.findById(topic.getId());
-			assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(signalAssignmentService.convertToAssignmentConfiguration(topicWithConditionsAndProducts));
+			assignmentConfiguration = signalAssignmentService.convertToAssignmentConfiguration(topicWithConditionsAndProducts);
+			ConditionProductDTO conditionProductDTO = new ConditionProductDTO();
+			conditionProductDTO.setConditions(assignmentConfiguration.getConditions());
+			conditionProductDTO.setProducts(assignmentConfiguration.getProducts());
+			assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
 		}
 		if(assignmentConfiguration == null){
 			assignmentConfiguration = assignmentConfigurationRepository.findByIsDefault(true);
