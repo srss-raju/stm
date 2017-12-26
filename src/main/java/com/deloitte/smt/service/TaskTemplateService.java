@@ -101,6 +101,12 @@ public class TaskTemplateService {
 	}
 
 	public TaskTemplate updateTaskTemplate(TaskTemplate template) throws ApplicationException {
+		
+		TaskTemplate taskTemplate = taskTemplateRepository.findByNameIgnoreCase(template.getName());
+		if(taskTemplate != null && (taskTemplate.getId().intValue() != template.getId().intValue())){
+			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
+		}
+		
 		if(duplicateRecordCheck(template)){
 			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
 		}
