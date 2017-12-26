@@ -106,7 +106,7 @@ public class AssessmentActionService {
         	actionsExist =	assessmentActionRepository.findByActionNameIgnoreCaseAndTemplateId(signalAction.getActionName(), signalAction.getTemplateId());
         }
         
-    	if (actionsExist != null) {
+    	if(actionsExist != null && (actionsExist.getId().intValue() != signalAction.getId().intValue())){
 			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
 		}
        
