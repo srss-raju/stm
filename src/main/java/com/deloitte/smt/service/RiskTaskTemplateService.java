@@ -97,6 +97,11 @@ public class RiskTaskTemplateService {
 	
 
 	public RiskTaskTemplate updateTaskTemplate(RiskTaskTemplate template) throws ApplicationException {
+		RiskTaskTemplate taskTemplate = riskTaskTemplateRepository.findByNameIgnoreCase(template.getName());
+		if(taskTemplate != null && (taskTemplate.getId().intValue() != template.getId().intValue())){
+			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
+		}
+		
 		if(duplicateRecordCheck(template)){
 			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
 		}

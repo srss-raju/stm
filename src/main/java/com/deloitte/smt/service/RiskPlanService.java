@@ -728,11 +728,45 @@ public class RiskPlanService {
 		
 		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 	}
+	
+	/**
+	 * 
+	 * @param riskTask
+	 * @param attachments
+	 * @throws IOException
+	 * @throws ApplicationException
+	 */
+	public void createRiskTemplateTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
+		    
+		Date d = new Date();
+		riskTask.setCreatedDate(d);
+		riskTask.setLastUpdatedDate(d);
+		riskTask.setStatus("New");
+		
+		RiskTask riskTaskExists=riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
+		if (riskTaskExists != null) {
+			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
+		}
+		
+		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
+		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
+				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
+		if (!CollectionUtils.isEmpty(riskTaskUpdated.getSignalUrls())) {
+			for (SignalURL url : riskTaskUpdated.getSignalUrls()) {
+				url.setTopicId(riskTaskUpdated.getId());
+				url.setModifiedDate(new Date());
+			}
+			signalURLRepository.save(riskTaskUpdated.getSignalUrls());
+		}
+		
+		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
+	}
+	
 	/**
 	 * 
 	 * @param riskTask
 	 */
-	private void checkRiskTaskStatus(RiskTask riskTask){
+	public void checkRiskTaskStatus(RiskTask riskTask) {
 		List<RiskTask> risks = findAllByRiskId(riskTask.getRiskId(), null);
 		boolean allTasksCompletedFlag = true;
 		if (!CollectionUtils.isEmpty(risks)) {
@@ -742,11 +776,13 @@ public class RiskPlanService {
 				}
 			}
 		}
-		if(allTasksCompletedFlag){
-			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
-		}
-		else{
-			riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(),  Long.valueOf(riskTask.getRiskId()));
+		if(riskTask.getRiskId() != null){
+			if(allTasksCompletedFlag){
+				riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
+			}
+			else{
+				riskPlanRepository.updateRiskTaskStatus(SmtConstant.NOTCOMPLETED.getDescription(),  Long.valueOf(riskTask.getRiskId()));
+			}
 		}
 	}
 	public RiskTask findById(Long id) {
@@ -780,7 +816,10 @@ public class RiskPlanService {
 		if (riskTask.getId() == null) {
 			throw new ApplicationException("Failed to update Action. Invalid Id received");
 		}
-		
+		RiskTask riskTaskExists=riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
+		if (riskTaskExists != null) {
+			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
+		}
 		String riskTaskOriginal = JsonUtil.converToJson(riskTaskRepository.findOne(riskTask.getId()));
 		
 		riskTask.setLastUpdatedDate(new Date());

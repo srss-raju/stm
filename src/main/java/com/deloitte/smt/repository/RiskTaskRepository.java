@@ -1,10 +1,10 @@
 package com.deloitte.smt.repository;
 
-import com.deloitte.smt.entity.RiskTask;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.deloitte.smt.entity.RiskTask;
 
 public interface RiskTaskRepository extends JpaRepository<RiskTask, Long> {
 
@@ -13,5 +13,7 @@ public interface RiskTaskRepository extends JpaRepository<RiskTask, Long> {
 	
 	Long countByNameIgnoreCaseAndRiskId(String risName,String riskId);
 	List<RiskTask> findAllByTemplateId(Long templateId);
+	
+	RiskTask findByNameIgnoreCaseAndTemplateId(String name,Long templateId);
 	
 }

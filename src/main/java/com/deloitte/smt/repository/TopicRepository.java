@@ -1,14 +1,13 @@
 package com.deloitte.smt.repository;
 
-import com.deloitte.smt.dto.TopicDTO;
-import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.deloitte.smt.dto.TopicDTO;
+import com.deloitte.smt.entity.Topic;
 
 /**
  * Created by myelleswarapu on 04-04-2017.

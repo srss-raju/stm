@@ -21,4 +21,6 @@ public interface RiskTaskTemplateRepository  extends JpaRepository<RiskTaskTempl
 	@Query("SELECT o.name from RiskTaskTemplate o where o.name not in (select a.name from RiskTaskTemplate a where a.name= :name AND a.id=:id)")
 	List<String> findByName(@Param(value = "name") String name,@Param(value = "id") Long id);
 
+	RiskTaskTemplate findByNameIgnoreCase(String name);
+
 }

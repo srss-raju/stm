@@ -65,7 +65,12 @@ public class RiskController {
         
     	try {
     		RiskTask riskTask = new ObjectMapper().readValue(riskPlanActionString, RiskTask.class);
-        	riskPlanService.createRiskTask(riskTask, attachments);
+    		if(riskTask.getTemplateId() != null){
+    			riskPlanService.createRiskTemplateTask(riskTask, attachments);
+    		}else{
+    			riskPlanService.createRiskTask(riskTask, attachments);
+    		}
+        	
 		} catch (IOException e) {
 			LOG.info("Exception occured while creating Risk Action "+e);
 		}
@@ -92,11 +97,11 @@ public class RiskController {
     
     @PostMapping(value = "/task/updateRiskTask")
     public ResponseEntity<Void> updateRiskTask(@RequestParam("data") String riskTaskString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
         try {
         	RiskTask riskTask = new ObjectMapper().readValue(riskTaskString, RiskTask.class);
 			riskPlanService.updateRiskTask(riskTask, attachments);
-		} catch (ApplicationException | IOException e) {
+		} catch (IOException e) {
 			LOG.info("Exception occured while updating "+e);
 		}
         return new ResponseEntity<>(HttpStatus.OK);
