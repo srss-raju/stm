@@ -1,16 +1,18 @@
 package com.deloitte.smt.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "sm_detection_query")
@@ -20,18 +22,15 @@ public class Query  implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	private String name;
-	private Date createdDate;
-	private String createdBy;
-	private Date lastModifiedDate;
-	private String lastModifiedBy;
-	private Long detectionId;
-	private Long QUERY_KEY;
-	private String QUERY_NAME;
-	
 	@JsonIgnore
-	@ManyToOne
+	private Long id;
+	@JsonProperty("QUERY_KEY")
+	private Long queryKey;
+	@JsonProperty("QUERY_NAME")
+	private String queryName;
+	
+	@Transient
+	@JsonIgnore
 	private SignalDetection signalDetection;
 
 	public Long getId() {
@@ -42,70 +41,24 @@ public class Query  implements Serializable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public Long getQueryKey() {
+		return queryKey;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setQueryKey(Long queryKey) {
+		this.queryKey = queryKey;
 	}
 
-	public Date getCreatedDate() {
-		return createdDate;
+	public String getQueryName() {
+		return queryName;
 	}
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
+	public void setQueryName(String queryName) {
+		this.queryName = queryName;
 	}
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public Date getLastModifiedDate() {
-		return lastModifiedDate;
-	}
-
-	public void setLastModifiedDate(Date lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
-	}
-
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
-	}
-
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
-	}
-
-	public Long getDetectionId() {
-		return detectionId;
-	}
-
-	public void setDetectionId(Long detectionId) {
-		this.detectionId = detectionId;
-	}
-
-	public Long getQUERY_KEY() {
-		return QUERY_KEY;
-	}
-
-	public void setQUERY_KEY(Long QUERY_KEY) {
-		this.QUERY_KEY = QUERY_KEY;
-	}
-
-	public String getQUERY_NAME() {
-		return QUERY_NAME;
-	}
-
-	public void setUERY_NAME(String QERY_NAME) {
-		this.QUERY_NAME = QERY_NAME;
-	}
-
+	@ManyToOne
+	@JoinColumn(name = "detectionId")
 	public SignalDetection getSignalDetection() {
 		return signalDetection;
 	}
@@ -113,5 +66,5 @@ public class Query  implements Serializable {
 	public void setSignalDetection(SignalDetection signalDetection) {
 		this.signalDetection = signalDetection;
 	}
-	
+
 	}

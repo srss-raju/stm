@@ -49,7 +49,8 @@ public class SignalDetection implements Serializable {
 	@Transient
 	private List<QueryBuilder> queryBuilder;
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "signalDetection")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "detectionId")
 	private List<Query> queries;
 	
 	private String owner;
