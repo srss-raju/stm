@@ -820,7 +820,7 @@ public class RiskPlanService {
 		if(riskTask.getTemplateId() != null){
 			riskTaskExists = riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
 		}
-		if (riskTaskExists != null) {
+		if(riskTaskExists != null && (riskTaskExists.getId().intValue() != riskTask.getId().intValue())){
 			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
 		}
 		String riskTaskOriginal = JsonUtil.converToJson(riskTaskRepository.findOne(riskTask.getId()));
