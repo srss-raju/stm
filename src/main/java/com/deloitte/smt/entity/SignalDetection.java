@@ -310,4 +310,12 @@ public class SignalDetection implements Serializable {
 		this.products = products;
 	}
 
+	public List<Query> getQueries() {
+		return queries;
+	}
+
+	public void setQueries(List<Query> queries) {
+		this.queries = queries;
+	}
+
 }

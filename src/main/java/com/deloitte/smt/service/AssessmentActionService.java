@@ -101,7 +101,11 @@ public class AssessmentActionService {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
         
-        SignalAction actionsExist=assessmentActionRepository.findByActionNameIgnoreCaseAndTemplateId(signalAction.getActionName(), signalAction.getTemplateId());
+        SignalAction actionsExist = null;
+        if(signalAction.getTemplateId() != 0){
+        	actionsExist =	assessmentActionRepository.findByActionNameIgnoreCaseAndTemplateId(signalAction.getActionName(), signalAction.getTemplateId());
+        }
+        
     	if (actionsExist != null) {
 			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
 		}
