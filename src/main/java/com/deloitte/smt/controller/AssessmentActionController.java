@@ -52,12 +52,12 @@ public class AssessmentActionController    {
 
     @PostMapping(value = "/updateAssessmentAction")
     public ResponseEntity<Void> updateAssessmentAction(@RequestParam("data") String signalActionString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
         SignalAction signalAction = null;
         try {
         	signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
 			assessmentActionService.updateAssessmentAction(signalAction, attachments);
-		} catch (ApplicationException | IOException e) {
+		} catch (IOException e) {
 			LOG.info("Exception occured while updating "+e);
 		}
         return new ResponseEntity<>(HttpStatus.OK);

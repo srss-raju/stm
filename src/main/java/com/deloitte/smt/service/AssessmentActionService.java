@@ -100,6 +100,11 @@ public class AssessmentActionService {
         if(signalAction.getId() == null) {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
+        
+        SignalAction actionsExist=assessmentActionRepository.findByActionNameIgnoreCaseAndTemplateId(signalAction.getActionName(), signalAction.getTemplateId());
+    	if (actionsExist != null) {
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
+		}
        
         String assessmentActionOriginal = JsonUtil.converToJson(assessmentActionRepository.findOne(signalAction.getId()));
         signalAction.setLastModifiedDate(new Date());
@@ -181,7 +186,13 @@ public class AssessmentActionService {
         signalAuditService.saveOrUpdateSignalActionAudit(signalAction, null, null, SmtConstant.DELETE.getDescription());
     }
     
-    public SignalAction createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException {
+    public SignalAction createOrphanAssessmentAction(SignalAction signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
+    	
+    	SignalAction actionsExist=assessmentActionRepository.findByActionNameIgnoreCaseAndTemplateId(signalAction.getActionName(), signalAction.getTemplateId());
+    	if (actionsExist != null) {
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
+		}
+    	
     	Date d = new Date();
         signalAction.setCreatedDate(d);
         signalAction.setDueDate(SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate()));
