@@ -104,6 +104,8 @@ public class AssessmentActionService {
         SignalAction actionsExist = null;
         if(signalAction.getTemplateId() != 0){
         	actionsExist =	assessmentActionRepository.findByActionNameIgnoreCaseAndTemplateId(signalAction.getActionName(), signalAction.getTemplateId());
+        }else{
+        	actionsExist =	assessmentActionRepository.findByActionNameIgnoreCaseAndAssessmentId(signalAction.getActionName(), signalAction.getAssessmentId());
         }
         
     	if(actionsExist != null && (actionsExist.getId().intValue() != signalAction.getId().intValue())){

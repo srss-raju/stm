@@ -819,6 +819,8 @@ public class RiskPlanService {
 		RiskTask riskTaskExists = null;
 		if(riskTask.getTemplateId() != null){
 			riskTaskExists = riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
+		}else{
+			riskTaskExists = riskTaskRepository.findByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
 		}
 		if(riskTaskExists != null && (riskTaskExists.getId().intValue() != riskTask.getId().intValue())){
 			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);

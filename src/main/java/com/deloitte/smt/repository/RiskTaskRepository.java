@@ -14,6 +14,7 @@ public interface RiskTaskRepository extends JpaRepository<RiskTask, Long> {
 	Long countByNameIgnoreCaseAndRiskId(String risName,String riskId);
 	List<RiskTask> findAllByTemplateId(Long templateId);
 	
+	RiskTask findByNameIgnoreCaseAndRiskId(String risName, String riskId);
 	RiskTask findByNameIgnoreCaseAndTemplateId(String name,Long templateId);
 	
 }
