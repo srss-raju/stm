@@ -44,7 +44,7 @@ public class AssessmentActionController    {
 			} else {
 				signalAction = assessmentActionService.createAssessmentAction(signalAction, attachments);
 			}
-		} catch (ApplicationException | IOException e) {
+		} catch (IOException e) {
 			LOG.info("Exception occured while updating " + e);
 		}
         return signalAction;
