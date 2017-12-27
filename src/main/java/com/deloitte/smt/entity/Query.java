@@ -22,7 +22,6 @@ public class Query  implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@JsonIgnore
 	private Long id;
 	@JsonProperty("QUERY_KEY")
 	private Long queryKey;
