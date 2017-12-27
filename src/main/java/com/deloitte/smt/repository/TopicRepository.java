@@ -1,9 +1,11 @@
 package com.deloitte.smt.repository;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.deloitte.smt.dto.TopicDTO;
@@ -38,6 +40,12 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	List<String> getProductFilterValues();
 	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas, Topic t where t.id = pas.topicId")
 	List<String> getConditionFilterValues();
+	
+	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas where pas.topicId in :ids")
+	List<String> getListOfProductRecordKeys(@Param("ids") Set<Long> riskAssSingnalIds);
+	
+	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas where pas.topicId in :ids")
+	List<String> getListOfConditionRecordKeys(@Param("ids") Set<Long> riskAssSingnalIds);
 	
 }
 

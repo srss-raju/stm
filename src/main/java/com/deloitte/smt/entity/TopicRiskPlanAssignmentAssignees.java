@@ -1,87 +1,50 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import lombok.Data;
 
 /**
  * Created by Rajesh on 31-07-2017.
+
+ * Updated by 
+ * @author jshaik
+ * on 27-12-2017
  */
+@Data
 @Entity
 @Table(name = "sm_topic_riskplan_assignment_assignees")
-public class TopicRiskPlanAssignmentAssignees {
-	
-		public TopicRiskPlanAssignmentAssignees(){
-			
-		}
+public class TopicRiskPlanAssignmentAssignees implements Serializable{
+	private static final long serialVersionUID = 9119772529109562840L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	private Date createdDate;
+	private String createdBy;
+	private Date lastModifiedDate;
+	private String assignTo;
+	private Long userGroupKey;
+	private Long userKey;
+	@ManyToOne
+	@JoinColumn(name = "riskId")
+	private RiskPlan riskId;
+
+
+	public TopicRiskPlanAssignmentAssignees(){
 		
-		public TopicRiskPlanAssignmentAssignees( Long userGroupKey,  Long userKey){
-			this.userKey = userKey;
-			this.userGroupKey = userGroupKey;
-		}
-	 
-		@Id
-	    @GeneratedValue(strategy = GenerationType.AUTO)
-	    private Long id;
-		private Date createdDate;
-	    private String createdBy;
-	    private Date lastModifiedDate;
-	    private String assignTo;
-	    private Long userGroupKey;
-	    private Long userKey;
-	    
-	    private Long riskId;
-	    
-		public Long getId() {
-			return id;
-		}
-		public void setId(Long id) {
-			this.id = id;
-		}
-		public Date getCreatedDate() {
-			return createdDate;
-		}
-		public void setCreatedDate(Date createdDate) {
-			this.createdDate = createdDate;
-		}
-		public String getCreatedBy() {
-			return createdBy;
-		}
-		public void setCreatedBy(String createdBy) {
-			this.createdBy = createdBy;
-		}
-		public Date getLastModifiedDate() {
-			return lastModifiedDate;
-		}
-		public void setLastModifiedDate(Date lastModifiedDate) {
-			this.lastModifiedDate = lastModifiedDate;
-		}
-		public String getAssignTo() {
-			return assignTo;
-		}
-		public void setAssignTo(String assignTo) {
-			this.assignTo = assignTo;
-		}
-		public Long getRiskId() {
-			return riskId;
-		}
-		public void setRiskId(Long riskId) {
-			this.riskId = riskId;
-		}
-		public Long getUserGroupKey() {
-			return userGroupKey;
-		}
-		public void setUserGroupKey(Long userGroupKey) {
-			this.userGroupKey = userGroupKey;
-		}
-		public Long getUserKey() {
-			return userKey;
-		}
-		public void setUserKey(Long userKey) {
-			this.userKey = userKey;
-		}
+	}
+	
+	public TopicRiskPlanAssignmentAssignees( Long userGroupKey,  Long userKey){
+		this.userKey = userKey;
+		this.userGroupKey = userGroupKey;
+	}
 }

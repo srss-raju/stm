@@ -1,10 +1,11 @@
 package com.deloitte.smt.repository;
 
-import com.deloitte.smt.entity.DetectionRun;
+import java.util.List;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.deloitte.smt.entity.DetectionRun;
 
 public interface DetectionRunRepository extends JpaRepository<DetectionRun, Long> {
 

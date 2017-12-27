@@ -917,7 +917,7 @@ public class RiskPlanService {
 		if(!CollectionUtils.isEmpty(assigneeList)){
 			topicRiskPlanAssignmentAssigneesRepository.deleteByRiskId(riskPlanUpdated.getId());
 			for (TopicRiskPlanAssignmentAssignees assignee : assigneeList) {
-				assignee.setRiskId(riskPlanUpdated.getId());
+				//assignee.setRiskId(riskPlanUpdated.getId());
 			}
 			topicRiskPlanAssignmentAssigneesRepository.save(assigneeList);
 		}

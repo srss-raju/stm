@@ -47,8 +47,14 @@ import com.deloitte.smt.util.SignalUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class FiltersServiceImpl<E> implements FiltersService  {
+public class FiltersServiceImpl<E> implements FiltersService {
 	private static final Logger LOGGER = Logger.getLogger(FiltersServiceImpl.class);
+
+	private static final String ASSESSMENT = "assessment";
+	private static final String RISK = "risk";
+	private static final String SIGNAL = "signal";
+	private static final String DETECTION = "detection";
+
 	@Autowired
 	private FilterRepository filterRepository;
 	@Autowired
@@ -58,15 +64,15 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 	@Autowired
 	private TopicSignalDetectionAssignmentAssigneesRepository topicSignalDetectionAssignmentAssigneesRepository;
 
-	
 	@Autowired
 	private ProductFilterServiceImpl productFilterServiceImpl;
-	
+
 	@Autowired
 	private ConditionFilterServiceImpl conditionFilterServiceImpl;
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
+
 	@Override
 	public List<FilterDTO> getFiltersByType(String type) {
 		List<FilterDTO> filterList = null;
@@ -75,8 +81,8 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 			LOGGER.info("typeList.." + typeList);
 			List<Filters> listfi = filterRepository.findByFilterTypes(typeList);
 			if (!CollectionUtils.isEmpty(listfi)) {
-				LOGGER.info("RESULT......"+listfi);
-				filterList = getAllFiltersTypes(listfi,type);
+				LOGGER.info("RESULT......" + listfi);
+				filterList = getAllFiltersTypes(listfi, type);
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -92,8 +98,8 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 				FilterDTO dto = new FilterDTO();
 				dto.setFilterKey(filter.getKey());
 				dto.setFilterName(filter.getName());
-				String name = filter.getName();
-				getFiltersList(filterList, filter, dto, name,type);
+				String name = filter.getKey();
+				getFiltersList(filterList, filter, dto, name, type);
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -101,52 +107,52 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 		return filterList;
 	}
 
-	private void getFiltersList(List<FilterDTO> filterList, Filters filter, FilterDTO dto, String name,String type) {
+	private void getFiltersList(List<FilterDTO> filterList, Filters filter, FilterDTO dto, String key, String type) {
 		List<?> data;
-		LOGGER.info("name...."+name);
-		switch (name) {
-		case "Status":
-		case "Assessment Task Status":
-		case "Risk Plan Action Status":
-		case "Frequency":
+		LOGGER.info("KEY...." + key);
+		switch (key) {
+		case "statuses":
+		case "assessmenttaskstatus":
+		case "riskplanactionstatus":
+		case "frequency":
 			filterList.add(getFiltersType(filter));
 			break;
-		case "Product":
-			productFilterServiceImpl.productLevelFilter(filterList,type);
+		case "products":
+			productFilterServiceImpl.productLevelFilter(filterList, type);
 			break;
-		case "Condition":
-			conditionFilterServiceImpl.conditionLevelFilter(filterList,type);
+		case "conditions":
+			conditionFilterServiceImpl.conditionLevelFilter(filterList, type);
 			break;
-		case "Owner":
+		case "owners":
 			data = topicRepository.findDistinctOwnerNames();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "Assigned To":
+		case "assignees":
 			data = topicSignalDetectionAssignmentAssigneesRepository.getDetectionAssignedUsers();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "Signal Confirmation":
+		case "signalconfirmation":
 			data = topicRepository.findDistinctSignalConfirmationNames();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "Signal Source":
+		case "signalsource":
 			data = topicRepository.getSourceNames();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "Final Disposition":
+		case "finaldispositions":
 			data = assessmentPlanRepository.getAssessmentRiskStatus();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "Detected Date":
-		case "Due Date":
-		case "Created Date":
-		case "Last Run Date":
-		case "Next Run Date":
+		case "detectedDates":
+		case "dueDates":
+		case "createdDates":
+		case "lastRunDates":
+		case "nextRunDates":
 			getEmptyFilterValues(filter, filterList);
 			break;
 
@@ -154,14 +160,14 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 			break;
 		}
 	}
-	
+
 	private void getEmptyFilterValues(Filters filter, List<FilterDTO> filterList) {
-		LOGGER.info("getEmptyFilterValues----"+filter.getName());
+		LOGGER.info("getEmptyFilterValues----" + filter.getName());
 		FilterDTO dto;
 		dto = new FilterDTO();
 		dto.setFilterKey(filter.getKey());
 		dto.setFilterName(filter.getName());
-		dto.setFilterValues(Arrays.asList(FilterTypes.EMPTY.type(),FilterTypes.EMPTY.type()));
+		dto.setFilterValues(Arrays.asList(FilterTypes.EMPTY.type(), FilterTypes.EMPTY.type()));
 		filterList.add(dto);
 	}
 
@@ -169,7 +175,7 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 		FilterDTO dto = new FilterDTO();
 		dto.setFilterKey(filter.getKey());
 		dto.setFilterName(filter.getName());
-		LOGGER.info(filter.getType() +"..."+filter.getName());
+		LOGGER.info(filter.getType() + "..." + filter.getName());
 		List<FiltersStatus> statusList = filter.getFiltersStatus();
 		List<String> statuslist = null;
 		if (!CollectionUtils.isEmpty(statusList)) {
@@ -181,93 +187,93 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 		dto.setFilterValues(statuslist);
 		return dto;
 	}
-	
+
+	// GET DATA BY FILTER TYPE
 	@SuppressWarnings("unchecked")
 	@Override
 	public ServerResponseObject getSignalDataByFilter(String type, SearchCriteriaDTO searchCriteria) {
-		LOGGER.info("SignalDataByFilter....."+searchCriteria);
+		LOGGER.info("SignalDataByFilter....." + searchCriteria);
 		CriteriaQuery<E> query = null;
-		ServerResponseObject response =null;
-		Root<E> rootTopic = null;
-		Join<E,E> joinAssignees=null;
-		CriteriaBuilder criteriaBuilder=null;
-		List<Predicate> predicates =null;
-		Map<String,Object> filMap=null;
+		ServerResponseObject response = null;
+		Root<E> root = null;
+		Join<E, E> joinAssignees = null;
+		CriteriaBuilder criteriaBuilder = null;
+		List<Predicate> predicates = null;
+		Map<String, Object> filMap = null;
 		try {
 			List<FilterDTO> filters = searchCriteria.getFilters();
-			if(!CollectionUtils.isEmpty(filters))
-			{
+			if (!CollectionUtils.isEmpty(filters)) {
 				criteriaBuilder = entityManager.getCriteriaBuilder();
 				predicates = new ArrayList<>();
 				filMap = new HashMap<>();
-				switch(type)
-				{
-					case "signal":
-						query = (CriteriaQuery<E>) criteriaBuilder.createQuery(Topic.class);
-						rootTopic = (Root<E>) query.from(Topic.class);
-						joinAssignees = rootTopic.join("topicSignalValidationAssignmentAssignees", JoinType.INNER);
-						break;
-					case "risk":
-						query = (CriteriaQuery<E>) criteriaBuilder.createQuery(RiskPlan.class);
-						rootTopic = (Root<E>) query.from(RiskPlan.class);
-						//joinAssignees =(Join<E,E>) rootTopic.join("topicRiskPlanAssignmentAssignees", JoinType.INNER);
-						break;
-					case "assessment":
-						query = (CriteriaQuery<E>) criteriaBuilder.createQuery(AssessmentPlan.class);
-						rootTopic = (Root<E>) query.from(AssessmentPlan.class);
-						joinAssignees =(Join<E,E>) rootTopic.join("topicAssessmentAssignmentAssignees", JoinType.INNER);
-						break;	
-					case "detection":
-						query = (CriteriaQuery<E>) criteriaBuilder.createQuery(SignalDetection.class);
-						rootTopic = (Root<E>) query.from(SignalDetection.class);
-						joinAssignees =(Join<E,E>) rootTopic.join("topicSignalDetectionAssignmentAssignees", JoinType.INNER);
-						break;		
-					default:
-						break;
+				switch (type) {
+				case SIGNAL:
+					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(Topic.class);
+					root = (Root<E>) query.from(Topic.class);
+					joinAssignees = root.join("topicSignalValidationAssignmentAssignees", JoinType.INNER);
+					break;
+				case RISK:
+					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(RiskPlan.class);
+					root = (Root<E>) query.from(RiskPlan.class);
+					joinAssignees = (Join<E, E>) root.join("topicRiskPlanAssignmentAssignees", JoinType.INNER);
+					break;
+				case ASSESSMENT:
+					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(AssessmentPlan.class);
+					root = (Root<E>) query.from(AssessmentPlan.class);
+					joinAssignees = (Join<E, E>) root.join("topicAssessmentAssignmentAssignees", JoinType.INNER);
+					break;
+				case DETECTION:
+					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(SignalDetection.class);
+					root = (Root<E>) query.from(SignalDetection.class);
+					joinAssignees = (Join<E, E>) root.join("topicSignalDetectionAssignmentAssignees", JoinType.INNER);
+					break;
+				default:
+					break;
 				}
-				
+
 				for (FilterDTO dto : filters) {
-					filMap.put(dto.getFilterKey(), dto.getFilterValues()) ;
+					filMap.put(dto.getFilterKey(), dto.getFilterValues());
+
 				}
-				LOGGER.info("filMap.........."+filMap);
-				
+				LOGGER.info("filMap.........." + filMap);
+
 				Set<Entry<String, Object>> st = filMap.entrySet();
 				for (Entry<String, Object> me : st) {
 					String key = me.getKey();
-					buildPredicates(criteriaBuilder, rootTopic, predicates, me, key,type);
+					buildPredicates(criteriaBuilder, root, predicates, me, key, type);
 				}
-				
-				//Create OWNER AND ASSIGNEE PREDICATE
-				addOwnersAssignees(filMap, criteriaBuilder,joinAssignees,predicates,rootTopic);
-				
+				LOGGER.info("BUILDING OWNER AND ASSIGNEE PREDICATE------");
+				// Create OWNER AND ASSIGNEE PREDICATE
+				addOwnersAssignees(filMap, criteriaBuilder, joinAssignees, predicates, root);
+
 				Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-				
-				if (rootTopic != null && andPredicate != null){
-					query.select(rootTopic).where(andPredicate)
-							.orderBy(criteriaBuilder.desc(rootTopic.get(SmtConstant.CREATED_DATE.getDescription())))
+				LOGGER.info("BUILD PREDICATE QUERY-------");
+				if (root != null && andPredicate != null) {
+					query.select(root).where(andPredicate)
+							.orderBy(criteriaBuilder.desc(root.get(SmtConstant.CREATED_DATE.getDescription())))
 							.distinct(true);
 				}
+
 			}
-			FilterResponse smtResponse=new FilterResponse();
+			FilterResponse smtResponse = new FilterResponse();
 			TypedQuery<E> q = entityManager.createQuery(query);
 			if (!CollectionUtils.isEmpty(q.getResultList())) {
 				smtResponse.setTotalRecords(q.getResultList().size());
-				
-				
+
 			}
-			if(searchCriteria.getFetchSize() >= 0){
+			if (searchCriteria.getFetchSize() >= 0) {
 				q.setFirstResult(searchCriteria.getFromRecord());
 				q.setMaxResults(searchCriteria.getFetchSize());
 				smtResponse.setFetchSize(searchCriteria.getFetchSize());
 				smtResponse.setFromRecord(searchCriteria.getFromRecord());
-				List<FilterDataObject> fres = prepareSignalResponse(q.getResultList(),type);
+				List<FilterDataObject> fres = prepareSignalResponse(q.getResultList(), type);
 				smtResponse.setResult(fres);
 			}
 			response = new ServerResponseObject();
 			response.setResponse(smtResponse);
 			response.setStatus("SUCCESS");
 			return response;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			LOGGER.error(e);
 		}
 		return response;
@@ -276,16 +282,16 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 	private List<FilterDataObject> prepareSignalResponse(List<E> resultList, String type) {
 		List<FilterDataObject> fres = null;
 		switch (type) {
-		case "signal":
+		case SIGNAL:
 			fres = constructSignalObj(resultList);
 			break;
-		case "risk":
+		case RISK:
 			fres = constructRiskObj(resultList);
 			break;
-		case "assessment":
+		case ASSESSMENT:
 			fres = constructAssessmentObj(resultList);
 			break;
-		case "detection":
+		case DETECTION:
 			fres = constructDetectionObj(resultList);
 
 			break;
@@ -368,206 +374,197 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 		return fres;
 	}
 
-	private void buildPredicates(CriteriaBuilder criteriaBuilder, Root<E> rootTopic, List<Predicate> predicates,
+	private void buildPredicates(CriteriaBuilder criteriaBuilder, Root<E> root, List<Predicate> predicates,
 			Entry<String, Object> me, String key, String type) {
 		switch (key) {
 		case "statuses":
-			addStatuses(me.getValue(), criteriaBuilder, rootTopic, predicates,type);
+			addStatuses(me.getValue(), criteriaBuilder, root, predicates, type);
 			break;
 		case "signalsource":
-			addSourceNames(me.getValue(), criteriaBuilder, rootTopic, predicates);
+			addSourceNames(me.getValue(), criteriaBuilder, root, predicates);
 			break;
 		case "signalconfirmation":
-			addSignalConfirmations(me.getValue(), criteriaBuilder, rootTopic, predicates);
+			addSignalConfirmations(me.getValue(), criteriaBuilder, root, predicates);
 			break;
-		case "dueDates":	
-			addDueDate(me.getValue(), criteriaBuilder, rootTopic, predicates,type);
+		case "dueDates":
+			addDueDate(me.getValue(), criteriaBuilder, root, predicates, type);
 			break;
 		case "createdDates":
-		case "detectedDates":	
-			addCreatedDate(me.getValue(), criteriaBuilder, rootTopic, predicates);
-			break;	
-		case "assessmenttaskstatus":	
-			addAssessmentTaskStatus(me.getValue(), criteriaBuilder, rootTopic, predicates);
+		case "detectedDates":
+			addCreatedDate(me.getValue(), criteriaBuilder, root, predicates);
 			break;
-		case "finaldispositions":	
-			addFinalDispositions(me.getValue(), criteriaBuilder, rootTopic, predicates);
+		case "assessmenttaskstatus":
+			addAssessmentTaskStatus(me.getValue(), criteriaBuilder, root, predicates);
 			break;
-		case "riskplanactionstatus":	
-			addRiskPlanActionStatus(me.getValue(), criteriaBuilder, rootTopic, predicates);
+		case "finaldispositions":
+			addFinalDispositions(me.getValue(), criteriaBuilder, root, predicates);
 			break;
-		case "frequency":	
-			addFrequency(me.getValue(), criteriaBuilder, rootTopic, predicates);
+		case "riskplanactionstatus":
+			addRiskPlanActionStatus(me.getValue(), criteriaBuilder, root, predicates);
+			break;
+		case "frequency":
+			addFrequency(me.getValue(), criteriaBuilder, root, predicates);
 			break;
 		case "lastRunDates":
-			addRunDates(me.getValue(), criteriaBuilder, rootTopic, predicates,"lastRunDate");
+			addRunDates(me.getValue(), criteriaBuilder, root, predicates, "lastRunDate");
 			break;
-		case "nextRunDates": 
-			addRunDates(me.getValue(), criteriaBuilder, rootTopic, predicates,"nextRunDate");
+		case "nextRunDates":
+			addRunDates(me.getValue(), criteriaBuilder, root, predicates, "nextRunDate");
 			break;
 		default:
 			break;
 		}
 	}
 
-	private void addRunDates(Object dateValues, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
+	private void addRunDates(Object dateValues, CriteriaBuilder criteriaBuilder, Root<E> root,
 			List<Predicate> predicates, String type) {
-		Set<String> emptyDates =  prepareFieldValuesSet(dateValues);
-		if(!"".equalsIgnoreCase(emptyDates.iterator().next()))
-		{
-			getDatePredicates(dateValues, criteriaBuilder, rootTopic, predicates, type);
+		Set<String> emptyDates = prepareFieldValuesSet(dateValues);
+		if (!"".equalsIgnoreCase(emptyDates.iterator().next())) {
+			getDatePredicates(dateValues, criteriaBuilder, root, predicates, type);
 		}
-		
+
 	}
 
-	private void addFrequency(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
+	private void addFrequency(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> root,
 			List<Predicate> predicates) {
 		Set<String> list = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(list)) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get("runFrequency").in(list)));
+			predicates.add(criteriaBuilder.isTrue(root.get("runFrequency").in(list)));
 		}
 	}
 
-	private void addFinalDispositions(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
+	private void addFinalDispositions(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> root,
 			List<Predicate> predicates) {
 		Set<String> list = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(list)) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get(SmtConstant.ASSESSMENT_RISK_STATUS.getDescription()).in(list)));
+			predicates.add(
+					criteriaBuilder.isTrue(root.get(SmtConstant.ASSESSMENT_RISK_STATUS.getDescription()).in(list)));
 		}
-		
+
 	}
 
-	private void addAssessmentTaskStatus(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
+	private void addAssessmentTaskStatus(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> root,
 			List<Predicate> predicates) {
 		Set<String> list = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(list)) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription()).in(list)));
+			predicates.add(
+					criteriaBuilder.isTrue(root.get(SmtConstant.ASSESSMENT_TASK_STATUS.getDescription()).in(list)));
 		}
 
 	}
 
-	private void addRiskPlanActionStatus(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
+	private void addRiskPlanActionStatus(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> root,
 			List<Predicate> predicates) {
 		Set<String> list = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(list)) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get("riskTaskStatus").in(list)));
+			predicates.add(criteriaBuilder.isTrue(root.get("riskTaskStatus").in(list)));
 		}
 
 	}
 
-	
-
-	private void addDueDate(Object value, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
-			List<Predicate> predicates, String type) {
-		Set<String> emptyDates =  prepareFieldValuesSet(value);
+	private void addDueDate(Object value, CriteriaBuilder criteriaBuilder, Root<E> root, List<Predicate> predicates,
+			String type) {
+		Set<String> emptyDates = prepareFieldValuesSet(value);
 		String dateType;
-		switch(type)
-		{
-			case "risk":
-				dateType="riskDueDate";
-				break;
-			case "assessment":
-				dateType="assessmentDueDate";
-				break;	
-			default:
-				dateType = "dueDate";
-				break;
+		switch (type) {
+		case RISK:
+			dateType = "riskDueDate";
+			break;
+		case ASSESSMENT:
+			dateType = "assessmentDueDate";
+			break;
+		default:
+			dateType = "dueDate";
+			break;
 		}
-			
-		if(!"".equalsIgnoreCase(emptyDates.iterator().next()))
-		{
-			getDatePredicates(value, criteriaBuilder, rootTopic, predicates, dateType);
+
+		if (!"".equalsIgnoreCase(emptyDates.iterator().next())) {
+			getDatePredicates(value, criteriaBuilder, root, predicates, dateType);
 		}
 	}
 
-	protected void getDatePredicates(Object value, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
+	protected void getDatePredicates(Object value, CriteriaBuilder criteriaBuilder, Root<E> root,
 			List<Predicate> predicates, String dateType) {
 		List<?> l = (ArrayList<?>) value;
 		for (int i = 0; i < l.size(); i++) {
 			Object obj = l.get(i);
-			if(i==0 && !"".equalsIgnoreCase(obj.toString()))
-			{
-				Date date1=SignalUtil.convertStringToDate(obj.toString());
-				predicates.add(criteriaBuilder.greaterThanOrEqualTo(rootTopic.get(dateType), date1));
+			if (i == 0 && !"".equalsIgnoreCase(obj.toString())) {
+				Date date1 = SignalUtil.convertStringToDate(obj.toString());
+				predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(dateType), date1));
 			}
-			if(i==1 && !"".equalsIgnoreCase(obj.toString()))
-			{
-				Date date2=SignalUtil.convertStringToDate(obj.toString());
-				predicates.add(criteriaBuilder.lessThanOrEqualTo(rootTopic.get(dateType), date2));
+			if (i == 1 && !"".equalsIgnoreCase(obj.toString())) {
+				Date date2 = SignalUtil.convertStringToDate(obj.toString());
+				predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(dateType), date2));
 			}
-			
+
 		}
 	}
-	private void addCreatedDate(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
+
+	private void addCreatedDate(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> root,
 			List<Predicate> predicates) {
-		Set<String> emptyDates =  prepareFieldValuesSet(statusValue);
+		Set<String> emptyDates = prepareFieldValuesSet(statusValue);
 		String dateType = SmtConstant.CREATED_DATE.getDescription();
-		if(!"".equalsIgnoreCase(emptyDates.iterator().next()))
-		{
-			getDatePredicates(statusValue, criteriaBuilder, rootTopic, predicates, dateType);
+		if (!"".equalsIgnoreCase(emptyDates.iterator().next())) {
+			getDatePredicates(statusValue, criteriaBuilder, root, predicates, dateType);
 		}
 	}
-	private void addSignalConfirmations(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
-			List<Predicate> predicates) {
-		 Set<String> statusList = prepareFieldValuesSet(statusValue);
-		 if (!CollectionUtils.isEmpty(statusList)) {
-		predicates.add(criteriaBuilder.isTrue(rootTopic.get("signalConfirmation").in(statusValue)));
-	}
-		
-	}
 
-	private void addSourceNames(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
+	private void addSignalConfirmations(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> root,
 			List<Predicate> predicates) {
-		 Set<String> statusList = prepareFieldValuesSet(statusValue);
-		 if (!CollectionUtils.isEmpty(statusList)) {
-			predicates.add(criteriaBuilder.isTrue(rootTopic.get("sourceName").in(statusList)));
-		}
-		
-	}
-
-	private void addStatuses(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> rootTopic,
-			List<Predicate> predicates, String type) {
-		 Set<String> statusList = prepareFieldValuesSet(statusValue);
-		 
+		Set<String> statusList = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(statusList)) {
-			
-			switch(type)
-			{
-				case "risk":
-					predicates.add(criteriaBuilder.isTrue(rootTopic.get("status").in(statusList)));
-					break;
-				case "assessment":
-					predicates.add(criteriaBuilder.isTrue(rootTopic.get("assessmentPlanStatus").in(statusList)));
-					break;	
-				default:
-					predicates.add(criteriaBuilder.isTrue(rootTopic.get("signalStatus").in(statusList)));
-					break;
+			predicates.add(criteriaBuilder.isTrue(root.get("signalConfirmation").in(statusValue)));
+		}
+
+	}
+
+	private void addSourceNames(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> root,
+			List<Predicate> predicates) {
+		Set<String> statusList = prepareFieldValuesSet(statusValue);
+		if (!CollectionUtils.isEmpty(statusList)) {
+			predicates.add(criteriaBuilder.isTrue(root.get("sourceName").in(statusList)));
+		}
+
+	}
+
+	private void addStatuses(Object statusValue, CriteriaBuilder criteriaBuilder, Root<E> root,
+			List<Predicate> predicates, String type) {
+		Set<String> statusList = prepareFieldValuesSet(statusValue);
+
+		if (!CollectionUtils.isEmpty(statusList)) {
+
+			switch (type) {
+			case RISK:
+				predicates.add(criteriaBuilder.isTrue(root.get("status").in(statusList)));
+				break;
+			case ASSESSMENT:
+				predicates.add(criteriaBuilder.isTrue(root.get("assessmentPlanStatus").in(statusList)));
+				break;
+			default:
+				predicates.add(criteriaBuilder.isTrue(root.get("signalStatus").in(statusList)));
+				break;
 			}
 		}
-		
+
 	}
 
 	private void addOwnersAssignees(Map<String, Object> filMap, CriteriaBuilder criteriaBuilder,
-			Join<E, E> joinAssignees, List<Predicate> predicates,
-			Root<E> rootTopic) {
-		
-		Set<String> ownerSet=null;
-		Set<String> userSet1=null;
-		Set<String> groupSet1=null;
-		Predicate owner= null;
+			Join<E, E> joinAssignees, List<Predicate> predicates, Root<E> root) {
+		Set<String> ownerSet = null;
+		Set<String> userSet1 = null;
+		Set<String> groupSet1 = null;
+		Predicate owner = null;
 		Predicate user = null;
-		Predicate group= null;
+		Predicate group = null;
 		try {
 			Object ownerMap = filMap.get("owners");
 			Object assigneesMap = filMap.get("assignees");
-			if(null!=ownerMap)
-			{
+			if (null != ownerMap) {
 				ownerSet = prepareFieldValuesSet(ownerMap);
-				owner = criteriaBuilder.isTrue(rootTopic.get(SmtConstant.OWNER.getDescription()).in(ownerSet));
+				owner = criteriaBuilder.isTrue(root.get(SmtConstant.OWNER.getDescription()).in(ownerSet));
 			}
-			
-			if(null!=assigneesMap)
-			{
+
+			if (null != assigneesMap) {
 				List<?> assigneeMap = (ArrayList<?>) assigneesMap;
 				ObjectMapper oMapper = new ObjectMapper();
 				Set<String> userSet = new HashSet<>();
@@ -579,7 +576,7 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 						if (k.contains("userKey")) {
 							if (!"".equals(v.toString()))
 								userSet.add(v.toString());
-	
+
 						} else {
 							List<?> l = (ArrayList<?>) v;
 							for (Object obj : l) {
@@ -589,25 +586,24 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 						}
 					});
 				}
-				userSet1=userSet;
-				groupSet1= groupSet;
+				userSet1 = userSet;
+				groupSet1 = groupSet;
 			}
 
 			LOGGER.info("ownerSet........" + ownerSet);
 			LOGGER.info("userKey  >>>>>>>>>>>>>>>>>>" + userSet1);
 			LOGGER.info("user_group_key >>>>>>>>>>>>>>>>>" + groupSet1);
-			
+
 			if (!CollectionUtils.isEmpty(userSet1)) {
 				user = criteriaBuilder.isTrue(joinAssignees.get(SmtConstant.USER_KEY.getDescription()).in(userSet1));
-			} 
-			if (!CollectionUtils.isEmpty(groupSet1)) 
-			{
-				group = criteriaBuilder.isTrue(joinAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(groupSet1));
 			}
-			
+			if (!CollectionUtils.isEmpty(groupSet1)) {
+				group = criteriaBuilder
+						.isTrue(joinAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(groupSet1));
+			}
+
 			buildOwnerUserGroupPredicate(criteriaBuilder, predicates, owner, user, group);
-			
-			
+
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -616,31 +612,36 @@ public class FiltersServiceImpl<E> implements FiltersService  {
 
 	private void buildOwnerUserGroupPredicate(CriteriaBuilder criteriaBuilder, List<Predicate> predicates,
 			Predicate owner, Predicate user, Predicate group) {
-		if(owner!=null)
-		{
-			if(user!=null && group!=null)
-				predicates.add(criteriaBuilder.or(user,group,owner));
-			else
-			{
-				if(user!=null)
-					predicates.add(criteriaBuilder.or(user,owner));
-				else if (group!=null)
-					predicates.add(criteriaBuilder.or(group,owner));
-				else
-					predicates.add(criteriaBuilder.or(owner));
-			}
+		if (owner != null) {
+			checkOwnerUserAndGroupExists(criteriaBuilder, predicates, owner, user, group);
+		} else {
+			checkUserAndGroupExists(criteriaBuilder, predicates, user, group);
 		}
-		else
-		{
-			if(user!=null && group!=null)
-				predicates.add(criteriaBuilder.or(user,group));
+	}
+
+	private void checkOwnerUserAndGroupExists(CriteriaBuilder criteriaBuilder, List<Predicate> predicates,
+			Predicate owner, Predicate user, Predicate group) {
+		if (user != null && group != null)
+			predicates.add(criteriaBuilder.or(user, group, owner));
+		else {
+			if (user != null)
+				predicates.add(criteriaBuilder.or(user, owner));
+			else if (group != null)
+				predicates.add(criteriaBuilder.or(group, owner));
 			else
-			{
-				if(user!=null)
-					predicates.add(criteriaBuilder.or(user));
-				else if(group!=null)
-					predicates.add(criteriaBuilder.or(group));
-			}
+				predicates.add(criteriaBuilder.or(owner));
+		}
+	}
+
+	private void checkUserAndGroupExists(CriteriaBuilder criteriaBuilder, List<Predicate> predicates, Predicate user,
+			Predicate group) {
+		if (user != null && group != null)
+			predicates.add(criteriaBuilder.or(user, group));
+		else {
+			if (user != null)
+				predicates.add(criteriaBuilder.or(user));
+			else if (group != null)
+				predicates.add(criteriaBuilder.or(group));
 		}
 	}
 

@@ -11,6 +11,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
 @Entity
 @Table(name = "sm_filter_status")
 public class FiltersStatus implements Serializable {
@@ -25,41 +29,4 @@ public class FiltersStatus implements Serializable {
 	@ManyToOne(cascade= CascadeType.ALL)
     @JoinColumn(name = "FILTER_ID")
     private Filters filters;
-
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getKey() {
-		return key;
-	}
-	public void setKey(String key) {
-		this.key = key;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public boolean isVisible() {
-		return visible;
-	}
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-	public Filters getFilters() {
-		return filters;
-	}
-	public void setFilters(Filters filters) {
-		this.filters = filters;
-	}
 }
