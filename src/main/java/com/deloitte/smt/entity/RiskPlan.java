@@ -62,12 +62,12 @@ public class RiskPlan implements Serializable {
  	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "riskId")
 	private List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssignees;
- 	
+ 	/*
  	@Transient
 	private List<TopicSocAssignmentConfiguration> conditions;
     @Transient
 	private List<TopicProductAssignmentConfiguration> products;
- 	
+ 	*/
     public RiskPlan(){
     	//Do Nothing
     }
@@ -296,7 +296,7 @@ public class RiskPlan implements Serializable {
 		this.topicRiskPlanAssignmentAssignees = topicRiskPlanAssignmentAssignees;
 	}
 
-	public List<TopicSocAssignmentConfiguration> getConditions() {
+/*	public List<TopicSocAssignmentConfiguration> getConditions() {
 		return conditions;
 	}
 
@@ -311,7 +311,7 @@ public class RiskPlan implements Serializable {
 	public void setProducts(List<TopicProductAssignmentConfiguration> products) {
 		this.products = products;
 	}
-
+*/
 	public Long getAssessmentId() {
 		return assessmentId;
 	}

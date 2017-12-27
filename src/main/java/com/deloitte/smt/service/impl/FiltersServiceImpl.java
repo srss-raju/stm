@@ -202,8 +202,8 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		Map<String, Object> filMap = null;
 		try {
 			List<FilterDTO> filters = searchCriteria.getFilters();
+			criteriaBuilder = entityManager.getCriteriaBuilder();
 			if (!CollectionUtils.isEmpty(filters)) {
-				criteriaBuilder = entityManager.getCriteriaBuilder();
 				predicates = new ArrayList<>();
 				filMap = new HashMap<>();
 				switch (type) {
@@ -254,7 +254,33 @@ public class FiltersServiceImpl<E> implements FiltersService {
 							.distinct(true);
 				}
 
+			} else {
+				LOGGER.info("FILTER SIZE = 0.....");
+				switch (type) {
+				case SIGNAL:
+					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(Topic.class);
+					root = (Root<E>) query.from(Topic.class);
+					break;
+				case RISK:
+					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(RiskPlan.class);
+					root = (Root<E>) query.from(RiskPlan.class);
+					break;
+				case ASSESSMENT:
+					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(AssessmentPlan.class);
+					root = (Root<E>) query.from(AssessmentPlan.class);
+					break;
+				case DETECTION:
+					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(SignalDetection.class);
+					root = (Root<E>) query.from(SignalDetection.class);
+					break;
+				default:
+					break;
+
+				}
+				query.select(root).orderBy(criteriaBuilder.desc(root.get(SmtConstant.CREATED_DATE.getDescription())))
+						.distinct(true);
 			}
+
 			FilterResponse smtResponse = new FilterResponse();
 			TypedQuery<E> q = entityManager.createQuery(query);
 			if (!CollectionUtils.isEmpty(q.getResultList())) {
