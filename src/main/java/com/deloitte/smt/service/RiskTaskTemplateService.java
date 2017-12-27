@@ -49,7 +49,7 @@ public class RiskTaskTemplateService {
 		riskTaskTemplate.setCreatedDate(new Date());
 		Long countRiskTask=riskTaskTemplateRepository.countRiskTaskTemplateByNameIgnoreCase(riskTaskTemplate.getName());
 		if(countRiskTask>0){
-			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
 		}
 		if(duplicateRecordCheck(riskTaskTemplate)){
 			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
@@ -99,7 +99,7 @@ public class RiskTaskTemplateService {
 	public RiskTaskTemplate updateTaskTemplate(RiskTaskTemplate template) throws ApplicationException {
 		RiskTaskTemplate taskTemplate = riskTaskTemplateRepository.findByNameIgnoreCase(template.getName());
 		if(taskTemplate != null && (taskTemplate.getId().intValue() != template.getId().intValue())){
-			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
+			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
 		}
 		
 		if(duplicateRecordCheck(template)){
@@ -173,7 +173,7 @@ public class RiskTaskTemplateService {
 		for (RiskTaskTemplate risktaskTemplate : listRiskTasks) {
 
 			if (id.equals(risktaskTemplate.getId()) && taskTemplateNames.contains(name)) {
-				throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
+				throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
 			} else if (id.equals(risktaskTemplate.getId()) && !taskTemplateNames.contains(name)) {
 				risktaskTemplate.setName(name);
 				riskTaskTemplateRepository.save(risktaskTemplate);

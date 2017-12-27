@@ -54,7 +54,7 @@ public class TaskTemplateService {
 		}
 		Long taskTemplateExists=taskTemplateRepository.countTaskTemplateByNameIgnoreCase(taskTemplate.getName());
 		if(taskTemplateExists>0){
-			throw exceptionBuilder.buildException(ErrorType.ASSESSMENT_TASK_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
 		}
 		if(duplicateRecordCheck(taskTemplate)){
 			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
@@ -104,7 +104,7 @@ public class TaskTemplateService {
 		
 		TaskTemplate taskTemplate = taskTemplateRepository.findByNameIgnoreCase(template.getName());
 		if(taskTemplate != null && (taskTemplate.getId().intValue() != template.getId().intValue())){
-			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
 		}
 		
 		if(duplicateRecordCheck(template)){
@@ -182,7 +182,7 @@ public class TaskTemplateService {
 		for (TaskTemplate taskTemplate : listTasks) {
 
 			if (id.equals(taskTemplate.getId()) && taskTemplateNames.contains(name)) {
-				throw exceptionBuilder.buildException(ErrorType.ASSESSMENT_TASK_NAME_DUPLICATE, null);
+				throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
 			} else if (id.equals(taskTemplate.getId()) && !taskTemplateNames.contains(name)) {
 				taskTemplate.setName(name);
 				taskTemplateRepository.save(taskTemplate);

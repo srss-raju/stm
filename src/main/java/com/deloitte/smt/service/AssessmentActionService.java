@@ -71,7 +71,7 @@ public class AssessmentActionService {
         
         Long actionsExist=assessmentActionRepository.countByActionNameIgnoreCaseAndAssessmentId(signalAction.getActionName(), signalAction.getAssessmentId());
     	if (actionsExist > 0) {
-			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENT_TASK_NAME_DUPLICATE, null);
 		}
     	
         SignalAction signalActionUpdated = assessmentActionRepository.save(signalAction);
@@ -109,7 +109,7 @@ public class AssessmentActionService {
         }
         
     	if(actionsExist != null && (actionsExist.getId().intValue() != signalAction.getId().intValue())){
-			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENT_TASK_NAME_DUPLICATE, null);
 		}
        
         String assessmentActionOriginal = JsonUtil.converToJson(assessmentActionRepository.findOne(signalAction.getId()));
@@ -196,7 +196,7 @@ public class AssessmentActionService {
     	
     	SignalAction actionsExist=assessmentActionRepository.findByActionNameIgnoreCaseAndTemplateId(signalAction.getActionName(), signalAction.getTemplateId());
     	if (actionsExist != null) {
-			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.ASSESSMENT_TASK_NAME_DUPLICATE, null);
 		}
     	
     	Date d = new Date();

@@ -7,16 +7,16 @@ package com.deloitte.smt.exception;
  */
 public enum ErrorType {
 	
-	SIGNAL_NAME_DUPLICATE(100, "error.signal.name.duplicate","Signal with Same Name Existed"),
-	ASSESSMENTPLAN_NAME_DUPLICATE(101, "error.assessmentplan.name.duplicate","Assessment Plan with Same Name Existed"),
-	RISKPLAN_NAME_DUPLICATE(102,"error.riskplan.name.duplicate","Risk Plan with Same Name Existed"),
-	ASSESSMENTACCTION_NAME_DUPLICATE(103, "error.assessmentaction.name.duplicate","Assessment Action with Same Name Existed"),
-	RISKPACTION_NAME_DUPLICATE(104,"error.riskaction.task.name.duplicate","Risk Action with Same Name Existed"),
-	DETECTION_NAME_DUPLICATE(105,"error.detection.name.duplicate","Detection with Same Name Existed"),
-	ASSESSMENT_TASK_NAME_DUPLICATE(106,"error.assessment.task.name.duplicate","Assessment Task with Same Name Existed"),
-	RISKTASK_NAME_DUPLICATE(107,"error.risk.task.name.duplicate","Risk Task with Same Name Existed"),
+	SIGNAL_NAME_DUPLICATE(100, "error.signal.name.duplicate","Failed to save Signal due to duplicate name"),
+	ASSESSMENTPLAN_NAME_DUPLICATE(101, "error.assessmentplan.name.duplicate","Failed to save Assessment Plan due to duplicate name"),
+	RISKPLAN_NAME_DUPLICATE(102,"error.riskplan.name.duplicate","Failed to save Risk Plan due to duplicate name"),
+	ASSESSMENTACCTION_NAME_DUPLICATE(103, "error.assessmentaction.name.duplicate","Failed to save Assessment Template due to duplicate name"),
+	RISKPACTION_NAME_DUPLICATE(104,"error.riskaction.task.name.duplicate","Failed to save Risk Template due to duplicate name"),
+	DETECTION_NAME_DUPLICATE(105,"error.detection.name.duplicate","Failed to save Detection due to duplicate name"),
+	ASSESSMENT_TASK_NAME_DUPLICATE(106,"error.assessment.task.name.duplicate","Failed to save Assessment Task due to duplicate name"),
+	RISKTASK_NAME_DUPLICATE(107,"error.risk.task.name.duplicate","Failed to save Risk Task due to duplicate name"),
 	NO_NAME(108,"error.task.noname","Name is not provided"),
-	DUPLICATE_RECORD(109,"error.duplicate.record","Record already exists"),;
+	DUPLICATE_RECORD(109,"error.duplicate.record","Failed to save Template due to duplicate product"),;
 	
 	private final Integer code;
 	private final String label;

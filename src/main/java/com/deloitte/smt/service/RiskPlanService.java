@@ -711,7 +711,7 @@ public class RiskPlanService {
 
 		Long riskTaskExists=riskTaskRepository.countByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
 		if (riskTaskExists > 0) {
-			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
 		
 		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
@@ -745,7 +745,7 @@ public class RiskPlanService {
 		
 		RiskTask riskTaskExists=riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
 		if (riskTaskExists != null) {
-			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
 		
 		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
@@ -823,7 +823,7 @@ public class RiskPlanService {
 			riskTaskExists = riskTaskRepository.findByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
 		}
 		if(riskTaskExists != null && (riskTaskExists.getId().intValue() != riskTask.getId().intValue())){
-			throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
+			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
 		String riskTaskOriginal = JsonUtil.converToJson(riskTaskRepository.findOne(riskTask.getId()));
 		
