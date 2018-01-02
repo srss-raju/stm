@@ -346,9 +346,9 @@ public class SignalService {
 
 	private void saveProducts(Topic topic, Topic topicUpdated) {
 		if(!CollectionUtils.isEmpty(topic.getProducts())){
-			for(TopicProductAssignmentConfiguration productConfig : topic.getProducts()){
+			/*for(TopicProductAssignmentConfiguration productConfig : topic.getProducts()){
 				productConfig.setTopicId(topicUpdated.getId());
-			}
+			}*/
 			List<TopicProductAssignmentConfiguration> updatedProductList = topicProductAssignmentConfigurationRepository.save(topic.getProducts());
 			for(TopicProductAssignmentConfiguration updatedProductConfig : updatedProductList){
 				saveAssignmentProduct(updatedProductConfig);
@@ -367,9 +367,9 @@ public class SignalService {
 
 	private void saveConditions(Topic topic, Topic topicUpdated) {
 		if(!CollectionUtils.isEmpty(topic.getConditions())){
-			for(TopicSocAssignmentConfiguration socConfig : topic.getConditions()){
+			/*for(TopicSocAssignmentConfiguration socConfig : topic.getConditions()){
 				socConfig.setTopicId(topicUpdated.getId());
-			}
+			}*/
 			List<TopicSocAssignmentConfiguration> updatedConditionList = topicSocAssignmentConfigurationRepository.save(topic.getConditions());
 			for(TopicSocAssignmentConfiguration updateConditionConfig : updatedConditionList){
 				savecAssignmentCondition(updateConditionConfig);

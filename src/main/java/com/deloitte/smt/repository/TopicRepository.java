@@ -36,16 +36,18 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	
 	@Query("SELECT DISTINCT(o.owner) FROM Topic o WHERE o.owner IS NOT NULL ")
 	List<String> findDistinctOwnerNames();
-	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas, Topic t where t.id = pas.topicId")
+	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas, Topic t where t.id = pas.topic")
 	List<String> getProductFilterValues();
-	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas, Topic t where t.id = pas.topicId")
+	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas, Topic t where t.id = pas.topic")
 	List<String> getConditionFilterValues();
 	
-	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas where pas.topicId in :ids")
+	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas where pas.topic in :ids")
 	List<String> getListOfProductRecordKeys(@Param("ids") Set<Long> riskAssSingnalIds);
 	
-	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas where pas.topicId in :ids")
+	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas where pas.topic in :ids")
 	List<String> getListOfConditionRecordKeys(@Param("ids") Set<Long> riskAssSingnalIds);
+	
+	
 	
 }
 

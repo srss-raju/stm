@@ -99,11 +99,12 @@ public class Topic implements Serializable{
     
     @Transient
     private List<AssessmentPlan> assessmentPlans;
-    
-    
-    @Transient
+
+    /*@Transient*/
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="topic", fetch = FetchType.LAZY)
 	private List<TopicSocAssignmentConfiguration> conditions;
-    @Transient
+    /*@Transient*/
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="topic",fetch = FetchType.LAZY)
 	private List<TopicProductAssignmentConfiguration> products;
     
     public Topic(Long id, String name, String description, String sourceName,

@@ -8,19 +8,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import lombok.Data;
 
 /**
  * Created by rkb on 09-11-2017.
  */
+@Data
 @Entity
 @Table(name = "sm_topic_soc_assignment_configuration")
 public class TopicSocAssignmentConfiguration implements Serializable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 274553099392305910L;
 	
 	@Id
@@ -33,77 +33,10 @@ public class TopicSocAssignmentConfiguration implements Serializable {
     private String recordKey;
     private String conditionName;
     private Long assignmentConfigurationId;
-    private Long topicId;
+    @ManyToOne
+    private Topic topic;
     private Long detectionId;
     @Transient
     private List<TopicAssignmentCondition> recordValues;
-    
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public Date getLastModifiedDate() {
-		return lastModifiedDate;
-	}
-	public void setLastModifiedDate(Date lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
-	}
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
-	}
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
-	}
-	
-	public Long getAssignmentConfigurationId() {
-		return assignmentConfigurationId;
-	}
-	public void setAssignmentConfigurationId(Long assignmentConfigurationId) {
-		this.assignmentConfigurationId = assignmentConfigurationId;
-	}
-	public String getRecordKey() {
-		return recordKey;
-	}
-	public void setRecordKey(String recordKey) {
-		this.recordKey = recordKey;
-	}
-	public List<TopicAssignmentCondition> getRecordValues() {
-		return recordValues;
-	}
-	public void setRecordValues(List<TopicAssignmentCondition> recordValues) {
-		this.recordValues = recordValues;
-	}
-	public Long getTopicId() {
-		return topicId;
-	}
-	public void setTopicId(Long topicId) {
-		this.topicId = topicId;
-	}
-	public String getConditionName() {
-		return conditionName;
-	}
-	public void setConditionName(String conditionName) {
-		this.conditionName = conditionName;
-	}
-	public Long getDetectionId() {
-		return detectionId;
-	}
-	public void setDetectionId(Long detectionId) {
-		this.detectionId = detectionId;
-	}
-	
+   	
 }

@@ -1,6 +1,7 @@
 package com.deloitte.smt.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,13 +9,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.FilterDTO;
 import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
@@ -27,38 +31,38 @@ import com.deloitte.smt.util.AssignmentUtil;
 import com.deloitte.smt.util.Levels;
 
 @Service
-public class ProductFilterServiceImpl {
+public class ProductFilterServiceImpl<E> {
 	private static final Logger LOGGER = Logger.getLogger(ProductFilterServiceImpl.class);
 	@Autowired
 	private ProductLevelRepository productLevelRepository;
-	
+
 	@Autowired
 	private AssignmentProductRepository assignmentProductRepository;
-	
+
 	@Autowired
 	private TopicRepository topicRepository;
-	
+
 	@Autowired
 	private SignalDetectionRepository signalDetectionRepository;
-	
+
 	@Autowired
 	private RiskPlanRepository riskPlanRepository;
-	
+
 	@Autowired
 	private AssessmentPlanRepository assessmentPlanRepository;
+
 	public void productLevelFilter(List<FilterDTO> filterList, String type) {
-		List<Map<String, List<Levels>>> prlevels=null;
-		List<ProductLevels> productLevels=null;
+		List<Map<String, List<Levels>>> prlevels = null;
+		List<ProductLevels> productLevels = null;
 		try {
 			prlevels = productLevelValuesCodes(type);
 			productLevels = productLevelRepository.findAllByOrderByIdAsc();
-			if(!AssignmentUtil.isNullOrEmpty(prlevels) && !AssignmentUtil.isNullOrEmpty(productLevels))
-			{
-				LOGGER.info("PRODUCT LEVEL MAP ==="+prlevels);
-				LOGGER.info("PRODUCT REPO MAP ==="+productLevels);
+			if (!AssignmentUtil.isNullOrEmpty(prlevels) && !AssignmentUtil.isNullOrEmpty(productLevels)) {
+				LOGGER.info("PRODUCT LEVEL MAP ===" + prlevels);
+				LOGGER.info("PRODUCT REPO MAP ===" + productLevels);
 				constructProductFilter(filterList, prlevels, productLevels);
 			}
-			
+
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -72,20 +76,18 @@ public class ProductFilterServiceImpl {
 			dto.setFilterKey(productLevel.getValue().replace(" ", ""));
 			dto.setFilterName(productLevel.getValue());
 			dto.setFilterType("product");
-			boolean exists=false;
-			List<?>	existList=null;
+			boolean exists = false;
+			List<?> existList = null;
 			for (Map<String, List<Levels>> prlevelMap : prlevels) {
-				if(prlevelMap.containsKey(productLevel.getKey()))
-				{
+				if (prlevelMap.containsKey(productLevel.getKey())) {
 					existList = prlevelMap.get(productLevel.getKey());
-					exists=true;
+					exists = true;
 					break;
-				}
-				else
-					exists=false;
+				} else
+					exists = false;
 			}
-			LOGGER.info("Exists...?"+productLevel.getKey()+"----"+exists);
-			if(exists)
+			LOGGER.info("Exists...?" + productLevel.getKey() + "----" + exists);
+			if (exists)
 				dto.setFilterValues(existList);
 			else
 				dto.setFilterValues(new ArrayList<>());
@@ -95,7 +97,7 @@ public class ProductFilterServiceImpl {
 
 	private List<Map<String, List<Levels>>> productLevelValuesCodes(String type) {
 		List<Map<String, List<Levels>>> levelMapList = null;
-		List<String> prodFillVals =null;
+		List<String> prodFillVals = null;
 		switch (type) {
 		case "signal":
 			prodFillVals = topicRepository.getProductFilterValues();
@@ -104,13 +106,13 @@ public class ProductFilterServiceImpl {
 			prodFillVals = signalDetectionRepository.getProductFilterValues();
 			break;
 		case "risk":
-		case "assessment":	
+		case "assessment":
 			prodFillVals = getRiskProductFilterValues(type);
 			break;
 		default:
 			break;
 		}
-		LOGGER.info("TYPE-------> "+type+" ############>>>>>" + prodFillVals);
+		LOGGER.info("TYPE-------> " + type + " ############>>>>>" + prodFillVals);
 		if (!CollectionUtils.isEmpty(prodFillVals)) {
 			levelMapList = new ArrayList<>();
 			Map<Integer, Set<String>> itemMap = splitRecordValues(prodFillVals);
@@ -127,18 +129,18 @@ public class ProductFilterServiceImpl {
 	}
 
 	private List<String> getRiskProductFilterValues(String type) {
-		List<String>  prds=null;
+		List<String> prds = null;
 		Set<Long> signalIds;
-		if("risk".equalsIgnoreCase(type))
+		if ("risk".equalsIgnoreCase(type))
 			signalIds = riskPlanRepository.findAllSignalIds();
 		else
 			signalIds = assessmentPlanRepository.findAllSignalIds();
-		LOGGER.info("LIST OF SIGNAL IDS...."+signalIds);
-		
-		if(!CollectionUtils.isEmpty(signalIds))
-			prds = topicRepository.getListOfProductRecordKeys(signalIds) ; 
-		
-		LOGGER.info("LIST OF SIGNAL KEYS IDS...."+prds);
+		LOGGER.info("LIST OF SIGNAL IDS...." + signalIds);
+
+		if (!CollectionUtils.isEmpty(signalIds))
+			prds = topicRepository.getListOfProductRecordKeys(signalIds);
+
+		LOGGER.info("LIST OF SIGNAL KEYS IDS...." + prds);
 		return prds;
 	}
 
@@ -179,27 +181,26 @@ public class ProductFilterServiceImpl {
 		return itemMap;
 	}
 
-	public <E> void getProductPredicate(Set<String> productSet, Join<E, E> joinProducts, String type) {
+
+	public void constructProductPredicate(Set<String> productSet, CriteriaBuilder criteriaBuilder,
+			Join<E, E> productJoin, List<Predicate> predicates, String type) {
+		Set<String> productRecKeys = new HashSet<>();
 		List<String> prodFillVals = topicRepository.getProductFilterValues();
-		
-		if(!CollectionUtils.isEmpty(prodFillVals))
-		{
-			for (String setString : productSet) {
-				for (String product : prodFillVals) {
-					
+		for (String recKeys : prodFillVals) {
+			for (String proSet : productSet) {
+				List<String> list = Arrays.asList(recKeys.split("@#"));
+				if (list.contains(proSet)) {
+					productRecKeys.add(recKeys);
 				}
 			}
-				
-				
-				
-				
-				
-			}
 		}
-			
-				
 		
+		LOGGER.info("FINAL LIST....."+productRecKeys);
+		if(!AssignmentUtil.isNullOrEmpty(productRecKeys))
+		{
+			predicates.add(criteriaBuilder.isTrue(productJoin.get("recordKey").in(productRecKeys)));
+		}
 		
-		
-	
+	}
+
 }

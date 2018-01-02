@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -197,6 +198,8 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		ServerResponseObject response = null;
 		Root<E> root = null;
 		Join<E, E> joinAssignees = null;
+		Join<E, E> productJoin = null;
+		Join<E, E> conditionJoin = null;
 		CriteriaBuilder criteriaBuilder = null;
 		List<Predicate> predicates = null;
 		Map<String, Object> filMap = null;
@@ -211,6 +214,8 @@ public class FiltersServiceImpl<E> implements FiltersService {
 					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(Topic.class);
 					root = (Root<E>) query.from(Topic.class);
 					joinAssignees = root.join("topicSignalValidationAssignmentAssignees", JoinType.INNER);
+					productJoin = root.join("products",JoinType.INNER);
+					conditionJoin = root.join("conditions",JoinType.INNER);
 					break;
 				case RISK:
 					query = (CriteriaQuery<E>) criteriaBuilder.createQuery(RiskPlan.class);
@@ -245,6 +250,10 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				LOGGER.info("BUILDING OWNER AND ASSIGNEE PREDICATE------");
 				// Create OWNER AND ASSIGNEE PREDICATE
 				addOwnersAssignees(filMap, criteriaBuilder, joinAssignees, predicates, root);
+				
+				buildProductAndConditionPredicate(filters,criteriaBuilder, productJoin,conditionJoin,predicates, type);
+				
+				
 
 				Predicate andPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 				LOGGER.info("BUILD PREDICATE QUERY-------");
@@ -303,6 +312,52 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			LOGGER.error(e);
 		}
 		return response;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void buildProductAndConditionPredicate(List<FilterDTO> filters, CriteriaBuilder criteriaBuilder,
+			Join<E, E> productJoin, Join<E, E> conditionJoin, List<Predicate> predicates,
+			String type) {
+		Set<String> productSet = new HashSet<>();
+		Set<String> conditionSet = new HashSet<>();
+		for (FilterDTO filter : filters) {
+			if("product".equalsIgnoreCase(filter.getFilterType()))
+			{
+				productSet = constructObjectToSet(filter.getFilterValues());
+			}
+			else if("condition".equalsIgnoreCase(filter.getFilterType()))
+			{
+				conditionSet = constructObjectToSet(filter.getFilterValues());
+			}
+		}
+		
+		LOGGER.info("PRODUCT SET >>>>>>>>>>>>"+productSet);
+		LOGGER.info("CONDITION SET >>>>>>>>>>>>"+conditionSet);
+		if(!CollectionUtils.isEmpty(productSet))
+		{
+			productFilterServiceImpl.constructProductPredicate(productSet,criteriaBuilder,productJoin, predicates,type);
+		}
+		else
+		{
+			conditionFilterServiceImpl.constructProductPredicate(productSet,criteriaBuilder,conditionJoin, predicates,type);
+		}
+		
+		
+	}
+
+	private Set<String> constructObjectToSet(List<?> filterValues) {
+		LOGGER.info("filterValues...."+filterValues);
+		Set<String> valueSet = null;
+		try {
+			valueSet = new HashSet<>();
+			for (Object object : filterValues) {
+				LinkedHashMap<?, ?> map = (LinkedHashMap<?, ?>) object;
+				valueSet.add(map.get("key").toString());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return valueSet;
 	}
 
 	private List<FilterDataObject> prepareSignalResponse(List<E> resultList, String type) {

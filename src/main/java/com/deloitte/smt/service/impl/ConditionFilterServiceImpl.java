@@ -1,12 +1,17 @@
 package com.deloitte.smt.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +30,7 @@ import com.deloitte.smt.util.AssignmentUtil;
 import com.deloitte.smt.util.Levels;
 
 @Service
-public class ConditionFilterServiceImpl {
+public class ConditionFilterServiceImpl<E> {
 	private static final Logger LOGGER = Logger.getLogger(ConditionFilterServiceImpl.class);
 	@Autowired
 	private ConditionLevelRepository conditionLevelRepository;
@@ -173,6 +178,26 @@ public class ConditionFilterServiceImpl {
 			}
 		}
 		return itemMap;
+	}
+
+	public void constructProductPredicate(Set<String> conditionSet, CriteriaBuilder criteriaBuilder,
+			Join<E, E> conditionJoin, List<Predicate> predicates, String type) {
+		Set<String> conRecKeys = new HashSet<>();
+		List<String> condFillVals = topicRepository.getConditionFilterValues();
+		for (String recKeys : condFillVals) {
+			for (String proSet : conditionSet) {
+				List<String> list = Arrays.asList(recKeys.split("@#"));
+				if (list.contains(proSet)) {
+					conRecKeys.add(recKeys);
+				}
+			}
+		}
+		
+		LOGGER.info("FINAL CONDITION LIST....."+conRecKeys);
+		if(!AssignmentUtil.isNullOrEmpty(conRecKeys))
+		{
+			predicates.add(criteriaBuilder.isTrue(conditionJoin.get("recordKey").in(conRecKeys)));
+		}
 	}
 
 }
