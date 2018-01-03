@@ -53,6 +53,11 @@ public class SignalDetection implements Serializable {
     @JoinColumn(name = "detectionId")
 	private List<Query> queries;
 	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "detectionId")
+	private List<Geography> geography;
+	
+	
 	private String owner;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -317,6 +322,14 @@ public class SignalDetection implements Serializable {
 
 	public void setQueries(List<Query> queries) {
 		this.queries = queries;
+	}
+
+	public List<Geography> getGeography() {
+		return geography;
+	}
+
+	public void setGeography(List<Geography> geography) {
+		this.geography = geography;
 	}
 
 }
