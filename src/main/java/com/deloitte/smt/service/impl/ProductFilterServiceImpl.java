@@ -1,14 +1,13 @@
 package com.deloitte.smt.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import javax.persistence.criteria.Join;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +51,9 @@ public class ProductFilterServiceImpl {
 		try {
 			prlevels = productLevelValuesCodes(type);
 			productLevels = productLevelRepository.findAllByOrderByIdAsc();
-			if(!AssignmentUtil.isNullOrEmpty(prlevels) && !AssignmentUtil.isNullOrEmpty(productLevels))
-			{
-				LOGGER.info("PRODUCT LEVEL MAP ==="+prlevels);
-				LOGGER.info("PRODUCT REPO MAP ==="+productLevels);
-				constructProductFilter(filterList, prlevels, productLevels);
-			}
+			LOGGER.info("PRODUCT LEVEL MAP ==="+prlevels);
+			LOGGER.info("PRODUCT REPO MAP ==="+productLevels);
+			constructProductFilter(filterList, prlevels, productLevels);
 			
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -67,29 +63,35 @@ public class ProductFilterServiceImpl {
 	private void constructProductFilter(List<FilterDTO> filterList, List<Map<String, List<Levels>>> prlevels,
 			List<ProductLevels> productLevels) {
 		FilterDTO dto;
-		for (ProductLevels productLevel : productLevels) {
-			dto = new FilterDTO();
-			dto.setFilterKey(productLevel.getValue().replace(" ", ""));
-			dto.setFilterName(productLevel.getValue());
-			dto.setFilterType("product");
-			boolean exists=false;
-			List<?>	existList=null;
-			for (Map<String, List<Levels>> prlevelMap : prlevels) {
-				if(prlevelMap.containsKey(productLevel.getKey()))
+		if(!AssignmentUtil.isNullOrEmpty(productLevels))
+		{
+			for (ProductLevels productLevel : productLevels) {
+				dto = new FilterDTO();
+				dto.setFilterKey(productLevel.getValue().replace(" ", ""));
+				dto.setFilterName(productLevel.getValue());
+				dto.setFilterType("product");
+				boolean exists=false;
+				List<?>	existList=null;
+				if(!AssignmentUtil.isNullOrEmpty(prlevels))
 				{
-					existList = prlevelMap.get(productLevel.getKey());
-					exists=true;
-					break;
+					for (Map<String, List<Levels>> prlevelMap : prlevels) {
+						if(prlevelMap.containsKey(productLevel.getKey()))
+						{
+							existList = prlevelMap.get(productLevel.getKey());
+							exists=true;
+							break;
+						}
+						else
+							exists=false;
+					}
 				}
+				LOGGER.info("Exists...?"+productLevel.getKey()+"----"+exists);
+				if(exists)
+					dto.setFilterValues(existList);
 				else
-					exists=false;
+					dto.setFilterValues(new ArrayList<>());
+				filterList.add(dto);
 			}
-			LOGGER.info("Exists...?"+productLevel.getKey()+"----"+exists);
-			if(exists)
-				dto.setFilterValues(existList);
-			else
-				dto.setFilterValues(new ArrayList<>());
-			filterList.add(dto);
 		}
 	}
 
@@ -179,25 +181,41 @@ public class ProductFilterServiceImpl {
 		return itemMap;
 	}
 
-	public <E> void getProductPredicate(Set<String> productSet, Join<E, E> joinProducts, String type) {
+	public void constructProductPredicate(Set<String> productSet, StringBuilder queryBuilder, String type, Map<String, Object> parameterMap) {
+		Set<String> productRecKeys = new HashSet<>();
 		List<String> prodFillVals = topicRepository.getProductFilterValues();
-		
-		if(!CollectionUtils.isEmpty(prodFillVals))
-		{
-			for (String setString : productSet) {
-				for (String product : prodFillVals) {
-					
+		for (String recKeys : prodFillVals) {
+			for (String proSet : productSet) {
+				List<String> list = Arrays.asList(recKeys.split("@#"));
+				if (list.contains(proSet)) {
+					productRecKeys.add(recKeys);
 				}
 			}
-				
-				
-				
-				
-				
-			}
 		}
-			
-				
+		
+		LOGGER.info("FINAL LIST....."+productRecKeys);
+		if(!AssignmentUtil.isNullOrEmpty(productRecKeys))
+		{
+			switch (type) 
+			{
+				case "signal":
+					queryBuilder.append(" and product.topicId=root.id ");
+					break;
+				case "detection":
+					queryBuilder.append(" and product.detectionId=root.id ");
+					break;
+				case "risk":
+				case "assessment":
+					queryBuilder.append(" and product.topicId=topic.id ");
+					break;
+				default:
+					break;
+			}
+			queryBuilder.append(" and product.recordKey in :prRecordKey");
+			parameterMap.put("prRecordKey", productRecKeys);
+		}
+		
+	}			
 		
 		
 		

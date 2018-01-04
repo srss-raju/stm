@@ -1,6 +1,7 @@
 package com.deloitte.smt.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,12 +52,9 @@ public class ConditionFilterServiceImpl {
 		try {
 			conlevels = conditionLevelValuesCodes(type);
 			conditionLevels = conditionLevelRepository.findAllByOrderByIdAsc();
-			if (!AssignmentUtil.isNullOrEmpty(conlevels) && !AssignmentUtil.isNullOrEmpty(conditionLevels)) {
-				LOGGER.info("CONDITION LEVEL MAP ===" + conlevels);
-				LOGGER.info("CONDITION REPO MAP ===" + conditionLevels);
-				constructConditionFilter(filterList, conlevels, conditionLevels);
-			}
-
+			LOGGER.info("CONDITION LEVEL MAP ===" + conlevels);
+			LOGGER.info("CONDITION REPO MAP ===" + conditionLevels);
+			constructConditionFilter(filterList, conlevels, conditionLevels);
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -65,27 +63,33 @@ public class ConditionFilterServiceImpl {
 	private void constructConditionFilter(List<FilterDTO> filterList, List<Map<String, List<Levels>>> conlevels,
 			List<ConditionLevels> levels) {
 		FilterDTO dto;
-		for (ConditionLevels level : levels) {
-			dto = new FilterDTO();
-			dto.setFilterKey(level.getValue().replace(" ", ""));
-			dto.setFilterName(level.getValue());
-			dto.setFilterType("condition");
-			boolean exists = false;
-			List<?> existList = null;
-			for (Map<String, List<Levels>> levelMap : conlevels) {
-				if (levelMap.containsKey(level.getKey())) {
-					existList = levelMap.get(level.getKey());
-					exists = true;
-					break;
-				} else
-					exists = false;
+		if(!AssignmentUtil.isNullOrEmpty(levels))
+		{
+			for (ConditionLevels level : levels) {
+				dto = new FilterDTO();
+				dto.setFilterKey(level.getValue().replace(" ", ""));
+				dto.setFilterName(level.getValue());
+				dto.setFilterType("condition");
+				boolean exists = false;
+				List<?> existList = null;
+				if(!AssignmentUtil.isNullOrEmpty(conlevels))
+				{
+					for (Map<String, List<Levels>> levelMap : conlevels) {
+						if (levelMap.containsKey(level.getKey())) {
+							existList = levelMap.get(level.getKey());
+							exists = true;
+							break;
+						} else
+							exists = false;
+					}
+				}
+				LOGGER.info("Exists...?" + level.getKey() + "----" + exists);
+				if (exists)
+					dto.setFilterValues(existList);
+				else
+					dto.setFilterValues(new ArrayList<>());
+				filterList.add(dto);
 			}
-			LOGGER.info("Exists...?" + level.getKey() + "----" + exists);
-			if (exists)
-				dto.setFilterValues(existList);
-			else
-				dto.setFilterValues(new ArrayList<>());
-			filterList.add(dto);
 		}
 	}
 
@@ -173,6 +177,43 @@ public class ConditionFilterServiceImpl {
 			}
 		}
 		return itemMap;
+	}
+
+	public void constructConditionPredicate(Set<String> conditionSet, StringBuilder queryBuilder, String type,
+			Map<String, Object> parameterMap) {
+		Set<String> conRecKeys = new HashSet<>();
+		List<String> condFillVals = topicRepository.getConditionFilterValues();
+		for (String recKeys : condFillVals) {
+			for (String proSet : conditionSet) {
+				List<String> list = Arrays.asList(recKeys.split("@#"));
+				if (list.contains(proSet)) {
+					conRecKeys.add(recKeys);
+				}
+			}
+		}
+		
+		LOGGER.info("FINAL CONDITION LIST....."+conRecKeys);
+		if(!AssignmentUtil.isNullOrEmpty(conRecKeys))
+		{
+			switch (type) {
+				case "signal":
+					queryBuilder.append(" and condition.topicId=root.id ");
+					break;
+				case "detection":
+					queryBuilder.append(" and condition.detectionId=root.id ");
+					break;
+				case "risk":
+				case "assessment":
+					queryBuilder.append(" and condition.topicId=topic.id ");
+					break;
+				default:
+					break;
+			}
+			
+			queryBuilder.append(" and condition.recordKey in :recordKey");
+			parameterMap.put("recordKey", conRecKeys);
+		}
+		
 	}
 
 }
