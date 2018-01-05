@@ -36,7 +36,6 @@ public class AssessmentPlan  implements Serializable {
 	private String assessmentName;
 	private String priority;
 	private int inDays;
-    private String ingrediantName;
 	private String source;
     private String caseInstanceId;
 	private String assessmentPlanStatus;
@@ -79,7 +78,7 @@ public class AssessmentPlan  implements Serializable {
 		this.topics = new HashSet<>();
 	}
 
-	public AssessmentPlan(Long id, String assessmentName, String priority, int inDays, String ingrediantName,
+	public AssessmentPlan(Long id, String assessmentName, String priority, int inDays, 
 			String source, String caseInstanceId, String assessmentPlanStatus, String assessmentRiskStatus,
 			Date assessmentDueDate, String finalAssessmentSummary, RiskPlan riskPlan, Date createdDate,
 			String createdBy, Date lastModifiedDate, String assignTo, String assessmentTaskStatus) {
@@ -87,7 +86,6 @@ public class AssessmentPlan  implements Serializable {
 		this.assessmentName = assessmentName;
 		this.priority = priority;
 		this.inDays=inDays;
-		this.ingrediantName = ingrediantName;
 		this.source = source;
 		this.caseInstanceId = caseInstanceId;
 		this.assessmentPlanStatus = assessmentPlanStatus;
@@ -227,14 +225,6 @@ public class AssessmentPlan  implements Serializable {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
-	}
-
-	public String getIngrediantName() {
-		return ingrediantName;
-	}
-
-	public void setIngrediantName(String ingrediantName) {
-		this.ingrediantName = ingrediantName;
 	}
 
 	public String getSource() {

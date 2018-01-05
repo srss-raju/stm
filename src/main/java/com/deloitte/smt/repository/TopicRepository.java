@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.entity.Topic;
 
 /**
@@ -26,9 +25,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     List<String> findDistinctSignalConfirmationNames();
 	List<Topic> findTopicByRunInstanceIdOrderByCreatedDateAsc(Long runInstanceId);
 	
-	@Query(value="select NEW com.deloitte.smt.dto.TopicDTO(t.id,i.ingredientName,t.name,t.signalStatus) from Topic  t , Ingredient  i where t.id=i.topicId order by i.ingredientName", nativeQuery=false)
-	List<TopicDTO> findByIngredientName();
-
 	Long countByNameIgnoreCase(String topicName);
 	
 	@Query("SELECT DISTINCT(o.sourceName) FROM Topic o WHERE o.sourceName IS NOT NULL")

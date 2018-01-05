@@ -83,9 +83,6 @@ public class Topic implements Serializable{
     private Set<SignalStatistics> signalStatistics;
 
     @Transient
-    private Ingredient ingredient;
-    
-    @Transient
     private List<Soc> socs;
     
     @ManyToOne(fetch = FetchType.EAGER)
@@ -289,14 +286,6 @@ public class Topic implements Serializable{
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
-
-	public Ingredient getIngredient() {
-		return ingredient;
-	}
-
-	public void setIngredient(Ingredient ingredient) {
-		this.ingredient = ingredient;
-	}
 
 	public Long getCasesCount() {
 		return casesCount;

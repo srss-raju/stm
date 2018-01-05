@@ -3,7 +3,6 @@ package com.deloitte.smt.servicetest;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -38,12 +37,8 @@ import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SignalConfigurationType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.entity.Ingredient;
-import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.NonSignal;
-import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
@@ -56,17 +51,13 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
-import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
-import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.AttachmentService;
@@ -93,13 +84,7 @@ public class SignalServiceTest {
 	RuntimeService runtimeService;
 	@MockBean
 	TopicRepository topicRepository;
-	@MockBean
-	IngredientRepository ingredientRepository;
-	@MockBean
-	ProductRepository productRepository;
 
-	@MockBean
-	private LicenseRepository licenseRepository;
 	@MockBean
 	TaskInstRepository taskInstRepository;
 	@MockBean
@@ -128,9 +113,6 @@ public class SignalServiceTest {
 
 	@MockBean
 	TaskTemplateRepository taskTemplateRepository;
-
-	@MockBean
-	TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
 
 	@MockBean
 	AttachmentRepository attachmentRepository;
@@ -172,7 +154,6 @@ public class SignalServiceTest {
 		try {
 			Topic topic = new Topic();
 			topic.setSignalStatus("New");
-			topic.setIngredient(setIngredient(topic));
 			setSoc(topic);
 			topic.setSourceName("Test Source");
 			List<SignalURL> urls = new ArrayList<>();
@@ -190,9 +171,6 @@ public class SignalServiceTest {
 			signalConfiguration.setConfidenceIndex(45);
 			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
 			given(this.topicRepository.save(topic)).willReturn(topic);
-			AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
-			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource(topic.getIngredient().getIngredientName(), topic.getSourceName())).willReturn(assignmentConfiguration);
-			given(this.ingredientRepository.save(topic.getIngredient())).willReturn(topic.getIngredient());
 			given(this.socRepository.save(topic.getSocs())).willReturn(topic.getSocs());
 
 			signalService.createTopic(topic, null);
@@ -206,7 +184,6 @@ public class SignalServiceTest {
 		try {
 			Topic topic = new Topic();
 			topic.setSignalStatus("New");
-			topic.setIngredient(setIngredient(topic));
 			setSoc(topic);
 			topic.setSourceName("Test Source");
 			List<SignalURL> urls = new ArrayList<>();
@@ -224,7 +201,6 @@ public class SignalServiceTest {
 			signalConfiguration.setConfidenceIndex(45);
 			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
 			given(this.topicRepository.save(topic)).willReturn(topic);
-			given(this.ingredientRepository.save(topic.getIngredient())).willReturn(topic.getIngredient());
 			given(this.socRepository.save(topic.getSocs())).willReturn(topic.getSocs());
 
 			signalService.createTopic(topic, null);
@@ -238,7 +214,6 @@ public class SignalServiceTest {
 		try {
 			Topic topic = new Topic();
 			topic.setSignalStatus("New");
-			topic.setIngredient(setIngredient(topic));
 			setSoc(topic);
 			topic.setSourceName("Test Source");
 			List<SignalURL> urls = new ArrayList<>();
@@ -272,16 +247,12 @@ public class SignalServiceTest {
 	public void testValidateAndPrioritize() {
 		try{
 			Topic topic = new Topic();
-			topic.setIngredient(setIngredient(topic));
 			topic.setSourceName("Test Source");
 			AssessmentPlan assessmentPlan = new AssessmentPlan();
 			assessmentPlan.setSource(topic.getSourceName());
-			assessmentPlan.setIngrediantName(topic.getIngredient().getIngredientName());
 			given(this.topicRepository.findOne(1l)).willReturn(topic);
 			String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
 			topic.setProcessId(processInstanceId);
-			AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
-			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource(topic.getIngredient().getIngredientName(), topic.getSourceName())).willReturn(assignmentConfiguration);
 			signalService.validateAndPrioritize(1l, assessmentPlan);
 		}catch(Exception ex){
 			LOG.info(ex);
@@ -292,11 +263,9 @@ public class SignalServiceTest {
 	public void testValidateAndPrioritizeAssignNull() {
 		try{
 			Topic topic = new Topic();
-			topic.setIngredient(setIngredient(topic));
 			topic.setSourceName("Test Source");
 			AssessmentPlan assessmentPlan = new AssessmentPlan();
 			assessmentPlan.setSource(topic.getSourceName());
-			assessmentPlan.setIngrediantName(topic.getIngredient().getIngredientName());
 			given(this.topicRepository.findOne(1l)).willReturn(topic);
 			String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
 			topic.setProcessId(processInstanceId);
@@ -310,11 +279,9 @@ public class SignalServiceTest {
 	public void testValidateAndPrioritizeTaskNull() {
 		try{
 			Topic topic = new Topic();
-			topic.setIngredient(setIngredient(topic));
 			topic.setSourceName("Test Source");
 			AssessmentPlan assessmentPlan = new AssessmentPlan();
 			assessmentPlan.setSource(topic.getSourceName());
-			assessmentPlan.setIngrediantName(topic.getIngredient().getIngredientName());
 			given(this.topicRepository.findOne(1l)).willReturn(topic);
 			topic.setProcessId("1");
 			signalService.validateAndPrioritize(1l, assessmentPlan);
@@ -335,11 +302,6 @@ public class SignalServiceTest {
 	@Test
 	public void testGetCountsByFilter() {
 		try{
-			List<Ingredient> ingredients = new ArrayList<>();
-			Ingredient ingredient = new Ingredient();
-			ingredient.setId(1l);
-			ingredient.setIngredientName("test");
-			ingredients.add(ingredient);
 			List<Long> topicIds = new ArrayList<>();
 			topicIds.add(1l);
 			List<Topic> signals = new ArrayList<>();
@@ -351,20 +313,8 @@ public class SignalServiceTest {
 			assessmentPlan.setRiskPlan(riskPlan);
 			signal.setAssessmentPlan(assessmentPlan);
 			signals.add(signal);
-			given(this.ingredientRepository.findAllByIngredientNameIn(Arrays.asList("test"))).willReturn(ingredients);
 			given(this.topicRepository.findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(topicIds, "test", SmtConstant.COMPLETED.getDescription())).willReturn(signals);
-			signalService.getCountsByFilter("test", "test");
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testGetTaskTamplatesOfIngrediant() {
-		try{
-			List<Long> templateIds = new ArrayList<>();
-			given(this.taskTemplateIngrediantRepository.findByIngrediantName("test")).willReturn(templateIds);
-			signalService.getTaskTamplatesOfIngrediant("test");
+			signalService.getCountsByFilter("test");
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -441,13 +391,8 @@ public class SignalServiceTest {
 			 List<Topic> topics = new ArrayList<>();
 			 Topic topic = new Topic();
 			 topic.setId(1l);
-			 Ingredient ingredient = new Ingredient();
-			 ingredient.setIngredientName("Test Ingredient");
-			 ingredient.setId(1l);
-			 topic.setIngredient(ingredient);
 			 topics.add(topic);
 			 given(this.topicRepository.findTopicByRunInstanceIdOrderByCreatedDateAsc(1l)).willReturn(topics);
-			 given(this.ingredientRepository.findByTopicId(1l)).willReturn(ingredient);
 			 signalService.findTopicsByRunInstanceId(1l);
 		}catch(Exception ex){
 			LOG.info(ex);
@@ -566,14 +511,10 @@ public class SignalServiceTest {
 			Topic topic = new Topic();
 			topic.setId(1l);
 			topic.setSignalStatus("New");
-			Ingredient ingredient = setIngredient(topic);
-			ingredient.setId(1l);
 			setSoc(topic);
 
 			given(this.topicRepository.findOne(1l)).willReturn(topic);
 			given(this.topicRepository.save(topic)).willReturn(topic);
-			given(this.ingredientRepository.findByTopicId(1l)).willReturn(
-					ingredient);
 			given(this.socRepository.findByTopicId(1l)).willReturn(
 					topic.getSocs());
 			signalService.findById(1l);
@@ -605,23 +546,4 @@ public class SignalServiceTest {
 		return socs;
 	}
 
-	private Ingredient setIngredient(Topic topic) {
-		topic.setId(1l);
-		Ingredient ingredient = new Ingredient();
-		ingredient.setIngredientName("Test Ingredient");
-
-		List<Product> products = new ArrayList<>();
-		Product product = new Product();
-		product.setProductName("Test Product");
-		products.add(product);
-		ingredient.setProducts(products);
-
-		List<License> licenses = new ArrayList<>();
-		License license = new License();
-		license.setLicenseName("Test License");
-		licenses.add(license);
-		ingredient.setLicenses(licenses);
-		ingredient.setTopicId(1l);
-		return ingredient;
-	}
 }

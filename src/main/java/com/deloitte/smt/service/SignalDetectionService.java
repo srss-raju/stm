@@ -17,9 +17,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.entity.IncludeAE;
-import com.deloitte.smt.entity.Ingredient;
-import com.deloitte.smt.entity.License;
-import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
@@ -35,9 +32,6 @@ import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
-import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
@@ -66,15 +60,6 @@ public class SignalDetectionService {
 
 	@Autowired
 	ExceptionBuilder exceptionBuilder;
-
-	@Autowired
-	private IngredientRepository ingredientRepository;
-
-	@Autowired
-	private ProductRepository productRepository;
-
-	@Autowired
-	private LicenseRepository licenseRepository;
 
 	@Autowired
 	private SocRepository socRepository;
@@ -145,16 +130,6 @@ public class SignalDetectionService {
 				} 
 			}
 			signalDetection.setId(clone.getId());
-			List<Ingredient> ingredients = signalDetection.getIngredients();
-			if (!CollectionUtils.isEmpty(ingredients)) {
-				for (Ingredient ingredient : ingredients) {
-					ingredient.setDetectionId(signalDetection.getId());
-				}
-				ingredients = ingredientRepository.save(ingredients);
-
-				saveProduct(signalDetection, ingredients);
-				saveLicense(signalDetection, ingredients);
-			}
 			saveSoc(signalDetection);
 			saveSmq(signalDetection);
 			saveIncludeAE(signalDetection);
@@ -274,56 +249,6 @@ public class SignalDetectionService {
 	
 	/**
 	 * @param signalDetection
-	 * @param ingredient
-	 */
-	private void saveProduct(SignalDetection signalDetection, List<Ingredient> ingredients) {
-		List<Product> products;
-		if (!CollectionUtils.isEmpty(ingredients)) {
-			for (Ingredient ingredient : ingredients) {
-				products = ingredient.getProducts();
-				saveProductCheck(signalDetection, products, ingredient);
-			}
-		}
-	}
-
-	private void saveProductCheck(SignalDetection signalDetection,
-			List<Product> products, Ingredient ingredient) {
-		if (!CollectionUtils.isEmpty(products)) {
-			for (Product singleProduct : products) {
-				singleProduct.setIngredientId(ingredient.getId());
-				singleProduct.setDetectionId(signalDetection.getId());
-			}
-			productRepository.save(products);
-		}
-	}
-
-	/**
-	 * @param signalDetection
-	 * @param ingredient
-	 */
-	private void saveLicense(SignalDetection signalDetection, List<Ingredient> ingredients) {
-		if (!CollectionUtils.isEmpty(ingredients)) {
-			for (Ingredient ingredient : ingredients) {
-
-				List<License> licenses = ingredient.getLicenses();
-				saveLicenseCheck(signalDetection, ingredient, licenses);
-			}
-		}
-	}
-
-	private void saveLicenseCheck(SignalDetection signalDetection,
-			Ingredient ingredient, List<License> licenses) {
-		if (!CollectionUtils.isEmpty(licenses)) {
-			for (License singleLicense : licenses) {
-				singleLicense.setIngredientId(ingredient.getId());
-				singleLicense.setDetectionId(signalDetection.getId());
-			}
-			licenseRepository.save(licenses);
-		}
-	}
-
-	/**
-	 * @param signalDetection
 	 */
 	private void saveIncludeAE(SignalDetection signalDetection) {
 		List<IncludeAE> includeAEs = signalDetection.getIncludeAEs();
@@ -412,24 +337,6 @@ public class SignalDetectionService {
 
 	private void addOtherInfoToSignalDetection(SignalDetection signalDetection) {
 	
-		List<Ingredient> ingredients = ingredientRepository.findByDetectionId(signalDetection.getId());
-		List<Product> products;
-		List<License> licenses;
-		
-		if (!CollectionUtils.isEmpty(ingredients)) {
-			for (Ingredient ingredient : ingredients) {
-				 products = productRepository.findByIngredientId(ingredient.getId());
-				if (!CollectionUtils.isEmpty(products)) {
-				ingredient.setProducts(products);
-				}
-				licenses = licenseRepository.findByIngredientId(ingredient.getId());
-				if (!CollectionUtils.isEmpty(licenses)) {
-				ingredient.setLicenses(licenses);
-			}
-			}
-			signalDetection.setIngredients(ingredients);
-		}
-		signalDetection.setIngredients(ingredients);
 		List<Soc> socs;
 		socs = socRepository.findByDetectionId(signalDetection.getId());
 		setSocValues(socs);

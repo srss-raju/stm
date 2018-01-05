@@ -16,18 +16,12 @@ public class SearchDto {
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date createdDate;
-	private List<String> ingredients;
-	private List<String> products;
-	private List<String> licenses;
 	private List<String> socs;
-	private List<String> hlgts = new ArrayList<>();
-	private List<String> hlts;
 	private List<String> pts;
 	private List<?> assignees;
 	private String description;
 	private List<String> signalConfirmations;
 	private List<String> signalNames;
-	private String ingredient;
 	private List<Long> userKeys = new ArrayList<>();
 	private List<Long> userGroupKeys = new ArrayList<>();
 	private String owner;
@@ -78,52 +72,12 @@ public class SearchDto {
         this.createdDate = createdDate;
     }
 
-    public List<String> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(List<String> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public List<String> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<String> products) {
-        this.products = products;
-    }
-
-    public List<String> getLicenses() {
-        return licenses;
-    }
-
-    public void setLicenses(List<String> licenses) {
-        this.licenses = licenses;
-    }
-
 	public List<String> getSocs() {
 		return socs;
 	}
 
 	public void setSocs(List<String> socs) {
 		this.socs = socs;
-	}
-
-	public List<String> getHlgts() {
-		return hlgts;
-	}
-
-	public void setHlgts(List<String> hlgts) {
-		this.hlgts = hlgts;
-	}
-
-	public List<String> getHlts() {
-		return hlts;
-	}
-
-	public void setHlts(List<String> hlts) {
-		this.hlts = hlts;
 	}
 
 	public List<String> getPts() {
@@ -262,14 +216,6 @@ public class SearchDto {
 
 	public void setAssignees(List<?> assignees) {
 		this.assignees = assignees;
-	}
-
-	public String getIngredient() {
-		return ingredient;
-	}
-
-	public void setIngredient(String ingredient) {
-		this.ingredient = ingredient;
 	}
 
 	public List<String> getOwners() {

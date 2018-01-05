@@ -23,7 +23,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.dto.DashboardDTO;
 import com.deloitte.smt.dto.SignalDetectDTO;
 import com.deloitte.smt.dto.SmtComplianceDto;
 import com.deloitte.smt.dto.ValidationOutComesDTO;
@@ -57,18 +56,6 @@ public class DashboardControllerTest {
 				.perform(get("/camunda/api/dashboard/getSmtComplianceDetails")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-	}
-	
-	@Test
-	public void testGetSignalsByIngredient() throws Exception{
-		DashboardDTO dashboardDto=new DashboardDTO();
-		when(dashboardServiceMock.getDashboardData()).thenReturn(dashboardDto);
-		
-		this.mockMvc
-		.perform(get("/camunda/api/dashboard/ingredient")
-				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-		
 	}
 	
 	@Test

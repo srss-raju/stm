@@ -76,8 +76,4 @@ public class RiskTaskTemplateController {
         return riskTaskTemplateService.findById(templateId);
     }
 	
-	@GetMapping(value = "/getTemplates/{ingrediantName}")
-	public List<RiskTaskTemplate> getTaskTamplatesOfIngrediant(@PathVariable String ingrediantName){
-		return riskTaskTemplateService.getTaskTamplatesOfIngrediant(ingrediantName);
-	}
 }

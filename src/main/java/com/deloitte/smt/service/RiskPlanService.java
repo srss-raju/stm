@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
@@ -20,10 +19,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
-import com.deloitte.smt.constant.DateKeyType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.ConditionProductDTO;
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
@@ -43,9 +40,6 @@ import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
-import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.RiskTaskTemplateProductsRepository;
@@ -55,7 +49,6 @@ import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SignalUtil;
-import com.deloitte.smt.util.SmtResponse;
 
 /**
  * Created by RajeshKumar on 12-04-2017.
@@ -82,15 +75,6 @@ public class RiskPlanService {
 
 	@Autowired
 	AttachmentService attachmentService;
-
-	@Autowired
-	ProductRepository productRepository;
-
-	@Autowired
-	LicenseRepository licenseRepository;
-
-	@Autowired
-	IngredientRepository ingredientRepository;
 
 	@Autowired
 	SignalService signalService;
@@ -360,336 +344,7 @@ public class RiskPlanService {
 		}
 	}
 
-	/**
-	 * @param searchDto
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public SmtResponse findAllRiskPlansForSearch(SearchDto searchDto) {
-		StringBuilder queryBuilder = new StringBuilder();
-		List<String> whereClauses = new ArrayList<>();
-
-
-		if (searchDto != null) {
-			buildQuery(searchDto, queryBuilder, whereClauses);
-		}else{
-			queryBuilder.append("SELECT r.* FROM sm_risk_plan r ");
-		}
-		buildWhereConditions(searchDto, whereClauses);
-		appendWhereClause(whereClauses, queryBuilder);
-		
-		queryBuilder.append(" order by created_date DESC");
-		String queryStr = queryBuilder.toString();
-		Query q = entityManager.createNativeQuery(queryStr, RiskPlan.class);
-		setParameters(queryStr, searchDto, q);
-		
-		SmtResponse smtResponse=new SmtResponse();
-		if (!CollectionUtils.isEmpty(q.getResultList())) {
-			smtResponse.setTotalRecords(q.getResultList().size());
-		}
-		if(searchDto!= null && searchDto.getFetchSize() !=0 ){
-			q.setFirstResult(searchDto.getFromRecord());
-			q.setMaxResults(searchDto.getFetchSize());
-			smtResponse.setFetchSize(searchDto.getFetchSize());
-			smtResponse.setFromRecord(searchDto.getFromRecord());
-		}
-		smtResponse.setResult(q.getResultList());
-		
-		/**For adding TopicRiskPlanAssignmentAssignees to RiskPlan */
-		if (smtResponse.getResult() != null) {
-			List<RiskPlan> result = (List<RiskPlan>) smtResponse.getResult();
-			associateRiskPlanAssignmentAssignees(result);
-		}
-		return smtResponse;
-	}
-
-	/**
-	 * @param searchDto
-	 * @param queryBuilder
-	 * @param whereClauses
-	 */
-	private void buildQuery(SearchDto searchDto, StringBuilder queryBuilder,
-			List<String> whereClauses) {
-		queryBuilder.append(
-				"SELECT distinct(r.*) FROM sm_risk_plan r left join  sm_assessment_plan a on   r.id=a.risk_plan_id left join sm_topic t on t.assessment_plan_id=a.id left outer join sm_topic_riskplan_assignment_assignees ra on r.id=ra.risk_id ");
-
-		if (!CollectionUtils.isEmpty(searchDto.getProducts())) {
-			queryBuilder.append(" inner join sm_product p on p.topic_id=t.id ");
-			whereClauses.add(" p.product_name in :productNames");
-		}
-
-		if (!CollectionUtils.isEmpty(searchDto.getIngredients())) {
-			queryBuilder.append(" inner join sm_ingredient i on i.topic_id=t.id ");
-			whereClauses.add("i.ingredient_name in :ingredientNames");
-		}
-
-		if (!CollectionUtils.isEmpty(searchDto.getLicenses())) {
-			queryBuilder.append(" inner join sm_license l on l.topic_id=t.id ");
-			whereClauses.add("l.license_name in :licenseNames");
-		}
-		
-		if (!CollectionUtils.isEmpty(searchDto.getHlts())) {
-			queryBuilder.append(" inner join sm_hlt hlt on hlt.topic_id=t.id ");
-			whereClauses.add(" hlt.hlt_name in :hltNames");
-		}
-		
-		if (!CollectionUtils.isEmpty(searchDto.getHlgts())) {
-			queryBuilder.append(" inner join sm_hlgt hlgt on hlgt.topic_id=t.id ");
-			whereClauses.add(" hlgt.hlgt_name in :hlgtNames");
-		}
-		
-		if (!CollectionUtils.isEmpty(searchDto.getPts())) {
-			queryBuilder.append(" inner join sm_pt pt on pt.topic_id=t.id ");
-			whereClauses.add(" pt.pt_name in :ptNames");
-		}
-		
-		if (!CollectionUtils.isEmpty(searchDto.getSocs())) {
-			queryBuilder.append(" inner join sm_soc soc on soc.topic_id=t.id ");
-			whereClauses.add(" soc.soc_name in :socNames");
-		}
-		
-	}
-
 	
-	private void appendWhereClause(List<String> whereClauses, StringBuilder queryBuilder) {
-		if (!whereClauses.isEmpty()) {
-			int i = 1;
-			queryBuilder.append(" where ");
-			for (String condition : whereClauses) {
-				queryBuilder.append(condition);
-				if (i < whereClauses.size()) {
-					queryBuilder.append(" and ");
-				}
-				i++;
-			}
-		}
-	}
-	
-	
-
-	private void buildWhereConditions(SearchDto searchDto, List<String> whereClauses) {
-		if (searchDto != null) {
-			addStatus(searchDto, whereClauses);
-			addRiskTaskStatus(searchDto, whereClauses);
-			addStartDate(searchDto, whereClauses);
-			addEndDate(searchDto, whereClauses);
-			addSearchKeys(searchDto, whereClauses);
-			addOwners(searchDto, whereClauses);
-			addUserGroupUserKeys(searchDto, whereClauses);
-			addUserKeys(searchDto, whereClauses);
-			addOwnerUserKey(searchDto, whereClauses);
-			addOwnerUserGroupKey(searchDto, whereClauses);
-			addUserGroupKey(searchDto, whereClauses);
-		}
-	}
-
-	/**
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addEndDate(SearchDto searchDto, List<String> whereClauses) {
-		if (null != searchDto.getEndDate()) {
-			if (DateKeyType.DUEDATE.name().equalsIgnoreCase(searchDto.getDateKey())) {
-				whereClauses.add("r.risk_due_date<= :endDate");
-
-			} else if (DateKeyType.CREATED.name().equalsIgnoreCase(searchDto.getDateKey())) {
-				whereClauses.add("r.created_date<= :endDate");
-			}
-		}
-	}
-
-	/**
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addStartDate(SearchDto searchDto, List<String> whereClauses) {
-		if (null != searchDto.getStartDate()) {
-			if (DateKeyType.DUEDATE.name().equalsIgnoreCase(searchDto.getDateKey())) {
-				whereClauses.add(" r.risk_due_date>= :startDate ");
-
-			} else if (DateKeyType.CREATED.name().equalsIgnoreCase(searchDto.getDateKey())) {
-				whereClauses.add(" r.created_date>= :startDate");
-
-			}
-
-		}
-	}
-
-	/**
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addRiskTaskStatus(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getRiskTaskStatus())) {
-			whereClauses.add(" r.risk_task_status in :riskTaskStatus");
-		}
-	}
-
-	/**
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addStatus(SearchDto searchDto, List<String> whereClauses) {
-		if (!CollectionUtils.isEmpty(searchDto.getStatuses())) {
-			whereClauses.add(" r.status in :statuses");
-		}
-	}
-	
-
-	/**
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addUserGroupKey(SearchDto searchDto, List<String> whereClauses) {
-		 if(searchFilters.ifUserGroupKey(searchDto)&& ! searchFilters.isOwnerUserKey(searchDto)){
-			whereClauses.add(" ra.user_group_key in :userGroupKeys ");
-		}
-	}
-	/**
-	 * 
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addSearchKeys(SearchDto searchDto, List<String> whereClauses){
-		if(searchFilters.ifUserGroupKey(searchDto) && searchFilters.isOwnerUserKey(searchDto)){
-			whereClauses.add(" r.owner in :owners or ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
-		}
-	}
-	/**
-	 * 
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addOwners(SearchDto searchDto, List<String> whereClauses){
-		if(searchFilters.ifOwner(searchDto) && !searchFilters.isGroupKeyUserKey(searchDto)){
-			whereClauses.add("r.owner in :owners");
-		}
-	}
-	/**
-	 * 
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addUserGroupUserKeys(SearchDto searchDto, List<String> whereClauses){
-		 if(searchFilters.isGroupKeyUserKey(searchDto)&& !searchFilters.ifOwner(searchDto)){
-		whereClauses.add(" ra.user_group_key in :userGroupKeys or ra.user_key in :userKeys");
-		 }
-	}
-	/**
-	 * 
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addUserKeys(SearchDto searchDto, List<String> whereClauses){
-		if(searchFilters.ifUserKey(searchDto)&& !searchFilters.isOwnerUserGRoupKey(searchDto)){
-			whereClauses.add(" ra.user_key in :userKeys ");
-		}
-	}
-	/**
-	 * 
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addOwnerUserKey(SearchDto searchDto, List<String> whereClauses){
-		if(searchFilters.isOwnerUserKey(searchDto)&& !searchFilters.ifUserGroupKey(searchDto)){
-		whereClauses.add(" ra.user_key in :userKeys or r.owner in :owners ");
-		}
-	}
-	/**
-	 * 
-	 * @param searchDto
-	 * @param whereClauses
-	 */
-	private void addOwnerUserGroupKey(SearchDto searchDto, List<String> whereClauses){
-		if(searchFilters.isOwnerUserGRoupKey(searchDto)&& !searchFilters.ifUserKey(searchDto)){
-			whereClauses.add(" ra.user_group_key in :userGroupKeys or r.owner in :owners ");
-		}
-	}
-
-	private void setParameters(String queryStr, SearchDto searchDto, Query query) {
-		setInitialParameters(queryStr, searchDto, query);
-		setSecondaryParameters(queryStr, searchDto, query);
-	}
-
-	/**
-	 * @param queryStr
-	 * @param searchDto
-	 * @param query
-	 */
-	private void setSecondaryParameters(String queryStr, SearchDto searchDto,
-			Query query) {
-		if (queryStr.contains(":productNames")) {
-			query.setParameter("productNames", searchDto.getProducts());
-		}
-
-		if (queryStr.contains(":ingredientNames")) {
-			query.setParameter("ingredientNames", searchDto.getIngredients());
-		}
-
-		if (queryStr.contains(":licenseNames")) {
-			query.setParameter("licenseNames", searchDto.getSocs());
-		}
-		
-		if (queryStr.contains(":hltNames")) {
-			query.setParameter("hltNames", searchDto.getHlts());
-		}
-		
-		if (queryStr.contains(":hlgtNames")) {
-			query.setParameter("hlgtNames", searchDto.getHlgts());
-		}
-		
-		if (queryStr.contains(":ptNames")) {
-			query.setParameter("ptNames", searchDto.getPts());
-		}
-		
-		if (queryStr.contains(":socNames")) {
-			query.setParameter("socNames", searchDto.getSocs());
-		}
-		if (queryStr.contains(":owners")) {
-			query.setParameter("owners", searchDto.getOwners());
-		}
-		setAssignees(queryStr, searchDto, query);
-	}
-
-	/**
-	 * @param queryStr
-	 * @param searchDto
-	 * @param query
-	 */
-	private void setAssignees(String queryStr, SearchDto searchDto, Query query) {
-		if (queryStr.contains(":userKeys")) {
-			query.setParameter("userKeys", searchDto.getUserKeys());
-		}
-
-		if (queryStr.contains(":userGroupKeys")) {
-			query.setParameter("userGroupKeys", searchDto.getUserGroupKeys());
-		}
-
-	}
-
-	/**
-	 * @param queryStr
-	 * @param searchDto
-	 * @param query
-	 */
-	private void setInitialParameters(String queryStr, SearchDto searchDto,
-			Query query) {
-		if (queryStr.contains(":statuses")) {
-			query.setParameter("statuses", searchDto.getStatuses());
-		}
-
-		if (queryStr.contains(":riskTaskStatus")) {
-			query.setParameter("riskTaskStatus", searchDto.getRiskTaskStatus());
-		}
-
-		if (queryStr.contains(":startDate")) {
-			query.setParameter("startDate", searchDto.getStartDate());
-		}
-
-		if (queryStr.contains(":endDate")) {
-			query.setParameter("endDate", searchDto.getEndDate());
-		}
-	}
 	/**
 	 * 
 	 * @param riskTask

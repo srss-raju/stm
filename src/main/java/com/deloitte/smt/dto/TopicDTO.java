@@ -3,7 +3,6 @@ package com.deloitte.smt.dto;
 public class TopicDTO {
 	
 	private Long topicId;
-	private String ingredientName;
 	private String signalName;
 	private String signalStatus;
 	
@@ -11,10 +10,9 @@ public class TopicDTO {
 		//Do Nothing
 	}
 	
-	public TopicDTO(Long topicId,String ingredientName, String signalName, String signalStatus) {
+	public TopicDTO(Long topicId,String signalName, String signalStatus) {
 		super();
 		this.topicId=topicId;
-		this.ingredientName = ingredientName;
 		this.signalName = signalName;
 		this.signalStatus = signalStatus;
 	}
@@ -26,15 +24,6 @@ public class TopicDTO {
 
 	public void setTopicId(Long topicId) {
 		this.topicId = topicId;
-	}
-
-	
-	public String getIngredientName() {
-		return ingredientName;
-	}
-
-	public void setIngredientName(String ingredientName) {
-		this.ingredientName = ingredientName;
 	}
 
 	public String getSignalName() {

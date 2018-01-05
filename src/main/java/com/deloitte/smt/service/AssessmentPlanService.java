@@ -33,9 +33,6 @@ import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.CommentsRepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
-import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
@@ -64,15 +61,6 @@ public class AssessmentPlanService {
     @Autowired
     TopicRepository topicRepository;
 
-    @Autowired
-    ProductRepository productRepository;
-
-    @Autowired
-    LicenseRepository licenseRepository;
-
-    @Autowired
-    IngredientRepository ingredientRepository;
-    
     @Autowired
     CommentsRepository commentsRepository;
 

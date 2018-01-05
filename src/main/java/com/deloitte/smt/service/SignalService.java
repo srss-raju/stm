@@ -1,7 +1,6 @@
 package com.deloitte.smt.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -25,10 +24,7 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
-import com.deloitte.smt.entity.Ingredient;
-import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.NonSignal;
-import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.ProductAssignmentConfiguration;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
@@ -38,7 +34,6 @@ import com.deloitte.smt.entity.SignalStrength;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.SocAssignmentConfiguration;
-import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicAssignmentCondition;
 import com.deloitte.smt.entity.TopicAssignmentProduct;
@@ -51,17 +46,13 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
-import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalStrengthRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
-import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicAssignmentConditionRepository;
 import com.deloitte.smt.repository.TopicAssignmentProductRepository;
@@ -100,13 +91,7 @@ public class SignalService {
 
 	@Autowired
 	private TopicRepository topicRepository;
-	@Autowired
-	private IngredientRepository ingredientRepository;
-	@Autowired
-	private ProductRepository productRepository;
 
-	@Autowired
-	private LicenseRepository licenseRepository;
 	@Autowired
 	SignalURLRepository signalURLRepository;
 	
@@ -133,9 +118,6 @@ public class SignalService {
 
 	@Autowired
 	private TaskTemplateRepository taskTemplateRepository;
-
-	@Autowired
-	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
 
 	@Autowired
 	AttachmentRepository attachmentRepository;
@@ -505,10 +487,8 @@ public class SignalService {
 		return assessmentPlan;
 	}
 
-	public String getCountsByFilter(String ingredientName, String assignTo) {
-		List<Ingredient> ingredients = ingredientRepository.findAllByIngredientNameIn(Arrays.asList(ingredientName));
+	public String getCountsByFilter(String assignTo) {
 		List<Long> topicIds = new ArrayList<>();
-		ingredients.parallelStream().forEach(ingredient -> topicIds.add(ingredient.getTopicId()));
 		List<Topic> signals = topicRepository.findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(
 				topicIds, assignTo, SmtConstant.COMPLETED.getDescription());
 		List<AssessmentPlan> assessmentPlanList = signals.stream().map(signal -> signal.getAssessmentPlan()).filter(
@@ -521,10 +501,6 @@ public class SignalService {
 				Long.valueOf(riskPlanList.size()));
 	}
 
-	public List<TaskTemplate> getTaskTamplatesOfIngrediant(String ingrediantName) {
-		List<Long> templateIds = taskTemplateIngrediantRepository.findByIngrediantName(ingrediantName);
-		return taskTemplateRepository.findByIdIn(templateIds);
-	}
 	/**
 	 * 
 	 * @param assessmentPlan
@@ -672,14 +648,6 @@ public class SignalService {
 		List<Topic> topics = topicRepository.findTopicByRunInstanceIdOrderByCreatedDateAsc(runInstanceId);
 		if (!CollectionUtils.isEmpty(topics)) {
 			for (Topic topic : topics) {
-				Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
-				List<Product> products = productRepository.findByTopicId(topic.getId());
-				List<License> licenses = licenseRepository.findByTopicId(topic.getId());
-				if (ingredient != null) {
-					ingredient.setProducts(products);
-					ingredient.setLicenses(licenses);
-					topic.setIngredient(ingredient);
-				}
 				topic.setSocs(findSoc(topic));
 			}
 		}

@@ -15,10 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.MeetingRepository;
-import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SocRepository;
@@ -31,12 +28,6 @@ public class SearchServiceTest {
 	
 	@MockBean
 	MeetingRepository meetingRepository;
-	@MockBean
-    IngredientRepository ingredientRepository;
-	@MockBean
-    ProductRepository productRepository;
-	@MockBean
-    LicenseRepository licenseRepository;
 	@MockBean
     SocRepository socRepository;
 	@MockBean

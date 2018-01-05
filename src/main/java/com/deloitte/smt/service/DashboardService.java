@@ -8,20 +8,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,28 +21,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.AlgorithmType;
-import com.deloitte.smt.constant.AssessmentPlanStatus;
 import com.deloitte.smt.constant.ExecutionType;
-import com.deloitte.smt.constant.RiskPlanStatus;
 import com.deloitte.smt.constant.SignalConfirmationStatus;
-import com.deloitte.smt.constant.SignalStatus;
-import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.constant.ValidationOutComesLabelTypes;
-import com.deloitte.smt.dto.AssessmentPlanDTO;
-import com.deloitte.smt.dto.DashboardDTO;
-import com.deloitte.smt.dto.RiskPlanDTO;
 import com.deloitte.smt.dto.SignalDetectDTO;
 import com.deloitte.smt.dto.SignalStrengthOverTimeDTO;
 import com.deloitte.smt.dto.SmtComplianceDto;
-import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.dto.ValidationOutComesDTO;
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.Ingredient;
-import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.SignalStatisticsRepository;
 import com.deloitte.smt.repository.TopicRepository;
 
@@ -73,9 +53,6 @@ public class DashboardService {
 
 	@Autowired
 	private SignalStatisticsRepository signalStatisticsRepository;
-
-	@Autowired
-	private IngredientRepository ingredientRepository;
 
 	@SuppressWarnings("unchecked")
 	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
@@ -132,123 +109,12 @@ public class DashboardService {
 
 	}
 
-	public DashboardDTO getDashboardData() {
-		DashboardDTO dashboardData = new DashboardDTO();
-		Map<String, Map<String, Long>> topicMetrics = calculateTopicMetrics(getSignalsDTO());
-		dashboardData.getTopicMetrics().add(topicMetrics);
-		Map<String, Map<String, Long>> assessmentMetrics = calculateAssessmentMetrics(getAssessmentPlanDTOS());
-		dashboardData.getAssessmentMetrics().add(assessmentMetrics);
-		Map<String, Map<String, Long>> riskPlanMetrics = calculatRiskMetrics(getRiskPlanDTOS());
-		dashboardData.getRiskMetrics().add(riskPlanMetrics);
-		return dashboardData;
-	}
+	
 
-	private List<TopicDTO> getSignalsDTO() {
-		return topicRepository.findByIngredientName();
-	}
+	
 
-	private Map<String, Map<String, Long>> calculateTopicMetrics(List<TopicDTO> topics) {
-		Map<String, Map<String, Long>> metrics = topics.stream().collect(Collectors.groupingBy(
-				TopicDTO::getIngredientName, Collectors.groupingBy(TopicDTO::getSignalStatus, Collectors.counting())));
+	
 
-		Set<Entry<String, Map<String, Long>>> set = metrics.entrySet();
-		for (Entry<String, Map<String, Long>> entry : set) {
-			Map<String, Long> ingredientMap = entry.getValue();
-
-			for (String status : SignalStatus.getStatusValues()) {
-				if (!ingredientMap.containsKey(status)) {
-					ingredientMap.put(status, 0l);
-				}
-			}
-		}
-		return metrics;
-
-	}
-
-	public Map<String, Map<String, Long>> calculateAssessmentMetrics(List<AssessmentPlanDTO> topics) {
-		Map<String, Map<String, Long>> metrics = topics.stream()
-				.collect(Collectors.groupingBy(AssessmentPlanDTO::getIngredientName,
-						Collectors.groupingBy(AssessmentPlanDTO::getAssessmentPlanStatus, Collectors.counting())));
-
-		Set<Entry<String, Map<String, Long>>> set = metrics.entrySet();
-		for (Entry<String, Map<String, Long>> entry : set) {
-			Map<String, Long> ingredientMap = entry.getValue();
-
-			for (String status : AssessmentPlanStatus.getStatusValues()) {
-				if (!ingredientMap.containsKey(status)) {
-					ingredientMap.put(status, 0l);
-				}
-			}
-		}
-
-		return metrics;
-
-	}
-
-	public Map<String, Map<String, Long>> calculatRiskMetrics(List<RiskPlanDTO> topics) {
-		Map<String, Map<String, Long>> metrics = topics.stream()
-				.collect(Collectors.groupingBy(RiskPlanDTO::getIngredientName,
-						Collectors.groupingBy(RiskPlanDTO::getRiskPlanStatus, Collectors.counting())));
-
-		Set<Entry<String, Map<String, Long>>> set = metrics.entrySet();
-		for (Entry<String, Map<String, Long>> entry : set) {
-			Map<String, Long> ingredientMap = entry.getValue();
-
-			for (String status : RiskPlanStatus.getStatusValues()) {
-				if (!ingredientMap.containsKey(status)) {
-					ingredientMap.put(status, 0l);
-				}
-			}
-		}
-
-		return metrics;
-
-	}
-
-	private List<AssessmentPlanDTO> getAssessmentPlanDTOS() {
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<AssessmentPlanDTO> criteriaQuery = cb.createQuery(AssessmentPlanDTO.class);
-
-		Root<Topic> topic = criteriaQuery.from(Topic.class);
-		Root<Ingredient> ingredient = criteriaQuery.from(Ingredient.class);
-		Join<Topic, AssessmentPlan> topicAssignmentJoin = topic.join("assessmentPlan", JoinType.INNER);
-
-		List<Predicate> predicates = new ArrayList<>(10);
-		predicates.add(cb.equal(ingredient.get("topicId"), topic.get("id")));
-
-		Predicate andPredicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
-		criteriaQuery
-				.select(cb.construct(AssessmentPlanDTO.class, topicAssignmentJoin.get("id"),
-						ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription()),
-						topicAssignmentJoin.get("assessmentName"), topicAssignmentJoin.get("assessmentPlanStatus")))
-				.where(andPredicate).orderBy(cb.desc(ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription())));
-
-		TypedQuery<AssessmentPlanDTO> q = entityManager.createQuery(criteriaQuery);
-		return q.getResultList();
-	}
-
-	private List<RiskPlanDTO> getRiskPlanDTOS() {
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<RiskPlanDTO> criteriaQuery2 = cb.createQuery(RiskPlanDTO.class);
-
-		Root<Ingredient> ingredient = criteriaQuery2.from(Ingredient.class);
-		Root<Topic> topic2 = criteriaQuery2.from(Topic.class);
-		Root<Ingredient> ingredient2 = criteriaQuery2.from(Ingredient.class);
-		Join<Topic, AssessmentPlan> topicAssignmentJoin2 = topic2.join("assessmentPlan", JoinType.INNER);
-		Join<AssessmentPlan, RiskPlan> assementRiskJoin = topicAssignmentJoin2.join("riskPlan", JoinType.INNER);
-		List<Predicate> predicates2 = new ArrayList<>(10);
-		predicates2.add(cb.equal(ingredient2.get("topicId"), topic2.get("id")));
-
-		Predicate andPredicate2 = cb.and(predicates2.toArray(new Predicate[predicates2.size()]));
-		criteriaQuery2
-				.select(cb.construct(RiskPlanDTO.class, assementRiskJoin.get("id"),
-						ingredient2.get(SmtConstant.INGREDIENT_NAME.getDescription()), assementRiskJoin.get("name"),
-						assementRiskJoin.get("status")))
-				.where(andPredicate2).orderBy(cb.desc(ingredient.get(SmtConstant.INGREDIENT_NAME.getDescription())));
-
-		TypedQuery<RiskPlanDTO> q2 = entityManager.createQuery(criteriaQuery2);
-		return q2.getResultList();
-	}
 
 	public List<ValidationOutComesDTO> generateDataForValidateOutcomesChart() {
 		List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
@@ -378,8 +244,6 @@ public class DashboardService {
 
 		for (Long topicId : topicList) {
 				Topic topic = signalService.findById(topicId);
-				Ingredient ingredient = ingredientRepository.findByTopicId(topic.getId());
-				topic.setIngredient(ingredient);
 
 				List<Topic> matchingSignals = signalMatchService.getMatchingSignals(topic);
 				matchingSignals.add(topic);

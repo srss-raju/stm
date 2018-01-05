@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +31,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.service.RiskPlanService;
-import com.deloitte.smt.util.SmtResponse;
 import com.deloitte.smt.util.TestUtil;
 
 /**
@@ -79,25 +76,6 @@ public class RiskControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 	}
-	
-	@Test
-	public void testGetAllRiskPlans() throws IOException, Exception{
-		
-		List<RiskPlan> riskPlans=new ArrayList<>();
-		SearchDto searchDto=new SearchDto();
-		SmtResponse smtResponse = new SmtResponse();
-		smtResponse.setResult(riskPlans);
-		when(riskPlanServiceMock.findAllRiskPlansForSearch(Matchers.any(SearchDto.class))).thenReturn(smtResponse);
-		
-		this.mockMvc
-		.perform(post("/camunda/api/signal/risk/search")
-				.content(TestUtil.convertObjectToJsonBytes(searchDto))
-				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-		
-		
-	}
-	
 	
 	@Test
 	public void testCreateRiskAction() throws Exception{

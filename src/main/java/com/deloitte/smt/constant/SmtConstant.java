@@ -14,7 +14,6 @@ public enum SmtConstant {
     CREATED_DATE("createdDate"),
     COMPLETED("Completed"),
     NOTCOMPLETED("Not Completed"),
-    INGREDIENT_NAME("ingredientName"),
     IN_PROGRESS("In Progress"),
     ASSESSMENT_TASK_STATUS("assessmentTaskStatus"),
     ASSESSMENT_RISK_STATUS("assessmentRiskStatus"),

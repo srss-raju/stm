@@ -3,7 +3,6 @@ package com.deloitte.smt.servicetest;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -28,10 +27,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.constant.DateKeyType;
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
@@ -39,10 +35,7 @@ import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.CommentsRepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.MeetingRepository;
-import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
@@ -82,15 +75,6 @@ public class RiskPlanServiceTest {
 	@Autowired
 	CaseService caseService;
 
-	@MockBean
-	ProductRepository productRepository;
-
-	@MockBean
-	LicenseRepository licenseRepository;
-
-	@MockBean
-	IngredientRepository ingredientRepository;
-
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -128,8 +112,6 @@ public class RiskPlanServiceTest {
 			RiskPlan riskPlan = new RiskPlan();
 			riskPlan.setSource("Test Source");
 			
-			AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
-			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource())).willReturn(assignmentConfiguration);
 			Long assessmentId = 1l;
 			List<SignalURL> urls = new ArrayList<>();
 			SignalURL url = new SignalURL();
@@ -170,8 +152,6 @@ public class RiskPlanServiceTest {
 		try{
 			RiskPlan riskPlan = new RiskPlan();
 			riskPlan.setSource("Test Source");
-			AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
-			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource())).willReturn(assignmentConfiguration);
 			List<SignalURL> urls = new ArrayList<>();
 			SignalURL url = new SignalURL();
 			urls.add(url);
@@ -189,8 +169,6 @@ public class RiskPlanServiceTest {
 		try{
 			RiskPlan riskPlan = new RiskPlan();
 			riskPlan.setSource("Test Source");
-			AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
-			given(this.assignmentConfigurationRepository.findByIngredientAndSignalSource(riskPlan.getIngredient(), riskPlan.getSource())).willReturn(assignmentConfiguration);
 			Long assessmentId = 1l;
 			List<SignalURL> urls = new ArrayList<>();
 			SignalURL url = new SignalURL();
@@ -199,39 +177,6 @@ public class RiskPlanServiceTest {
 			riskPlanUpdated.setSignalUrls(urls);
 			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlanUpdated);
 			riskPlanService.insert(riskPlan, null, assessmentId);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllRiskPlansForSearch2DueDate() {
-		try{
-			SearchDto searchDto = new SearchDto();
-			getSearchDto(searchDto);
-			searchDto.setDateKey(DateKeyType.DUEDATE.name());
-			riskPlanService.findAllRiskPlansForSearch(searchDto);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-
-	@Test
-	public void testFindAllRiskPlansForSearch2CreatedDate() {
-		try{
-			SearchDto searchDto = new SearchDto();
-			getSearchDto(searchDto);
-			searchDto.setDateKey(DateKeyType.CREATED.name());
-			riskPlanService.findAllRiskPlansForSearch(searchDto);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllRiskPlansForSearchNull() {
-		try{
-			riskPlanService.findAllRiskPlansForSearch(null);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -453,39 +398,4 @@ public class RiskPlanServiceTest {
 		}
 	}
 	
-	private void getSearchDto(SearchDto searchDto) {
-		List<String> ingredients = new ArrayList<>();
-		ingredients.add("Test Ingredient");
-		List<String> licenses = new ArrayList<>();
-		licenses.add("Test Licenses");
-		List<String> products = new ArrayList<>();
-		products.add("Test Products");
-		List<String> statuses = new ArrayList<>();
-		statuses.add("Test Statuses");
-		List<String> riskTaskStatus = new ArrayList<>();
-		riskTaskStatus.add("Test RiskTaskStatus");
-		List<String> hlgts = new ArrayList<>();
-		hlgts.add("Test hlgts");
-		List<String> hlts = new ArrayList<>();
-		hlts.add("Test hlts");
-		List<String> pts = new ArrayList<>();
-		pts.add("Test pts");
-		List<String> socs = new ArrayList<>();
-		socs.add("Test socs");
-		Date startDate = new Date();
-		Date endDate = new Date();
-		
-		searchDto.setIngredients(ingredients);
-		searchDto.setLicenses(licenses);
-		searchDto.setProducts(products);
-		searchDto.setStatuses(statuses);
-		searchDto.setRiskTaskStatus(riskTaskStatus);
-		searchDto.setStartDate(startDate);
-		searchDto.setEndDate(endDate);
-		searchDto.setHlgts(hlgts);
-		searchDto.setHlts(hlts);
-		searchDto.setPts(pts);
-		searchDto.setSocs(socs);
-		
-	}
 }

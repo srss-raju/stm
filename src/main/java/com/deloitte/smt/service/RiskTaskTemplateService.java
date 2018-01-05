@@ -16,13 +16,11 @@ import org.springframework.util.StringUtils;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.RiskTaskTemplate;
 import com.deloitte.smt.entity.RiskTaskTemplateProducts;
-import com.deloitte.smt.entity.TaskTemplateIngrediant;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.RiskTaskTemplateRepository;
-import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 
 @Transactional
 @Service
@@ -34,8 +32,6 @@ public class RiskTaskTemplateService {
 	@Autowired
 	private RiskTaskRepository riskTaskRepository;
 	
-	@Autowired
-	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
 	@Autowired
 	private ExceptionBuilder exceptionBuilder;
 	
@@ -54,15 +50,7 @@ public class RiskTaskTemplateService {
 		if(duplicateRecordCheck(riskTaskTemplate)){
 			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
 		}
-		RiskTaskTemplate template = riskTaskTemplateRepository.save(riskTaskTemplate);
-		if(!CollectionUtils.isEmpty(template.getTaskTemplateIngrediant())){
-			for(TaskTemplateIngrediant ingrediant : template.getTaskTemplateIngrediant()){
-				ingrediant.setTaskTemplateId(template.getId());
-			}
-			List<TaskTemplateIngrediant> list = taskTemplateIngrediantRepository.save(template.getTaskTemplateIngrediant());
-			template.setTaskTemplateIngrediant(list);
-		}
-		return template;
+		return riskTaskTemplateRepository.save(riskTaskTemplate);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -105,16 +93,6 @@ public class RiskTaskTemplateService {
 		if(duplicateRecordCheck(template)){
 			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
 		}
-		if(template.getDeletedIngrediantIds() != null){
-			deleteIngrediants(template.getDeletedIngrediantIds());
-		}
-		if(!CollectionUtils.isEmpty(template.getTaskTemplateIngrediant())){
-			for(TaskTemplateIngrediant ingrediant : template.getTaskTemplateIngrediant()){
-				ingrediant.setTaskTemplateId(template.getId());
-			}
-			List<TaskTemplateIngrediant> list = taskTemplateIngrediantRepository.save(template.getTaskTemplateIngrediant());
-			template.setTaskTemplateIngrediant(list);
-		}
 		
 		return riskTaskTemplateRepository.save(template);
 	}
@@ -127,38 +105,22 @@ public class RiskTaskTemplateService {
 		riskTaskTemplateRepository.delete(taskTemplate);
 	}
 	
-	void deleteIngrediants(List<Long> ids){
-		for(Long id:ids){
-			taskTemplateIngrediantRepository.deleteById(id);
-		}
-	}
-	
 	public List<RiskTask> findAllByTemplateId(Long templateId) {
         return riskTaskRepository.findAllByTemplateId(templateId);
     }
 
 	public List<RiskTaskTemplate> findAll() {
-		List<RiskTaskTemplate> templates = riskTaskTemplateRepository.findAllByOrderByCreatedDateDesc();
-		for(RiskTaskTemplate template : templates) {
-			template.setTaskTemplateIngrediant(taskTemplateIngrediantRepository.findByTaskTemplateId(template.getId()));
-		}
-		return templates;
+		return riskTaskTemplateRepository.findAllByOrderByCreatedDateDesc();
 	}
 
 	public RiskTaskTemplate findById(Long templateId) throws ApplicationException {
 		RiskTaskTemplate taskTemplate = riskTaskTemplateRepository.findOne(templateId);
 		if(taskTemplate == null) {
 			throw new ApplicationException("Template not found with given Id : "+templateId);
-		}else{
-			taskTemplate.setTaskTemplateIngrediant(taskTemplateIngrediantRepository.findByTaskTemplateId(taskTemplate.getId()));
 		}
 		return taskTemplate;
 	}
 	
-	public List<RiskTaskTemplate> getTaskTamplatesOfIngrediant(String ingrediantName) {
-		List<Long> templateIds = taskTemplateIngrediantRepository.findByIngrediantName(ingrediantName);
-		return riskTaskTemplateRepository.findByIdIn(templateIds);
-	}
 	
 	/**
 	 * 

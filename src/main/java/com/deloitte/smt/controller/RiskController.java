@@ -17,14 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskTask;
 import com.deloitte.smt.entity.RiskTaskTemplate;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.RiskPlanService;
-import com.deloitte.smt.util.SmtResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -51,12 +49,6 @@ public class RiskController {
 			LOG.info("Exception occured while creating Risk Plan"+e);
 		}
         return riskPlan;
-    }
-    
-    
-    @PostMapping(value = "/search")
-    public SmtResponse getAllRiskPlans(@RequestBody(required=false) SearchDto searchDto){
-        return riskPlanService.findAllRiskPlansForSearch(searchDto);
     }
     
     @PostMapping(value = "/task/create")

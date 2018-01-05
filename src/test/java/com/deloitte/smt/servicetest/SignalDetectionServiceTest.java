@@ -28,19 +28,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.DenominatorForPoisson;
 import com.deloitte.smt.entity.IncludeAE;
-import com.deloitte.smt.entity.Ingredient;
-import com.deloitte.smt.entity.License;
-import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
-import com.deloitte.smt.repository.IngredientRepository;
-import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.MeetingRepository;
-import com.deloitte.smt.repository.ProductRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
@@ -60,15 +54,6 @@ public class SignalDetectionServiceTest {
 	
 	@MockBean
 	MeetingRepository meetingRepository;
-
-	@MockBean
-	private IngredientRepository ingredientRepository;
-
-	@MockBean
-	private ProductRepository productRepository;
-
-	@MockBean
-	private LicenseRepository licenseRepository;
 
 	@MockBean
 	private SocRepository socRepository;
@@ -115,10 +100,8 @@ public class SignalDetectionServiceTest {
 	public void testCreateOrUpdateSignalDetection() {
 		try{
 			SignalDetection signalDetection = new SignalDetection();
-			List<Ingredient> ingredient = setIngredient(signalDetection);
-			given(this.ingredientRepository.save(ingredient)).willReturn(ingredient);
 			List<Soc> socs = setSoc(signalDetection);
-			setOthers(signalDetection, ingredient);
+			setOthers(signalDetection);
 			given(this.signalDetectionRepository.save(signalDetection)).willReturn(signalDetection);
 			given(this.socRepository.save(socs)).willReturn(socs);
 			signalDetectionService.createOrUpdateSignalDetection(signalDetection);
@@ -161,11 +144,9 @@ public class SignalDetectionServiceTest {
 	public void testFindById() {
 		try{
 			SignalDetection signalDetection = new SignalDetection();
-			List<Ingredient> ingredient = setIngredient(signalDetection);
 			setSoc(signalDetection);
-			setOthers(signalDetection, ingredient);
+			setOthers(signalDetection);
 			given(this.signalDetectionRepository.findOne(1l)).willReturn(signalDetection);
-			given(this.ingredientRepository.findByDetectionId(1l)).willReturn(ingredient);
 			given(this.socRepository.findByDetectionId(1l)).willReturn(signalDetection.getSocs());
 			
 			given(this.denominatorForPoissonRepository.findByDetectionId(1l)).willReturn(signalDetection.getDenominatorForPoisson());
@@ -271,7 +252,7 @@ public class SignalDetectionServiceTest {
 			LOG.info(ex);
 		}
 	}
-	private void setOthers(SignalDetection signalDetection, List<Ingredient> ingredient) {
+	private void setOthers(SignalDetection signalDetection) {
 		List<IncludeAE> includeAEs = new ArrayList<>();
 		IncludeAE includeAE = new IncludeAE();
 		includeAE.setAeName("Test AE");
@@ -291,7 +272,6 @@ public class SignalDetectionServiceTest {
 		signalDetection.setQueryBuilder(queryBuilders);
 		signalDetection.setRunFrequency("Daily");
 		signalDetection.setCreatedDate(new Date());
-		signalDetection.setIngredients(ingredient);
 	}
 
 
@@ -309,26 +289,4 @@ public class SignalDetectionServiceTest {
 		return socs;
 	}
 
-
-	private List<Ingredient> setIngredient(SignalDetection signalDetection) {
-		List<Ingredient> ingredients=new ArrayList<>();
-		signalDetection.setId(1l);
-		Ingredient ingredient = new Ingredient();
-		ingredient.setIngredientName("Test Ingredient");
-		
-		List<Product> products = new ArrayList<>();
-		Product product = new Product();
-		product.setProductName("Test Product");
-		products.add(product);
-		ingredient.setProducts(products);
-		
-		List<License> licenses = new ArrayList<>();
-		License license = new License();
-		license.setLicenseName("Test License");
-		licenses.add(license);
-		ingredient.setLicenses(licenses);
-		ingredients.add(ingredient);
-		return ingredients;
-	}
-	
 }

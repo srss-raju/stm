@@ -34,7 +34,6 @@ public class AssignmentConfiguration implements Serializable {
     private String name;
     @JsonProperty
     private boolean isDefault;
-    private String ingredient;
     private String signalSource;
     private String severity;
     private String signalOwner;
@@ -109,14 +108,6 @@ public class AssignmentConfiguration implements Serializable {
 
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getIngredient() {
-        return ingredient;
-    }
-
-    public void setIngredient(String ingredient) {
-        this.ingredient = ingredient;
     }
 
     public String getSignalSource() {

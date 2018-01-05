@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -126,9 +125,6 @@ public class SignalController {
 	
 	@PostMapping(value = "/dashboard/getCounts")
 	public String getDashboardCounts(@RequestBody(required=false) SearchDto dto) {
-		if(StringUtils.isNotBlank(dto.getIngredient())){
-			return signalService.getCountsByFilter(dto.getIngredient(), null);
-		}
 		return SignalUtil.getCounts(signalService.getValidateAndPrioritizeCount(dto.getOwner(), dto.getUserKeys(), dto.getUserGroupKeys()),signalService.getAssessmentCount(dto.getOwner(), dto.getUserKeys(), dto.getUserGroupKeys()),signalService.getRiskCount(dto.getOwner(), dto.getUserKeys(), dto.getUserGroupKeys()));
 	}
 	

@@ -23,9 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.TaskTemplate;
-import com.deloitte.smt.entity.TaskTemplateIngrediant;
 import com.deloitte.smt.repository.AssessmentActionRepository;
-import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.service.TaskTemplateService;
 
@@ -45,10 +43,6 @@ public class TaskTemplateServiceTest {
 	@MockBean
 	private AssessmentActionRepository assessmentActionRepository;
 	
-	@MockBean
-	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
-	
-		
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
 	    {
 	      jobExecutorActivate = false;
@@ -73,10 +67,6 @@ public class TaskTemplateServiceTest {
 		LOG.info("testCreateTaskTemplate");
 		TaskTemplate taskTemplate = new TaskTemplate();
 		taskTemplate.setId(1l);
-		List<TaskTemplateIngrediant> ingradients = new ArrayList<>();
-		TaskTemplateIngrediant taskTemplateIngrediant = new TaskTemplateIngrediant();
-		ingradients.add(taskTemplateIngrediant);
-		taskTemplate.setTaskTemplateIngrediant(ingradients);
 		given(this.taskTemplateRepository.save(taskTemplate)).willReturn(taskTemplate);
 		taskTemplateService.createTaskTemplate(taskTemplate);
 	}
@@ -86,26 +76,6 @@ public class TaskTemplateServiceTest {
 		LOG.info("testCreateTaskTemplate");
 		TaskTemplate taskTemplate = new TaskTemplate();
 		taskTemplate.setId(1l);
-		List<TaskTemplateIngrediant> ingradients = new ArrayList<>();
-		TaskTemplateIngrediant taskTemplateIngrediant = new TaskTemplateIngrediant();
-		ingradients.add(taskTemplateIngrediant);
-		taskTemplate.setTaskTemplateIngrediant(ingradients);
-		given(this.taskTemplateRepository.save(taskTemplate)).willReturn(taskTemplate);
-		taskTemplateService.updateTaskTemplate(taskTemplate);
-	}
-	
-	@Test
-	public void testUpdateTaskTemplateWithIngredients() throws Exception{
-		LOG.info("testCreateTaskTemplate");
-		TaskTemplate taskTemplate = new TaskTemplate();
-		taskTemplate.setId(1l);
-		List<TaskTemplateIngrediant> ingradients = new ArrayList<>();
-		List<Long> ids = new ArrayList<>();
-		ids.add(1l);
-		taskTemplate.setDeletedIngrediantIds(ids);
-		TaskTemplateIngrediant taskTemplateIngrediant = new TaskTemplateIngrediant();
-		ingradients.add(taskTemplateIngrediant);
-		taskTemplate.setTaskTemplateIngrediant(ingradients);
 		given(this.taskTemplateRepository.save(taskTemplate)).willReturn(taskTemplate);
 		taskTemplateService.updateTaskTemplate(taskTemplate);
 	}

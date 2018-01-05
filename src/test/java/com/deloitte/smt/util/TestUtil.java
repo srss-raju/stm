@@ -45,7 +45,6 @@ public class TestUtil {
 	public static SearchDto buildSearchDto(boolean isDueDate, boolean gantt) {
 		SearchDto searchDto = new SearchDto();
 		List<String> assignees = new ArrayList<>();
-		List<String> ingredients = new ArrayList<>();
 		List<String> products = new ArrayList<>();
 		List<String> licenses = new ArrayList<>();
 		List<String> socs = new ArrayList<>();
@@ -65,7 +64,6 @@ public class TestUtil {
 		Date endDate = new Date();
 		
 		assignees.add("SANALYST1");
-		ingredients.add("AMOXICILLIN");
 		products.add("IBUPROFEN ( Tablet )");
 		licenses.add("ANEMIA");
 		socs.add("ANEMIA");
@@ -79,12 +77,7 @@ public class TestUtil {
 		assessmentTaskStatus.add("Completed");
 		riskTaskStatus.add("Not Completed");
 		
-		searchDto.setIngredients(ingredients);
-		searchDto.setProducts(products);
-		searchDto.setLicenses(licenses);
 		searchDto.setSocs(socs);
-		searchDto.setHlgts(hlgts);
-		searchDto.setHlts(hlts);
 		searchDto.setPts(pts);
 		searchDto.setSignalConfirmations(signalConfirmations);
 		searchDto.setSignalNames(signalNames);

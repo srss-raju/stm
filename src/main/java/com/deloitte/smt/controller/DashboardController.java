@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deloitte.smt.dto.DashboardDTO;
 import com.deloitte.smt.dto.SignalDetectDTO;
 import com.deloitte.smt.dto.SmtComplianceDto;
 import com.deloitte.smt.dto.ValidationOutComesDTO;
@@ -28,12 +27,6 @@ public class DashboardController {
 	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
 		return dashboardService.getSmtComplianceDetails();
 	}
-	
-	@GetMapping(value="/ingredient")
-	public DashboardDTO getSignalsByIngredient(){
-		return dashboardService.getDashboardData();
-	}
-
 	
 	@GetMapping(value="/validationoutcomes")
 	public List<ValidationOutComesDTO> getValidationOutcomes(){

@@ -33,19 +33,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.dto.AssessmentPlanDTO;
-import com.deloitte.smt.dto.RiskPlanDTO;
 import com.deloitte.smt.dto.SmtComplianceDto;
-import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.dto.ValidationOutComesDTO;
-import com.deloitte.smt.entity.Ingredient;
-import com.deloitte.smt.entity.License;
-import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.SignalStatisticsRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.DashboardService;
@@ -70,9 +63,6 @@ public class DashboardServiceTest {
 	
 	@MockBean
 	SignalService signalService;
-	
-	@MockBean
-	private IngredientRepository ingredientRepository;
 	
 	@MockBean
 	private SignalMatchService signalMatchService;
@@ -104,21 +94,6 @@ public class DashboardServiceTest {
 	public void testGetSmtComplianceDetails() throws Exception {
 		LOG.info("testGetSmtComplianceDetails");
 		dashboardService.getSmtComplianceDetails();
-	}
-	
-	@Test
-	public void testGetDashboardData() throws Exception {
-		try{
-			List<TopicDTO> list = new ArrayList<>();
-			TopicDTO topicDTO = new TopicDTO();
-			topicDTO.setIngredientName("Test Ingredient");
-			topicDTO.setSignalStatus("Completed");
-			list.add(topicDTO);
-			given(this.topicRepository.findByIngredientName()).willReturn(list);
-			dashboardService.getDashboardData();
-		}catch(Exception ex){
-			LOG.info("Test getDashboardData");
-		}
 	}
 	
 	@Test
@@ -216,34 +191,6 @@ public class DashboardServiceTest {
 	}
 	
 	@Test
-	public void testCalculateAssessmentMetrics()  {
-		try{
-			List<AssessmentPlanDTO> plans = new ArrayList<>();
-			AssessmentPlanDTO assessmentPlanDTO = new AssessmentPlanDTO();
-			assessmentPlanDTO.setIngredientName("test");
-			assessmentPlanDTO.setAssessmentPlanStatus("Completed");
-			plans.add(assessmentPlanDTO);
-			dashboardService.calculateAssessmentMetrics(plans);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testCalculatRiskMetrics()  {
-		try{
-			List<RiskPlanDTO> risks = new ArrayList<>();
-			RiskPlanDTO riskPlanDTO = new RiskPlanDTO();
-			riskPlanDTO.setIngredientName("test");
-			riskPlanDTO.setRiskPlanStatus("Completed");
-			risks.add(riskPlanDTO);
-			dashboardService.calculatRiskMetrics(risks);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
 	public void testGetSignalStrength() throws ApplicationException{
 		
 		Calendar calendarMonthOld = Calendar.getInstance();
@@ -253,7 +200,6 @@ public class DashboardServiceTest {
 		Topic topic = new Topic();
 		topic.setId(1L);
 		topic.setSignalStatus("Completed");
-		topic.setIngredient(setIngredient(topic));
 		topic.setSourceName("Test Source");
 		topic.setCreatedDate(calendarMonthOld.getTime());
 		List<SignalURL> urls = new ArrayList<>();
@@ -272,7 +218,6 @@ public class DashboardServiceTest {
 		topic.setSignalStatistics(stats);
 		
 		given(this.signalService.findById(1L)).willReturn(topic);
-		given(this.ingredientRepository.findByTopicId(topic.getId())).willReturn(topic.getIngredient());
 		
 		List<Topic> list=new ArrayList<>();
 		given(this.signalMatchService.getMatchingSignals(topic)).willReturn(list);
@@ -287,24 +232,5 @@ public class DashboardServiceTest {
 		dashboardService.getSignalStrength(list1);
 	}
 	
-	private Ingredient setIngredient(Topic topic) {
-		topic.setId(1l);
-		Ingredient ingredient = new Ingredient();
-		ingredient.setIngredientName("Test Ingredient");
-
-		List<Product> products = new ArrayList<>();
-		Product product = new Product();
-		product.setProductName("Test Product");
-		products.add(product);
-		ingredient.setProducts(products);
-
-		List<License> licenses = new ArrayList<>();
-		License license = new License();
-		license.setLicenseName("Test License");
-		licenses.add(license);
-		ingredient.setLicenses(licenses);
-		ingredient.setTopicId(1l);
-		return ingredient;
-	}
 
 }
