@@ -26,11 +26,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.constant.DateKeyType;
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.DenominatorForPoisson;
-import com.deloitte.smt.entity.Hlgt;
-import com.deloitte.smt.entity.Hlt;
 import com.deloitte.smt.entity.IncludeAE;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
@@ -40,8 +36,6 @@ import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.repository.DenominatorForPoissonRepository;
-import com.deloitte.smt.repository.HlgtRepository;
-import com.deloitte.smt.repository.HltRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
 import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
@@ -53,7 +47,6 @@ import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.service.SignalDetectionService;
 import com.deloitte.smt.util.SmtResponse;
-import com.deloitte.smt.util.TestUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SignalManagementApplication.class)
@@ -79,12 +72,6 @@ public class SignalDetectionServiceTest {
 
 	@MockBean
 	private SocRepository socRepository;
-
-	@MockBean
-	private HlgtRepository hlgtRepository;
-
-	@MockBean
-	private HltRepository hltRepository;
 
 	@MockBean
 	private PtRepository ptRepository;
@@ -195,39 +182,6 @@ public class SignalDetectionServiceTest {
 	public void testFindByIdWithNull() {
 		try{
 			signalDetectionService.findById(1l);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllForSearchWithCreatedDate() {
-		try{
-			SearchDto searchDto = TestUtil.buildSearchDto(false, true);
-			searchDto.setDateKey(DateKeyType.CREATED.name());
-			signalDetectionService.findAllForSearch(searchDto);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllForSearchWithLastRunDate() {
-		try{
-			SearchDto searchDto = TestUtil.buildSearchDto(false, true);
-			searchDto.setDateKey(DateKeyType.LASTRUN.name());
-			signalDetectionService.findAllForSearch(searchDto);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllForSearchWithNextRunDate() {
-		try{
-			SearchDto searchDto = TestUtil.buildSearchDto(false, true);
-			searchDto.setDateKey(DateKeyType.NEXTRUN.name());
-			signalDetectionService.findAllForSearch(searchDto);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -345,20 +299,10 @@ public class SignalDetectionServiceTest {
 		List<Soc> socs = new ArrayList<>();
 		Soc soc = new Soc();
 		soc.setSocName("Test Soc");
-		List<Hlgt> hlgts = new ArrayList<>();
-		Hlgt hlgt = new Hlgt();
-		hlgt.setHlgtName("Test Hlgt");
-		hlgts.add(hlgt);
-		List<Hlt> hlts = new ArrayList<>();
-		Hlt hlt = new Hlt();
-		hlt.setHltName("Test Hlt");
-		hlts.add(hlt);
 		List<Pt> pts = new ArrayList<>();
 		Pt pt = new Pt();
 		pt.setPtName("Test Pt");
 		pts.add(pt);
-		soc.setHlgts(hlgts);
-		soc.setHlts(hlts);
 		soc.setPts(pts);
 		socs.add(soc);
 		signalDetection.setSocs(socs);

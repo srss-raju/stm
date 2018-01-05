@@ -33,7 +33,6 @@ import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.service.AssessmentPlanService;
-import com.deloitte.smt.util.TestUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SignalManagementApplication.class)
@@ -176,40 +175,4 @@ public class AssessmentPlanServiceTest {
 		assessmentPlanService.finalAssessment(assessmentPlan, null);
 	}
 	
-	@Test
-	public void testFindAllAssessmentPlansNoDueDateAndNoGantt() {
-		try{
-			assessmentPlanService.findAllAssessmentPlans(TestUtil.buildSearchDto(false, false));
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllAssessmentPlansWithDueDateAndNoGantt() {
-		try{
-			assessmentPlanService.findAllAssessmentPlans(TestUtil.buildSearchDto(true, false));
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllAssessmentPlansNoDueDateAndWithGantt() {
-		try{
-			assessmentPlanService.findAllAssessmentPlans(TestUtil.buildSearchDto(false, true));
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllAssessmentPlansWithDueDateAndWithGantt() {
-		try{
-			assessmentPlanService.findAllAssessmentPlans(TestUtil.buildSearchDto(true, true));
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-
 }

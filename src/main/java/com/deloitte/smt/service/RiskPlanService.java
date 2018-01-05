@@ -93,9 +93,6 @@ public class RiskPlanService {
 	IngredientRepository ingredientRepository;
 
 	@Autowired
-	SearchService searchService;
-	
-	@Autowired
 	SignalService signalService;
 	
 	@Autowired
@@ -185,16 +182,7 @@ public class RiskPlanService {
 		}catch(Exception ex){
 			LOG.error(ex);
 		}
-		Topic topic = null;
-		if(assessmentPlan != null){
-			Set<Topic> topics = assessmentPlanRepository.findAllSignals(assessmentPlan.getId());
-			if(!CollectionUtils.isEmpty(topics)){
-				for(Topic signal : topics){
-					topic = signal;
-					break;
-				}
-			}
-		}
+		Topic topic = getTopic(assessmentPlan);
 		
 		if(topic != null){
 			
@@ -216,10 +204,22 @@ public class RiskPlanService {
 				riskPlanUpdated.setOwner(assignmentConfiguration.getRiskOwner());
 			}
 			riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
-			//riskPlanUpdated = riskPlanRepository.save(riskPlanUpdated);
 		}
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 		return riskPlanUpdated;
+	}
+	private Topic getTopic(AssessmentPlan assessmentPlan) {
+		Topic topic = null;
+		if(assessmentPlan != null){
+			Set<Topic> topics = assessmentPlanRepository.findAllSignals(assessmentPlan.getId());
+			if(!CollectionUtils.isEmpty(topics)){
+				for(Topic signal : topics){
+					topic = signal;
+					break;
+				}
+			}
+		}
+		return topic;
 	}
 	/**
 	 * 
@@ -718,13 +718,7 @@ public class RiskPlanService {
 		checkRiskTaskStatus(riskTaskUpdated);
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
 				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
-		if (!CollectionUtils.isEmpty(riskTaskUpdated.getSignalUrls())) {
-			for (SignalURL url : riskTaskUpdated.getSignalUrls()) {
-				url.setTopicId(riskTaskUpdated.getId());
-				url.setModifiedDate(new Date());
-			}
-			signalURLRepository.save(riskTaskUpdated.getSignalUrls());
-		}
+		saveUrls(riskTaskUpdated);
 		
 		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 	}
@@ -751,13 +745,7 @@ public class RiskPlanService {
 		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
 				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
-		if (!CollectionUtils.isEmpty(riskTaskUpdated.getSignalUrls())) {
-			for (SignalURL url : riskTaskUpdated.getSignalUrls()) {
-				url.setTopicId(riskTaskUpdated.getId());
-				url.setModifiedDate(new Date());
-			}
-			signalURLRepository.save(riskTaskUpdated.getSignalUrls());
-		}
+		saveUrls(riskTaskUpdated);
 		
 		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 	}
@@ -816,7 +804,7 @@ public class RiskPlanService {
 		if (riskTask.getId() == null) {
 			throw new ApplicationException("Failed to update Action. Invalid Id received");
 		}
-		RiskTask riskTaskExists = null;
+		RiskTask riskTaskExists;
 		if(riskTask.getTemplateId() != null){
 			riskTaskExists = riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
 		}else{
@@ -840,13 +828,7 @@ public class RiskPlanService {
 				}
 			}
 		}
-		if (!CollectionUtils.isEmpty(riskTask.getSignalUrls())) {
-			for (SignalURL url : riskTask.getSignalUrls()) {
-				url.setTopicId(riskTask.getId());
-				url.setModifiedDate(new Date());
-			}
-			signalURLRepository.save(riskTask.getSignalUrls());
-		}
+		saveUrls(riskTask);
 		if (allTasksCompletedFlag) {
 			String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(Long.parseLong(riskTask.getRiskId())));
 			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
@@ -854,6 +836,15 @@ public class RiskPlanService {
 		}
 		
 		signalAuditService.saveOrUpdateRiskTaskAudit(riskTask, riskTaskOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
+	}
+	private void saveUrls(RiskTask riskTask) {
+		if (!CollectionUtils.isEmpty(riskTask.getSignalUrls())) {
+			for (SignalURL url : riskTask.getSignalUrls()) {
+				url.setTopicId(riskTask.getId());
+				url.setModifiedDate(new Date());
+			}
+			signalURLRepository.save(riskTask.getSignalUrls());
+		}
 	}
 
 	public RiskPlan findByRiskId(Long riskId) throws ApplicationException {
@@ -916,9 +907,6 @@ public class RiskPlanService {
 		List<TopicRiskPlanAssignmentAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
 		if(!CollectionUtils.isEmpty(assigneeList)){
 			topicRiskPlanAssignmentAssigneesRepository.deleteByRiskId(riskPlanUpdated.getId());
-			for (TopicRiskPlanAssignmentAssignees assignee : assigneeList) {
-				//assignee.setRiskId(riskPlanUpdated.getId());
-			}
 			topicRiskPlanAssignmentAssigneesRepository.save(assigneeList);
 		}
 		
@@ -996,16 +984,8 @@ public class RiskPlanService {
 		}catch(Exception ex){
 			LOG.error(ex);
 		}
-		Topic topic = null;
-		if(assessmentPlan != null){
-			Set<Topic> topics = assessmentPlanRepository.findAllSignals(assessmentPlan.getId());
-			if(!CollectionUtils.isEmpty(topics)){
-				for(Topic signal : topics){
-					topic = signal;
-					break;
-				}
-			}
-		}
+		Topic topic = getTopic(assessmentPlan);
+		
 		if(topic != null){
 			Topic topicWithConditionsAndProducts = signalService.findById(topic.getId());
 			if(!CollectionUtils.isEmpty(topicWithConditionsAndProducts.getProducts())){

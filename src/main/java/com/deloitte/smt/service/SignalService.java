@@ -21,7 +21,6 @@ import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SignalConfigurationType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.ConditionProductDTO;
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
@@ -52,8 +51,6 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
-import com.deloitte.smt.repository.HlgtRepository;
-import com.deloitte.smt.repository.HltRepository;
 import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
@@ -73,7 +70,6 @@ import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.repository.TopicSocAssignmentConfigurationRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
-import com.deloitte.smt.util.SmtResponse;
 
 /**
  * Created by RKB on 04-04-2017.
@@ -130,12 +126,6 @@ public class SignalService {
 	private SocRepository socRepository;
 
 	@Autowired
-	private HlgtRepository hlgtRepository;
-
-	@Autowired
-	private HltRepository hltRepository;
-
-	@Autowired
 	private PtRepository ptRepository;
 
 	@Autowired
@@ -146,9 +136,6 @@ public class SignalService {
 
 	@Autowired
 	private TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
-
-	@Autowired
-	SearchService searchService;
 
 	@Autowired
 	AttachmentRepository attachmentRepository;
@@ -166,8 +153,6 @@ public class SignalService {
 	@Autowired
 	AssessmentAssignmentService assessmentAssignmentService;
 	
-	@Autowired
-	SignalSearchService signalSearchService;
 	@Autowired
 	SignalStrengthRepository signalStrengthRepository;
 	@Autowired
@@ -285,37 +270,9 @@ public class SignalService {
 		
 		List<SocAssignmentConfiguration> cList = new ArrayList<>();
 		List<ProductAssignmentConfiguration> pList = new ArrayList<>();
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
-			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
-				SocAssignmentConfiguration config = new SocAssignmentConfiguration();
-				config.setAssignmentConfigurationId(socConfig.getAssignmentConfigurationId());
-				config.setConditionName(socConfig.getConditionName());
-				config.setCreatedBy(socConfig.getCreatedBy());
-				config.setCreatedDate(socConfig.getCreatedDate());
-				config.setId(socConfig.getId());
-				config.setLastModifiedBy(socConfig.getLastModifiedBy());
-				config.setLastModifiedDate(socConfig.getLastModifiedDate());
-				config.setRecordKey(socConfig.getRecordKey());
-				config.setRecordValues(socConfig.getRecordValues());
-				cList.add(config);
-			}
-		}
+		setConditions(assignmentConfiguration, cList);
 		
-		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
-				ProductAssignmentConfiguration config = new ProductAssignmentConfiguration();
-				config.setAssignmentConfigurationId(productConfig.getAssignmentConfigurationId());
-				config.setProductName(productConfig.getProductName());
-				config.setCreatedBy(productConfig.getCreatedBy());
-				config.setCreatedDate(productConfig.getCreatedDate());
-				config.setId(productConfig.getId());
-				config.setLastModifiedBy(productConfig.getLastModifiedBy());
-				config.setLastModifiedDate(productConfig.getLastModifiedDate());
-				config.setRecordKey(productConfig.getRecordKey());
-				config.setRecordValues(productConfig.getRecordValues());
-				pList.add(config);
-			}
-		}
+		setProducts(assignmentConfiguration, pList);
 		ConditionProductDTO conditionProductDTO = new ConditionProductDTO();
 		conditionProductDTO.setConditions(cList);
 		conditionProductDTO.setProducts(pList);
@@ -335,6 +292,44 @@ public class SignalService {
 		LOG.info("Start Algorithm for matching signal");
 		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, null, attchmentList, SmtConstant.CREATE.getDescription());
 		return signalMatchService.findMatchingSignal(topicUpdated);
+	}
+
+	private void setProducts(AssignmentConfiguration assignmentConfiguration,
+			List<ProductAssignmentConfiguration> pList) {
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
+			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+				ProductAssignmentConfiguration config = new ProductAssignmentConfiguration();
+				config.setAssignmentConfigurationId(productConfig.getAssignmentConfigurationId());
+				config.setProductName(productConfig.getProductName());
+				config.setCreatedBy(productConfig.getCreatedBy());
+				config.setCreatedDate(productConfig.getCreatedDate());
+				config.setId(productConfig.getId());
+				config.setLastModifiedBy(productConfig.getLastModifiedBy());
+				config.setLastModifiedDate(productConfig.getLastModifiedDate());
+				config.setRecordKey(productConfig.getRecordKey());
+				config.setRecordValues(productConfig.getRecordValues());
+				pList.add(config);
+			}
+		}
+	}
+
+	private void setConditions(AssignmentConfiguration assignmentConfiguration,
+			List<SocAssignmentConfiguration> cList) {
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+				SocAssignmentConfiguration config = new SocAssignmentConfiguration();
+				config.setAssignmentConfigurationId(socConfig.getAssignmentConfigurationId());
+				config.setConditionName(socConfig.getConditionName());
+				config.setCreatedBy(socConfig.getCreatedBy());
+				config.setCreatedDate(socConfig.getCreatedDate());
+				config.setId(socConfig.getId());
+				config.setLastModifiedBy(socConfig.getLastModifiedBy());
+				config.setLastModifiedDate(socConfig.getLastModifiedDate());
+				config.setRecordKey(socConfig.getRecordKey());
+				config.setRecordValues(socConfig.getRecordValues());
+				cList.add(config);
+			}
+		}
 	}
 	
 	
@@ -508,10 +503,6 @@ public class SignalService {
 		}
 		signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, null, null, SmtConstant.CREATE.getDescription());
 		return assessmentPlan;
-	}
-
-	public SmtResponse findTopics(SearchDto searchDto) {
-		return signalSearchService.findTopics(searchDto);
 	}
 
 	public String getCountsByFilter(String ingredientName, String assignTo) {
@@ -703,8 +694,6 @@ public class SignalService {
 		List<Soc> socs = socRepository.findByTopicId(topic.getId());
 		if (!CollectionUtils.isEmpty(socs)) {
 			for (Soc soc : socs) {
-				soc.setHlgts(hlgtRepository.findBySocId(soc.getId()));
-				soc.setHlts(hltRepository.findBySocId(soc.getId()));
 				soc.setPts(ptRepository.findBySocId(soc.getId()));
 			}
 		}

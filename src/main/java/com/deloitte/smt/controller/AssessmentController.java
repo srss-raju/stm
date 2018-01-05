@@ -12,19 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.AssessmentPlanService;
-import com.deloitte.smt.util.SmtResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -38,11 +35,6 @@ public class AssessmentController {
 
     @Autowired
     AssessmentPlanService assessmentPlanService;
-
-    @PostMapping(value = "/allAssessmentPlans")
-    public SmtResponse getAllAssessmentPlans(@RequestBody(required=false) SearchDto searchDto){
-        return assessmentPlanService.findAllAssessmentPlans(searchDto);
-    }
 
     @GetMapping(value = "/assessmentPlan/{id}")
     public AssessmentPlan getAssessmentPlanById(@PathVariable Long id) throws ApplicationException {

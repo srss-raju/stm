@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "sm_soc")
 public class Soc implements Serializable {
@@ -28,82 +31,7 @@ public class Soc implements Serializable {
 	private boolean ptSelected;
 	
 	@Transient
-    private List<Hlgt> hlgts;
-	
-	@Transient
-    private List<Hlt> hlts;
-	
-	@Transient
     private List<Pt> pts;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getSocName() {
-		return socName;
-	}
-	public void setSocName(String socName) {
-		this.socName = socName;
-	}
-	public Long getTopicId() {
-		return topicId;
-	}
-	public void setTopicId(Long topicId) {
-		this.topicId = topicId;
-	}
-
-	public Long getDetectionId() {
-		return detectionId;
-	}
-
-	public void setDetectionId(Long detectionId) {
-		this.detectionId = detectionId;
-	}
-	
-	public List<Hlgt> getHlgts() {
-		return hlgts;
-	}
-	public void setHlgts(List<Hlgt> hlgts) {
-		this.hlgts = hlgts;
-	}
-	public List<Hlt> getHlts() {
-		return hlts;
-	}
-	public void setHlts(List<Hlt> hlts) {
-		this.hlts = hlts;
-	}
-	public List<Pt> getPts() {
-		return pts;
-	}
-	public void setPts(List<Pt> pts) {
-		this.pts = pts;
-	}
-	public String getHanaSocId() {
-		return hanaSocId;
-	}
-	public void setHanaSocId(String hanaSocId) {
-		this.hanaSocId = hanaSocId;
-	}
-	public boolean isHlgtSelected() {
-		return hlgtSelected;
-	}
-	public void setHlgtSelected(boolean hlgtSelected) {
-		this.hlgtSelected = hlgtSelected;
-	}
-	public boolean isHltSelected() {
-		return hltSelected;
-	}
-	public void setHltSelected(boolean hltSelected) {
-		this.hltSelected = hltSelected;
-	}
-	public boolean isPtSelected() {
-		return ptSelected;
-	}
-	public void setPtSelected(boolean ptSelected) {
-		this.ptSelected = ptSelected;
-	}
 
 }

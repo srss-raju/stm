@@ -14,9 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
@@ -33,11 +31,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.service.AssessmentPlanService;
-import com.deloitte.smt.util.SmtResponse;
 import com.deloitte.smt.util.TestUtil;
 
 /**
@@ -62,24 +58,6 @@ public class AssessmentControllerTest {
 	@Before
 	public void setUp() {
 		assessmentPlanServiceMock1 = mock(AssessmentPlanService.class);
-	}
-
-	@Test
-	public void testGetAllAssessmentPlans() throws Exception {
-		List<AssessmentPlan> planList = new ArrayList<AssessmentPlan>();
-		AssessmentPlan type = new AssessmentPlan();
-		planList.add(type);
-
-		SearchDto searchDTO = new SearchDto();
-		SmtResponse smtResponse = new SmtResponse();
-		smtResponse.setResult(planList);
-		when(assessmentPlanServiceMock.findAllAssessmentPlans(Matchers.any(SearchDto.class))).thenReturn(smtResponse);
-		this.mockMvc
-				.perform(post("/camunda/api/signal/allAssessmentPlans")
-						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-						.content(TestUtil.convertObjectToJsonBytes(searchDTO)))
-				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-
 	}
 
 	@Test

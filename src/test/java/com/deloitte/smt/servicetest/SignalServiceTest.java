@@ -35,15 +35,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.constant.AttachmentType;
-import com.deloitte.smt.constant.DateKeyType;
 import com.deloitte.smt.constant.SignalConfigurationType;
 import com.deloitte.smt.constant.SmtConstant;
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.entity.Hlgt;
-import com.deloitte.smt.entity.Hlt;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.License;
 import com.deloitte.smt.entity.NonSignal;
@@ -60,8 +56,6 @@ import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
-import com.deloitte.smt.repository.HlgtRepository;
-import com.deloitte.smt.repository.HltRepository;
 import com.deloitte.smt.repository.IngredientRepository;
 import com.deloitte.smt.repository.LicenseRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
@@ -76,10 +70,8 @@ import com.deloitte.smt.repository.TaskTemplateIngrediantRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.AttachmentService;
-import com.deloitte.smt.service.SearchService;
 import com.deloitte.smt.service.SignalMatchService;
 import com.deloitte.smt.service.SignalService;
-import com.deloitte.smt.util.TestUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class)
@@ -129,12 +121,6 @@ public class SignalServiceTest {
 	SocRepository socRepository;
 
 	@MockBean
-	HlgtRepository hlgtRepository;
-
-	@MockBean
-	HltRepository hltRepository;
-
-	@MockBean
 	PtRepository ptRepository;
 
 	@MockBean
@@ -145,9 +131,6 @@ public class SignalServiceTest {
 
 	@MockBean
 	TaskTemplateIngrediantRepository taskTemplateIngrediantRepository;
-
-	@Autowired
-	SearchService searchService;
 
 	@MockBean
 	AttachmentRepository attachmentRepository;
@@ -344,37 +327,6 @@ public class SignalServiceTest {
 	public void testValidateAndPrioritizeNull() {
 		try{
 			signalService.validateAndPrioritize(1l, null);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindTopicsWithCreatedDate() {
-		try{
-			SearchDto searchDto = TestUtil.buildSearchDto(false, true);
-			searchDto.setDateKey(DateKeyType.CREATED.name());
-			signalService.findTopics(searchDto);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindTopicsWithDueDate() {
-		try{
-			SearchDto searchDto = TestUtil.buildSearchDto(true, true);
-			searchDto.setDateKey(DateKeyType.DUEDATE.name());
-			signalService.findTopics(searchDto);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindTopicsWithNull() {
-		try{
-			signalService.findTopics(null);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
@@ -643,20 +595,10 @@ public class SignalServiceTest {
 		List<Soc> socs = new ArrayList<>();
 		Soc soc = new Soc();
 		soc.setSocName("Test Soc");
-		List<Hlgt> hlgts = new ArrayList<>();
-		Hlgt hlgt = new Hlgt();
-		hlgt.setHlgtName("Test Hlgt");
-		hlgts.add(hlgt);
-		List<Hlt> hlts = new ArrayList<>();
-		Hlt hlt = new Hlt();
-		hlt.setHltName("Test Hlt");
-		hlts.add(hlt);
 		List<Pt> pts = new ArrayList<>();
 		Pt pt = new Pt();
 		pt.setPtName("Test Pt");
 		pts.add(pt);
-		soc.setHlgts(hlgts);
-		soc.setHlts(hlts);
 		soc.setPts(pts);
 		socs.add(soc);
 		topic.setSocs(socs);

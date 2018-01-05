@@ -30,7 +30,6 @@ import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.SignalUtil;
-import com.deloitte.smt.util.SmtResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -79,14 +78,6 @@ public class SignalController {
 		return signalService.validateAndPrioritize(topicId, assessmentPlan);
 	}
 
-	
-
-	@PostMapping(value = "/search")	
-	public SmtResponse getAllByStatus(@RequestBody(required=false) SearchDto dto) {
-		return signalService.findTopics(dto);
-	}
-
-	
 	@PostMapping(value = "/template/associateTemplateTasks")
     public List<SignalAction> associateTemplateTasks(@RequestBody AssessmentPlan assessmentPlan) {
         return signalService.associateTemplateTasks(assessmentPlan);

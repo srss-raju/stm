@@ -49,7 +49,6 @@ import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.service.RiskPlanService;
-import com.deloitte.smt.service.SearchService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SignalManagementApplication.class)
@@ -91,9 +90,6 @@ public class RiskPlanServiceTest {
 
 	@MockBean
 	IngredientRepository ingredientRepository;
-
-	@MockBean
-	SearchService searchService;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -236,21 +232,6 @@ public class RiskPlanServiceTest {
 	public void testFindAllRiskPlansForSearchNull() {
 		try{
 			riskPlanService.findAllRiskPlansForSearch(null);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllRiskPlansForSearchAllFalse() {
-		try{
-			SearchDto searchDto = new SearchDto();
-			getSearchDto(searchDto);
-			searchDto.setDateKey(DateKeyType.CREATED.name());
-			List<Long> riskTopicIds = new ArrayList<>();
-			riskTopicIds.add(1l);
-			given(this.searchService.getSignalIdsForSearch(searchDto, riskTopicIds, true)).willReturn(true);
-			riskPlanService.findAllRiskPlansForSearch(searchDto);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}
