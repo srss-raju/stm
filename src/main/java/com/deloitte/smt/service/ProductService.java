@@ -52,29 +52,6 @@ public class ProductService {
 		response.setLevels(levelsList);
 		response.setVersions(Arrays.asList(strVersions));
 		
-		/*List<String> productVersions=productLevelRepository.findByVersions();
-		ProductLevels  prlevel = productLevelRepository.findOne(1L);
-		
-		List<Levels> levelsList=new ArrayList<>();
-		if(!CollectionUtils.isEmpty(productLevelList)){
-			for(ProductLevels productlevel:productLevelList){
-				Levels level=new Levels();
-				level.setKey(productlevel.getKey());
-				level.setValue(productlevel.getValue());
-				levelsList.add(level);
-			}
-		}
-		
-		List<Versions> versionsList=new ArrayList<>();
-		Versions version=new Versions();
-		
-		for(String versionNum:productVersions){
-			version.setVersionNumber(versionNum);
-		}
-		versionsList.add(version);
-		response.setVersions(versionsList);
-		response.setLevels(levelsList);*/
-		
 		return response;
 	}
 
