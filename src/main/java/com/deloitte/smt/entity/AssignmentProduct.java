@@ -9,9 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
+
 /**
  * Created by rkb on 09-11-2017.
  */
+@Data
 @Entity
 @Table(name = "sm_soc_assignment_product")
 public class AssignmentProduct implements Serializable {
@@ -32,61 +35,5 @@ public class AssignmentProduct implements Serializable {
     private String categoryDesc;
     private Long assignmentConfigurationId;
     private Long productAssignmentConfigurationId;
-    
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public Date getLastModifiedDate() {
-		return lastModifiedDate;
-	}
-	public void setLastModifiedDate(Date lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
-	}
-	public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	public String getCategoryCode() {
-		return categoryCode;
-	}
-	public void setCategoryCode(String categoryCode) {
-		this.categoryCode = categoryCode;
-	}
-	public String getCategoryDesc() {
-		return categoryDesc;
-	}
-	public void setCategoryDesc(String categoryDesc) {
-		this.categoryDesc = categoryDesc;
-	}
-	public Long getAssignmentConfigurationId() {
-		return assignmentConfigurationId;
-	}
-	public void setAssignmentConfigurationId(Long assignmentConfigurationId) {
-		this.assignmentConfigurationId = assignmentConfigurationId;
-	}
-	public Long getProductAssignmentConfigurationId() {
-		return productAssignmentConfigurationId;
-	}
-	public void setProductAssignmentConfigurationId(
-			Long productAssignmentConfigurationId) {
-		this.productAssignmentConfigurationId = productAssignmentConfigurationId;
-	}
     
 }

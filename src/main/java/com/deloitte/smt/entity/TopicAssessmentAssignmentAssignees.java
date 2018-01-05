@@ -12,11 +12,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import lombok.Data;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Created by Rajesh on 31-07-2017.
  */
+@Data
 @Entity
 @Table(name = "sm_topic_assessment_assignment_assignees")
 public class TopicAssessmentAssignmentAssignees implements Serializable{
@@ -26,15 +29,6 @@ public class TopicAssessmentAssignmentAssignees implements Serializable{
 	 */
 	private static final long serialVersionUID = -6586959436931561167L;
 
-		public TopicAssessmentAssignmentAssignees(){
-			
-		}
-		
-		public TopicAssessmentAssignmentAssignees( Long userGroupKey,  Long userKey){
-			this.userKey = userKey;
-			this.userGroupKey = userGroupKey;
-		}
-		
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Long id;
@@ -46,6 +40,14 @@ public class TopicAssessmentAssignmentAssignees implements Serializable{
 	    private Long userKey;
 	    
 	    private Long assessmentId;
+	    public TopicAssessmentAssignmentAssignees(){
+			
+		}
+		
+		public TopicAssessmentAssignmentAssignees( Long userGroupKey,  Long userKey){
+			this.userKey = userKey;
+			this.userGroupKey = userGroupKey;
+		}
 	    @Transient
 	    @JsonIgnore
 	    private AssessmentPlan assessmentPlan;
@@ -59,53 +61,5 @@ public class TopicAssessmentAssignmentAssignees implements Serializable{
 			this.assessmentPlan = assessmentPlan;
 		}
 	    
-		public Long getId() {
-			return id;
-		}
-		public void setId(Long id) {
-			this.id = id;
-		}
-		public Date getCreatedDate() {
-			return createdDate;
-		}
-		public void setCreatedDate(Date createdDate) {
-			this.createdDate = createdDate;
-		}
-		public String getCreatedBy() {
-			return createdBy;
-		}
-		public void setCreatedBy(String createdBy) {
-			this.createdBy = createdBy;
-		}
-		public Date getLastModifiedDate() {
-			return lastModifiedDate;
-		}
-		public void setLastModifiedDate(Date lastModifiedDate) {
-			this.lastModifiedDate = lastModifiedDate;
-		}
-		public String getAssignTo() {
-			return assignTo;
-		}
-		public void setAssignTo(String assignTo) {
-			this.assignTo = assignTo;
-		}
-		public Long getAssessmentId() {
-			return assessmentId;
-		}
-		public void setAssessmentId(Long assessmentId) {
-			this.assessmentId = assessmentId;
-		}
-		public Long getUserGroupKey() {
-			return userGroupKey;
-		}
-		public void setUserGroupKey(Long userGroupKey) {
-			this.userGroupKey = userGroupKey;
-		}
-		public Long getUserKey() {
-			return userKey;
-		}
-		public void setUserKey(Long userKey) {
-			this.userKey = userKey;
-		}
 		
 }

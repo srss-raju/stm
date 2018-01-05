@@ -13,8 +13,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import lombok.Data;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Data
 @Entity
 @Table(name = "sm_risk_task_template_products")
 public class RiskTaskTemplateProducts {
@@ -34,37 +37,5 @@ public class RiskTaskTemplateProducts {
 	@JsonIgnore
 	private RiskTaskTemplate riskTaskTemplate;
 	
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getRecordKey() {
-		return recordKey;
-	}
-	public void setRecordKey(String recordKey) {
-		this.recordKey = recordKey;
-	}
-	public List<RiskTaskTemplateProductValues> getRecordValues() {
-		return recordValues;
-	}
-	public void setRecordValues(List<RiskTaskTemplateProductValues> recordValues) {
-		this.recordValues = recordValues;
-	}
-	public RiskTaskTemplate getRiskTaskTemplate() {
-		return riskTaskTemplate;
-	}
-	public void setRiskTaskTemplate(RiskTaskTemplate riskTaskTemplate) {
-		this.riskTaskTemplate = riskTaskTemplate;
-	}
 	
 }

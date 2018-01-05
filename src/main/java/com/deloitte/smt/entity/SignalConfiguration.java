@@ -1,17 +1,21 @@
 package com.deloitte.smt.entity;
 
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
+
+import lombok.Data;
 
 /**
  * Created by cavula
  */
+@Data
 @Entity
 @Table(name = "sm_signal_configuration")
 public class SignalConfiguration implements Serializable {
@@ -30,32 +34,4 @@ public class SignalConfiguration implements Serializable {
 	@Column(unique=true)
 	private String configName;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public String getConfigName() {
-		return configName;
-	}
-	public void setConfigName(String configName) {
-		this.configName = configName;
-	}
-	public Integer getCohortPercentage() {
-		return cohortPercentage;
-	}
-	public void setCohortPercentage(Integer cohortPercentage) {
-		this.cohortPercentage = cohortPercentage;
-	}
-	public Integer getConfidenceIndex() {
-		return confidenceIndex;
-	}
-	public void setConfidenceIndex(Integer confidenceIndex) {
-		this.confidenceIndex = confidenceIndex;
-	}
-	
-	
-
   }

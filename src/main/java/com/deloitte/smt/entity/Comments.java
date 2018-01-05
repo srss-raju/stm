@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "sm_comments")
 public class Comments  implements Serializable {
@@ -27,58 +30,4 @@ public class Comments  implements Serializable {
 	private Long assessmentId;
 	private Long riskPlanId;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public Date getModifiedDate() {
-		return modifiedDate;
-	}
-	public void setModifiedDate(Date modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-	public Long getAssessmentId() {
-		return assessmentId;
-	}
-	public void setAssessmentId(Long assessmentId) {
-		this.assessmentId = assessmentId;
-	}
-	public Long getRiskPlanId() {
-		return riskPlanId;
-	}
-	public void setRiskPlanId(Long riskPlanId) {
-		this.riskPlanId = riskPlanId;
-	}
-	public String getUserComments() {
-		return userComments;
-	}
-	public void setUserComments(String userComments) {
-		this.userComments = userComments;
-	}
-	public Long getTopicId() {
-		return topicId;
-	}
-	public void setTopicId(Long topicId) {
-		this.topicId = topicId;
-	}
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
 }

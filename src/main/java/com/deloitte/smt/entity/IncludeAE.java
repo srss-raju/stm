@@ -8,6 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "sm_include_ae")
 public class IncludeAE  implements Serializable {
@@ -20,22 +23,4 @@ public class IncludeAE  implements Serializable {
 	private String aeName;
 	private Long detectionId;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Long getDetectionId() {
-		return detectionId;
-	}
-	public void setDetectionId(Long detectionId) {
-		this.detectionId = detectionId;
-	}
-	public String getAeName() {
-		return aeName;
-	}
-	public void setAeName(String aeName) {
-		this.aeName = aeName;
-	}
 }

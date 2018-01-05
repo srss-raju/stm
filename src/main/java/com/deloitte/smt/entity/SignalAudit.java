@@ -12,8 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import lombok.Data;
+
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
+@Data
 @Entity
 @Table(name = "sm_signal_audit")
 public class SignalAudit   implements Serializable {
@@ -40,65 +43,5 @@ public class SignalAudit   implements Serializable {
 	@Transient
 	private List<SignalAttachmentAudit> signalAttachmentAudit;
 
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getEntityType() {
-		return entityType;
-	}
-	public void setEntityType(String entityType) {
-		this.entityType = entityType;
-	}
-	public String getOriginalValue() {
-		return originalValue;
-	}
-	public void setOriginalValue(String originalValue) {
-		this.originalValue = originalValue;
-	}
-	public String getModifiedValue() {
-		return modifiedValue;
-	}
-	public void setModifiedValue(String modifiedValue) {
-		this.modifiedValue = modifiedValue;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public String getModifieddBy() {
-		return modifieddBy;
-	}
-	public void setModifieddBy(String modifieddBy) {
-		this.modifieddBy = modifieddBy;
-	}
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-	public Date getModifiedDate() {
-		return modifiedDate;
-	}
-	public void setModifiedDate(Date modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-	public String getOperation() {
-		return operation;
-	}
-	public void setOperation(String operation) {
-		this.operation = operation;
-	}
-	public List<SignalAttachmentAudit> getSignalAttachmentAudit() {
-		return signalAttachmentAudit;
-	}
-	public void setSignalAttachmentAudit(
-			List<SignalAttachmentAudit> signalAttachmentAudit) {
-		this.signalAttachmentAudit = signalAttachmentAudit;
-	}
+	
 }

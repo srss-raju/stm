@@ -8,6 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "sm_detection_run")
 public class DetectionRun {
@@ -25,64 +28,4 @@ public class DetectionRun {
     private String jobId;
     private String jobStatus;
     
-	public String getJobId() {
-		return jobId;
-	}
-	public void setJobId(String jobId) {
-		this.jobId = jobId;
-	}
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getDetectionName() {
-		return detectionName;
-	}
-	public void setDetectionName(String detectionName) {
-		this.detectionName = detectionName;
-	}
-	public Date getRunDate() {
-		return runDate;
-	}
-	public void setRunDate(Date runDate) {
-		this.runDate = runDate;
-	}
-	public Long getDetectionId() {
-		return detectionId;
-	}
-	public void setDetectionId(Long detectionId) {
-		this.detectionId = detectionId;
-	}
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public Date getLastModifiedDate() {
-		return lastModifiedDate;
-	}
-	public void setLastModifiedDate(Date lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
-	}
-	public String getJobStatus() {
-		return jobStatus;
-	}
-	public void setJobStatus(String jobStatus) {
-		this.jobStatus = jobStatus;
-	}
 }

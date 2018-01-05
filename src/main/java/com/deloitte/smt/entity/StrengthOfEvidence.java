@@ -8,6 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "sm_strength_of_evidence")
 public class StrengthOfEvidence implements Serializable{
@@ -24,18 +27,5 @@ public class StrengthOfEvidence implements Serializable{
 	private String strengthValue;
 	
 	private String strengthKey;
-	
-	public String getStrengthValue() {
-		return strengthValue;
-	}
-	public void setStrengthValue(String strengthValue) {
-		this.strengthValue = strengthValue;
-	}
-	public String getStrengthKey() {
-		return strengthKey;
-	}
-	public void setStrengthKey(String strengthKey) {
-		this.strengthKey = strengthKey;
-	}
 	
 }
