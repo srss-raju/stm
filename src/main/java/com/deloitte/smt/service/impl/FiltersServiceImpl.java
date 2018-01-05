@@ -48,7 +48,6 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private static final String RISK = "risk";
 	private static final String SIGNAL = "signal";
 	private static final String DETECTION = "detection";
-
 	@Autowired
 	private FilterRepository filterRepository;
 	@Autowired
@@ -456,6 +455,14 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private void setParametersMapToQuery(Map<String, Object> parameterMap, Query query) {
 		Set<Entry<String, Object>> st = parameterMap.entrySet();
 		for (Entry<String, Object> me : st) {
+			/*if("greaterDate".equalsIgnoreCase(me.getKey()) || "lessDate".equalsIgnoreCase(me.getKey()))
+			{
+				Calendar cal = Calendar.getInstance(); 
+				cal.setTime((Date) me.getValue()); 
+				LOGGER.info("CALENDER....."+cal);
+				query.setParameter(me.getKey(), cal,TemporalType.TIMESTAMP);
+			}
+			*/
 			query.setParameter(me.getKey(), me.getValue());
 		}
 
@@ -547,25 +554,25 @@ public class FiltersServiceImpl<E> implements FiltersService {
 
 	}
 
-	protected void getDatePredicates(Object value, StringBuilder queryBuilder, Map<String, Object> parameterMap, String dateType) {
+	protected void getDatePredicates(Object value, StringBuilder queryBuilder, Map<String, Object> parameterMap, String dateType)  {
 		List<?> l = (ArrayList<?>) value;
-		for (int i = 0; i < l.size(); i++) {
-			Object obj = l.get(i);
-			if (i == 0 && !"".equalsIgnoreCase(obj.toString())) {
-				Date date1 = SignalUtil.convertStringToDate(obj.toString());
-				queryBuilder.append(" and ");
-				queryBuilder.append(dateType);
-				queryBuilder.append(">= :greaterDate");
-				parameterMap.put("greaterDate", date1);
+			for (int i = 0; i < l.size(); i++) {
+				Object obj = l.get(i);
+				if (i == 0 && !"".equalsIgnoreCase(obj.toString())) {
+					Date d1  = SignalUtil.convertStringToDate(obj.toString());
+					queryBuilder.append(" and ");
+					queryBuilder.append("TO_DATE(TO_CHAR("+dateType+", 'yyyy-MM-dd'), 'yyyy-MM-dd')");
+					queryBuilder.append(">= :greaterDate");
+					parameterMap.put("greaterDate", d1);
+				}
+				if (i == 1 && !"".equalsIgnoreCase(obj.toString())) {
+					Date d2  = SignalUtil.convertStringToDate(obj.toString());
+					queryBuilder.append(" and ");
+					queryBuilder.append("TO_DATE(TO_CHAR("+dateType+", 'yyyy-MM-dd'), 'yyyy-MM-dd')");
+					queryBuilder.append("<= :lessDate");
+					parameterMap.put("lessDate", d2);
+				}
 			}
-			if (i == 1 && !"".equalsIgnoreCase(obj.toString())) {
-				Date date2 = SignalUtil.convertStringToDate(obj.toString());
-				queryBuilder.append(" and ");
-				queryBuilder.append(dateType);
-				queryBuilder.append("<= :lessDate");
-				parameterMap.put("lessDate", date2);
-			}
-		}
 	}
 	
 	private List<FilterDataObject> prepareSignalResponse(List<E> resultList, String type) {
