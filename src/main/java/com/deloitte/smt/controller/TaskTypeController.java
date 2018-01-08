@@ -26,31 +26,31 @@ import com.deloitte.smt.service.TaskTypeService;
 public class TaskTypeController {
 
     @Autowired
-    TaskTypeService assessmentActionTypeService;
+    TaskTypeService taskTypeService;
 
     @PostMapping
     public List<TaskType> createNewTaskType(@RequestBody List<TaskType> assessmentActionTypes) {
-        return assessmentActionTypeService.insert(assessmentActionTypes);
+        return taskTypeService.insert(assessmentActionTypes);
     }
 
     @PutMapping
     public TaskType updateTaskType(@RequestBody TaskType assessmentActionType) throws ApplicationException {
-    	return assessmentActionTypeService.update(assessmentActionType);
+    	return taskTypeService.update(assessmentActionType);
     }
 
     @DeleteMapping(value = "/{assessmentActionTypeId}")
     public ResponseEntity<Void> deleteTaskType(@PathVariable Long assessmentActionTypeId) throws ApplicationException {
-        assessmentActionTypeService.delete(assessmentActionTypeId);
+        taskTypeService.delete(assessmentActionTypeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{assessmentActionTypeId}")
     public TaskType findTaskTypeById(@PathVariable Long assessmentActionTypeId) throws ApplicationException {
-        return assessmentActionTypeService.findById(assessmentActionTypeId);
+        return taskTypeService.findById(assessmentActionTypeId);
     }
 
     @GetMapping
     public List<TaskType> findAll() {
-        return assessmentActionTypeService.findAll();
+        return taskTypeService.findAll();
     }
 }

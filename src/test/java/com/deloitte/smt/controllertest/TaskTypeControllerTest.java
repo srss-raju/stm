@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.TaskType;
-import com.deloitte.smt.service.AssessmentActionTypeService;
+import com.deloitte.smt.service.TaskTypeService;
 import com.deloitte.smt.util.TestUtil;
 
 import java.util.ArrayList;
@@ -43,13 +43,13 @@ public class TaskTypeControllerTest {
 	private MockMvc mockMvc;
 	
 	@MockBean
-	AssessmentActionTypeService assessmentActionTypeServiceMock;
+	TaskTypeService assessmentActionTypeServiceMock;
 	
-	AssessmentActionTypeService assessmentActionTypeServiceMock1;
+	TaskTypeService assessmentActionTypeServiceMock1;
 
 	@Before
 	public void setUp(){
-		assessmentActionTypeServiceMock1=mock(AssessmentActionTypeService.class);
+		assessmentActionTypeServiceMock1=mock(TaskTypeService.class);
 	}
 	
 	@Test

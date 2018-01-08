@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.TaskTypeService;
+import com.deloitte.smt.service.TaskService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -26,19 +26,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @RestController
 @RequestMapping("/camunda/api/signal")
-public class AssessmentActionController    {
+public class TaskController    {
 	
-	private static final Logger LOG = Logger.getLogger(AssessmentActionController.class);
+	private static final Logger LOG = Logger.getLogger(TaskController.class);
 
     @Autowired
-    TaskTypeService assessmentActionService;
+    TaskService assessmentActionService;
 
     @PostMapping(value = "/createAssessmentAction")
-    public SignalAction createAssessmentAction(@RequestParam("data") String signalActionString,
+    public Task createAssessmentAction(@RequestParam("data") String signalActionString,
                                          @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
-    	SignalAction signalAction = null;
+    	Task signalAction = null;
 		try {
-			signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
+			signalAction = new ObjectMapper().readValue(signalActionString, Task.class);
 			if (signalAction.getTemplateId() != 0) {
 				signalAction = assessmentActionService.createOrphanAssessmentAction(signalAction, attachments);
 			} else {
@@ -53,9 +53,9 @@ public class AssessmentActionController    {
     @PostMapping(value = "/updateAssessmentAction")
     public ResponseEntity<Void> updateAssessmentAction(@RequestParam("data") String signalActionString,
                                          @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
-        SignalAction signalAction = null;
+        Task signalAction = null;
         try {
-        	signalAction = new ObjectMapper().readValue(signalActionString, SignalAction.class);
+        	signalAction = new ObjectMapper().readValue(signalActionString, Task.class);
 			assessmentActionService.updateAssessmentAction(signalAction, attachments);
 		} catch (IOException e) {
 			LOG.info("Exception occured while updating "+e);
@@ -64,12 +64,12 @@ public class AssessmentActionController    {
     }
 
     @GetMapping(value = "/assessmentAction/{assessmentActionId}")
-    public SignalAction getAssessmentActionById(@PathVariable Long assessmentActionId){
+    public Task getAssessmentActionById(@PathVariable Long assessmentActionId){
         return assessmentActionService.findById(assessmentActionId);
     }
 
     @GetMapping(value = "/{assessmentId}/allAssessmentActions")
-    public List<SignalAction> getAllByAssessmentId(@PathVariable String assessmentId,
+    public List<Task> getAllByAssessmentId(@PathVariable String assessmentId,
                                                    @RequestParam(value = "status", required = false) String actionStatus) {
         return assessmentActionService.findAllByAssessmentId(assessmentId, actionStatus);
     }

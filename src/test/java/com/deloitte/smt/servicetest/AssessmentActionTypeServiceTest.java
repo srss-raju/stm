@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.TaskType;
 import com.deloitte.smt.repository.TaskTypeRepository;
-import com.deloitte.smt.service.AssessmentActionTypeService;
+import com.deloitte.smt.service.TaskTypeService;
 import com.deloitte.smt.util.TestUtil;
 
 @RunWith(SpringRunner.class)
@@ -32,7 +32,7 @@ public class AssessmentActionTypeServiceTest {
 	private static final Logger LOG = Logger.getLogger(AssessmentActionTypeServiceTest.class);
 	
 	@Autowired
-	private AssessmentActionTypeService assessmentActionTypeService;
+	private TaskTypeService assessmentActionTypeService;
 	
 	@MockBean
     TaskTypeRepository assessmentActionTypeRepository;
