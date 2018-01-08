@@ -19,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskTask;
-import com.deloitte.smt.entity.RiskTaskTemplate;
+import com.deloitte.smt.entity.Task;
+import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.RiskPlanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,7 +56,7 @@ public class RiskController {
                                                  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException  {
         
     	try {
-    		RiskTask riskTask = new ObjectMapper().readValue(riskPlanActionString, RiskTask.class);
+    		Task riskTask = new ObjectMapper().readValue(riskPlanActionString, Task.class);
     		if(riskTask.getTemplateId() != null){
     			riskPlanService.createRiskTemplateTask(riskTask, attachments);
     		}else{
@@ -70,12 +70,12 @@ public class RiskController {
     }
     
     @GetMapping(value = "/task/{riskTaskId}")
-    public RiskTask getAssessmentActionById(@PathVariable Long riskTaskId){
+    public Task getAssessmentActionById(@PathVariable Long riskTaskId){
         return riskPlanService.findById(riskTaskId);
     }
 
     @GetMapping(value = "/task/{riskId}/allRiskTasks")
-    public List<RiskTask> getAllByRiskId(@PathVariable String riskId,
+    public List<Task> getAllByRiskId(@PathVariable String riskId,
                                                    @RequestParam(value = "status", required = false) String status) {
         return riskPlanService.findAllByRiskId(riskId, status);
     }
@@ -91,7 +91,7 @@ public class RiskController {
     public ResponseEntity<Void> updateRiskTask(@RequestParam("data") String riskTaskString,
                                          @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
         try {
-        	RiskTask riskTask = new ObjectMapper().readValue(riskTaskString, RiskTask.class);
+        	Task riskTask = new ObjectMapper().readValue(riskTaskString, Task.class);
 			riskPlanService.updateRiskTask(riskTask, attachments);
 		} catch (IOException e) {
 			LOG.info("Exception occured while updating "+e);
@@ -135,12 +135,12 @@ public class RiskController {
     }
     
     @PostMapping(value = "/associateRiskTemplateTasks")
-    public List<RiskTask> associateRiskTemplateTasks(@RequestBody RiskPlan riskPlan) {
+    public List<Task> associateRiskTemplateTasks(@RequestBody RiskPlan riskPlan) {
         return riskPlanService.associateRiskTemplateTasks(riskPlan);
     }
     
     @GetMapping(value = "/getTemplates/{riskPlanId}")
-   	public List<RiskTaskTemplate> getTaskTamplatesOfRiskProducts(@PathVariable Long riskPlanId) throws ApplicationException{
+   	public List<TaskTemplate> getTaskTamplatesOfRiskProducts(@PathVariable Long riskPlanId) throws ApplicationException{
    		return riskPlanService.getTaskTamplatesOfRiskProducts(riskPlanId);
    	}
     
