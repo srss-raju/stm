@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.deloitte.smt.entity.AssessmentAssignmentAssignees;
+import com.deloitte.smt.entity.AssignmentAssessmentAssignees;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.entity.TopicAssessmentAssignmentAssignees;
-import com.deloitte.smt.repository.AssessmentAssignmentAssigneesRepository;
+import com.deloitte.smt.entity.AssessmentAssignees;
+import com.deloitte.smt.repository.AssignmentAssessmentAssigneesRepository;
 import com.deloitte.smt.repository.AssessmentAssigneesRepository;
 
 /**
@@ -24,7 +24,7 @@ import com.deloitte.smt.repository.AssessmentAssigneesRepository;
 public class AssessmentAssignmentService {
 
     @Autowired
-    AssessmentAssignmentAssigneesRepository assessmentAssignmentAssigneesRepository;
+    AssignmentAssessmentAssigneesRepository assessmentAssignmentAssigneesRepository;
     
     @Autowired
     AssessmentAssigneesRepository topicAssessmentAssignmentAssigneesRepository;
@@ -42,8 +42,8 @@ public class AssessmentAssignmentService {
 	private AssessmentPlan setAssessmentAssignmentConfigurationAssignees(AssignmentConfiguration assignmentConfiguration, AssessmentPlan assessmentPlan) {
         
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getAssessmentAssignees())){
-			List<TopicAssessmentAssignmentAssignees> list = new ArrayList<>();
-			for(AssessmentAssignmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignees()){
+			List<AssessmentAssignees> list = new ArrayList<>();
+			for(AssignmentAssessmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignees()){
 				saveAssessmentAssignmentAssignees(aaAssignees,assessmentPlan, list);
         	}
 			assessmentPlan.setTopicAssessmentAssignmentAssignees(topicAssessmentAssignmentAssigneesRepository.save(list));
@@ -52,8 +52,8 @@ public class AssessmentAssignmentService {
 		return assessmentPlan;
 	}
 
-	private void saveAssessmentAssignmentAssignees(AssessmentAssignmentAssignees aaAssignees, AssessmentPlan assessmentPlan, List<TopicAssessmentAssignmentAssignees> list) {
-		TopicAssessmentAssignmentAssignees assignee = new TopicAssessmentAssignmentAssignees();
+	private void saveAssessmentAssignmentAssignees(AssignmentAssessmentAssignees aaAssignees, AssessmentPlan assessmentPlan, List<AssessmentAssignees> list) {
+		AssessmentAssignees assignee = new AssessmentAssignees();
 		assignee.setAssessmentId(assessmentPlan.getId());
 		assignee.setAssignTo(aaAssignees.getAssignTo());
 		assignee.setUserGroupKey(aaAssignees.getUserGroupKey());

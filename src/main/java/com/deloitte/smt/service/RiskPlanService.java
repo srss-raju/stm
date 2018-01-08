@@ -26,13 +26,13 @@ import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.Task;
-import com.deloitte.smt.entity.RiskTaskTemplate;
-import com.deloitte.smt.entity.RiskTaskTemplateProducts;
+import com.deloitte.smt.entity.RiskPlanAssignees;
 import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.Task;
+import com.deloitte.smt.entity.TaskTemplate;
+import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
-import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
+import com.deloitte.smt.entity.TopicProduct;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -40,12 +40,12 @@ import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
+import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
-import com.deloitte.smt.repository.RiskTaskTemplateProductsRepository;
-import com.deloitte.smt.repository.RiskTaskTemplateRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
+import com.deloitte.smt.repository.TaskTemplateProductsRepository;
+import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
@@ -108,10 +108,10 @@ public class RiskPlanService {
 	RiskPlanAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 	
 	@Autowired
-    RiskTaskTemplateRepository riskTaskTemplateRepository;
+    TaskTemplateRepository riskTaskTemplateRepository;
 	    
 	@Autowired
-	RiskTaskTemplateProductsRepository riskTaskTemplateProductsRepository;
+	TaskTemplateProductsRepository riskTaskTemplateProductsRepository;
 	    
 	/**
 	 * 
@@ -249,8 +249,8 @@ public class RiskPlanService {
 		}
 	}
 	
-	List<TopicRiskPlanAssignmentAssignees> associateRiskPlanAssignmentAssignees(List<RiskPlan> riskPlanList){
-		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneesList=new ArrayList<>();
+	List<RiskPlanAssignees> associateRiskPlanAssignmentAssignees(List<RiskPlan> riskPlanList){
+		List<RiskPlanAssignees> topicRiskPlanAssignmentAssigneesList=new ArrayList<>();
 		for(RiskPlan riskPlan :riskPlanList){
 			topicRiskPlanAssignmentAssigneesList =	topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskPlan.getId());
 			riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesList);
@@ -281,8 +281,8 @@ public class RiskPlanService {
 				riskTask.setOwner(riskPlan.getAssignTo());
 				riskTask.setRecipients(templateTask.getRecipients());
 				riskTask.setInDays(templateTask.getInDays());
-				if(templateTask.getInDays() != null){
-					riskTask.setDueDate(SignalUtil.getDueDate(templateTask.getInDays().intValue(), riskTask.getCreatedDate()));
+				if(templateTask.getInDays() != 0){
+					riskTask.setDueDate(SignalUtil.getDueDate(templateTask.getInDays(), riskTask.getCreatedDate()));
 				}
 				riskTask.setRiskId(String.valueOf(riskPlan.getId()));
 				riskTask = riskTaskRepository.save(riskTask);
@@ -507,7 +507,7 @@ public class RiskPlanService {
 			riskPlan.setStatus("In Progress");
 			riskPlan = riskPlanRepository.save(riskPlan);
 		}
-		List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssigneesList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskId);
+		List<RiskPlanAssignees> topicRiskPlanAssignmentAssigneesList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskId);
 		riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesList);
 		riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
 		riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskId));
@@ -555,7 +555,7 @@ public class RiskPlanService {
 				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
 		setRiskTaskStatus(riskPlan);
 		RiskPlan riskPlanUpdated = riskPlanRepository.save(riskPlan);
-		List<TopicRiskPlanAssignmentAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
+		List<RiskPlanAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
 		if(!CollectionUtils.isEmpty(assigneeList)){
 			topicRiskPlanAssignmentAssigneesRepository.deleteByRiskId(riskPlanUpdated.getId());
 			topicRiskPlanAssignmentAssigneesRepository.save(assigneeList);
@@ -626,8 +626,8 @@ public class RiskPlanService {
 			}
 		}
 	}
-	public List<RiskTaskTemplate> getTaskTamplatesOfRiskProducts(Long riskPlanId) throws ApplicationException {
-		List<RiskTaskTemplate> taskTemplates = new ArrayList<>();
+	public List<TaskTemplate> getTaskTamplatesOfRiskProducts(Long riskPlanId) throws ApplicationException {
+		List<TaskTemplate> taskTemplates = new ArrayList<>();
 		AssessmentPlan assessmentPlan = null;
 		RiskPlan riskPlanFromDB = findByRiskId(riskPlanId);
 		try{
@@ -647,9 +647,9 @@ public class RiskPlanService {
 		return taskTemplates;
 	}
 
-	private void getTaskTemplates(List<RiskTaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
-		for(TopicProductAssignmentConfiguration recordKey : topicWithConditionsAndProducts.getProducts()){
-			RiskTaskTemplateProducts taskTemplateProducts = getTaskTemplateProduct(recordKey);
+	private void getTaskTemplates(List<TaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
+		for(TopicProduct recordKey : topicWithConditionsAndProducts.getProducts()){
+			TaskTemplateProducts taskTemplateProducts = getTaskTemplateProduct(recordKey);
 			if(taskTemplateProducts != null){
 				Long taskTemplateId = riskTaskTemplateProductsRepository.findTemplateId(taskTemplateProducts.getId());
 				taskTemplates.add(riskTaskTemplateRepository.findOne(taskTemplateId));
@@ -657,7 +657,7 @@ public class RiskPlanService {
 		}
 	}
 
-	private RiskTaskTemplateProducts getTaskTemplateProduct(TopicProductAssignmentConfiguration recordKey) {
+	private TaskTemplateProducts getTaskTemplateProduct(TopicProduct recordKey) {
 		return riskTaskTemplateProductsRepository.findByRecordKey(recordKey.getRecordKey());
 	}
 }
