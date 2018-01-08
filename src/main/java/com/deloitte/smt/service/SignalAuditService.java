@@ -14,10 +14,9 @@ import org.springframework.util.CollectionUtils;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskTask;
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalAttachmentAudit;
 import com.deloitte.smt.entity.SignalAudit;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.SignalAttachmentAuditRepository;
 import com.deloitte.smt.repository.SignalAuditRepository;
@@ -103,7 +102,7 @@ public class SignalAuditService {
 		saveSignalAttachmentAudit(attachmentList, audit);
 	}
 	
-	public void saveOrUpdateSignalActionAudit(SignalAction signalActionUpdated, String topicOriginal, List<Attachment> attchmentList, String operation) {
+	public void saveOrUpdateSignalActionAudit(Task signalActionUpdated, String topicOriginal, List<Attachment> attchmentList, String operation) {
 		SignalAudit signalAudit = new SignalAudit();
 		signalAudit.setCreatedBy(signalActionUpdated.getCreatedBy());
 		signalAudit.setCreatedDate(new Date());
@@ -135,7 +134,7 @@ public class SignalAuditService {
 		saveSignalAttachmentAudit(attchmentList, audit);
 	}
 	
-	public void saveOrUpdateRiskTaskAudit(RiskTask riskTaskUpdated, String riskTaskOriginal, List<Attachment> attchmentList, String operation) {
+	public void saveOrUpdateRiskTaskAudit(Task riskTaskUpdated, String riskTaskOriginal, List<Attachment> attchmentList, String operation) {
 		SignalAudit signalAudit = new SignalAudit();
 		signalAudit.setCreatedBy(riskTaskUpdated.getCreatedBy());
 		signalAudit.setCreatedDate(new Date());
