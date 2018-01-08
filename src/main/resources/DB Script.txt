@@ -29,4 +29,25 @@ INSERT INTO public.sm_signal_sources(id, created_by, created_date, description, 
 INSERT INTO public.sm_signal_sources(id, created_by, created_date, description, last_modified_date, name) VALUES (20, 'Rajesh', null, 'Social media', null, 'Social media');
 
 INSERT INTO sm_assignment_configuration(id, assessment_owner, created_by, created_date, ingredient, is_default, last_modified_date, name, risk_owner, severity, signal_owner, signal_source)  VALUES (1, '24392902', null, '2017-01-01', null, true, null, 'Default configuration', '24392902', null, '24392902', null);
+
+
+
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(1,'SOE11','Exposure Information');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(2,'SOE12','Temporal Information');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(3,'SOE13','Biological Plausibility');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(5,'SOE15','Novelty of the ADR');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(6,'SOE16','Drug-Drug Interactions');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(8,'SOE18','Related Information in SmPC/PI');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(9,'SOE19','Previous Assessment in Aggregate Reports/RMP');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(10,'SOE20','Previous Discussion at the Level of a Scientific Committee');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(11,'SOE21','Subjected to any Regulatory Procedure previously');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(12,'SOE22','Rapid Increase in the Disproportionality Measure Over Time');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(13,'SOE23','Increased Frequency of Reporting');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(14,'SOE24','Increased Severity of Outcome');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(16,'SOE26','Association previously assessed in Periodic Report or Risk Management Plan');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(4,'SOE14','De/Re-Challenge Information');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(7,'SOE17','Reactions occurring in Special Populations');
+insert into sm_strength_of_evidence (id, strength_key, strength_value) values(15,'SOE25','Signal included in Summary of Patient Characteristics (SmPC) or Patient Leaflet?');
+
+
 				
