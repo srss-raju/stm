@@ -30,6 +30,7 @@ import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.DenominatorForPoissionRepository;
+import com.deloitte.smt.repository.DetectionAssigneesRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.QueryBuilderRepository;
@@ -93,6 +94,8 @@ public class SignalDetectionService {
 	@Autowired
 	TopicProductValuesRepository topicAssignmentProductRepository;
 
+		@Autowired
+		DetectionAssigneesRepository detectionAssigneesRepository;
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {
 			if(signalDetection.getId()==null){
@@ -385,5 +388,17 @@ public class SignalDetectionService {
 		}
 		signalDetection.setNextRunDates(nextRunDates);
 	}
+	
+	public SignalDetection findById(Long id) throws ApplicationException {
+		SignalDetection signalDetection = signalDetectionRepository.findOne(id);
+		if (null == signalDetection) {
+			throw new ApplicationException("Signal Detection not found with given Id :" + id);
+		}
+		addOtherInfoToSignalDetection(signalDetection);
+		setTopicConditionsAndProducts(signalDetection);
+		signalDetection.setDetectionAssignees(detectionAssigneesRepository.findByDetectionId(id));
+		return signalDetection;
+	}
+	
 	
 }
