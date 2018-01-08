@@ -63,11 +63,6 @@ public class SignalDetection implements Serializable {
 	
 	private String owner;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "detectionId")
-	private List<TopicSignalDetectionAssignmentAssignees> topicSignalDetectionAssignmentAssignees;
-
-	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "signalDetection")
 	private Set<SignalDetectionStatistics> signalDetectionStatistics;
 
@@ -88,8 +83,8 @@ public class SignalDetection implements Serializable {
 	private List<Date> nextRunDates;
 	
     @Transient
-	private List<TopicSocAssignmentConfiguration> conditions;
+	private List<TopicCondition> conditions;
     @Transient
-	private List<TopicProductAssignmentConfiguration> products;
+	private List<TopicProduct> products;
 
 }

@@ -107,9 +107,4 @@ public class TopicAssignees implements Serializable{
 		this.userKey = userKey;
 	}
 	
-	public TopicSignalValidationAssignmentAssignees( Long userGroupKey,  Long userKey){
-		this.userKey = userKey;
-		this.userGroupKey = userGroupKey;
-	}
-
 }

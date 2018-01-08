@@ -14,7 +14,7 @@ import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskPlanAssignmentAssignees;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
 import com.deloitte.smt.repository.AssignmentRiskPlanAssigneesRepository;
-import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 
 /**
  * Created by RKB on 31-07-2017.
@@ -27,7 +27,7 @@ public class RiskPlanAssignmentService {
     AssignmentRiskPlanAssigneesRepository riskPlanAssignmentAssigneesRepository;
     
     @Autowired
-    TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+    RiskPlanAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 
 	public RiskPlan saveAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, RiskPlan riskPlan) {
         assignmentConfiguration.setRiskAssignees(riskPlanAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));

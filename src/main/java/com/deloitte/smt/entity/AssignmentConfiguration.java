@@ -11,10 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import lombok.Data;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 /**
  * Created by rkb on 04-05-2017.
@@ -43,16 +43,16 @@ public class AssignmentConfiguration implements Serializable {
     private String assessmentOwner;
     private String riskOwner;
     @Transient
-	private List<SignalValidationAssignmentAssignees> signalAssignees;
+	private List<AssignmentSignalAssignees> signalAssignees;
     @Transient
 	private List<AssignmentAssessmentAssignees> assessmentAssignees;
     @Transient
-	private List<RiskPlanAssignmentAssignees> riskAssignees;
+	private List<AssignmentRiskPlanAssignees> riskAssignees;
     
     @Transient
-	private List<SocAssignmentConfiguration> conditions;
+	private List<AssignmentCondition> conditions;
     @Transient
-	private List<ProductAssignmentConfiguration> products;
+	private List<AssignmentProduct> products;
     
     @JsonIgnore
     @Transient

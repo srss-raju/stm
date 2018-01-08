@@ -17,9 +17,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import lombok.Data;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Data;
 
 /**
  * Created by RajeshKumarB on 12-04-2017.
@@ -62,7 +62,7 @@ public class RiskPlan implements Serializable {
  	
  	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "riskId")
-	private List<TopicRiskPlanAssignmentAssignees> topicRiskPlanAssignmentAssignees;
+	private List<RiskPlanAssignees> topicRiskPlanAssignmentAssignees;
  	
  	 @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
      @JsonIgnore

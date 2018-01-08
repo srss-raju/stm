@@ -68,7 +68,7 @@ public class Topic implements Serializable{
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "topicId")
-	private List<TopicSignalValidationAssignmentAssignees> topicSignalValidationAssignmentAssignees;
+	private List<TopicAssignees> topicSignalValidationAssignmentAssignees;
 	
 	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "topicId")
@@ -102,9 +102,9 @@ public class Topic implements Serializable{
     
     
     @Transient
-	private List<TopicSocAssignmentConfiguration> conditions;
+	private List<TopicCondition> conditions;
     @Transient
-	private List<TopicProductAssignmentConfiguration> products;
+	private List<TopicProduct> products;
     
     public Topic(Long id, String name, String description, String sourceName,
 			String signalConfirmation, String signalStatus, Date createdDate) {

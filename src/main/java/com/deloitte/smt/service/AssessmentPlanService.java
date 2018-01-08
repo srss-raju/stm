@@ -37,7 +37,7 @@ import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.util.AssignmentUtil;
 import com.deloitte.smt.util.JsonUtil;
 
@@ -87,7 +87,7 @@ public class AssessmentPlanService {
     AssessmentActionRepository assessmentActionRepository;
     
     @Autowired
-	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+	RiskPlanAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
     
     @Autowired
     TaskTemplateProductsRepository taskTemplateProductsRepository;

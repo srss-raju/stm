@@ -19,9 +19,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import lombok.Data;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Data;
 
 @Data
 @Entity
@@ -74,7 +74,7 @@ public class AssessmentPlan  implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "assessmentId")
-	private List<TopicAssessmentAssignmentAssignees> topicAssessmentAssignmentAssignees;
+	private List<AssessmentAssignees> topicAssessmentAssignmentAssignees;
 	
 
 	public AssessmentPlan() {

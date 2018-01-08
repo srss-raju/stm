@@ -38,10 +38,10 @@ import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SmqRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TopicConditionValuesRepository;
-import com.deloitte.smt.repository.TopicAssignmentProductRepository;
-import com.deloitte.smt.repository.TopicProductAssignmentConfigurationRepository;
+import com.deloitte.smt.repository.TopicProductValuesRepository;
+import com.deloitte.smt.repository.TopicProductRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
-import com.deloitte.smt.repository.TopicSocAssignmentConfigurationRepository;
+import com.deloitte.smt.repository.TopicConditionRepository;
 import com.deloitte.smt.util.SignalUtil;
 import com.deloitte.smt.util.SmtResponse;
 
@@ -88,15 +88,15 @@ public class SignalDetectionService {
 	private EntityManager entityManager;
 	
 	@Autowired
-	TopicSocAssignmentConfigurationRepository topicSocAssignmentConfigurationRepository;
+	TopicConditionRepository topicSocAssignmentConfigurationRepository;
 	@Autowired
-	TopicProductAssignmentConfigurationRepository topicProductAssignmentConfigurationRepository;
+	TopicProductRepository topicProductAssignmentConfigurationRepository;
 	
 	@Autowired
 	TopicConditionValuesRepository topicAssignmentConditionRepository;
 	
 	@Autowired
-	TopicAssignmentProductRepository topicAssignmentProductRepository;
+	TopicProductValuesRepository topicAssignmentProductRepository;
 
 	public SignalDetection createOrUpdateSignalDetection(SignalDetection signalDetection) throws ApplicationException {
 		try {

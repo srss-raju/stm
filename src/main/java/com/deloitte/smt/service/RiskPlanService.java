@@ -45,7 +45,7 @@ import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.RiskTaskTemplateProductsRepository;
 import com.deloitte.smt.repository.RiskTaskTemplateRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
@@ -105,7 +105,7 @@ public class RiskPlanService {
 	@Autowired
 	SignalAuditService signalAuditService;
 	@Autowired
-	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
+	RiskPlanAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 	
 	@Autowired
     RiskTaskTemplateRepository riskTaskTemplateRepository;
