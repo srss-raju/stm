@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deloitte.smt.entity.DenominatorForPoisson;
+import com.deloitte.smt.entity.DenominatorForPoission;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.DenominationForPoissionService;
 
@@ -29,12 +29,12 @@ public class DenominationForPoissionController {
     DenominationForPoissionService denominationForPoissionService;
 
     @PostMapping
-    public List<DenominatorForPoisson> createDenominationForPoission(@RequestBody List<DenominatorForPoisson> denominationForPoissions) {
+    public List<DenominatorForPoission> createDenominationForPoission(@RequestBody List<DenominatorForPoission> denominationForPoissions) {
     	return denominationForPoissionService.insert(denominationForPoissions);
     }
 
     @PutMapping
-    public DenominatorForPoisson updateDenominationForPoission(@RequestBody DenominatorForPoisson denominationForPoission) throws ApplicationException {
+    public DenominatorForPoission updateDenominationForPoission(@RequestBody DenominatorForPoission denominationForPoission) throws ApplicationException {
     	return denominationForPoissionService.update(denominationForPoission);
     }
 
@@ -45,17 +45,17 @@ public class DenominationForPoissionController {
     }
 
     @GetMapping(value = "/{denominationForPoissionId}")
-    public DenominatorForPoisson findDenominationForPoissionById(@PathVariable Long denominationForPoissionId) throws ApplicationException {
+    public DenominatorForPoission findDenominationForPoissionById(@PathVariable Long denominationForPoissionId) throws ApplicationException {
         return denominationForPoissionService.findById(denominationForPoissionId);
     }
 
     @GetMapping
-    public List<DenominatorForPoisson> findAll() {
+    public List<DenominatorForPoission> findAll() {
         return denominationForPoissionService.findByDetectionIdIsNull();
     }
     
     @GetMapping(value = "/all")
-    public List<DenominatorForPoisson> findByDetectionIdIsNullOrderByName() {
+    public List<DenominatorForPoission> findByDetectionIdIsNullOrderByName() {
         return denominationForPoissionService.findByDetectionIdIsNull();
     }
 }

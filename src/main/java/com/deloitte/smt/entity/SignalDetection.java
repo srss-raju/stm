@@ -71,7 +71,7 @@ public class SignalDetection implements Serializable {
 	
 	private List<Smq> smqs;
 	
-	private List<DenominatorForPoisson> denominatorForPoisson;
+	private List<DenominatorForPoission> denominatorForPoission;
 
 	private List<IncludeAE> includeAEs;
 

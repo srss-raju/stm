@@ -13,8 +13,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "sm_denominator_for_poisson")
-public class DenominatorForPoisson  implements Serializable {
+@Table(name = "sm_denominator_for_poission")
+public class DenominatorForPoission  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

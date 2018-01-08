@@ -606,7 +606,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setRunFrequency(detection.getRunFrequency());
 			res.setLastRunDate(detection.getLastRunDate());
 			res.setNextRunDate(detection.getNextRunDate());
-			res.setDenominatorForPoisson(detection.getDenominatorForPoisson());
+			res.setDenominatorForPoission(detection.getDenominatorForPoission());
 			res.setSignalDetected(detection.getSignalDetected());
 			res.setDescription(detection.getDescription());
 			fres.add(res);

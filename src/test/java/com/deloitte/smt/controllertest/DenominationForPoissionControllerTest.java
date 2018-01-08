@@ -32,7 +32,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.entity.DenominatorForPoisson;
+import com.deloitte.smt.entity.DenominatorForPoission;
 import com.deloitte.smt.service.DenominationForPoissionService;
 import com.deloitte.smt.util.TestUtil;
 
@@ -65,8 +65,8 @@ public class DenominationForPoissionControllerTest {
 	public void testCreateDenominationForPoission() throws Exception {
 		when(denominationForPoissionServiceMock.insert(anyList())).thenReturn(anyList());
 		
-		List<DenominatorForPoisson> typeList=new ArrayList<>();
-		DenominatorForPoisson denominationForPoission=new DenominatorForPoisson();
+		List<DenominatorForPoission> typeList=new ArrayList<>();
+		DenominatorForPoission denominationForPoission=new DenominatorForPoission();
 		typeList.add(denominationForPoission);
 		
 		this.mockMvc
@@ -82,9 +82,9 @@ public class DenominationForPoissionControllerTest {
 	
 	@Test
 	public void testUpdateDenominationForPoission() throws Exception {
-		DenominatorForPoisson denominationForPoission=new DenominatorForPoisson();
+		DenominatorForPoission denominationForPoission=new DenominatorForPoission();
 
-		when(denominationForPoissionServiceMock.update(Matchers.any(DenominatorForPoisson.class))).thenReturn(denominationForPoission);
+		when(denominationForPoissionServiceMock.update(Matchers.any(DenominatorForPoission.class))).thenReturn(denominationForPoission);
 
 		this.mockMvc
 				.perform(put("/camunda/api/signal/denomination")
@@ -109,7 +109,7 @@ public class DenominationForPoissionControllerTest {
 	
 	@Test
 	public void testFindDenominationForPoissionById() throws Exception {
-		DenominatorForPoisson denominationForPoission=new DenominatorForPoisson();
+		DenominatorForPoission denominationForPoission=new DenominatorForPoission();
 
 		when(denominationForPoissionServiceMock.findById(anyLong())).thenReturn(denominationForPoission);
 
@@ -124,9 +124,9 @@ public class DenominationForPoissionControllerTest {
 	
 	@Test
 	public void testFindAll() throws Exception {
-		List<DenominatorForPoisson> denominatorForPoissons = new ArrayList<>();
+		List<DenominatorForPoission> denominatorForPoissions = new ArrayList<>();
 
-		when(denominationForPoissionServiceMock.findByDetectionIdIsNull()).thenReturn(denominatorForPoissons);
+		when(denominationForPoissionServiceMock.findByDetectionIdIsNull()).thenReturn(denominatorForPoissions);
 
 		this.mockMvc
 				.perform(get("/camunda/api/signal/denomination", 1)
@@ -140,9 +140,9 @@ public class DenominationForPoissionControllerTest {
 	
 	@Test
 	public void testFindByDetectionIdIsNullOrderByName() throws Exception {
-		List<DenominatorForPoisson> denominatorForPoissons = new ArrayList<>();
+		List<DenominatorForPoission> denominatorForPoissions = new ArrayList<>();
 
-		when(denominationForPoissionServiceMock.findByDetectionIdIsNull()).thenReturn(denominatorForPoissons);
+		when(denominationForPoissionServiceMock.findByDetectionIdIsNull()).thenReturn(denominatorForPoissions);
 
 		this.mockMvc
 				.perform(get("/camunda/api/signal/denomination/all", 1)
