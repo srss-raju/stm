@@ -149,7 +149,7 @@ public class SignalDetectionServiceTest {
 			given(this.signalDetectionRepository.findOne(1l)).willReturn(signalDetection);
 			given(this.socRepository.findByDetectionId(1l)).willReturn(signalDetection.getSocs());
 			
-			given(this.denominatorForPoissonRepository.findByDetectionId(1l)).willReturn(signalDetection.getDenominatorForPoisson());
+			given(this.denominatorForPoissonRepository.findByDetectionId(1l)).willReturn(signalDetection.getDenominatorForPoission());
 			given(this.includeAERepository.findByDetectionId(1l)).willReturn(signalDetection.getIncludeAEs());
 			given(this.queryBuilderRepository.findByDetectionId(1l)).willReturn(signalDetection.getQueryBuilder());
 			

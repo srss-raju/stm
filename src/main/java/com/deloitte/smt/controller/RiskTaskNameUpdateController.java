@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.RiskTaskTemplateService;
+import com.deloitte.smt.service.TaskTemplateService;
 
 @RestController
 @RequestMapping("/camunda/api/signal/risktemplate")
 public class RiskTaskNameUpdateController {
 	
 	@Autowired
-	RiskTaskTemplateService riskTaskTemplateService;
+	TaskTemplateService riskTaskTemplateService;
 	
 	@GetMapping(value = "/{taskId}/updateRiskTaskName/{name}")
 	public ResponseEntity<Void> updateRiskTaskName(@PathVariable Long taskId,@PathVariable String name ) throws ApplicationException{
