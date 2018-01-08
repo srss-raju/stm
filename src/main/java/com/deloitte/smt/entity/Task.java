@@ -15,8 +15,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "sm_risk_task")
-public class RiskTask {
+@Table(name = "sm_task")
+public class Task {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

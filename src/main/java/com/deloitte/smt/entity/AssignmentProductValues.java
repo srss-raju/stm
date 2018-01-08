@@ -16,8 +16,8 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_topic_soc_assignment_product")
-public class TopicAssignmentProduct implements Serializable {
+@Table(name = "sm_soc_assignment_product")
+public class AssignmentProductValues implements Serializable {
 
 	/**
 	 * 
@@ -33,9 +33,7 @@ public class TopicAssignmentProduct implements Serializable {
     private String category;
     private String categoryCode;
     private String categoryDesc;
-    private String categoryName;
     private Long assignmentConfigurationId;
-    private Long topicProductAssignmentConfigurationId;
+    private Long productAssignmentConfigurationId;
     
-	
 }

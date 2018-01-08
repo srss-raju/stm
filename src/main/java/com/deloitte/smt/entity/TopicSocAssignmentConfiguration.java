@@ -18,8 +18,8 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_topic_soc_assignment_configuration")
-public class TopicSocAssignmentConfiguration implements Serializable {
+@Table(name = "sm_topic_condition")
+public class TopicCondition implements Serializable {
 
 	/**
 	 * 
@@ -39,6 +39,6 @@ public class TopicSocAssignmentConfiguration implements Serializable {
     private Long topicId;
     private Long detectionId;
     @Transient
-    private List<TopicAssignmentCondition> recordValues;
+    private List<TopicConditionValues> recordValues;
     
 }

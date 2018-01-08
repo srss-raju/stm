@@ -16,8 +16,8 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_topic_soc_assignment_condition")
-public class TopicAssignmentCondition implements Serializable {
+@Table(name = "sm_topic_condition_values")
+public class TopicConditionValues implements Serializable {
 
 	/**
 	 * 

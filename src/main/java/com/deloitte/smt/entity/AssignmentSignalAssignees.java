@@ -15,9 +15,8 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_assessment_assignment_assignees")
-public class AssessmentAssignmentAssignees {
-	 
+@Table(name = "sm_assignment_signal_assignees")
+public class AssignmentSignalAssignees {
 		
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)

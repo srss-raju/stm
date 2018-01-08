@@ -45,7 +45,7 @@ public class AssignmentConfiguration implements Serializable {
     @Transient
 	private List<SignalValidationAssignmentAssignees> signalAssignees;
     @Transient
-	private List<AssessmentAssignmentAssignees> assessmentAssignees;
+	private List<AssignmentAssessmentAssignees> assessmentAssignees;
     @Transient
 	private List<RiskPlanAssignmentAssignees> riskAssignees;
     

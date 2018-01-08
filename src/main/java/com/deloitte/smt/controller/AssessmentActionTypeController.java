@@ -1,8 +1,7 @@
 package com.deloitte.smt.controller;
 
-import com.deloitte.smt.entity.AssessmentActionType;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.service.AssessmentActionTypeService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,41 +14,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.deloitte.smt.entity.TaskType;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.service.TaskTypeService;
 
 /**
  * Created by myelleswarapu on 02-05-2017.
  */
 @RestController
 @RequestMapping("/camunda/api/signal/assessmentActionType")
-public class AssessmentActionTypeController {
+public class TaskTypeController {
 
     @Autowired
-    AssessmentActionTypeService assessmentActionTypeService;
+    TaskTypeService assessmentActionTypeService;
 
     @PostMapping
-    public List<AssessmentActionType> createNewAssessmentActionType(@RequestBody List<AssessmentActionType> assessmentActionTypes) {
+    public List<TaskType> createNewTaskType(@RequestBody List<TaskType> assessmentActionTypes) {
         return assessmentActionTypeService.insert(assessmentActionTypes);
     }
 
     @PutMapping
-    public AssessmentActionType updateAssessmentActionType(@RequestBody AssessmentActionType assessmentActionType) throws ApplicationException {
+    public TaskType updateTaskType(@RequestBody TaskType assessmentActionType) throws ApplicationException {
     	return assessmentActionTypeService.update(assessmentActionType);
     }
 
     @DeleteMapping(value = "/{assessmentActionTypeId}")
-    public ResponseEntity<Void> deleteAssessmentActionType(@PathVariable Long assessmentActionTypeId) throws ApplicationException {
+    public ResponseEntity<Void> deleteTaskType(@PathVariable Long assessmentActionTypeId) throws ApplicationException {
         assessmentActionTypeService.delete(assessmentActionTypeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{assessmentActionTypeId}")
-    public AssessmentActionType findAssessmentActionTypeById(@PathVariable Long assessmentActionTypeId) throws ApplicationException {
+    public TaskType findTaskTypeById(@PathVariable Long assessmentActionTypeId) throws ApplicationException {
         return assessmentActionTypeService.findById(assessmentActionTypeId);
     }
 
     @GetMapping
-    public List<AssessmentActionType> findAll() {
+    public List<TaskType> findAll() {
         return assessmentActionTypeService.findAll();
     }
 }

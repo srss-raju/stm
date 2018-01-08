@@ -2,12 +2,14 @@ package com.deloitte.smt.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Data;
 
@@ -16,7 +18,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_soc_assignment_condition")
+@Table(name = "sm_assignment_condition")
 public class AssignmentCondition implements Serializable {
 
 	/**
@@ -30,10 +32,11 @@ public class AssignmentCondition implements Serializable {
     private Date createdDate;
     private String createdBy;
     private Date lastModifiedDate;
-    private String category;
-    private String categoryCode;
-    private String categoryDesc;
+    private String lastModifiedBy;
+    private String conditionName;
+    private String recordKey;
     private Long assignmentConfigurationId;
-    private Long socAssignmentConfigurationId;
-    
+    @Transient
+    private List<AssignmentConditionValues> recordValues;
+	
 }

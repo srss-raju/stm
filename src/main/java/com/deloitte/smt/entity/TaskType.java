@@ -16,8 +16,8 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_assessment_action_type")
-public class AssessmentActionType implements Serializable {
+@Table(name = "sm_task_type")
+public class TaskType implements Serializable {
 
     /**
 	 * 

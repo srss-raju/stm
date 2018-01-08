@@ -17,8 +17,8 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_signal_configuration")
-public class SignalConfiguration implements Serializable {
+@Table(name = "sm_signal_confidence")
+public class SignalConfidence implements Serializable {
   
 	/**
 	 * 

@@ -34,5 +34,8 @@ public class TaskTemplate {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "taskTemplateId")
 	private List<TaskTemplateProducts> products;
+/*	Taken from RiskTaskTemplate	
+ * @JoinColumn(name = "riskTaskTemplateId")
+	private List<RiskTaskTemplateProducts> products;*/
 	
 }

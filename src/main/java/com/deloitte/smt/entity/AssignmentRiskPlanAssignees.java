@@ -15,9 +15,9 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_signal_validation_assignees")
-public class SignalValidationAssignmentAssignees {
-		
+@Table(name = "sm_assignment_riskplan_assignees")
+public class AssignmentRiskPlanAssignees {
+	 
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Long id;
@@ -29,5 +29,5 @@ public class SignalValidationAssignmentAssignees {
 	    private Long userKey;
 	    
 	    private Long assignmentConfigurationId;
-	    
+		
 }

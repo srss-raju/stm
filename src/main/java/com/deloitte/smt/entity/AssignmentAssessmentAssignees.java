@@ -15,9 +15,10 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_riskplan_assignment_assignees")
-public class RiskPlanAssignmentAssignees {
+@Table(name = "sm_assignment_assessment_assignees")
+public class AssignmentAssessmentAssignees {
 	 
+		
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Long id;
@@ -29,5 +30,5 @@ public class RiskPlanAssignmentAssignees {
 	    private Long userKey;
 	    
 	    private Long assignmentConfigurationId;
-		
+	    
 }

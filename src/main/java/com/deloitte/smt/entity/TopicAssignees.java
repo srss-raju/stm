@@ -15,13 +15,9 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "sm_topic_signal_validation_assignees")
-public class TopicSignalValidationAssignmentAssignees implements Serializable{
+@Table(name = "sm_topic_assignees")
+public class TopicAssignees implements Serializable{
 	
-	public TopicSignalValidationAssignmentAssignees(){
-		
-	}
-
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

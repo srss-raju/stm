@@ -22,8 +22,8 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "sm_topic_riskplan_assignment_assignees")
-public class TopicRiskPlanAssignmentAssignees implements Serializable{
+@Table(name = "sm_riskplan_assignees")
+public class RiskPlanAssignees implements Serializable{
 	private static final long serialVersionUID = 9119772529109562840L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,13 +38,4 @@ public class TopicRiskPlanAssignmentAssignees implements Serializable{
 	@JoinColumn(name = "riskId")
 	private RiskPlan riskId;
 
-
-	public TopicRiskPlanAssignmentAssignees(){
-		
-	}
-	
-	public TopicRiskPlanAssignmentAssignees( Long userGroupKey,  Long userKey){
-		this.userKey = userKey;
-		this.userGroupKey = userGroupKey;
-	}
 }

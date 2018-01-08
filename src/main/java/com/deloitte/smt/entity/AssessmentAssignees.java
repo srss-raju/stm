@@ -21,8 +21,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Data
 @Entity
-@Table(name = "sm_topic_assessment_assignment_assignees")
-public class TopicAssessmentAssignmentAssignees implements Serializable{
+@Table(name = "sm_assessment_assignees")
+public class AssessmentAssignees implements Serializable{
 	 
 		/**
 	 * 
@@ -40,14 +40,7 @@ public class TopicAssessmentAssignmentAssignees implements Serializable{
 	    private Long userKey;
 	    
 	    private Long assessmentId;
-	    public TopicAssessmentAssignmentAssignees(){
-			
-		}
-		
-		public TopicAssessmentAssignmentAssignees( Long userGroupKey,  Long userKey){
-			this.userKey = userKey;
-			this.userGroupKey = userGroupKey;
-		}
+	   
 	    @Transient
 	    @JsonIgnore
 	    private AssessmentPlan assessmentPlan;
