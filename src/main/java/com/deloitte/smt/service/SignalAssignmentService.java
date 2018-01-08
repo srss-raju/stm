@@ -16,25 +16,24 @@ import org.springframework.util.StringUtils;
 
 import com.deloitte.smt.dto.ConditionProductDTO;
 import com.deloitte.smt.entity.AssignmentCondition;
+import com.deloitte.smt.entity.AssignmentConditionValues;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.AssignmentProduct;
-import com.deloitte.smt.entity.ProductAssignmentConfiguration;
-import com.deloitte.smt.entity.SignalValidationAssignmentAssignees;
-import com.deloitte.smt.entity.SocAssignmentConfiguration;
+import com.deloitte.smt.entity.AssignmentProductValues;
+import com.deloitte.smt.entity.AssignmentSignalAssignees;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.entity.TopicAssignmentCondition;
-import com.deloitte.smt.entity.TopicAssignmentProduct;
-import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
-import com.deloitte.smt.entity.TopicSignalValidationAssignmentAssignees;
-import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
+import com.deloitte.smt.entity.TopicAssignees;
+import com.deloitte.smt.entity.TopicCondition;
+import com.deloitte.smt.entity.TopicConditionValues;
+import com.deloitte.smt.entity.TopicProduct;
+import com.deloitte.smt.entity.TopicProductValues;
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.repository.AssessmentAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.AssessmentAssigneesRepository;
+import com.deloitte.smt.repository.AssignmentConditionRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
-import com.deloitte.smt.repository.ProductAssignmentConfigurationRepository;
+import com.deloitte.smt.repository.AssignmentProductRepository;
 import com.deloitte.smt.repository.AssignmentRiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.AssignmentSignalAssigneesRepository;
-import com.deloitte.smt.repository.SocAssignmentConfigurationRepository;
-import com.deloitte.smt.repository.AssessmentAssigneesRepository;
 import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.TopicAssigneesRepository;
 import com.deloitte.smt.util.AssignmentUtil;
@@ -56,7 +55,7 @@ public class SignalAssignmentService {
     AssignmentSignalAssigneesRepository signalValidationAssignmentAssigneesRepository;
     
     @Autowired
-    AssessmentAssignmentAssigneesRepository assessmentAssignmentAssigneesRepository;
+    AssessmentAssigneesRepository assessmentAssignmentAssigneesRepository;
     
     @Autowired
     AssignmentRiskPlanAssigneesRepository riskPlanAssignmentAssigneesRepository;
@@ -74,10 +73,10 @@ public class SignalAssignmentService {
     AssignmentConfigurationService assignmentConfigurationService;
     
     @Autowired
-    SocAssignmentConfigurationRepository socAssignmentConfigurationRepository;
+    AssignmentConditionRepository socAssignmentConfigurationRepository;
     
     @Autowired
-    ProductAssignmentConfigurationRepository productAssignmentConfigurationRepository;
+    AssignmentProductRepository productAssignmentConfigurationRepository;
     
 	public Topic saveSignalAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, Topic topicUpdated) {
 		assignmentConfiguration.setSignalAssignees(signalValidationAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
@@ -90,8 +89,8 @@ public class SignalAssignmentService {
 	 */
 	private Topic setTopicAssignmentConfigurationAssignees(AssignmentConfiguration assignmentConfiguration, Topic topic) {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getSignalAssignees())){
-        	List<TopicSignalValidationAssignmentAssignees> list = new ArrayList<>();
-			for(SignalValidationAssignmentAssignees svaAssignees : assignmentConfiguration.getSignalAssignees()){
+        	List<TopicAssignees> list = new ArrayList<>();
+			for(AssignmentSignalAssignees svaAssignees : assignmentConfiguration.getSignalAssignees()){
         		saveTopicSignalValidationAssignmentAssignees(svaAssignees,topic,list);
         	}
 			topic.setTopicSignalValidationAssignmentAssignees(topicSignalValidationAssignmentAssigneesRepository.save(list));
@@ -99,8 +98,8 @@ public class SignalAssignmentService {
 		return topic;
 	}
 	
-	private void saveTopicSignalValidationAssignmentAssignees(SignalValidationAssignmentAssignees svaAssignees, Topic topic, List<TopicSignalValidationAssignmentAssignees> list) {
-		TopicSignalValidationAssignmentAssignees assignee = new TopicSignalValidationAssignmentAssignees();
+	private void saveTopicSignalValidationAssignmentAssignees(AssignmentSignalAssignees svaAssignees, Topic topic, List<TopicAssignees> list) {
+		TopicAssignees assignee = new TopicAssignees();
 		assignee.setTopicId(topic.getId());
 		assignee.setAssignTo(svaAssignees.getAssignTo());
 		assignee.setUserGroupKey(svaAssignees.getUserGroupKey());
@@ -116,13 +115,13 @@ public class SignalAssignmentService {
 	}
 	
 	public AssignmentConfiguration convertToAssignmentConfiguration(Topic topic){
-		List<SocAssignmentConfiguration> conditions;
-		List<ProductAssignmentConfiguration> products;
+		List<AssignmentCondition> conditions;
+		List<AssignmentProduct> products;
 		AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
 		if(!CollectionUtils.isEmpty(topic.getConditions())){
 			conditions = new ArrayList<>();
-			for(TopicSocAssignmentConfiguration topicSocConfig : topic.getConditions()){
-				SocAssignmentConfiguration socConfig = new SocAssignmentConfiguration();
+			for(TopicCondition topicSocConfig : topic.getConditions()){
+				AssignmentCondition socConfig = new AssignmentCondition();
 				socConfig.setAssignmentConfigurationId(topicSocConfig.getAssignmentConfigurationId());
 				socConfig.setConditionName(topicSocConfig.getConditionName());
 				socConfig.setCreatedBy(topicSocConfig.getCreatedBy());
@@ -139,8 +138,8 @@ public class SignalAssignmentService {
 		
 		if(!CollectionUtils.isEmpty(topic.getProducts())){
 			products = new ArrayList<>();
-			for(TopicProductAssignmentConfiguration topicProductConfig : topic.getProducts()){
-				ProductAssignmentConfiguration productConfig = new ProductAssignmentConfiguration();
+			for(TopicProduct topicProductConfig : topic.getProducts()){
+				AssignmentProduct productConfig = new AssignmentProduct();
 				productConfig.setAssignmentConfigurationId(topicProductConfig.getAssignmentConfigurationId());
 				productConfig.setCreatedBy(topicProductConfig.getCreatedBy());
 				productConfig.setCreatedDate(topicProductConfig.getCreatedDate());
@@ -159,12 +158,12 @@ public class SignalAssignmentService {
 	}
 	
 	
-	private void setProductRecordValues(TopicProductAssignmentConfiguration topicProductConfig, ProductAssignmentConfiguration productConfig) {
-		List<AssignmentProduct> records = null;
+	private void setProductRecordValues(TopicProduct topicProductConfig, AssignmentProduct productConfig) {
+		List<AssignmentProductValues> records = null;
 		if(!CollectionUtils.isEmpty(topicProductConfig.getRecordValues())){
-			for(TopicAssignmentProduct record : topicProductConfig.getRecordValues()){
+			for(TopicProductValues record : topicProductConfig.getRecordValues()){
 				records = new ArrayList<>();
-				AssignmentProduct ap = new AssignmentProduct();
+				AssignmentProductValues ap = new AssignmentProductValues();
 				ap.setAssignmentConfigurationId(record.getAssignmentConfigurationId());
 				ap.setCategory(record.getCategory());
 				ap.setCategoryCode(record.getCategoryCode());
@@ -180,12 +179,12 @@ public class SignalAssignmentService {
 		
 	}
 
-	private void setSocRecordValues(TopicSocAssignmentConfiguration topicSocConfig, SocAssignmentConfiguration socConfig) {
-		List<AssignmentCondition> records = null;
+	private void setSocRecordValues(TopicCondition topicSocConfig, AssignmentCondition socConfig) {
+		List<AssignmentConditionValues> records = null;
 		if(!CollectionUtils.isEmpty(topicSocConfig.getRecordValues())){
-			for(TopicAssignmentCondition record : topicSocConfig.getRecordValues()){
+			for(TopicConditionValues record : topicSocConfig.getRecordValues()){
 				records = new ArrayList<>();
-				AssignmentCondition ac = new AssignmentCondition();
+				AssignmentConditionValues ac = new AssignmentConditionValues();
 				ac.setAssignmentConfigurationId(record.getAssignmentConfigurationId());
 				ac.setCategory(record.getCategory());
 				ac.setCategoryCode(record.getCategoryCode());
@@ -224,7 +223,7 @@ public class SignalAssignmentService {
 		}
 		queryBuilder.append(" where ");
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
-			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
 				socBuilder.append(",");
 			}
@@ -235,7 +234,7 @@ public class SignalAssignmentService {
 			noSocFlag = true;
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
 				productBuilder.append(",");
 			}
@@ -281,7 +280,7 @@ public class SignalAssignmentService {
 			if(!noProductFlag){
 				// Only Socs
 				if(assignmentConfiguration.getConditions().size() == 1){
-					for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+					for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 						 String key = AssignmentUtil.getRecordKey(socConfig.getRecordKey());
 						if(!StringUtils.isEmpty(key)){
 							socConfig.setRecordKey(key);
@@ -303,7 +302,7 @@ public class SignalAssignmentService {
 			if(!noSocFlag){
 				// Only Products
 				if(assignmentConfiguration.getProducts().size() == 1){
-					for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+					for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 						 String key = AssignmentUtil.getRecordKey(productConfig.getRecordKey());
 						if(!StringUtils.isEmpty(key)){
 							productConfig.setRecordKey(key);
@@ -324,7 +323,7 @@ public class SignalAssignmentService {
 			//if records not available for product and condition 
 			if(noSocFlag && noProductFlag){
 				if(!assignmentConfiguration.isRepeatProductFlag()){
-					for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+					for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 						String recordKey = productConfig.getRecordKey();
 						if(assignmentConfigurationFromDB == null){
 							while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatProductFlag())){
@@ -344,7 +343,7 @@ public class SignalAssignmentService {
 				if(!assignmentConfiguration.isRepeatSocFlag()){
 					if(assignmentConfigurationFromDB == null){
 						assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
-						for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+						for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 							String recordKey = socConfig.getRecordKey();
 							if(assignmentConfigurationFromDB == null){
 								while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatSocFlag())){
