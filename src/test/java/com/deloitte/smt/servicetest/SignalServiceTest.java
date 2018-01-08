@@ -3,7 +3,6 @@ package com.deloitte.smt.servicetest;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +17,6 @@ import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.runtime.CaseInstance;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.engine.test.mock.MockExpressionManager;
 import org.junit.AfterClass;
@@ -28,21 +26,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SignalConfigurationType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.SignalAction;
-import com.deloitte.smt.entity.SignalConfiguration;
+import com.deloitte.smt.entity.SignalConfidence;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
@@ -166,7 +160,7 @@ public class SignalServiceTest {
 			signalStatistics.setScore(1);
 			stats.add(signalStatistics);
 			topic.setSignalStatistics(stats);
-			SignalConfiguration signalConfiguration = new SignalConfiguration();
+			SignalConfidence signalConfiguration = new SignalConfidence();
 			signalConfiguration.setCohortPercentage(95);
 			signalConfiguration.setConfidenceIndex(45);
 			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
@@ -196,7 +190,7 @@ public class SignalServiceTest {
 			signalStatistics.setScore(1);
 			stats.add(signalStatistics);
 			topic.setSignalStatistics(stats);
-			SignalConfiguration signalConfiguration = new SignalConfiguration();
+			SignalConfidence signalConfiguration = new SignalConfidence();
 			signalConfiguration.setCohortPercentage(95);
 			signalConfiguration.setConfidenceIndex(45);
 			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
@@ -320,70 +314,6 @@ public class SignalServiceTest {
 		}
 	}
 	
-	@Test
-	public void testAssociateTemplateTasks() {
-		try{
-			Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-			List<Long> templateIds = new ArrayList<>();
-			templateIds.add(1l);
-			List<SignalAction> actions = new ArrayList<>();
-			SignalAction action = new SignalAction();
-			action.setId(1l);
-			action.setInDays(1);
-			action.setDueDate(new Date());
-			CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
-			actions.add(action);
-			assessmentPlan.setTemplateIds(templateIds);
-			assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
-			List<Attachment> attachments = new ArrayList<>(); 
-			Attachment attachment = new Attachment();
-			attachments.add(attachment);
-			List<SignalURL> templateTaskUrls = new ArrayList<>(); 
-			SignalURL url = new SignalURL();
-			templateTaskUrls.add(url);
-			given(this.assessmentActionRepository.findAllByTemplateId(1l)).willReturn(actions);
-			given(this.assessmentActionRepository.save(action)).willReturn(action);
-			given(this.attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort)).willReturn(attachments);
-			given(this.signalURLRepository.findByTopicId(action.getId())).willReturn(templateTaskUrls);
-			signalService.associateTemplateTasks(assessmentPlan);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testAssociateTemplateTasksWithAssignee() {
-		try{
-			Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-			List<Long> templateIds = new ArrayList<>();
-			templateIds.add(1l);
-			List<SignalAction> actions = new ArrayList<>();
-			SignalAction action = new SignalAction();
-			action.setId(1l);
-			action.setInDays(1);
-			action.setDueDate(new Date());
-			action.setAssignTo("test");
-			CaseInstance instance = caseService.createCaseInstanceByKey("assesmentCaseId");
-			actions.add(action);
-			assessmentPlan.setTemplateIds(templateIds);
-			assessmentPlan.setCaseInstanceId(instance.getCaseInstanceId());
-			List<Attachment> attachments = new ArrayList<>(); 
-			Attachment attachment = new Attachment();
-			attachments.add(attachment);
-			List<SignalURL> templateTaskUrls = new ArrayList<>(); 
-			SignalURL url = new SignalURL();
-			templateTaskUrls.add(url);
-			given(this.assessmentActionRepository.findAllByTemplateId(1l)).willReturn(actions);
-			given(this.assessmentActionRepository.save(action)).willReturn(action);
-			given(this.attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort)).willReturn(attachments);
-			given(this.signalURLRepository.findByTopicId(action.getId())).willReturn(templateTaskUrls);
-			signalService.associateTemplateTasks(assessmentPlan);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
 	
 	@Test
 	public void testFindTopicsByRunInstanceId() {
@@ -394,44 +324,6 @@ public class SignalServiceTest {
 			 topics.add(topic);
 			 given(this.topicRepository.findTopicByRunInstanceIdOrderByCreatedDateAsc(1l)).willReturn(topics);
 			 signalService.findTopicsByRunInstanceId(1l);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testAssociateTemplateAttachments() {
-		try{
-			Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
-			List<Attachment> attachments = new ArrayList<>(); 
-			Attachment attachment = new Attachment();
-			attachments.add(attachment);
-			
-			SignalAction action = new SignalAction();
-			action.setId(1l);
-			SignalAction signalAction = new SignalAction();
-			signalAction.setId(1l);
-			 given(this.attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(
-						action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort)).willReturn(attachments);
-			 signalService.associateTemplateAttachments(sort, action, signalAction);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testAssociateTemplateURLs() {
-		try{
-			SignalAction action = new SignalAction();
-			action.setId(1l);
-			SignalAction signalAction = new SignalAction();
-			signalAction.setId(1l);
-			List<SignalURL> templateTaskUrls = new ArrayList<>(); 
-			SignalURL url = new SignalURL();
-			templateTaskUrls.add(url);
-			
-			 given(this.signalURLRepository.findByTopicId(action.getId())).willReturn(templateTaskUrls);
-			 signalService.associateTemplateURLs(action, signalAction);
 		}catch(Exception ex){
 			LOG.info(ex);
 		}

@@ -99,11 +99,6 @@ public class TaskTemplateServiceTest {
 	}
 	
 	@Test
-	public void testFindAllByTemplateId() throws Exception{
-		taskTemplateService.findAllByTemplateId(1l);
-	}
-	
-	@Test
 	public void testFindAll() throws Exception{
 		TaskTemplate taskTemplate = new TaskTemplate();
 		List<TaskTemplate> taskTemplates = new ArrayList<>();

@@ -4,17 +4,17 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.Task;
 
-public interface RiskTaskRepository extends JpaRepository<RiskTask, Long> {
+public interface RiskTaskRepository extends JpaRepository<Task, Long> {
 
-	List<RiskTask> findAllByRiskIdAndStatusOrderByCreatedDateDesc(String riskId, String status);
-	List<RiskTask> findAllByRiskIdOrderByCreatedDateDesc(String riskId);
+	List<Task> findAllByRiskIdAndStatusOrderByCreatedDateDesc(String riskId, String status);
+	List<Task> findAllByRiskIdOrderByCreatedDateDesc(String riskId);
 	
 	Long countByNameIgnoreCaseAndRiskId(String risName,String riskId);
-	List<RiskTask> findAllByTemplateId(Long templateId);
+	List<Task> findAllByTemplateId(Long templateId);
 	
-	RiskTask findByNameIgnoreCaseAndRiskId(String risName, String riskId);
-	RiskTask findByNameIgnoreCaseAndTemplateId(String name,Long templateId);
+	Task findByNameIgnoreCaseAndRiskId(String risName, String riskId);
+	Task findByNameIgnoreCaseAndTemplateId(String name,Long templateId);
 	
 }

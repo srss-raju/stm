@@ -6,9 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.deloitte.smt.dto.SearchDto;
-import com.deloitte.smt.entity.AssessmentActionType;
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.TaskType;
 import com.deloitte.smt.entity.Topic;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,16 +24,10 @@ public class TestUtil {
         return mapper.writeValueAsBytes(object);
     }
     
-    public static SignalAction buildSignalAction() {
-    	SignalAction signalAction = new SignalAction();
-    	signalAction.setInDays(5);
-    	signalAction.setCaseInstanceId("1111");
-    	return signalAction;
-    }
     
-	public static List<AssessmentActionType> buildAssessmentActionTypes() {
-		List<AssessmentActionType> assessmentActionTypes = new ArrayList<>();
-		AssessmentActionType assessmentActionType = new AssessmentActionType();
+	public static List<TaskType> buildAssessmentActionTypes() {
+		List<TaskType> assessmentActionTypes = new ArrayList<>();
+		TaskType assessmentActionType = new TaskType();
 		assessmentActionType.setId(101l);
 		assessmentActionType.setName("Type 1");
 		assessmentActionType.setDescription("Type 1 Description");

@@ -19,8 +19,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.entity.AssessmentActionType;
-import com.deloitte.smt.repository.AssessmentActionTypeRepository;
+import com.deloitte.smt.entity.TaskType;
+import com.deloitte.smt.repository.TaskTypeRepository;
 import com.deloitte.smt.service.AssessmentActionTypeService;
 import com.deloitte.smt.util.TestUtil;
 
@@ -35,7 +35,7 @@ public class AssessmentActionTypeServiceTest {
 	private AssessmentActionTypeService assessmentActionTypeService;
 	
 	@MockBean
-    AssessmentActionTypeRepository assessmentActionTypeRepository;
+    TaskTypeRepository assessmentActionTypeRepository;
 	
 		
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
@@ -65,7 +65,7 @@ public class AssessmentActionTypeServiceTest {
 	@Test
 	public void testUpdateWithNull() {
 		try{
-			AssessmentActionType assessmentActionType = new AssessmentActionType();
+			TaskType assessmentActionType = new TaskType();
 			assessmentActionTypeService.update(assessmentActionType);
 		}catch(Exception ex){
 			LOG.info(ex);
@@ -88,7 +88,7 @@ public class AssessmentActionTypeServiceTest {
 	
 	@Test
 	public void testDelete() throws Exception{
-		AssessmentActionType assessmentActionType = new AssessmentActionType();
+		TaskType assessmentActionType = new TaskType();
 		given(this.assessmentActionTypeRepository.findOne(1l)).willReturn(assessmentActionType);
 		assessmentActionTypeService.delete(1l);
 	}
@@ -106,7 +106,7 @@ public class AssessmentActionTypeServiceTest {
 	@Test
 	public void testFindById() throws Exception{
 		try{
-			AssessmentActionType assessmentActionType = new AssessmentActionType();
+			TaskType assessmentActionType = new TaskType();
 			given(this.assessmentActionTypeRepository.findOne(1l)).willReturn(assessmentActionType);
 			assessmentActionTypeService.findById(1l);
 		}catch(Exception ex){

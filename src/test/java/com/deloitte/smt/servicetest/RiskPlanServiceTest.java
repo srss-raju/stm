@@ -30,7 +30,7 @@ import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
@@ -186,13 +186,13 @@ public class RiskPlanServiceTest {
 	public void testCreateRiskTask() {
 		try{
 			RiskPlan riskPlan = new RiskPlan();
-			RiskTask riskTask = new RiskTask();
+			Task riskTask = new Task();
 			riskTask.setCaseInstanceId("11");
 			riskTask.setStatus("Completed1");
 			riskTask.setId(1l);
 			riskTask.setRiskId("1");
 			given(this. riskPlanRepository.findOne(1l)).willReturn(riskPlan);
-			RiskTask riskTaskUpdated = new RiskTask();
+			Task riskTaskUpdated = new Task();
 			List<SignalURL> urls = new ArrayList<>();
 			SignalURL url = new SignalURL();
 			urls.add(url);
@@ -208,7 +208,7 @@ public class RiskPlanServiceTest {
 	public void testCreateRiskTaskCompleted() {
 		try{
 			RiskPlan riskPlan = new RiskPlan();
-			RiskTask riskTask = new RiskTask();
+			Task riskTask = new Task();
 			CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
 			riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
 			riskTask.setCaseInstanceId(instance.getCaseInstanceId());
@@ -216,7 +216,7 @@ public class RiskPlanServiceTest {
 			riskTask.setId(1l);
 			riskTask.setRiskId("1");
 			given(this. riskPlanRepository.findOne(1l)).willReturn(riskPlan);
-			RiskTask riskTaskUpdated = new RiskTask();
+			Task riskTaskUpdated = new Task();
 			List<SignalURL> urls = new ArrayList<>();
 			SignalURL url = new SignalURL();
 			urls.add(url);
@@ -231,7 +231,7 @@ public class RiskPlanServiceTest {
 	@Test
 	public void testFindById() {
 		try{
-			RiskTask riskTask = new RiskTask();
+			Task riskTask = new Task();
 			riskTask.setId(1l);
 			riskTask.setStatus("New");
 			given(this.riskTaskRepository.findOne(1l)).willReturn(riskTask);
@@ -245,7 +245,7 @@ public class RiskPlanServiceTest {
 	@Test
 	public void testFindAllByRiskIdStatusNull() {
 		try{
-			List<RiskTask> list = new ArrayList<>();
+			List<Task> list = new ArrayList<>();
 			given(this.riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc("1")).willReturn(list);
 			riskPlanService.findAllByRiskId("1", null);
 		}catch(Exception ex){
@@ -256,7 +256,7 @@ public class RiskPlanServiceTest {
 	@Test
 	public void testFindAllByRiskIdStatus() {
 		try{
-			List<RiskTask> list = new ArrayList<>();
+			List<Task> list = new ArrayList<>();
 			given(this.riskTaskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc("1", "Completed")).willReturn(list);
 			riskPlanService.findAllByRiskId("1", "Completed");
 		}catch(Exception ex){
@@ -267,7 +267,7 @@ public class RiskPlanServiceTest {
 	@Test
 	public void testDeleteWithNull() {
 		try{
-			RiskTask riskTask = new RiskTask();
+			Task riskTask = new Task();
 			given(this.riskTaskRepository.findOne(1l)).willReturn(riskTask);
 			riskPlanService.delete(1l);
 		}catch(Exception ex){
@@ -287,7 +287,7 @@ public class RiskPlanServiceTest {
 	@Test
 	public void testUpdateRiskTask() {
 		try{
-			RiskTask riskTask = new RiskTask();
+			Task riskTask = new Task();
 			riskTask.setCaseInstanceId("11");
 			riskTask.setStatus("Completed1");
 			riskTask.setId(1l);
@@ -305,7 +305,7 @@ public class RiskPlanServiceTest {
 	@Test
 	public void testUpdateRiskTaskClosed() {
 		try{
-			RiskTask riskTask = new RiskTask();
+			Task riskTask = new Task();
 			riskTask.setCaseInstanceId("11");
 			riskTask.setStatus("Completed1");
 			riskTask.setId(1l);
@@ -314,7 +314,7 @@ public class RiskPlanServiceTest {
 			SignalURL url = new SignalURL();
 			urls.add(url);
 			riskTask.setSignalUrls(urls);
-			List<RiskTask> list = new ArrayList<>();
+			List<Task> list = new ArrayList<>();
 			list.add(riskTask);
 			given(this.riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc("1")).willReturn(list);
 			riskPlanService.updateRiskTask(riskTask, null);

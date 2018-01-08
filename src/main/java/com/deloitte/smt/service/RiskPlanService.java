@@ -26,7 +26,7 @@ import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.RiskTaskTemplate;
 import com.deloitte.smt.entity.RiskTaskTemplateProducts;
 import com.deloitte.smt.entity.SignalURL;
@@ -217,13 +217,13 @@ public class RiskPlanService {
 			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
 		}
 	}
-	public List<RiskTask> associateRiskTasks(RiskPlan riskPlan){
-		List<RiskTask> tasks = null;
+	public List<Task> associateRiskTasks(RiskPlan riskPlan){
+		List<Task> tasks = null;
 		
 		if(!CollectionUtils.isEmpty(riskPlan.getRiskTemplateIds())){
-			List<RiskTask> riskTaskList = new ArrayList<>();
+			List<Task> riskTaskList = new ArrayList<>();
 			for(Long id:riskPlan.getRiskTemplateIds()){
-				List<RiskTask> riskTasks = riskTaskRepository.findAllByTemplateId(id);
+				List<Task> riskTasks = riskTaskRepository.findAllByTemplateId(id);
 				tasks = createRiskTask(riskTaskList, riskTasks, riskPlan);
 			}
 		}
@@ -233,9 +233,9 @@ public class RiskPlanService {
 	
 	private void checkRiskTaskStatus(RiskPlan riskPlan){
 		boolean allTasksCompletedFlag=true;
-		List<RiskTask> riskTaskList=riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
+		List<Task> riskTaskList=riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
 		if(!CollectionUtils.isEmpty(riskTaskList)){
-			for(RiskTask riskTask:riskTaskList){
+			for(Task riskTask:riskTaskList){
         		if(!"Completed".equals(riskTask.getStatus())){
         			allTasksCompletedFlag = false;
         		}
@@ -259,10 +259,10 @@ public class RiskPlanService {
 	}
 
 
-	private List<RiskTask> createRiskTask(List<RiskTask> riskTaskList, List<RiskTask> templateRiskTasks, RiskPlan riskPlan) {
+	private List<Task> createRiskTask(List<Task> riskTaskList, List<Task> templateRiskTasks, RiskPlan riskPlan) {
 		if(!CollectionUtils.isEmpty(templateRiskTasks)){
-			for(RiskTask templateTask:templateRiskTasks){
-				RiskTask riskTask = new RiskTask();
+			for(Task templateTask:templateRiskTasks){
+				Task riskTask = new Task();
 				riskTask.setActionType(templateTask.getActionType());
 				riskTask.setAssignTo(templateTask.getAssignTo());
 				if (templateTask.getAssignTo() == null) {
@@ -297,7 +297,7 @@ public class RiskPlanService {
 	 * @param action
 	 * @param signalAction
 	 */
-	public void associateTemplateAttachments(RiskTask riskTask, RiskTask templateRiskTask) {
+	public void associateTemplateAttachments(Task riskTask, Task templateRiskTask) {
 		Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
 		List<Attachment> attachments = attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(templateRiskTask.getId(), AttachmentType.RISK_TASK_ASSESSMENT, sort);
 		if (!CollectionUtils.isEmpty(attachments)) {
@@ -324,7 +324,7 @@ public class RiskPlanService {
 	 * @param riskTask
 	 * @param templateTask
 	 */
-	public void associateTemplateURLs(RiskTask riskTask, RiskTask templateRiskTask) {
+	public void associateTemplateURLs(Task riskTask, Task templateRiskTask) {
 		List<SignalURL> riskTemplateTaskUrls = signalURLRepository.findByTopicId(templateRiskTask.getId());
 		if (!CollectionUtils.isEmpty(riskTemplateTaskUrls)) {
 			List<SignalURL> riskTaskURLs = new ArrayList<>();
@@ -348,7 +348,7 @@ public class RiskPlanService {
 	 * @throws IOException
 	 * @throws ApplicationException
 	 */
-	public void createRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
+	public void createRiskTask(Task riskTask, MultipartFile[] attachments) throws ApplicationException {
 		    
 		Date d = new Date();
 		riskTask.setCreatedDate(d);
@@ -365,7 +365,7 @@ public class RiskPlanService {
 			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
 		
-		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
+		Task riskTaskUpdated = riskTaskRepository.save(riskTask);
 		checkRiskTaskStatus(riskTaskUpdated);
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
 				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
@@ -381,19 +381,19 @@ public class RiskPlanService {
 	 * @throws IOException
 	 * @throws ApplicationException
 	 */
-	public void createRiskTemplateTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
+	public void createRiskTemplateTask(Task riskTask, MultipartFile[] attachments) throws ApplicationException {
 		    
 		Date d = new Date();
 		riskTask.setCreatedDate(d);
 		riskTask.setLastUpdatedDate(d);
 		riskTask.setStatus("New");
 		
-		RiskTask riskTaskExists=riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
+		Task riskTaskExists=riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
 		if (riskTaskExists != null) {
 			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
 		
-		RiskTask riskTaskUpdated = riskTaskRepository.save(riskTask);
+		Task riskTaskUpdated = riskTaskRepository.save(riskTask);
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
 				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
 		saveUrls(riskTaskUpdated);
@@ -405,11 +405,11 @@ public class RiskPlanService {
 	 * 
 	 * @param riskTask
 	 */
-	public void checkRiskTaskStatus(RiskTask riskTask) {
-		List<RiskTask> risks = findAllByRiskId(riskTask.getRiskId(), null);
+	public void checkRiskTaskStatus(Task riskTask) {
+		List<Task> risks = findAllByRiskId(riskTask.getRiskId(), null);
 		boolean allTasksCompletedFlag = true;
 		if (!CollectionUtils.isEmpty(risks)) {
-			for (RiskTask risk : risks) {
+			for (Task risk : risks) {
 				if (!SmtConstant.COMPLETED.getDescription().equals(risk.getStatus())) {
 					allTasksCompletedFlag = false;
 				}
@@ -424,8 +424,8 @@ public class RiskPlanService {
 			}
 		}
 	}
-	public RiskTask findById(Long id) {
-		RiskTask riskTask = riskTaskRepository.findOne(id);
+	public Task findById(Long id) {
+		Task riskTask = riskTaskRepository.findOne(id);
 		if ("New".equalsIgnoreCase(riskTask.getStatus())) {
 			riskTask.setStatus("In Progress");
 			riskTask = riskTaskRepository.save(riskTask);
@@ -434,7 +434,7 @@ public class RiskPlanService {
 		return riskTask;
 	}
 
-	public List<RiskTask> findAllByRiskId(String riskId, String status) {
+	public List<Task> findAllByRiskId(String riskId, String status) {
 		if (status != null) {
 			return riskTaskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc(riskId, status);
 		}
@@ -442,7 +442,7 @@ public class RiskPlanService {
 	}
 
 	public void delete(Long riskTaskId) throws ApplicationException {
-		RiskTask riskTask = riskTaskRepository.findOne(riskTaskId);
+		Task riskTask = riskTaskRepository.findOne(riskTaskId);
 		if (riskTask == null) {
 			throw new ApplicationException("Failed to delete Action. Invalid Id received");
 		}
@@ -451,11 +451,11 @@ public class RiskPlanService {
 		checkRiskTaskStatus(riskTask);
 	}
 
-	public void updateRiskTask(RiskTask riskTask, MultipartFile[] attachments) throws ApplicationException {
+	public void updateRiskTask(Task riskTask, MultipartFile[] attachments) throws ApplicationException {
 		if (riskTask.getId() == null) {
 			throw new ApplicationException("Failed to update Action. Invalid Id received");
 		}
-		RiskTask riskTaskExists;
+		Task riskTaskExists;
 		if(riskTask.getTemplateId() != null){
 			riskTaskExists = riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
 		}else{
@@ -470,10 +470,10 @@ public class RiskPlanService {
 		riskTaskRepository.save(riskTask);
 		List<Attachment> attachmentList = attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
 				riskTask.getDeletedAttachmentIds(), riskTask.getFileMetadata(), riskTask.getCreatedBy());
-		List<RiskTask> risks = findAllByRiskId(riskTask.getRiskId(), null);
+		List<Task> risks = findAllByRiskId(riskTask.getRiskId(), null);
 		boolean allTasksCompletedFlag = true;
 		if (!CollectionUtils.isEmpty(risks)) {
-			for (RiskTask risk : risks) {
+			for (Task risk : risks) {
 				if (!SmtConstant.COMPLETED.getDescription().equals(risk.getStatus())) {
 					allTasksCompletedFlag = false;
 				}
@@ -488,7 +488,7 @@ public class RiskPlanService {
 		
 		signalAuditService.saveOrUpdateRiskTaskAudit(riskTask, riskTaskOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
 	}
-	private void saveUrls(RiskTask riskTask) {
+	private void saveUrls(Task riskTask) {
 		if (!CollectionUtils.isEmpty(riskTask.getSignalUrls())) {
 			for (SignalURL url : riskTask.getSignalUrls()) {
 				url.setTopicId(riskTask.getId());
@@ -588,9 +588,9 @@ public class RiskPlanService {
 	 */
 	private void setRiskTaskStatus(RiskPlan riskPlan){
 		boolean riskTaskStatus=false;
-		List<RiskTask> riskTaskStatues=	riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
+		List<Task> riskTaskStatues=	riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
 		 if(!CollectionUtils.isEmpty(riskTaskStatues)){
-			 for(RiskTask riskTask:riskTaskStatues){
+			 for(Task riskTask:riskTaskStatues){
 				 if(!riskTask.getStatus().equals(SmtConstant.COMPLETED.getDescription())){
 					 riskTaskStatus=true;
 				 }
@@ -601,7 +601,7 @@ public class RiskPlanService {
 		 }
 	}
 		 
-	public List<RiskTask> associateRiskTemplateTasks(RiskPlan riskPlan) {
+	public List<Task> associateRiskTemplateTasks(RiskPlan riskPlan) {
 		return associateRiskTasks(riskPlan);
 	}
 	
