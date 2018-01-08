@@ -48,6 +48,4 @@ insert into sm_strength_of_evidence (id, strength_key, strength_value) values(16
 insert into sm_strength_of_evidence (id, strength_key, strength_value) values(4,'SOE14','De/Re-Challenge Information');
 insert into sm_strength_of_evidence (id, strength_key, strength_value) values(7,'SOE17','Reactions occurring in Special Populations');
 insert into sm_strength_of_evidence (id, strength_key, strength_value) values(15,'SOE25','Signal included in Summary of Patient Characteristics (SmPC) or Patient Leaflet?');
-
-
-				
+		
