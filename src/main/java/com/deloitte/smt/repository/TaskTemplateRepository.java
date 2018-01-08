@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.TaskTemplate;
 
 @Repository
@@ -22,4 +23,6 @@ public interface TaskTemplateRepository  extends JpaRepository<TaskTemplate, Lon
 	List<String> findByName(@Param(value = "name") String name,@Param(value = "id") Long id);
 
 	TaskTemplate findByNameIgnoreCase(String name);
+
+	List<Task> findAllByTemplateId(Long templateId);
 }

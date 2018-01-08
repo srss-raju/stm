@@ -24,7 +24,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.service.AssessmentActionService;
+import com.deloitte.smt.service.TaskTypeService;
 
 
 /**
@@ -38,7 +38,7 @@ import com.deloitte.smt.service.AssessmentActionService;
 public class AssessmentActionControllerTest {
 	
 	@MockBean
-    private AssessmentActionService assessmentActionService;
+    private TaskTypeService assessmentActionService;
 	
 	@LocalServerPort
 	private int port;

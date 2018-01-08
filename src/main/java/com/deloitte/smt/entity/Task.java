@@ -47,6 +47,9 @@ public class Task {
 	private String actionType;
 
 	private String createdBy;
+	private int daysLeft;
+	private String assessmentPlanId;
+	private String report;
 	
 	private String recipients;
 	@Transient

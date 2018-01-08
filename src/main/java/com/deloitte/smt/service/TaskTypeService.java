@@ -21,9 +21,9 @@ import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
-import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
+import com.deloitte.smt.repository.TaskTypeRepository;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
@@ -32,7 +32,7 @@ import com.deloitte.smt.util.SignalUtil;
  */
 @Transactional
 @Service
-public class AssessmentActionService {
+public class TaskTypeService {
 
 	@Autowired
 	MessageSource messageSource;
@@ -41,7 +41,7 @@ public class AssessmentActionService {
 	ExceptionBuilder  exceptionBuilder;
 
     @Autowired
-    AssessmentActionRepository assessmentActionRepository;
+    TaskTypeRepository assessmentActionRepository;
 
     @Autowired
     AttachmentService attachmentService;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.exception.ApplicationException;
@@ -145,4 +146,8 @@ public class TaskTemplateService {
 			}
 		}
 	}
+	
+	public List<Task> findAllByTemplateId(Long templateId) {
+        return taskTemplateRepository.findAllByTemplateId(templateId);
+    }
 }

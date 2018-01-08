@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.entity.SignalAction;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.TaskTemplateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
-@RequestMapping("/camunda/api/signal/template")
+@RequestMapping("/camunda/api/signal/{type}/template")
 public class TaskTemplateController {
 	private static final Logger LOG = Logger.getLogger(TaskTemplateController.class);
 	
@@ -65,7 +65,7 @@ public class TaskTemplateController {
     }
 	
 	@GetMapping(value = "/signalAction/{templateId}")
-    public List<SignalAction> findAllByTemplateId(@PathVariable Long templateId) {
+    public List<Task> findAllByTemplateId(@PathVariable Long templateId) {
         return taskTemplateService.findAllByTemplateId(templateId);
     }
 	
