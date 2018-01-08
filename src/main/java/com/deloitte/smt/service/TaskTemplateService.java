@@ -150,4 +150,25 @@ public class TaskTemplateService {
 	public List<Task> findAllByTemplateId(Long templateId) {
         return taskTemplateRepository.findAllByTemplateId(templateId);
     }
+	
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @throws ApplicationException
+	 */
+	public void updateRiskTaskName(Long id,String name) throws ApplicationException{
+		List<TaskTemplate> listRiskTasks=taskTemplateRepository.findAll();
+		List<String> taskTemplateNames=taskTemplateRepository.findByName(name, id);
+		
+		for (TaskTemplate risktaskTemplate : listRiskTasks) {
+
+			if (id.equals(risktaskTemplate.getId()) && taskTemplateNames.contains(name)) {
+				throw exceptionBuilder.buildException(ErrorType.RISKPACTION_NAME_DUPLICATE, null);
+			} else if (id.equals(risktaskTemplate.getId()) && !taskTemplateNames.contains(name)) {
+				risktaskTemplate.setName(name);
+				taskTemplateRepository.save(risktaskTemplate);
+			}
+		}
+	}
 }
