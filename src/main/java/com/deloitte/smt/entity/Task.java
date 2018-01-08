@@ -65,6 +65,6 @@ public class Task {
 	
 	private Long templateId;
 	
-	private Long inDays;
+	private int inDays;
 
 }

@@ -28,12 +28,12 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalConfidence;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalStrength;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicCondition;
 import com.deloitte.smt.entity.TopicConditionValues;
@@ -52,6 +52,7 @@ import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalStrengthRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TopicConditionRepository;
 import com.deloitte.smt.repository.TopicConditionValuesRepository;
 import com.deloitte.smt.repository.TopicProductRepository;
@@ -71,6 +72,9 @@ public class SignalService {
 
 	@Autowired
 	MessageSource messageSource;
+	
+	@Autowired
+	TaskRepository taskRepository;
 	
 	@Autowired
 	ExceptionBuilder exceptionBuilder;
@@ -498,13 +502,13 @@ public class SignalService {
 	 * @param assessmentPlan
 	 * @return
 	 */
-	public List<SignalAction> associateTemplateTasks(AssessmentPlan assessmentPlan) {
+	public List<Task> associateTemplateTasks(AssessmentPlan assessmentPlan) {
 		Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
 		 
-		List<SignalAction> signalActionList = null;
+		List<Task> signalActionList = null;
 		if (!CollectionUtils.isEmpty(assessmentPlan.getTemplateIds())) {
 			for (Long id : assessmentPlan.getTemplateIds()) {
-				List<SignalAction> actions = assessmentActionRepository.findAllByTemplateId(id);
+				List<Task> actions = taskRepository.findAllByTemplateId(id);
 				signalActionList = new ArrayList<>();
 				createAssessmentActions(assessmentPlan, sort, signalActionList, actions);
 			}
@@ -516,10 +520,10 @@ public class SignalService {
 	private void checkAssessmentTaskStatus(AssessmentPlan assessmentPlan){
 		boolean allTasksCompletedFlag = true;
 		
-		List<SignalAction> actions=	assessmentActionRepository.findAllByAssessmentId(String.valueOf(assessmentPlan.getId()));
+		List<Task> actions=	taskRepository.findAllByAssessmentPlanId(String.valueOf(assessmentPlan.getId()));
 		if(!CollectionUtils.isEmpty(actions)){
-			for(SignalAction signalAction:actions){
-        		if(!"Completed".equals(signalAction.getActionStatus())){
+			for(Task signalAction:actions){
+        		if(!"Completed".equals(signalAction.getStatus())){
         			allTasksCompletedFlag = false;
         		}
         	}
@@ -537,10 +541,10 @@ public class SignalService {
 	 * @param signalActionList
 	 * @param actions
 	 */
-	private void createAssessmentActions(AssessmentPlan assessmentPlan, Sort sort, List<SignalAction> signalActionList,
-			List<SignalAction> actions) {
+	private void createAssessmentActions(AssessmentPlan assessmentPlan, Sort sort, List<Task> signalActionList,
+			List<Task> actions) {
 		if (!CollectionUtils.isEmpty(actions)) {
-			for (SignalAction action : actions) {
+			for (Task action : actions) {
 				createAssessmentAction(assessmentPlan, sort, signalActionList, action);
 			}
 		}
@@ -552,21 +556,21 @@ public class SignalService {
 	 * @param signalActionList
 	 * @param action
 	 */
-	private void createAssessmentAction(AssessmentPlan assessmentPlan, Sort sort, List<SignalAction> signalActionList,
-			SignalAction action) {
-		SignalAction signalAction = new SignalAction();
+	private void createAssessmentAction(AssessmentPlan assessmentPlan, Sort sort, List<Task> signalActionList,
+			Task action) {
+		Task signalAction = new Task();
 		signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
-		signalAction.setActionName(action.getActionName());
+		signalAction.setName(action.getName());
 		signalAction.setCreatedDate(new Date());
-		signalAction.setLastModifiedDate(action.getLastModifiedDate());
-		signalAction.setActionStatus(action.getActionStatus());
+		signalAction.setLastUpdatedDate(action.getLastUpdatedDate());
+		signalAction.setStatus(action.getStatus());
 		signalAction.setDueDate(action.getDueDate());
-		signalAction.setAssessmentId(String.valueOf(assessmentPlan.getId()));
+		signalAction.setAssessmentPlanId(String.valueOf(assessmentPlan.getId()));
 		signalAction.setActionType(action.getActionType());
 		signalAction.setDueDate(SignalUtil.getDueDate(action.getInDays(), signalAction.getCreatedDate()));
 		signalAction.setInDays(action.getInDays());
-		signalAction.setActionDescription(action.getActionDescription());
-		signalAction.setActionNotes(action.getActionNotes());
+		signalAction.setDescription(action.getDescription());
+		signalAction.setNotes(action.getNotes());
 		signalAction.setRecipients(action.getRecipients());
 		if (action.getAssignTo() == null) {
 			signalAction.setAssignTo(assessmentPlan.getAssignTo());
@@ -574,18 +578,17 @@ public class SignalService {
 			signalAction.setAssignTo(action.getAssignTo());
 		}
 		signalAction.setOwner(assessmentPlan.getAssignTo());
-		signalAction = assessmentActionRepository.save(signalAction);
+		signalAction = taskRepository.save(signalAction);
 		signalActionList.add(signalAction);
-		List<Attachment> signalActionAttachments = associateTemplateAttachments(sort, action, signalAction);
+		associateTemplateAttachments(sort, action, signalAction);
 		associateTemplateURLs(action, signalAction);
-		signalAuditService.saveOrUpdateSignalActionAudit(signalAction, null, signalActionAttachments, SmtConstant.CREATE.getDescription());
 	}
 
 	/**
 	 * @param action
 	 * @param signalAction
 	 */
-	public List<SignalURL> associateTemplateURLs(SignalAction action, SignalAction signalAction) {
+	public List<SignalURL> associateTemplateURLs(Task action, Task signalAction) {
 		List<SignalURL> templateTaskUrls = signalURLRepository.findByTopicId(action.getId());
 		List<SignalURL> signalActionTaskUrls = null;
 		if (!CollectionUtils.isEmpty(templateTaskUrls)) {
@@ -598,7 +601,7 @@ public class SignalService {
 				assessmentActionSignalURL.setCreatedDate(new Date());
 				assessmentActionSignalURL.setModifiedDate(new Date());
 				assessmentActionSignalURL.setCreatedBy(signalAction.getCreatedBy());
-				assessmentActionSignalURL.setModifiedBy(signalAction.getModifiedBy());
+				assessmentActionSignalURL.setModifiedBy(signalAction.getLastUpdatedBy());
 				assessmentActionSignalURLs.add(assessmentActionSignalURL);
 			}
 			signalActionTaskUrls = signalURLRepository.save(assessmentActionSignalURLs);
@@ -611,7 +614,7 @@ public class SignalService {
 	 * @param action
 	 * @param signalAction
 	 */
-	public List<Attachment> associateTemplateAttachments(Sort sort, SignalAction action, SignalAction signalAction) {
+	public List<Attachment> associateTemplateAttachments(Sort sort, Task action, Task signalAction) {
 		List<Attachment> attachments = attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(
 				action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort);
 		List<Attachment> signalActionAttachments = null;
