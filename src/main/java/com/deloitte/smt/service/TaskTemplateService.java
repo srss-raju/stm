@@ -13,13 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
-import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 
@@ -29,9 +27,6 @@ public class TaskTemplateService {
 	
 	@Autowired
 	private TaskTemplateRepository taskTemplateRepository;
-	
-	@Autowired
-	private AssessmentActionRepository assessmentActionRepository;
 	
 	@Autowired
 	private TaskTemplateProductsRepository taskTemplateProductsRepository;
@@ -119,10 +114,6 @@ public class TaskTemplateService {
 		}
 	}
 	
-	public List<SignalAction> findAllByTemplateId(Long templateId) {
-        return assessmentActionRepository.findAllByTemplateId(templateId);
-    }
-
 	public List<TaskTemplate> findAll() {
 		return taskTemplateRepository.findAllByOrderByCreatedDateDesc();
 	}

@@ -11,8 +11,8 @@ import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskPlanAssignmentAssignees;
-import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
+import com.deloitte.smt.entity.AssignmentRiskPlanAssignees;
+import com.deloitte.smt.entity.RiskPlanAssignees;
 import com.deloitte.smt.repository.AssignmentRiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 
@@ -40,8 +40,8 @@ public class RiskPlanAssignmentService {
 	 */
 	private RiskPlan setAssessmentAssignmentConfigurationAssignees(AssignmentConfiguration assignmentConfiguration, RiskPlan riskPlan) {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getRiskAssignees())){
-			List<TopicRiskPlanAssignmentAssignees> list = new ArrayList<>();
-			for(RiskPlanAssignmentAssignees rpaAssignees : assignmentConfiguration.getRiskAssignees()){
+			List<RiskPlanAssignees> list = new ArrayList<>();
+			for(AssignmentRiskPlanAssignees rpaAssignees : assignmentConfiguration.getRiskAssignees()){
 				saveTopicRiskPlanAssignmentAssignees(rpaAssignees,riskPlan,list);
         	}
 			riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesRepository.save(list));
@@ -49,8 +49,8 @@ public class RiskPlanAssignmentService {
 		return riskPlan;
 	}
 
-	private void saveTopicRiskPlanAssignmentAssignees(RiskPlanAssignmentAssignees rpaAssignees, RiskPlan riskPlan, List<TopicRiskPlanAssignmentAssignees> list) {
-		TopicRiskPlanAssignmentAssignees assignee = new TopicRiskPlanAssignmentAssignees();
+	private void saveTopicRiskPlanAssignmentAssignees(AssignmentRiskPlanAssignees rpaAssignees, RiskPlan riskPlan, List<RiskPlanAssignees> list) {
+		RiskPlanAssignees assignee = new RiskPlanAssignees();
 		//assignee.setRiskId(riskPlan.getId());
 		assignee.setAssignTo(rpaAssignees.getAssignTo());
 		assignee.setUserGroupKey(rpaAssignees.getUserGroupKey());
