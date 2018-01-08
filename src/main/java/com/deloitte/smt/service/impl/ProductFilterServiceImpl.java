@@ -181,7 +181,7 @@ public class ProductFilterServiceImpl {
 		return itemMap;
 	}
 
-	public void constructProductPredicate(Set<String> productSet, StringBuilder queryBuilder, String type, Map<String, Object> parameterMap) {
+	public void constructProductPredicate(Set<String> productSet, String type, Map<String, Object> parameterMap, List<String> conditionsList) {
 		Set<String> productRecKeys = new HashSet<>();
 		List<String> prodFillVals = topicRepository.getProductFilterValues();
 		for (String recKeys : prodFillVals) {
@@ -199,19 +199,19 @@ public class ProductFilterServiceImpl {
 			switch (type) 
 			{
 				case "signal":
-					queryBuilder.append(" and product.topicId=root.id ");
+					conditionsList.add(" product.topicId=root.id ");
 					break;
 				case "detection":
-					queryBuilder.append(" and product.detectionId=root.id ");
+					conditionsList.add(" product.detectionId=root.id ");
 					break;
 				case "risk":
 				case "assessment":
-					queryBuilder.append(" and product.topicId=topic.id ");
+					conditionsList.add(" product.topicId=topic.id ");
 					break;
 				default:
 					break;
 			}
-			queryBuilder.append(" and product.recordKey in :prRecordKey");
+			conditionsList.add(" (product.recordKey in :prRecordKey) ");
 			parameterMap.put("prRecordKey", productRecKeys);
 		}
 		

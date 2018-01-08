@@ -179,8 +179,8 @@ public class ConditionFilterServiceImpl {
 		return itemMap;
 	}
 
-	public void constructConditionPredicate(Set<String> conditionSet, StringBuilder queryBuilder, String type,
-			Map<String, Object> parameterMap) {
+	public void constructConditionPredicate(Set<String> conditionSet, String type,
+			Map<String, Object> parameterMap, List<String> conditionsList) {
 		Set<String> conRecKeys = new HashSet<>();
 		List<String> condFillVals = topicRepository.getConditionFilterValues();
 		for (String recKeys : condFillVals) {
@@ -197,20 +197,20 @@ public class ConditionFilterServiceImpl {
 		{
 			switch (type) {
 				case "signal":
-					queryBuilder.append(" and condition.topicId=root.id ");
+					conditionsList.add(" condition.topicId=root.id ");
 					break;
 				case "detection":
-					queryBuilder.append(" and condition.detectionId=root.id ");
+					conditionsList.add(" condition.detectionId=root.id ");
 					break;
 				case "risk":
 				case "assessment":
-					queryBuilder.append(" and condition.topicId=topic.id ");
+					conditionsList.add(" condition.topicId=topic.id ");
 					break;
 				default:
 					break;
 			}
 			
-			queryBuilder.append(" and condition.recordKey in :recordKey");
+			conditionsList.add(" (condition.recordKey in :recordKey) ");
 			parameterMap.put("recordKey", conRecKeys);
 		}
 		
