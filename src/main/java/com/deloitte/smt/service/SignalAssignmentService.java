@@ -210,16 +210,16 @@ public class SignalAssignmentService {
 		boolean noProductFlag = false;
 		
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()) ){
-			queryBuilder.append(" INNER JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
+			queryBuilder.append(" INNER JOIN sm_assignment_condition c ON a.id = c.assignment_configuration_id ");
 		}
 		if(assignmentConfiguration.isConditionFlag()){
-			queryBuilder.append(" LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
+			queryBuilder.append(" LEFT JOIN sm_assignment_condition c ON a.id = c.assignment_configuration_id ");
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-			queryBuilder.append(" INNER JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
+			queryBuilder.append(" INNER JOIN sm_assignment_product p ON a.id = p.assignment_configuration_id  ");
 		}
 		if(assignmentConfiguration.isProductFlag()){
-			queryBuilder.append(" LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
+			queryBuilder.append(" LEFT JOIN sm_assignment_product p ON a.id = p.assignment_configuration_id  ");
 		}
 		queryBuilder.append(" where ");
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
@@ -360,19 +360,6 @@ public class SignalAssignmentService {
 					}
 				}
 				
-				/*if(assignmentConfigurationFromDB == null && (!assignmentConfiguration.isProductEmptyFlag())){
-					assignmentConfiguration.setConditions(conditionProductDTO.getConditions());
-					assignmentConfiguration.setProducts(null);
-					assignmentConfiguration.setProductEmptyFlag(true);
-					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
-				}
-				
-				if(assignmentConfigurationFromDB == null && (!assignmentConfiguration.isConditionEmptyFlag())){
-					assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
-					assignmentConfiguration.setConditions(null);
-					assignmentConfiguration.setConditionEmptyFlag(true);
-					assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
-				}*/
 			}
 			if(assignmentConfigurationFromDB == null){
 				assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
