@@ -26,13 +26,13 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.entity.DenominatorForPoisson;
+import com.deloitte.smt.entity.DenominatorForPoission;
 import com.deloitte.smt.entity.IncludeAE;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
-import com.deloitte.smt.repository.DenominatorForPoissonRepository;
+import com.deloitte.smt.repository.DenominatorForPoissionRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.PtRepository;
@@ -65,7 +65,7 @@ public class SignalDetectionServiceTest {
 	private SignalDetectionRepository signalDetectionRepository;
 
 	@MockBean
-	private DenominatorForPoissonRepository denominatorForPoissonRepository;
+	private DenominatorForPoissionRepository denominatorForPoissonRepository;
 
 	@MockBean
 	private IncludeAERepository includeAERepository;
@@ -259,11 +259,11 @@ public class SignalDetectionServiceTest {
 		includeAEs.add(includeAE);
 		signalDetection.setIncludeAEs(includeAEs);
 		
-		List<DenominatorForPoisson> denominatorForPoissons = new ArrayList<>();
-		DenominatorForPoisson denominatorForPoisson = new DenominatorForPoisson();
+		List<DenominatorForPoission> denominatorForPoissions = new ArrayList<>();
+		DenominatorForPoission denominatorForPoisson = new DenominatorForPoission();
 		denominatorForPoisson.setName("Test Denom");
-		denominatorForPoissons.add(denominatorForPoisson);
-		signalDetection.setDenominatorForPoisson(denominatorForPoissons);
+		denominatorForPoissions.add(denominatorForPoisson);
+		signalDetection.setDenominatorForPoission(denominatorForPoissions);
 		
 		List<QueryBuilder> queryBuilders = new ArrayList<>();
 		QueryBuilder queryBuilder = new QueryBuilder();

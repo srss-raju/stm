@@ -15,7 +15,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.deloitte.smt.entity.DenominatorForPoisson;
+import com.deloitte.smt.entity.DenominatorForPoission;
 import com.deloitte.smt.entity.IncludeAE;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
@@ -29,7 +29,7 @@ import com.deloitte.smt.entity.TopicProductValues;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
-import com.deloitte.smt.repository.DenominatorForPoissonRepository;
+import com.deloitte.smt.repository.DenominatorForPoissionRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.QueryBuilderRepository;
@@ -71,7 +71,7 @@ public class SignalDetectionService {
 	private SignalDetectionRepository signalDetectionRepository;
 
 	@Autowired
-	private DenominatorForPoissonRepository denominatorForPoissonRepository;
+	private DenominatorForPoissionRepository denominatorForPoissionRepository;
 
 	@Autowired
 	private IncludeAERepository includeAERepository;
@@ -124,7 +124,7 @@ public class SignalDetectionService {
 			saveSoc(signalDetection);
 			saveSmq(signalDetection);
 			saveIncludeAE(signalDetection);
-			saveDenominatorForPoisson(signalDetection);
+			saveDenominatorForPoission(signalDetection);
 			saveQueryBuilder(signalDetection);
 			return signalDetection;
 		} catch (ApplicationException ex) {
@@ -255,14 +255,14 @@ public class SignalDetectionService {
 	/**
 	 * @param signalDetection
 	 */
-	private void saveDenominatorForPoisson(SignalDetection signalDetection) {
-		List<DenominatorForPoisson> denominatorForPoissons = signalDetection.getDenominatorForPoisson();
-		if (!CollectionUtils.isEmpty(denominatorForPoissons)) {
-			for (DenominatorForPoisson dfp : denominatorForPoissons) {
+	private void saveDenominatorForPoission(SignalDetection signalDetection) {
+		List<DenominatorForPoission> denominatorForPoissions = signalDetection.getDenominatorForPoission();
+		if (!CollectionUtils.isEmpty(denominatorForPoissions)) {
+			for (DenominatorForPoission dfp : denominatorForPoissions) {
 				dfp.setDetectionId(signalDetection.getId());
 			}
-			denominatorForPoissonRepository.deleteByDetectionId(signalDetection.getId());
-			denominatorForPoissonRepository.save(denominatorForPoissons);
+			denominatorForPoissionRepository.deleteByDetectionId(signalDetection.getId());
+			denominatorForPoissionRepository.save(denominatorForPoissions);
 		}
 	}
 
@@ -342,10 +342,10 @@ public class SignalDetectionService {
 		}
 		signalDetection.setSmqs(smqs);
 
-		List<DenominatorForPoisson> denominatorForPoissonList = denominatorForPoissonRepository
+		List<DenominatorForPoission> denominatorForPoissionList = denominatorForPoissionRepository
 				.findByDetectionId(signalDetection.getId());
 		List<IncludeAE> includeAEList = includeAERepository.findByDetectionId(signalDetection.getId());
-		signalDetection.setDenominatorForPoisson(denominatorForPoissonList);
+		signalDetection.setDenominatorForPoission(denominatorForPoissionList);
 		signalDetection.setIncludeAEs(includeAEList);
 		signalDetection.setQueryBuilder(queryBuilderRepository.findByDetectionId(signalDetection.getId()));
 	}

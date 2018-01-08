@@ -22,8 +22,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.entity.DenominatorForPoisson;
-import com.deloitte.smt.repository.DenominatorForPoissonRepository;
+import com.deloitte.smt.entity.DenominatorForPoission;
+import com.deloitte.smt.repository.DenominatorForPoissionRepository;
 import com.deloitte.smt.service.DenominationForPoissionService;
 
 @RunWith(SpringRunner.class)
@@ -37,7 +37,7 @@ public class DenominationForPoissionServiceTest {
 	private DenominationForPoissionService denominationForPoissionService;
 	
 	@MockBean
-	DenominatorForPoissonRepository denominationForPoissionRespository;
+	DenominatorForPoissionRepository denominationForPoissionRespository;
 	
 		
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
@@ -61,15 +61,15 @@ public class DenominationForPoissionServiceTest {
     
 	@Test
 	public void testInsert() throws Exception{
-		List<DenominatorForPoisson> denominatorForPoissons = new ArrayList<>();
-		DenominatorForPoisson denominatorForPoisson = new DenominatorForPoisson();
-		denominatorForPoissons.add(denominatorForPoisson);
-		denominationForPoissionService.insert(denominatorForPoissons);
+		List<DenominatorForPoission> denominatorForPoissions = new ArrayList<>();
+		DenominatorForPoission denominatorForPoisson = new DenominatorForPoission();
+		denominatorForPoissions.add(denominatorForPoisson);
+		denominationForPoissionService.insert(denominatorForPoissions);
 	}
 	
 	@Test
 	public void testUpdate() throws Exception{
-		DenominatorForPoisson denominatorForPoisson = new DenominatorForPoisson();
+		DenominatorForPoission denominatorForPoisson = new DenominatorForPoission();
 		denominatorForPoisson.setId(1l);
 		denominationForPoissionService.update(denominatorForPoisson);
 	}
@@ -77,7 +77,7 @@ public class DenominationForPoissionServiceTest {
 	@Test
 	public void testUpdateWithNull() throws Exception{
 		try{
-			DenominatorForPoisson denominatorForPoisson = new DenominatorForPoisson();
+			DenominatorForPoission denominatorForPoisson = new DenominatorForPoission();
 			denominationForPoissionService.update(denominatorForPoisson);
 		}catch(Exception ex){
 			LOG.info(ex);
@@ -86,7 +86,7 @@ public class DenominationForPoissionServiceTest {
 	
 	@Test
 	public void testDelete() throws Exception{
-		DenominatorForPoisson denominatorForPoisson = new DenominatorForPoisson();
+		DenominatorForPoission denominatorForPoisson = new DenominatorForPoission();
 		given(this.denominationForPoissionRespository.findOne(1l)).willReturn(denominatorForPoisson);
 		denominationForPoissionService.delete(1l);
 	}
@@ -102,7 +102,7 @@ public class DenominationForPoissionServiceTest {
 	
 	@Test
 	public void testFindById() throws Exception{
-		DenominatorForPoisson denominatorForPoisson = new DenominatorForPoisson();
+		DenominatorForPoission denominatorForPoisson = new DenominatorForPoission();
 		given(this.denominationForPoissionRespository.findOne(1l)).willReturn(denominatorForPoisson);
 		denominationForPoissionService.findById(1l);
 	}

@@ -16,7 +16,7 @@ public class FilterDataObject {
 	private String priority;
 	private Date dueDate;
 	private String runFrequency;
-	private Object denominatorForPoisson;
+	private Object denominatorForPoission;
 	private Object lastRunDate;
 	private Object signalDetected;
 	private Object nextRunDate;
