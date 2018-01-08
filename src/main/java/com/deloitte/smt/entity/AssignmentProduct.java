@@ -36,6 +36,6 @@ public class AssignmentProduct implements Serializable {
     private String recordKey;
     private Long assignmentConfigurationId;
     @Transient
-    private List<AssignmentProduct> recordValues;
+    private List<AssignmentProductValues> recordValues;
     
 }

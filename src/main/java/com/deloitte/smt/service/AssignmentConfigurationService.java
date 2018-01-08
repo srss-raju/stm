@@ -13,23 +13,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.deloitte.smt.entity.AssessmentAssignmentAssignees;
+import com.deloitte.smt.entity.AssignmentAssessmentAssignees;
 import com.deloitte.smt.entity.AssignmentCondition;
+import com.deloitte.smt.entity.AssignmentConditionValues;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.AssignmentProduct;
-import com.deloitte.smt.entity.ProductAssignmentConfiguration;
-import com.deloitte.smt.entity.RiskPlanAssignmentAssignees;
-import com.deloitte.smt.entity.SignalValidationAssignmentAssignees;
-import com.deloitte.smt.entity.SocAssignmentConfiguration;
+import com.deloitte.smt.entity.AssignmentProductValues;
+import com.deloitte.smt.entity.AssignmentRiskPlanAssignees;
+import com.deloitte.smt.entity.AssignmentSignalAssignees;
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.repository.AssessmentAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.AssignmentAssessmentAssigneesRepository;
 import com.deloitte.smt.repository.AssignmentConditionRepository;
+import com.deloitte.smt.repository.AssignmentConditionValuesRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AssignmentProductRepository;
-import com.deloitte.smt.repository.ProductAssignmentConfigurationRepository;
+import com.deloitte.smt.repository.AssignmentProductValuesRepository;
 import com.deloitte.smt.repository.AssignmentRiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.AssignmentSignalAssigneesRepository;
-import com.deloitte.smt.repository.SocAssignmentConfigurationRepository;
 
 /**
  * Created by Rajesh on 16-11-2017.
@@ -44,22 +44,22 @@ public class AssignmentConfigurationService {
     AssignmentConfigurationRepository assignmentConfigurationRepository;
     
     @Autowired
-    SocAssignmentConfigurationRepository socAssignmentConfigurationRepository;
+    AssignmentConditionRepository socAssignmentConfigurationRepository;
     
     @Autowired
-    ProductAssignmentConfigurationRepository productAssignmentConfigurationRepository;
+    AssignmentProductRepository productAssignmentConfigurationRepository;
     
     @Autowired
-    AssignmentConditionRepository assignmentConditionRepository;
+    AssignmentConditionValuesRepository assignmentConditionRepository;
     
     @Autowired
-    AssignmentProductRepository assignmentProductRepository;
+    AssignmentProductValuesRepository assignmentProductRepository;
     
     @Autowired
     AssignmentSignalAssigneesRepository signalValidationAssignmentAssigneesRepository;
     
     @Autowired
-    AssessmentAssignmentAssigneesRepository assessmentAssignmentAssigneesRepository;
+    AssignmentAssessmentAssigneesRepository assessmentAssignmentAssigneesRepository;
     
     @Autowired
     AssignmentRiskPlanAssigneesRepository riskPlanAssignmentAssigneesRepository;
@@ -169,11 +169,11 @@ public class AssignmentConfigurationService {
     }
     
     public void deleteSocAssignmentConfiguration(Long socAssignmentConfigurationId) throws ApplicationException {
-		SocAssignmentConfiguration socAssignmentConfiguration = socAssignmentConfigurationRepository.findOne(socAssignmentConfigurationId);
+    	AssignmentCondition socAssignmentConfiguration = socAssignmentConfigurationRepository.findOne(socAssignmentConfigurationId);
 		if (socAssignmentConfiguration == null) {
 			throw new ApplicationException("Soc Assignment Configuration not found with the given Id : "+socAssignmentConfigurationId);
 		}
-		List<AssignmentCondition> list = assignmentConditionRepository.findBySocAssignmentConfigurationId(socAssignmentConfigurationId);
+		List<AssignmentConditionValues> list = assignmentConditionRepository.findBySocAssignmentConfigurationId(socAssignmentConfigurationId);
 		if(!CollectionUtils.isEmpty(list)){
 			assignmentConditionRepository.delete(list);
 		}
@@ -181,11 +181,11 @@ public class AssignmentConfigurationService {
 	}
     
     public void deleteProductAssignmentConfiguration(Long productAssignmentConfigurationId) throws ApplicationException {
-		ProductAssignmentConfiguration productAssignmentConfiguration = productAssignmentConfigurationRepository.findOne(productAssignmentConfigurationId);
+		AssignmentProduct productAssignmentConfiguration = productAssignmentConfigurationRepository.findOne(productAssignmentConfigurationId);
 		if (productAssignmentConfiguration == null) {
 			throw new ApplicationException("Product Assignment Configuration not found with the given Id : "+productAssignmentConfigurationId);
 		}
-		List<AssignmentProduct> list = assignmentProductRepository.findByProductAssignmentConfigurationId(productAssignmentConfigurationId);
+		List<AssignmentProductValues> list = assignmentProductRepository.findByProductAssignmentConfigurationId(productAssignmentConfigurationId);
 		if(!CollectionUtils.isEmpty(list)){
 			assignmentProductRepository.delete(list);
 		}
@@ -195,12 +195,12 @@ public class AssignmentConfigurationService {
 
 	private void saveSocConfiguration(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated, Long id) {
 		socAssignmentConfigurationRepository.deleteByAssignmentConfigurationId(id);
-		for (SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()) {
+		for (AssignmentCondition socConfig : assignmentConfiguration.getConditions()) {
 			socConfig.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
-			SocAssignmentConfiguration socAssignmentConfigurationUpdated = socAssignmentConfigurationRepository.save(socConfig);
+			AssignmentCondition socAssignmentConfigurationUpdated = socAssignmentConfigurationRepository.save(socConfig);
 			if(!CollectionUtils.isEmpty(socConfig.getRecordValues())){
 				assignmentConditionRepository.delete(socConfig.getRecordValues());
-				for(AssignmentCondition condition : socConfig.getRecordValues()){
+				for(AssignmentConditionValues condition : socConfig.getRecordValues()){
 					condition.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 					condition.setSocAssignmentConfigurationId(socAssignmentConfigurationUpdated.getId());
 				}
@@ -211,12 +211,12 @@ public class AssignmentConfigurationService {
 	
 	private void saveProductConfiguration(AssignmentConfiguration assignmentConfiguration, AssignmentConfiguration assignmentConfigurationUpdated, Long id) {
 		productAssignmentConfigurationRepository.deleteByAssignmentConfigurationId(id);
-		for (ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()) {
+		for (AssignmentProduct productConfig : assignmentConfiguration.getProducts()) {
 			productConfig.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
-			ProductAssignmentConfiguration productAssignmentConfigurationUpdated = productAssignmentConfigurationRepository.save(productConfig);
+			AssignmentProduct productAssignmentConfigurationUpdated = productAssignmentConfigurationRepository.save(productConfig);
 			if(!CollectionUtils.isEmpty(productConfig.getRecordValues())){
 				assignmentProductRepository.delete(productConfig.getRecordValues());
-				for(AssignmentProduct product : productConfig.getRecordValues()){
+				for(AssignmentProductValues product : productConfig.getRecordValues()){
 					product.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 					product.setProductAssignmentConfigurationId(productAssignmentConfigurationUpdated.getId());
 				}
@@ -226,10 +226,10 @@ public class AssignmentConfigurationService {
 	}
 
 	private void deleteSocConfigurationAndCondition(Long assignmentConfigurationId) {
-		List<SocAssignmentConfiguration> socAssignmentConfigurations =  socAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
+		List<AssignmentCondition> socAssignmentConfigurations =  socAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
         if(!CollectionUtils.isEmpty(socAssignmentConfigurations)){
-        	for(SocAssignmentConfiguration socConfig : socAssignmentConfigurations){
-        		List<AssignmentCondition> list = assignmentConditionRepository.findBySocAssignmentConfigurationId(socConfig.getId());
+        	for(AssignmentCondition socConfig : socAssignmentConfigurations){
+        		List<AssignmentConditionValues> list = assignmentConditionRepository.findBySocAssignmentConfigurationId(socConfig.getId());
         		if(!CollectionUtils.isEmpty(list)){
         			assignmentConditionRepository.delete(list);
         		}
@@ -239,10 +239,10 @@ public class AssignmentConfigurationService {
 	}
 	
 	private void deleteProductConfigurationAndCondition(Long assignmentConfigurationId) {
-		List<ProductAssignmentConfiguration> productAssignmentConfigurations =  productAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
+		List<AssignmentProduct> productAssignmentConfigurations =  productAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
         if(!CollectionUtils.isEmpty(productAssignmentConfigurations)){
-        	for(ProductAssignmentConfiguration productConfig : productAssignmentConfigurations){
-        		List<AssignmentProduct> list = assignmentProductRepository.findByProductAssignmentConfigurationId(productConfig.getId());
+        	for(AssignmentProduct productConfig : productAssignmentConfigurations){
+        		List<AssignmentProductValues> list = assignmentProductRepository.findByProductAssignmentConfigurationId(productConfig.getId());
         		if(!CollectionUtils.isEmpty(list)){
         			assignmentProductRepository.delete(list);
         		}
@@ -252,9 +252,9 @@ public class AssignmentConfigurationService {
 	}
 
 	private void setSocConfigurationAndCondition(Long assignmentConfigurationId, AssignmentConfiguration assignmentConfiguration) {
-		List<SocAssignmentConfiguration> socAssignmentConfigurations =  socAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
+		List<AssignmentCondition> socAssignmentConfigurations =  socAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
         if(!CollectionUtils.isEmpty(socAssignmentConfigurations)){
-        	for(SocAssignmentConfiguration socConfig : socAssignmentConfigurations){
+        	for(AssignmentCondition socConfig : socAssignmentConfigurations){
         		socConfig.setRecordValues(assignmentConditionRepository.findBySocAssignmentConfigurationId(socConfig.getId()));
         	}
         	assignmentConfiguration.setConditions(socAssignmentConfigurations);
@@ -262,9 +262,9 @@ public class AssignmentConfigurationService {
 	}
 	
 	private void setProductConfigurationAndCondition(Long assignmentConfigurationId, AssignmentConfiguration assignmentConfiguration) {
-		List<ProductAssignmentConfiguration> productAssignmentConfigurations =  productAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
+		List<AssignmentProduct> productAssignmentConfigurations =  productAssignmentConfigurationRepository.findByAssignmentConfigurationId(assignmentConfigurationId);
         if(!CollectionUtils.isEmpty(productAssignmentConfigurations)){
-        	for(ProductAssignmentConfiguration productConfig : productAssignmentConfigurations){
+        	for(AssignmentProduct productConfig : productAssignmentConfigurations){
         		productConfig.setRecordValues(assignmentProductRepository.findByProductAssignmentConfigurationId(productConfig.getId()));
         	}
         	assignmentConfiguration.setProducts(productAssignmentConfigurations);
@@ -281,7 +281,7 @@ public class AssignmentConfigurationService {
 		assessmentAssignmentAssigneesRepository.deleteByAssignmentConfigurationId(assignmentConfiguration.getId());
 		riskPlanAssignmentAssigneesRepository.deleteByAssignmentConfigurationId(assignmentConfiguration.getId());
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getSignalAssignees())){
-        	for(SignalValidationAssignmentAssignees svaAssignees : assignmentConfiguration.getSignalAssignees()){
+        	for(AssignmentSignalAssignees svaAssignees : assignmentConfiguration.getSignalAssignees()){
         		svaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
         		svaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
         	}
@@ -289,7 +289,7 @@ public class AssignmentConfigurationService {
         }
         
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getAssessmentAssignees())){
-			for(AssessmentAssignmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignees()){
+			for(AssignmentAssessmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignees()){
 				aaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 				aaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
         	}
@@ -297,7 +297,7 @@ public class AssignmentConfigurationService {
 		}
 		
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getRiskAssignees())){
-			for(RiskPlanAssignmentAssignees rpaAssignees : assignmentConfiguration.getRiskAssignees()){
+			for(AssignmentRiskPlanAssignees rpaAssignees : assignmentConfiguration.getRiskAssignees()){
 				rpaAssignees.setAssignmentConfigurationId(assignmentConfigurationUpdated.getId());
 				rpaAssignees.setCreatedDate(assignmentConfiguration.getCreatedDate());
         	}
@@ -306,7 +306,7 @@ public class AssignmentConfigurationService {
 	}
 
 	public void deleteSignalValidationAssignmentAssignee(Long assigneeId) throws ApplicationException {
-		SignalValidationAssignmentAssignees assignee = signalValidationAssignmentAssigneesRepository.findOne(assigneeId);
+		AssignmentSignalAssignees assignee = signalValidationAssignmentAssigneesRepository.findOne(assigneeId);
 		if (assignee == null) {
 			throw new ApplicationException("Signl Assignment Configuration not found with the given Id : "+assigneeId);
 		}
@@ -314,7 +314,7 @@ public class AssignmentConfigurationService {
 	}
 
 	public void deleteAssessmentAssignmentAssignee(Long assigneeId) throws ApplicationException {
-		AssessmentAssignmentAssignees assignee = assessmentAssignmentAssigneesRepository.findOne(assigneeId);
+		AssignmentAssessmentAssignees assignee = assessmentAssignmentAssigneesRepository.findOne(assigneeId);
 		if (assignee == null) {
 			throw new ApplicationException("Assessment Assignment Configuration not found with the given Id : "+assigneeId);
 		}
@@ -322,7 +322,7 @@ public class AssignmentConfigurationService {
 	}
 
 	public void deleteRiskPlanAssignmentAssignee(Long assigneeId) throws ApplicationException {
-		RiskPlanAssignmentAssignees assignee = riskPlanAssignmentAssigneesRepository.findOne(assigneeId);
+		AssignmentRiskPlanAssignees assignee = riskPlanAssignmentAssigneesRepository.findOne(assigneeId);
 		if (assignee == null) {
 			throw new ApplicationException("Risk Plan Assignment Configuration not found with the given Id : "+assigneeId);
 		}
@@ -386,7 +386,7 @@ public class AssignmentConfigurationService {
 	private boolean addProducts(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder, StringBuilder productBuilder, boolean noSocFlag, StringBuilder productUpdateBuilder) {
 		boolean noProductFlag = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
 				if(productConfig.getId() != null){
 					productUpdateBuilder.append(productConfig.getId());
@@ -410,7 +410,7 @@ public class AssignmentConfigurationService {
 	private boolean addConditions(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder, StringBuilder socBuilder, StringBuilder socUpdateBuilder) {
 		boolean noSocFlag = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
-			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
 				if(socConfig.getId() != null){
 					socUpdateBuilder.append(socConfig.getId());
