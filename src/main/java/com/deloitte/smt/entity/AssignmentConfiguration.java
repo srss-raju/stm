@@ -43,16 +43,16 @@ public class AssignmentConfiguration implements Serializable {
     private String assessmentOwner;
     private String riskOwner;
     @Transient
-	private List<SignalValidationAssignmentAssignees> signalAssignees;
+	private List<AssignmentSignalAssignees> signalAssignees;
     @Transient
 	private List<AssignmentAssessmentAssignees> assessmentAssignees;
     @Transient
-	private List<RiskPlanAssignmentAssignees> riskAssignees;
+	private List<AssignmentRiskPlanAssignees> riskAssignees;
     
     @Transient
-	private List<SocAssignmentConfiguration> conditions;
+	private List<AssignmentCondition> conditions;
     @Transient
-	private List<ProductAssignmentConfiguration> products;
+	private List<AssignmentProduct> products;
     
     @JsonIgnore
     @Transient
