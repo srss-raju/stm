@@ -53,7 +53,7 @@ import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalStrengthRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
-import com.deloitte.smt.repository.TopicAssignmentConditionRepository;
+import com.deloitte.smt.repository.TopicConditionValuesRepository;
 import com.deloitte.smt.repository.TopicAssignmentProductRepository;
 import com.deloitte.smt.repository.TopicProductAssignmentConfigurationRepository;
 import com.deloitte.smt.repository.TopicRepository;
@@ -139,7 +139,7 @@ public class SignalService {
 	TopicProductAssignmentConfigurationRepository topicProductAssignmentConfigurationRepository;
 	
 	@Autowired
-	TopicAssignmentConditionRepository topicAssignmentConditionRepository;
+	TopicConditionValuesRepository topicAssignmentConditionRepository;
 	
 	@Autowired
 	TopicAssignmentProductRepository topicAssignmentProductRepository;

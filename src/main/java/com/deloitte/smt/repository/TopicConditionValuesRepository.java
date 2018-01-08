@@ -7,15 +7,15 @@ import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.deloitte.smt.entity.TopicAssignmentCondition;
+import com.deloitte.smt.entity.TopicConditionValues;
 
 /**
  * Created by Rajesh on 07-12-2017.
  */
 @Repository
-public interface TopicAssignmentConditionRepository  extends JpaRepository<TopicAssignmentCondition, Long> {
+public interface TopicConditionValuesRepository  extends JpaRepository<TopicConditionValues, Long> {
 
-	List<TopicAssignmentCondition> findByTopicSocAssignmentConfigurationId(Long topicSocAssignmentConfigurationId);
+	List<TopicConditionValues> findByTopicSocAssignmentConfigurationId(Long topicSocAssignmentConfigurationId);
 	
 	@Transactional
 	Long deleteByTopicSocAssignmentConfigurationId(Long topicSocAssignmentConfigurationId);

@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskTask;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.service.RiskPlanService;
 import com.deloitte.smt.util.TestUtil;
 
@@ -80,9 +80,9 @@ public class RiskControllerTest {
 	@Test
 	public void testCreateRiskAction() throws Exception{
 		
-		doNothing().when(riskPlanServiceMock1).createRiskTask(Matchers.any(RiskTask.class), Mockito.any(MultipartFile[].class));
+		doNothing().when(riskPlanServiceMock1).createRiskTask(Matchers.any(Task.class), Mockito.any(MultipartFile[].class));
 		
-		RiskTask riskTask=new RiskTask();
+		Task riskTask=new Task();
 
 		this.mockMvc
 		.perform(post("/camunda/api/signal/risk/task/create")
@@ -94,7 +94,7 @@ public class RiskControllerTest {
 	
 	@Test
 	public void testGetAssessmentActionById() throws Exception{
-		RiskTask riskTask=new RiskTask();
+		Task riskTask=new Task();
 		when(riskPlanServiceMock.findById(anyLong())).thenReturn(riskTask);
 		
 		this.mockMvc
@@ -107,7 +107,7 @@ public class RiskControllerTest {
 	@Test
 	public void testGetAllByRiskId() throws Exception{
 		
-		List<RiskTask> list=new ArrayList<>();
+		List<Task> list=new ArrayList<>();
 		when(riskPlanServiceMock.findAllByRiskId(anyString(), anyString())).thenReturn(list);
 		
 		this.mockMvc
@@ -131,8 +131,8 @@ public class RiskControllerTest {
 	@Test
 	public void testUpdateRiskTask() throws Exception{
 		try{
-			doNothing().when(riskPlanServiceMock).updateRiskTask(Matchers.any(RiskTask.class), Mockito.any(MultipartFile[].class));
-			RiskTask riskTask=new RiskTask();
+			doNothing().when(riskPlanServiceMock).updateRiskTask(Matchers.any(Task.class), Mockito.any(MultipartFile[].class));
+			Task riskTask=new Task();
 			this.mockMvc
 					.perform(post("/camunda/api/signal/risk/task/updateRiskTask")
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -176,7 +176,7 @@ public class RiskControllerTest {
 	@Test
 	public void testUpdateRiskTaskWithNull() throws Exception{
 		try{
-			doNothing().when(riskPlanServiceMock).updateRiskTask(Matchers.any(RiskTask.class), Mockito.any(MultipartFile[].class));
+			doNothing().when(riskPlanServiceMock).updateRiskTask(Matchers.any(Task.class), Mockito.any(MultipartFile[].class));
 			this.mockMvc
 					.perform(post("/camunda/api/signal/risk/task/updateRiskTask")
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)

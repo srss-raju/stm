@@ -13,7 +13,7 @@ import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskPlanAssignmentAssignees;
 import com.deloitte.smt.entity.TopicRiskPlanAssignmentAssignees;
-import com.deloitte.smt.repository.RiskPlanAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.AssignmentRiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 
 /**
@@ -24,7 +24,7 @@ import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 public class RiskPlanAssignmentService {
 
     @Autowired
-    RiskPlanAssignmentAssigneesRepository riskPlanAssignmentAssigneesRepository;
+    AssignmentRiskPlanAssigneesRepository riskPlanAssignmentAssigneesRepository;
     
     @Autowired
     TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;

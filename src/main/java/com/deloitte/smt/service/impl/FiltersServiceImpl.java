@@ -26,15 +26,14 @@ import com.deloitte.smt.dto.FilterDataObject;
 import com.deloitte.smt.dto.FilterResponse;
 import com.deloitte.smt.dto.SearchCriteriaDTO;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.FilterValues;
 import com.deloitte.smt.entity.Filters;
-import com.deloitte.smt.entity.FiltersStatus;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.FilterRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.service.FiltersService;
 import com.deloitte.smt.util.ServerResponseObject;
 import com.deloitte.smt.util.SignalUtil;
@@ -54,9 +53,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private TopicRepository topicRepository;
 	@Autowired
 	private AssessmentPlanRepository assessmentPlanRepository;
-	@Autowired
-	private TopicSignalDetectionAssignmentAssigneesRepository topicSignalDetectionAssignmentAssigneesRepository;
-
+	
 	@Autowired
 	private ProductFilterServiceImpl productFilterServiceImpl;
 
@@ -121,11 +118,11 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "assignees":
+		/*case "assignees":
 			data = topicSignalDetectionAssignmentAssigneesRepository.getDetectionAssignedUsers();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
-			break;
+			break;*/
 		case "signalconfirmation":
 			data = topicRepository.findDistinctSignalConfirmationNames();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
@@ -170,11 +167,11 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		dto.setFilterKey(filter.getKey());
 		dto.setFilterName(filter.getName());
 		LOGGER.info(filter.getType() + "..." + filter.getName());
-		List<FiltersStatus> statusList = filter.getFiltersStatus();
+		List<FilterValues> statusList = filter.getFiltersValues();
 		List<String> statuslist = null;
 		if (!CollectionUtils.isEmpty(statusList)) {
 			statuslist = new ArrayList<>();
-			for (FiltersStatus filtersStatus : statusList) {
+			for (FilterValues filtersStatus : statusList) {
 				statuslist.add(filtersStatus.getName());
 			}
 		}

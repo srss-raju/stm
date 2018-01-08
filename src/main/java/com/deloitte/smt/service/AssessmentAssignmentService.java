@@ -14,7 +14,7 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.TopicAssessmentAssignmentAssignees;
 import com.deloitte.smt.repository.AssessmentAssignmentAssigneesRepository;
-import com.deloitte.smt.repository.TopicAssessmentAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.AssessmentAssigneesRepository;
 
 /**
  * Created by RKB on 31-07-2017.
@@ -27,7 +27,7 @@ public class AssessmentAssignmentService {
     AssessmentAssignmentAssigneesRepository assessmentAssignmentAssigneesRepository;
     
     @Autowired
-    TopicAssessmentAssignmentAssigneesRepository topicAssessmentAssignmentAssigneesRepository;
+    AssessmentAssigneesRepository topicAssessmentAssignmentAssigneesRepository;
     
 
 	public AssessmentPlan saveAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, AssessmentPlan assessmentPlan) {

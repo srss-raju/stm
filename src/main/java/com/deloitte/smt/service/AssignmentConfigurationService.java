@@ -27,8 +27,8 @@ import com.deloitte.smt.repository.AssignmentConditionRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AssignmentProductRepository;
 import com.deloitte.smt.repository.ProductAssignmentConfigurationRepository;
-import com.deloitte.smt.repository.RiskPlanAssignmentAssigneesRepository;
-import com.deloitte.smt.repository.SignalValidationAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.AssignmentRiskPlanAssigneesRepository;
+import com.deloitte.smt.repository.AssignmentSignalAssigneesRepository;
 import com.deloitte.smt.repository.SocAssignmentConfigurationRepository;
 
 /**
@@ -56,13 +56,13 @@ public class AssignmentConfigurationService {
     AssignmentProductRepository assignmentProductRepository;
     
     @Autowired
-    SignalValidationAssignmentAssigneesRepository signalValidationAssignmentAssigneesRepository;
+    AssignmentSignalAssigneesRepository signalValidationAssignmentAssigneesRepository;
     
     @Autowired
     AssessmentAssignmentAssigneesRepository assessmentAssignmentAssigneesRepository;
     
     @Autowired
-    RiskPlanAssignmentAssigneesRepository riskPlanAssignmentAssigneesRepository;
+    AssignmentRiskPlanAssigneesRepository riskPlanAssignmentAssigneesRepository;
     
      
 

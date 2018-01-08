@@ -29,7 +29,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.service.TaskTemplateService;
 import com.deloitte.smt.util.TestUtil;
@@ -111,21 +110,6 @@ public class TaskTemplateControllerTest {
 		verify(taskTemplateServiceMock, times(1)).findAll();
 		verifyNoMoreInteractions(taskTemplateServiceMock);
 
-	}
-	
-	@Test
-	public void testFindAllByTemplateId() throws Exception {
-		List<SignalAction> actions = new ArrayList<>();
-
-		when(taskTemplateServiceMock.findAllByTemplateId(anyLong())).thenReturn(actions);
-
-		this.mockMvc
-				.perform(get("/camunda/api/signal/template/signalAction/{templateId}", 1)
-						.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(status().isOk()).andExpect(content().contentType("application/json;charset=UTF-8"));
-
-		verify(taskTemplateServiceMock, times(1)).findAllByTemplateId(anyLong());
-		verifyNoMoreInteractions(taskTemplateServiceMock);
 	}
 	
 	@Test

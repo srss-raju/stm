@@ -37,7 +37,7 @@ import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SmqRepository;
 import com.deloitte.smt.repository.SocRepository;
-import com.deloitte.smt.repository.TopicAssignmentConditionRepository;
+import com.deloitte.smt.repository.TopicConditionValuesRepository;
 import com.deloitte.smt.repository.TopicAssignmentProductRepository;
 import com.deloitte.smt.repository.TopicProductAssignmentConfigurationRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
@@ -93,7 +93,7 @@ public class SignalDetectionService {
 	TopicProductAssignmentConfigurationRepository topicProductAssignmentConfigurationRepository;
 	
 	@Autowired
-	TopicAssignmentConditionRepository topicAssignmentConditionRepository;
+	TopicConditionValuesRepository topicAssignmentConditionRepository;
 	
 	@Autowired
 	TopicAssignmentProductRepository topicAssignmentProductRepository;

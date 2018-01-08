@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.entity.AssessmentActionType;
+import com.deloitte.smt.entity.TaskType;
 import com.deloitte.smt.service.AssessmentActionTypeService;
 import com.deloitte.smt.util.TestUtil;
 
@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {"classpath:test.properties"})
-public class AssessmentActionTypeControllerTest {
+public class TaskTypeControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -54,7 +54,7 @@ public class AssessmentActionTypeControllerTest {
 	
 	@Test
 	public void testFindAssessmentActionTypeById() throws Exception {
-		AssessmentActionType assessmentActionType = new AssessmentActionType();
+		TaskType assessmentActionType = new TaskType();
 
 		when(assessmentActionTypeServiceMock.findById(anyLong())).thenReturn(assessmentActionType);
 
@@ -88,8 +88,8 @@ public class AssessmentActionTypeControllerTest {
 	public void testCreateNewAssessmentActionType() throws Exception {
 		when(assessmentActionTypeServiceMock.insert(anyList())).thenReturn(anyList());
 		
-		List<AssessmentActionType> typeList=new ArrayList<AssessmentActionType>();
-		AssessmentActionType type=new AssessmentActionType();
+		List<TaskType> typeList=new ArrayList<TaskType>();
+		TaskType type=new TaskType();
 		typeList.add(type);
 		
 		this.mockMvc
@@ -107,8 +107,8 @@ public class AssessmentActionTypeControllerTest {
 	@Test
 	public void testUpdateAssessmentActionType() throws Exception {
 		
-		AssessmentActionType updateType=new AssessmentActionType();
-		when(assessmentActionTypeServiceMock.update(Matchers.any(AssessmentActionType.class))).thenReturn(updateType);
+		TaskType updateType=new TaskType();
+		when(assessmentActionTypeServiceMock.update(Matchers.any(TaskType.class))).thenReturn(updateType);
 		
 		this.mockMvc
 				.perform(put("/camunda/api/signal/assessmentActionType")
@@ -117,14 +117,14 @@ public class AssessmentActionTypeControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 
-		verify(assessmentActionTypeServiceMock, times(1)).update(Matchers.any(AssessmentActionType.class));
+		verify(assessmentActionTypeServiceMock, times(1)).update(Matchers.any(TaskType.class));
 		verifyNoMoreInteractions(assessmentActionTypeServiceMock);
 	}
 	
 	@Test
 		public void testFindAll() throws Exception {
-		List<AssessmentActionType> typeList=new ArrayList<AssessmentActionType>();
-		AssessmentActionType type=new AssessmentActionType();
+		List<TaskType> typeList=new ArrayList<TaskType>();
+		TaskType type=new TaskType();
 		typeList.add(type);
 		
 			when(assessmentActionTypeServiceMock.findAll()).thenReturn(typeList);

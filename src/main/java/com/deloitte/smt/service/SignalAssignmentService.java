@@ -31,10 +31,10 @@ import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssessmentAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.ProductAssignmentConfigurationRepository;
-import com.deloitte.smt.repository.RiskPlanAssignmentAssigneesRepository;
-import com.deloitte.smt.repository.SignalValidationAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.AssignmentRiskPlanAssigneesRepository;
+import com.deloitte.smt.repository.AssignmentSignalAssigneesRepository;
 import com.deloitte.smt.repository.SocAssignmentConfigurationRepository;
-import com.deloitte.smt.repository.TopicAssessmentAssignmentAssigneesRepository;
+import com.deloitte.smt.repository.AssessmentAssigneesRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.TopicSignalValidationAssignmentAssigneesRepository;
 import com.deloitte.smt.util.AssignmentUtil;
@@ -53,19 +53,19 @@ public class SignalAssignmentService {
     AssignmentConfigurationRepository assignmentConfigurationRepository;
 	
 	@Autowired
-    SignalValidationAssignmentAssigneesRepository signalValidationAssignmentAssigneesRepository;
+    AssignmentSignalAssigneesRepository signalValidationAssignmentAssigneesRepository;
     
     @Autowired
     AssessmentAssignmentAssigneesRepository assessmentAssignmentAssigneesRepository;
     
     @Autowired
-    RiskPlanAssignmentAssigneesRepository riskPlanAssignmentAssigneesRepository;
+    AssignmentRiskPlanAssigneesRepository riskPlanAssignmentAssigneesRepository;
     
     @Autowired
     TopicSignalValidationAssignmentAssigneesRepository topicSignalValidationAssignmentAssigneesRepository;
     
     @Autowired
-    TopicAssessmentAssignmentAssigneesRepository topicAssessmentAssignmentAssigneesRepository;
+    AssessmentAssigneesRepository topicAssessmentAssignmentAssigneesRepository;
     
     @Autowired
     TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
