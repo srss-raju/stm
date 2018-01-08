@@ -31,6 +31,7 @@ public class TaskType implements Serializable {
     private String createdBy;
     private Date lastModifiedDate;
     private String name;
+    private String type;
     private String description;
     
 }

@@ -45,7 +45,7 @@ public class Task {
     private String status;
 
 	private String actionType;
-
+	private String type;
 	private String createdBy;
 	private int daysLeft;
 	private String assessmentPlanId;

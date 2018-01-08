@@ -22,7 +22,7 @@ import com.deloitte.smt.service.TaskTypeService;
  * Created by myelleswarapu on 02-05-2017.
  */
 @RestController
-@RequestMapping("/camunda/api/signal/assessmentActionType")
+@RequestMapping("/camunda/api/signal/{type}/tasktype")
 public class TaskTypeController {
 
     @Autowired

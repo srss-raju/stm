@@ -25,6 +25,7 @@ public class TaskTemplate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String name;
+	private String type;
 	private Date createdDate;
 	private String createdBy;
 	
