@@ -26,9 +26,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @RestController
 @RequestMapping("/camunda/api/signal")
-public class AssessmentActionController    {
+public class TaskTypeController    {
 	
-	private static final Logger LOG = Logger.getLogger(AssessmentActionController.class);
+	private static final Logger LOG = Logger.getLogger(TaskTypeController.class);
 
     @Autowired
     AssessmentActionService assessmentActionService;
