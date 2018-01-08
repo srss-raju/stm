@@ -22,11 +22,10 @@ import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Smq;
 import com.deloitte.smt.entity.Soc;
-import com.deloitte.smt.entity.TopicAssignmentCondition;
-import com.deloitte.smt.entity.TopicAssignmentProduct;
-import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
-import com.deloitte.smt.entity.TopicSignalDetectionAssignmentAssignees;
-import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
+import com.deloitte.smt.entity.TopicCondition;
+import com.deloitte.smt.entity.TopicConditionValues;
+import com.deloitte.smt.entity.TopicProduct;
+import com.deloitte.smt.entity.TopicProductValues;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
@@ -37,11 +36,10 @@ import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SmqRepository;
 import com.deloitte.smt.repository.SocRepository;
-import com.deloitte.smt.repository.TopicConditionValuesRepository;
-import com.deloitte.smt.repository.TopicProductValuesRepository;
-import com.deloitte.smt.repository.TopicProductRepository;
-import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.TopicConditionRepository;
+import com.deloitte.smt.repository.TopicConditionValuesRepository;
+import com.deloitte.smt.repository.TopicProductRepository;
+import com.deloitte.smt.repository.TopicProductValuesRepository;
 import com.deloitte.smt.util.SignalUtil;
 import com.deloitte.smt.util.SmtResponse;
 
@@ -81,9 +79,6 @@ public class SignalDetectionService {
 	@Autowired
 	private QueryBuilderRepository queryBuilderRepository;
 	
-	@Autowired
-	private TopicSignalDetectionAssignmentAssigneesRepository topicSignalDetectionAssignmentAssigneesRepository;
-
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -119,12 +114,12 @@ public class SignalDetectionService {
 			SignalDetection clone = signalDetection;
 			clone = signalDetectionRepository.save(clone);
 			saveProductsAndConditions(signalDetection, clone);
-			List<TopicSignalDetectionAssignmentAssignees>  detectionAssigneesList = clone.getTopicSignalDetectionAssignmentAssignees();
+			/*List<TopicSignalDetectionAssignmentAssignees>  detectionAssigneesList = clone.getTopicSignalDetectionAssignmentAssignees();
 			if(!CollectionUtils.isEmpty(detectionAssigneesList)){
 				for(TopicSignalDetectionAssignmentAssignees assignee:detectionAssigneesList){
 					assignee.setDetectionId(clone.getId());
 				} 
-			}
+			}*/
 			signalDetection.setId(clone.getId());
 			saveSoc(signalDetection);
 			saveSmq(signalDetection);
@@ -145,19 +140,19 @@ public class SignalDetectionService {
 	
 	private void saveProducts(SignalDetection signalDetection, SignalDetection signalDetectionUpdated) {
 		if(!CollectionUtils.isEmpty(signalDetection.getProducts())){
-			for(TopicProductAssignmentConfiguration productConfig : signalDetection.getProducts()){
+			for(TopicProduct productConfig : signalDetection.getProducts()){
 				productConfig.setDetectionId(signalDetectionUpdated.getId());
 			}
-			List<TopicProductAssignmentConfiguration> updatedProductList = topicProductAssignmentConfigurationRepository.save(signalDetection.getProducts());
-			for(TopicProductAssignmentConfiguration updatedProductConfig : updatedProductList){
+			List<TopicProduct> updatedProductList = topicProductAssignmentConfigurationRepository.save(signalDetection.getProducts());
+			for(TopicProduct updatedProductConfig : updatedProductList){
 				saveAssignmentProduct(updatedProductConfig);
 			}
 		}
 	}
 
-	private void saveAssignmentProduct(TopicProductAssignmentConfiguration updatedProductConfig) {
+	private void saveAssignmentProduct(TopicProduct updatedProductConfig) {
 		if(!CollectionUtils.isEmpty(updatedProductConfig.getRecordValues())){
-			for(TopicAssignmentProduct record : updatedProductConfig.getRecordValues()){
+			for(TopicProductValues record : updatedProductConfig.getRecordValues()){
 				record.setTopicProductAssignmentConfigurationId(updatedProductConfig.getId());
 			}
 			topicAssignmentProductRepository.save(updatedProductConfig.getRecordValues());
@@ -166,19 +161,19 @@ public class SignalDetectionService {
 
 	private void saveConditions(SignalDetection signalDetection, SignalDetection signalDetectionUpdated) {
 		if(!CollectionUtils.isEmpty(signalDetection.getConditions())){
-			for(TopicSocAssignmentConfiguration socConfig : signalDetection.getConditions()){
+			for(TopicCondition socConfig : signalDetection.getConditions()){
 				socConfig.setDetectionId(signalDetectionUpdated.getId());
 			}
-			List<TopicSocAssignmentConfiguration> updatedConditionList = topicSocAssignmentConfigurationRepository.save(signalDetection.getConditions());
-			for(TopicSocAssignmentConfiguration updateConditionConfig : updatedConditionList){
+			List<TopicCondition> updatedConditionList = topicSocAssignmentConfigurationRepository.save(signalDetection.getConditions());
+			for(TopicCondition updateConditionConfig : updatedConditionList){
 				savecAssignmentCondition(updateConditionConfig);
 			}
 		}
 	}
 	
-	private void savecAssignmentCondition(TopicSocAssignmentConfiguration updateConditionConfig) {
+	private void savecAssignmentCondition(TopicCondition updateConditionConfig) {
 		if(!CollectionUtils.isEmpty(updateConditionConfig.getRecordValues())){
-			for(TopicAssignmentCondition record : updateConditionConfig.getRecordValues()){
+			for(TopicConditionValues record : updateConditionConfig.getRecordValues()){
 				record.setTopicSocAssignmentConfigurationId(updateConditionConfig.getId());
 			}
 			topicAssignmentConditionRepository.save(updateConditionConfig.getRecordValues());
@@ -293,15 +288,15 @@ public class SignalDetectionService {
 		signalDetectionRepository.delete(signalDetection);
 	}
 	
-	public void deleteByAssigneeId(Long assigneeId) throws ApplicationException {
+/*	public void deleteByAssigneeId(Long assigneeId) throws ApplicationException {
 		TopicSignalDetectionAssignmentAssignees assignee = topicSignalDetectionAssignmentAssigneesRepository.findOne(assigneeId);
 		if (assignee == null) {
 			throw new ApplicationException("Failed to delete Action. Invalid Id received");
 		}
 		topicSignalDetectionAssignmentAssigneesRepository.delete(assignee);
-	}
+	}*/
 
-	public SignalDetection findById(Long id) throws ApplicationException {
+	/*public SignalDetection findById(Long id) throws ApplicationException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(id);
 		if (null == signalDetection) {
 			throw new ApplicationException("Signal Detection not found with given Id :" + id);
@@ -310,20 +305,20 @@ public class SignalDetectionService {
 		setTopicConditionsAndProducts(signalDetection);
 		signalDetection.setTopicSignalDetectionAssignmentAssignees(topicSignalDetectionAssignmentAssigneesRepository.findByDetectionId(id));
 		return signalDetection;
-	}
+	}*/
 	
 	private void setTopicConditionsAndProducts(SignalDetection signalDetection) {
-		List<TopicSocAssignmentConfiguration> socList = topicSocAssignmentConfigurationRepository.findByDetectionId(signalDetection.getId());
-		List<TopicProductAssignmentConfiguration> productList = topicProductAssignmentConfigurationRepository.findByDetectionId(signalDetection.getId());
+		List<TopicCondition> socList = topicSocAssignmentConfigurationRepository.findByDetectionId(signalDetection.getId());
+		List<TopicProduct> productList = topicProductAssignmentConfigurationRepository.findByDetectionId(signalDetection.getId());
 		
 		if(!CollectionUtils.isEmpty(socList)){
-			for(TopicSocAssignmentConfiguration socConfig:socList){
+			for(TopicCondition socConfig:socList){
 				socConfig.setRecordValues(topicAssignmentConditionRepository.findByTopicSocAssignmentConfigurationId(socConfig.getId()));
 			}
 		}
 		
 		if(!CollectionUtils.isEmpty(productList)){
-			for(TopicProductAssignmentConfiguration productConfig:productList){
+			for(TopicProduct productConfig:productList){
 				productConfig.setRecordValues(topicAssignmentProductRepository.findByTopicProductAssignmentConfigurationId(productConfig.getId()));
 			}
 		}

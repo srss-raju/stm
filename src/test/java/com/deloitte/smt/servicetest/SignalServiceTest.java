@@ -41,7 +41,6 @@ import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
@@ -51,7 +50,6 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.AttachmentService;
@@ -80,8 +78,6 @@ public class SignalServiceTest {
 	TopicRepository topicRepository;
 
 	@MockBean
-	TaskInstRepository taskInstRepository;
-	@MockBean
 	SignalURLRepository signalURLRepository;
 
 	@Autowired
@@ -101,9 +97,6 @@ public class SignalServiceTest {
 
 	@MockBean
 	PtRepository ptRepository;
-
-	@MockBean
-	AssessmentActionRepository assessmentActionRepository;
 
 	@MockBean
 	TaskTemplateRepository taskTemplateRepository;

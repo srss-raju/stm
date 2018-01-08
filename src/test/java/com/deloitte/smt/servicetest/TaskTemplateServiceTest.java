@@ -23,7 +23,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.TaskTemplate;
-import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.service.TaskTemplateService;
 
@@ -39,9 +38,6 @@ public class TaskTemplateServiceTest {
 	
 	@MockBean
 	private TaskTemplateRepository taskTemplateRepository;
-	
-	@MockBean
-	private AssessmentActionRepository assessmentActionRepository;
 	
 	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
 	    {

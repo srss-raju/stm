@@ -30,8 +30,8 @@ import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.CommentsRepository;
@@ -39,7 +39,6 @@ import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.repository.TaskInstRepository;
 import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.service.RiskPlanService;
 
@@ -68,9 +67,6 @@ public class RiskPlanServiceTest {
 	@MockBean
 	RiskTaskRepository riskTaskRepository;
 
-
-	@MockBean
-	TaskInstRepository taskInstRepository;
 
 	@Autowired
 	CaseService caseService;

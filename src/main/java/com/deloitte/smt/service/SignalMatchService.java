@@ -21,8 +21,8 @@ import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
-import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
+import com.deloitte.smt.entity.TopicCondition;
+import com.deloitte.smt.entity.TopicProduct;
 import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
@@ -78,7 +78,7 @@ public class SignalMatchService {
 				"select DISTINCT a.* from sm_topic a LEFT JOIN sm_topic_product_assignment_configuration p ON a.id = p.topic_id LEFT JOIN sm_topic_soc_assignment_configuration c ON a.id = c.topic_id  where a.created_date < ? ");
 
 		if(!CollectionUtils.isEmpty(topic.getConditions())){
-			for(TopicSocAssignmentConfiguration socConfig : topic.getConditions()){
+			for(TopicCondition socConfig : topic.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
 			}
 			queryBuilder.append(" and c.record_key IN (");
@@ -87,7 +87,7 @@ public class SignalMatchService {
 			noSocFlag = true;
 		}
 		if(!CollectionUtils.isEmpty(topic.getProducts())){
-			for(TopicProductAssignmentConfiguration productConfig : topic.getProducts()){
+			for(TopicProduct productConfig : topic.getProducts()){
 				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
 			}
 			queryBuilder.append(" and p.record_key IN (");
