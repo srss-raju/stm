@@ -29,9 +29,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @RestController
 @RequestMapping("/camunda/api/signal")
-public class AssessmentController {
+public class AssessmentPlanController {
 	
-	private static final Logger LOG = Logger.getLogger(AssessmentController.class);
+	private static final Logger LOG = Logger.getLogger(AssessmentPlanController.class);
 
     @Autowired
     AssessmentPlanService assessmentPlanService;
@@ -81,6 +81,15 @@ public class AssessmentController {
     @GetMapping(value = "/assessmentPlan/getTemplates/{assessmentId}")
 	public List<TaskTemplate> getTaskTamplatesOfAssessmentProducts(@PathVariable Long assessmentId) throws ApplicationException{
 		return assessmentPlanService.getTaskTamplatesOfAssessmentProducts(assessmentId);
+	}
+    
+    @GetMapping(value = "/{assessmentId}/updateAssessmentName/{assessmentName}")
+	public ResponseEntity<Void> updateAssessmentName(@PathVariable Long assessmentId,@PathVariable String assessmentName ) throws ApplicationException{
+		
+		assessmentPlanService.updateAssessmentName(assessmentId, assessmentName);
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+		
 	}
     
 }
