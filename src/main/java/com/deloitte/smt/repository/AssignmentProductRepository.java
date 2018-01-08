@@ -21,7 +21,7 @@ public interface AssignmentProductRepository  extends JpaRepository<AssignmentPr
 	
 	@Transactional
 	Long deleteByProductAssignmentConfigurationId(Long productAssignmentConfigurationId);
-	@Query("select distinct p.categoryCode, p.categoryDesc,category FROM AssignmentProduct p WHERE p.categoryCode IN ?1")
+	@Query("select distinct p.categoryCode, p.categoryDesc,category FROM TopicAssignmentProduct p WHERE p.categoryCode IN ?1")
 	List<Object[]> findDistinctByCategoryCodeIn(Set<String> recValues);
 	
 }

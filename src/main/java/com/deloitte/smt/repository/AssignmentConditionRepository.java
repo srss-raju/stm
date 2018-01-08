@@ -22,6 +22,6 @@ public interface AssignmentConditionRepository  extends JpaRepository< Assignmen
 	@Transactional
 	Long deleteBySocAssignmentConfigurationId(Long socAssignmentConfigurationId);
 	
-	@Query("select distinct p.categoryCode, p.categoryDesc,category FROM AssignmentCondition p WHERE p.categoryCode IN ?1")
+	@Query("select distinct p.categoryCode, p.categoryDesc,category FROM TopicAssignmentCondition p WHERE p.categoryCode IN ?1")
 	List<Object[]> findDistinctByCategoryCodeIn(Set<String> recValues);
 }

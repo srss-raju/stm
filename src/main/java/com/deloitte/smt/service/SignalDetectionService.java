@@ -42,7 +42,6 @@ import com.deloitte.smt.repository.TopicAssignmentProductRepository;
 import com.deloitte.smt.repository.TopicProductAssignmentConfigurationRepository;
 import com.deloitte.smt.repository.TopicSignalDetectionAssignmentAssigneesRepository;
 import com.deloitte.smt.repository.TopicSocAssignmentConfigurationRepository;
-import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SignalUtil;
 import com.deloitte.smt.util.SmtResponse;
 
@@ -87,9 +86,6 @@ public class SignalDetectionService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
-	
-	@Autowired
-	private SearchFilters searchFilters;
 	
 	@Autowired
 	TopicSocAssignmentConfigurationRepository topicSocAssignmentConfigurationRepository;
