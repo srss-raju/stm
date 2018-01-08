@@ -84,7 +84,7 @@ public class SignalController {
 	
 	
 	@GetMapping(value = "/run/{runInstanceId}")
-  public Map<String,Object> findTopicsByRunInstanceId(@PathVariable Long runInstanceId) {
+	public Map<String,Object> findTopicsByRunInstanceId(@PathVariable Long runInstanceId) {
       List<Topic> signals= signalService.findTopicsByRunInstanceId(runInstanceId);
       List<NonSignal> nonSignals=signalService.findNonSignalsByRunInstanceId(runInstanceId);
       Map<String,Object> map=new HashMap<>();
