@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dto.ConditionProductDTO;
+import com.deloitte.smt.entity.AssignmentCondition;
 import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.entity.ProductAssignmentConfiguration;
-import com.deloitte.smt.entity.SocAssignmentConfiguration;
+import com.deloitte.smt.entity.AssignmentProduct;
 import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.repository.AssignmentConditionRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
-import com.deloitte.smt.repository.ProductAssignmentConfigurationRepository;
-import com.deloitte.smt.repository.SocAssignmentConfigurationRepository;
+import com.deloitte.smt.repository.AssignmentProductRepository;
 import com.deloitte.smt.util.AssignmentUtil;
 
 /**
@@ -40,10 +40,10 @@ public class AssignmentService {
     AssignmentConfigurationService assignmentConfigurationService;
     
     @Autowired
-    SocAssignmentConfigurationRepository socAssignmentConfigurationRepository;
+    AssignmentConditionRepository socAssignmentConfigurationRepository;
     
     @Autowired
-    ProductAssignmentConfigurationRepository productAssignmentConfigurationRepository;
+    AssignmentProductRepository productAssignmentConfigurationRepository;
     
 	
 	
@@ -107,7 +107,7 @@ public class AssignmentService {
 	private boolean updateQueryBuilderWithSocs(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder, StringBuilder socBuilder) {
 		boolean socsPresentFlag = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
-			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");
 				socBuilder.append(",");
 			}
@@ -123,7 +123,7 @@ public class AssignmentService {
 	private boolean updateQueryBuilderWithProducts(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder, StringBuilder productBuilder, boolean socsPresentFlag) {
 		boolean productsPresentFlag = false;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 				productBuilder.append("'").append(productConfig.getRecordKey()).append("'");
 				productBuilder.append(",");
 			}
@@ -193,7 +193,7 @@ public class AssignmentService {
 			if(assignmentConfiguration.isConditionEmptyFlag()){
 				assignmentConfiguration.setConditions(null);
 			}
-			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 				String recordKey = productConfig.getRecordKey();
 					while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatProductFlag())){
 						recordKey = AssignmentUtil.getRecordKey(recordKey);
@@ -216,7 +216,7 @@ public class AssignmentService {
 			if(assignmentConfiguration.isProductEmptyFlag()){
 				assignmentConfiguration.setProducts(null);
 			}
-			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 				String recordKey = socConfig.getRecordKey();
 					while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatSocFlag())){
 						recordKey = AssignmentUtil.getRecordKey(recordKey);
@@ -243,7 +243,7 @@ public class AssignmentService {
 	
 	private AssignmentConfiguration getAssignmentConfigurationWithProductsOnly(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
 		if(assignmentConfigurationFromDB == null){
-			for(ProductAssignmentConfiguration productConfig : assignmentConfiguration.getProducts()){
+			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 				String recordKey = productConfig.getRecordKey();
 					while(recordKey != null && assignmentConfigurationFromDB == null){
 						recordKey = AssignmentUtil.getRecordKey(recordKey);
@@ -263,7 +263,7 @@ public class AssignmentService {
 	
 	private AssignmentConfiguration getAssignmentConfigurationWithConditionsOnly(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
 		if(assignmentConfigurationFromDB == null){
-			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
+			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 				String recordKey = socConfig.getRecordKey();
 					while(recordKey != null && assignmentConfigurationFromDB == null){
 						recordKey = AssignmentUtil.getRecordKey(recordKey);
