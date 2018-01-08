@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.entity.DenominatorForPoission;
+import com.deloitte.smt.entity.DetectionAssignees;
 import com.deloitte.smt.entity.IncludeAE;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
@@ -291,13 +292,13 @@ public class SignalDetectionService {
 		signalDetectionRepository.delete(signalDetection);
 	}
 	
-/*	public void deleteByAssigneeId(Long assigneeId) throws ApplicationException {
-		TopicSignalDetectionAssignmentAssignees assignee = topicSignalDetectionAssignmentAssigneesRepository.findOne(assigneeId);
+	public void deleteByAssigneeId(Long assigneeId) throws ApplicationException {
+		DetectionAssignees assignee = detectionAssigneesRepository.findOne(assigneeId);
 		if (assignee == null) {
 			throw new ApplicationException("Failed to delete Action. Invalid Id received");
 		}
-		topicSignalDetectionAssignmentAssigneesRepository.delete(assignee);
-	}*/
+		detectionAssigneesRepository.delete(assignee);
+	}
 
 	/*public SignalDetection findById(Long id) throws ApplicationException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(id);
