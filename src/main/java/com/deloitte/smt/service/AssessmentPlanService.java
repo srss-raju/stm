@@ -21,23 +21,23 @@ import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
-import com.deloitte.smt.entity.SignalAction;
 import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
+import com.deloitte.smt.entity.TopicProduct;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
-import com.deloitte.smt.repository.AssessmentActionRepository;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.CommentsRepository;
+import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
+import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.util.AssignmentUtil;
 import com.deloitte.smt.util.JsonUtil;
 
@@ -83,8 +83,9 @@ public class AssessmentPlanService {
     
     @Autowired
     ExceptionBuilder exceptionBuilder;
+    
     @Autowired
-    AssessmentActionRepository assessmentActionRepository;
+    TaskRepository taskRepository;
     
     @Autowired
 	RiskPlanAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
@@ -190,10 +191,10 @@ public class AssessmentPlanService {
      */
     private void setAssessmentTaskStatus(AssessmentPlan assessmentPlan){
     	boolean assessmentTaskStatus=false;
-       List<SignalAction> signalActionsStatus=assessmentActionRepository.findAllByAssessmentId(String.valueOf(assessmentPlan.getId()));
+       List<Task> signalActionsStatus=taskRepository.findAllByAssessmentPlanId(String.valueOf(assessmentPlan.getId()));
        if(!CollectionUtils.isEmpty(signalActionsStatus)){
-    	   for(SignalAction signalAction:signalActionsStatus){
-    		   if(!signalAction.getActionStatus().equals(SmtConstant.COMPLETED.getDescription())){
+    	   for(Task signalAction:signalActionsStatus){
+    		   if(!signalAction.getStatus().equals(SmtConstant.COMPLETED.getDescription())){
     			   assessmentTaskStatus=true;
     		   }
     	   }
@@ -270,7 +271,7 @@ public class AssessmentPlanService {
 	}
 
 	private void getTaskTemplates(List<TaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
-		for(TopicProductAssignmentConfiguration record : topicWithConditionsAndProducts.getProducts()){
+		for(TopicProduct record : topicWithConditionsAndProducts.getProducts()){
 			String recordKey = record.getRecordKey();
 			TaskTemplateProducts taskTemplateProduct = getTaskTemplateProduct(recordKey);
 			while(recordKey != null && taskTemplateProduct == null){
