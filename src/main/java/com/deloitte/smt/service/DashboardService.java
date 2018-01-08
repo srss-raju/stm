@@ -32,7 +32,6 @@ import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.SignalStatisticsRepository;
-import com.deloitte.smt.repository.TopicRepository;
 
 @Service
 public class DashboardService {
@@ -41,9 +40,6 @@ public class DashboardService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
-
-	@Autowired
-	private TopicRepository topicRepository;
 
 	@Autowired
 	private SignalService signalService;

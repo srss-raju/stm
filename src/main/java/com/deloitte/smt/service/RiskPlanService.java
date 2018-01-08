@@ -47,7 +47,6 @@ import com.deloitte.smt.repository.RiskTaskTemplateRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.JsonUtil;
-import com.deloitte.smt.util.SearchFilters;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -109,9 +108,6 @@ public class RiskPlanService {
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 	
 	@Autowired
-	private SearchFilters searchFilters;
-	
-    @Autowired
     RiskTaskTemplateRepository riskTaskTemplateRepository;
 	    
 	@Autowired

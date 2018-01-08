@@ -53,7 +53,6 @@ import com.deloitte.smt.repository.SignalConfigurationRepository;
 import com.deloitte.smt.repository.SignalStrengthRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
-import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicAssignmentConditionRepository;
 import com.deloitte.smt.repository.TopicAssignmentProductRepository;
 import com.deloitte.smt.repository.TopicProductAssignmentConfigurationRepository;
@@ -115,9 +114,6 @@ public class SignalService {
 
 	@Autowired
 	private AssessmentActionRepository assessmentActionRepository;
-
-	@Autowired
-	private TaskTemplateRepository taskTemplateRepository;
 
 	@Autowired
 	AttachmentRepository attachmentRepository;

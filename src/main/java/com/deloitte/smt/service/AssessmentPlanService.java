@@ -40,7 +40,6 @@ import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
 import com.deloitte.smt.util.AssignmentUtil;
 import com.deloitte.smt.util.JsonUtil;
-import com.deloitte.smt.util.SearchFilters;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -86,9 +85,6 @@ public class AssessmentPlanService {
     ExceptionBuilder exceptionBuilder;
     @Autowired
     AssessmentActionRepository assessmentActionRepository;
-    
-    @Autowired
-	private SearchFilters searchFilters;
     
     @Autowired
 	TopicRiskPlanAssignmentAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
