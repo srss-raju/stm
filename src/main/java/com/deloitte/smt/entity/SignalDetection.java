@@ -67,24 +67,17 @@ public class SignalDetection implements Serializable {
 	private Set<SignalDetectionStatistics> signalDetectionStatistics;
 
 	
-	@Transient
 	private List<Soc> socs;
 	
-	@Transient
 	private List<Smq> smqs;
 	
-	@Transient
 	private List<DenominatorForPoisson> denominatorForPoisson;
 
-	@Transient
 	private List<IncludeAE> includeAEs;
 
-	@Transient
 	private List<Date> nextRunDates;
 	
-    @Transient
-	private List<TopicCondition> conditions;
-    @Transient
-	private List<TopicProduct> products;
+    private List<TopicCondition> conditions;
+    private List<TopicProduct> products;
 
 }

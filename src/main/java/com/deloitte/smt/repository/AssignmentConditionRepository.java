@@ -24,5 +24,8 @@ public interface AssignmentConditionRepository  extends JpaRepository<Assignment
 	
 	List<AssignmentCondition> findDistinctByRecordKey(String conditionKey);
 	
+	@Query("select distinct p.categoryCode, p.categoryDesc,category FROM AssignmentCondition p WHERE p.categoryCode IN ?1")
+	List<Object[]> findDistinctByCategoryCodeIn(Set<String> recValues);
+
 	
 }

@@ -32,11 +32,13 @@ public class AssignmentCondition implements Serializable {
     private Date createdDate;
     private String createdBy;
     private Date lastModifiedDate;
+	private String category;
+    private String categoryCode;
+    private String categoryDesc;
     private String lastModifiedBy;
     private String conditionName;
     private String recordKey;
     private Long assignmentConfigurationId;
-    @Transient
-    private List<AssignmentConditionValues> recordValues;
+   	private List<AssignmentConditionValues> recordValues;
 	
 }
