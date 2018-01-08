@@ -17,7 +17,7 @@ import org.springframework.util.CollectionUtils;
 import com.deloitte.smt.dto.FilterDTO;
 import com.deloitte.smt.entity.ConditionLevels;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.AssignmentConditionRepository;
+import com.deloitte.smt.repository.AssignmentConditionValuesRepository;
 import com.deloitte.smt.repository.ConditionLevelRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
@@ -35,7 +35,7 @@ public class ConditionFilterServiceImpl {
 	private TopicRepository topicRepository;
 
 	@Autowired
-	private AssignmentConditionRepository assignmentConditionRepository;
+	private AssignmentConditionValuesRepository assignmentConditionValuesRepository;
 
 	@Autowired
 	private SignalDetectionRepository signalDetectionRepository;
@@ -143,7 +143,7 @@ public class ConditionFilterServiceImpl {
 	}
 
 	private List<Object[]> getCategoryCodes(Set<String> recValues) {
-		return assignmentConditionRepository.findDistinctByCategoryCodeIn(recValues);
+		return assignmentConditionValuesRepository.findDistinctByCategoryCodeIn(recValues);
 	}
 
 	private void createProductValues(List<Map<String, List<Levels>>> levelMapList,

@@ -15,7 +15,7 @@ import com.deloitte.smt.entity.AssignmentConditionValues;
  * Created by Rajesh on 17-11-2017.
  */
 @Repository
-public interface AssignmentConditionValuesRepository  extends JpaRepository< AssignmentConditionValues, Long> {
+public interface AssignmentConditionValuesRepository  extends JpaRepository<AssignmentConditionValues, Long> {
 
 	List<AssignmentConditionValues> findBySocAssignmentConfigurationId(Long socAssignmentConfigurationId);
 	

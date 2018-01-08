@@ -17,7 +17,7 @@ import org.springframework.util.CollectionUtils;
 import com.deloitte.smt.dto.FilterDTO;
 import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.AssignmentProductRepository;
+import com.deloitte.smt.repository.AssignmentProductValuesRepository;
 import com.deloitte.smt.repository.ProductLevelRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
@@ -32,7 +32,7 @@ public class ProductFilterServiceImpl {
 	private ProductLevelRepository productLevelRepository;
 	
 	@Autowired
-	private AssignmentProductRepository assignmentProductRepository;
+	private AssignmentProductValuesRepository assignmentProductValuesRepository;
 	
 	@Autowired
 	private TopicRepository topicRepository;
@@ -161,7 +161,7 @@ public class ProductFilterServiceImpl {
 	}
 
 	private List<Object[]> getCategoryCodes(Set<String> recValues) {
-		return assignmentProductRepository.findDistinctByCategoryCodeIn(recValues);
+		return assignmentProductValuesRepository.findDistinctByCategoryCodeIn(recValues);
 	}
 
 	private Map<Integer, Set<String>> splitRecordValues(List<String> prodFillVals) {
