@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.Data;
 
@@ -80,7 +79,6 @@ public class SignalDetection implements Serializable {
 	@OneToMany
 	private List<IncludeAE> includeAEs;
 
-	@OneToMany
 	private List<Date> nextRunDates;
 	
 	@OneToMany

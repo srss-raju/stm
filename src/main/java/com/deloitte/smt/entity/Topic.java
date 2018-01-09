@@ -3,11 +3,9 @@ package com.deloitte.smt.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -27,19 +25,17 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "sm_topic")
-public class Topic implements Serializable{
+public class Topic implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    private String name;
-    private String description;
-    
-	@Embedded
-	private Condition condition;
+	private String name;
+	private String description;
+
 	private String sourceName;
 	private String sourceUrl;
 	private Date startDate;
@@ -47,81 +43,62 @@ public class Topic implements Serializable{
 	private Date createdDate;
 	private String createdBy;
 	private Date lastModifiedDate;
-	private String remarks;	
-	private String processId;
+	private String remarks;
 	private String signalValidation;
 	private String signalConfirmation;
 	private String validationComments;
 	private String signalStatus;
-	private String signalStrength;
+	private String signalStrength;  //TODO
 	private Date dueDate;
 	private String assignTo;
 	private Long runInstanceId;
 	private String cases;
 	private String caselistId;
 	private String modifiedBy;
-	
+	@OneToMany
 	private List<SignalURL> signalUrls;
+	
 	private Long confidenceIndex;
 	private Long cohortPercentage;
 	private String owner;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "topicId")
-	private List<TopicAssignees> topicSignalValidationAssignmentAssignees;
-	
+	@JoinColumn(name = "topicId")
+	private List<TopicAssignees> topicAssignees;
+
 	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "topicId")
+	@JoinColumn(name = "topicId")
 	private List<SignalStrength> signalStrengthAtrributes;
-	
-	/**Signal created Manual or Automated **/
+
+	/** Signal created Manual or Automated **/
 	private String sourceLabel;
-	
-	
+
+	@OneToMany
+	@JoinColumn(name = "topicId")
 	private List<Comments> comments;
+
+	private Long casesCount;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "topic", cascade = CascadeType.ALL)
+	private Set<SignalStatistics> signalStatistics;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	private AssessmentPlan assessmentPlan;
+
 	
-    private Long casesCount;
-    
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="topic", cascade = CascadeType.ALL)
-    private Set<SignalStatistics> signalStatistics;
+	@OneToMany
+	@JoinColumn(name = "topicId")
+	private List<Attachment> attachments;
+	
+	@Transient
+	private List<AssessmentPlan> assessmentPlans;
 
-    
-    private List<Soc> socs;
-    
-    @ManyToOne(fetch = FetchType.EAGER)
-    private AssessmentPlan assessmentPlan;
-
-    
-    private List<Long> deletedAttachmentIds;
-
-    
-    private Map<String, Attachment> fileMetadata;
-    
-    
-    private List<AssessmentPlan> assessmentPlans;
-    
-    
-    
+	@OneToMany
+	@JoinColumn(name = "topicId")
 	private List<TopicCondition> conditions;
-    
-	private List<TopicProduct> products;
-    
-    public Topic(Long id, String name, String description, String sourceName,
-			String signalConfirmation, String signalStatus, Date createdDate) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.sourceName = sourceName;
-		this.createdDate = createdDate;
-		this.signalConfirmation = signalConfirmation;
-		this.signalStatus = signalStatus;
-	}
-    
-	public Topic() {
-        this.startDate = new Date();
-    }
 
-   
-	
+	@OneToMany
+	@JoinColumn(name = "topicId")
+	private List<TopicProduct> products;
+
 }

@@ -2,9 +2,7 @@ package com.deloitte.smt.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -48,7 +46,9 @@ public class AssessmentPlan  implements Serializable {
 	@OneToOne
 	private RiskPlan riskPlan;
 	
-	private List<Long> deletedAttachmentIds;
+	@OneToMany
+	@JoinColumn(name = "assessmentPlanId")
+	private List<Attachment> attachments;
 	
 	private Long cohortPercentage;
 
@@ -57,9 +57,8 @@ public class AssessmentPlan  implements Serializable {
 	private String modifiedBy;
 	private Date lastModifiedDate;
 	
-	private Map<String, Attachment> fileMetadata;
 	
-	
+	@Transient
 	private List<Long> templateIds;
 
 	private String assignTo;
@@ -74,33 +73,6 @@ public class AssessmentPlan  implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "assessmentId")
-	private List<AssessmentAssignees> topicAssessmentAssignmentAssignees;
-	
-
-	public AssessmentPlan() {
-		this.topics = new HashSet<>();
-	}
-
-	public AssessmentPlan(Long id, String assessmentName, String priority, int inDays, 
-			String source, String caseInstanceId, String assessmentPlanStatus, String assessmentRiskStatus,
-			Date assessmentDueDate, String finalAssessmentSummary, RiskPlan riskPlan, Date createdDate,
-			String createdBy, Date lastModifiedDate, String assignTo, String assessmentTaskStatus) {
-		this.id = id;
-		this.assessmentName = assessmentName;
-		this.priority = priority;
-		this.inDays=inDays;
-		this.source = source;
-		this.caseInstanceId = caseInstanceId;
-		this.assessmentPlanStatus = assessmentPlanStatus;
-		this.assessmentRiskStatus = assessmentRiskStatus;
-		this.assessmentDueDate = assessmentDueDate;
-		this.finalAssessmentSummary = finalAssessmentSummary;
-		this.riskPlan = riskPlan;
-		this.createdDate = createdDate;
-		this.createdBy = createdBy;
-		this.lastModifiedDate = lastModifiedDate;
-		this.assignTo = assignTo;
-		this.assessmentTaskStatus = assessmentTaskStatus;
-	}
+	private List<AssessmentAssignees> assessmentAssignees;
 
 }

@@ -201,21 +201,6 @@ public class SignalServiceTest {
 	
 	
 	@Test
-	public void testValidateAndPrioritizeTaskNull() {
-		try{
-			Topic topic = new Topic();
-			topic.setSourceName("Test Source");
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-			assessmentPlan.setSource(topic.getSourceName());
-			given(this.topicRepository.findOne(1l)).willReturn(topic);
-			topic.setProcessId("1");
-			signalService.validateAndPrioritize(1l, assessmentPlan);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
 	public void testValidateAndPrioritizeNull() {
 		try{
 			signalService.validateAndPrioritize(1l, null);

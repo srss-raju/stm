@@ -158,33 +158,35 @@ public class RiskPlanService {
 				riskPlanUpdated.getFileMetadata(), riskPlanUpdated.getCreatedBy());
 		updateSignalUrl(riskPlanUpdated);
 		AssessmentPlan assessmentPlan = null;
-		try{
-			assessmentPlan = assessmentPlanService.findById(riskPlan.getAssessmentId());
-		}catch(Exception ex){
-			logger.error(ex);
-		}
-		Topic topic = getTopic(assessmentPlan);
-		
-		if(topic != null){
-			
-			Topic topicWithConditionsAndProducts = signalService.findById(topic.getId());
-			assignmentConfiguration = signalAssignmentService.convertToAssignmentConfiguration(topicWithConditionsAndProducts);
-			ConditionProductDTO conditionProductDTO = new ConditionProductDTO();
-			conditionProductDTO.setConditions(assignmentConfiguration.getConditions());
-			conditionProductDTO.setProducts(assignmentConfiguration.getProducts());
-			assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
-		}
-		if(assignmentConfiguration == null){
-			assignmentConfiguration = assignmentConfigurationRepository.findByIsDefault(true);
-		}
-		
-		
-		if (assignmentConfiguration != null) {
-			if(assignmentConfiguration.getRiskOwner()!=null){
-				riskPlan.setOwner(assignmentConfiguration.getRiskOwner());
-				riskPlanUpdated.setOwner(assignmentConfiguration.getRiskOwner());
+		if(riskPlan.getAssessmentId() != null) {
+			try{
+				assessmentPlan = assessmentPlanService.findById(riskPlan.getAssessmentId());
+			}catch(Exception ex){
+				logger.error(ex);
 			}
-			riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
+			Topic topic = getTopic(assessmentPlan);
+			
+			if(topic != null){
+				
+				Topic topicWithConditionsAndProducts = signalService.findById(topic.getId());
+				assignmentConfiguration = signalAssignmentService.convertToAssignmentConfiguration(topicWithConditionsAndProducts);
+				ConditionProductDTO conditionProductDTO = new ConditionProductDTO();
+				conditionProductDTO.setConditions(assignmentConfiguration.getConditions());
+				conditionProductDTO.setProducts(assignmentConfiguration.getProducts());
+				assignmentConfiguration = signalAssignmentService.getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+			}
+			if(assignmentConfiguration == null){
+				assignmentConfiguration = assignmentConfigurationRepository.findByIsDefault(true);
+			}
+			
+			
+			if (assignmentConfiguration != null) {
+				if(assignmentConfiguration.getRiskOwner()!=null){
+					riskPlan.setOwner(assignmentConfiguration.getRiskOwner());
+					riskPlanUpdated.setOwner(assignmentConfiguration.getRiskOwner());
+				}
+				riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
+			}
 		}
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 		return riskPlanUpdated;
