@@ -22,8 +22,8 @@ public class SearchDto {
 	private String description;
 	private List<String> signalConfirmations;
 	private List<String> signalNames;
-	private List<Long> userKeys = new ArrayList<>();
-	private List<Long> userGroupKeys = new ArrayList<>();
+	private List<String> userKeys = new ArrayList<>();
+	private List<String> userGroupKeys = new ArrayList<>();
 	private String owner;
 	private List<String> frequency;
 	private List<String> sources;
@@ -162,19 +162,19 @@ public class SearchDto {
 	
 	}
 
-	public List<Long> getUserKeys() {
+	public List<String> getUserKeys() {
 		return userKeys;
 	}
 
-	public void setUserKeys(List<Long> userKeys) {
+	public void setUserKeys(List<String> userKeys) {
 		this.userKeys = userKeys;
 	}
 
-	public List<Long> getUserGroupKeys() {
+	public List<String> getUserGroupKeys() {
 		return userGroupKeys;
 	}
 
-	public void setUserGroupKeys(List<Long> userGroupKeys) {
+	public void setUserGroupKeys(List<String> userGroupKeys) {
 		this.userGroupKeys = userGroupKeys;
 	}
 

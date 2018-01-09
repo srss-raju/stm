@@ -32,8 +32,8 @@ public class TopicSignalDetectionAssignmentAssignees {
 	    private String createdBy;
 	    private Date lastModifiedDate;
 	    private String assignTo;
-	    private Long userGroupKey;
-	    private Long userKey;
+	    private String userGroupKey;
+	    private String userKey;
 	    
 	    private Long detectionId;
 	    @Transient
@@ -84,20 +84,20 @@ public class TopicSignalDetectionAssignmentAssignees {
 		public void setDetectionId(Long detectionId) {
 			this.detectionId = detectionId;
 		}
-		public Long getUserGroupKey() {
+		public String getUserGroupKey() {
 			return userGroupKey;
 		}
-		public void setUserGroupKey(Long userGroupKey) {
+		public void setUserGroupKey(String userGroupKey) {
 			this.userGroupKey = userGroupKey;
 		}
-		public Long getUserKey() {
+		public String getUserKey() {
 			return userKey;
 		}
-		public void setUserKey(Long userKey) {
+		public void setUserKey(String userKey) {
 			this.userKey = userKey;
 		}
 		
-		public TopicSignalDetectionAssignmentAssignees( Long userGroupKey,  Long userKey){
+		public TopicSignalDetectionAssignmentAssignees( String userGroupKey,  String userKey){
 			this.userKey = userKey;
 			this.userGroupKey = userGroupKey;
 		}

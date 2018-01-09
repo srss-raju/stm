@@ -32,8 +32,8 @@ public class TopicRiskPlanAssignmentAssignees implements Serializable{
 	private String createdBy;
 	private Date lastModifiedDate;
 	private String assignTo;
-	private Long userGroupKey;
-	private Long userKey;
+	private String userGroupKey;
+	private String userKey;
 	@ManyToOne
 	@JoinColumn(name = "riskId")
 	private RiskPlan riskId;
@@ -43,7 +43,7 @@ public class TopicRiskPlanAssignmentAssignees implements Serializable{
 		
 	}
 	
-	public TopicRiskPlanAssignmentAssignees( Long userGroupKey,  Long userKey){
+	public TopicRiskPlanAssignmentAssignees( String userGroupKey,  String userKey){
 		this.userKey = userKey;
 		this.userGroupKey = userGroupKey;
 	}

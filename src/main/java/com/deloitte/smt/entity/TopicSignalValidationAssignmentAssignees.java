@@ -30,8 +30,8 @@ public class TopicSignalValidationAssignmentAssignees implements Serializable{
 	private String createdBy;
 	private Date lastModifiedDate;
 	private String assignTo;
-	private Long userGroupKey;
-	private Long userKey;
+	private String userGroupKey;
+	private String userKey;
 	
 	private Long topicId;
 	
@@ -95,23 +95,23 @@ public class TopicSignalValidationAssignmentAssignees implements Serializable{
 		this.topicId = topicId;
 	}
 
-	public Long getUserGroupKey() {
+	public String getUserGroupKey() {
 		return userGroupKey;
 	}
 
-	public void setUserGroupKey(Long userGroupKey) {
+	public void setUserGroupKey(String userGroupKey) {
 		this.userGroupKey = userGroupKey;
 	}
 
-	public Long getUserKey() {
+	public String getUserKey() {
 		return userKey;
 	}
 
-	public void setUserKey(Long userKey) {
+	public void setUserKey(String userKey) {
 		this.userKey = userKey;
 	}
 	
-	public TopicSignalValidationAssignmentAssignees( Long userGroupKey,  Long userKey){
+	public TopicSignalValidationAssignmentAssignees( String userGroupKey,  String userKey){
 		this.userKey = userKey;
 		this.userGroupKey = userGroupKey;
 	}

@@ -20,7 +20,7 @@ public class DashboardCountService {
 	private String userGroupKeyQuery = " OR A.USER_GROUP_KEY IN (";
 
 	@SuppressWarnings("unchecked")
-	public Long getValidateAndPrioritizeCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
+	public Long getValidateAndPrioritizeCount(String owner, List<String> userKeys, List<String> userGroupKeys) {
 		Long count = 0l;
 		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT S.* FROM SM_TOPIC S LEFT JOIN SM_TOPIC_SIGNAL_VALIDATION_ASSIGNEES A ON A.TOPIC_ID = S.ID WHERE ");
 		queryBuilder.append(ownerQuery);
@@ -29,7 +29,7 @@ public class DashboardCountService {
 		if(!CollectionUtils.isEmpty(userKeys)){
 			queryBuilder.append(userKeyQuery);
 			keyBuilder = new StringBuilder();
-			for(Long key:userKeys){
+			for(String key:userKeys){
 				keyBuilder.append(key);
 				keyBuilder.append(",");
 			}
@@ -42,7 +42,7 @@ public class DashboardCountService {
 		if(!CollectionUtils.isEmpty(userGroupKeys)){
 			queryBuilder.append(userGroupKeyQuery);
 			groupKeyBuilder = new StringBuilder();
-			for(Long key:userGroupKeys){
+			for(String key:userGroupKeys){
 				groupKeyBuilder.append(key);
 				groupKeyBuilder.append(",");
 			}
@@ -64,7 +64,7 @@ public class DashboardCountService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Long getAssessmentCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
+	public Long getAssessmentCount(String owner, List<String> userKeys, List<String> userGroupKeys) {
 		Long count = 0l;
 		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT S.* FROM SM_ASSESSMENT_PLAN S LEFT JOIN SM_TOPIC_ASSESSMENT_ASSIGNMENT_ASSIGNEES A ON A.ASSESSMENT_ID = S.ID WHERE ");
 		queryBuilder.append(ownerQuery);
@@ -73,7 +73,7 @@ public class DashboardCountService {
 		if(!CollectionUtils.isEmpty(userKeys)){
 			queryBuilder.append(userKeyQuery);
 			keyBuilder = new StringBuilder();
-			for(Long key:userKeys){
+			for(String key:userKeys){
 				keyBuilder.append(key);
 				keyBuilder.append(",");
 			}
@@ -86,7 +86,7 @@ public class DashboardCountService {
 		if(!CollectionUtils.isEmpty(userGroupKeys)){
 			queryBuilder.append(userGroupKeyQuery);
 			groupKeyBuilder = new StringBuilder();
-			for(Long key:userGroupKeys){
+			for(String key:userGroupKeys){
 				groupKeyBuilder.append(key);
 				groupKeyBuilder.append(",");
 			}
@@ -107,7 +107,7 @@ public class DashboardCountService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Long getRiskCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
+	public Long getRiskCount(String owner, List<String> userKeys, List<String> userGroupKeys) {
 		Long count = 0l;
 		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT S.* FROM SM_RISK_PLAN S LEFT JOIN SM_TOPIC_RISKPLAN_ASSIGNMENT_ASSIGNEES A ON A.RISK_ID = S.ID WHERE ");
 		queryBuilder.append(ownerQuery);
@@ -116,7 +116,7 @@ public class DashboardCountService {
 		if(!CollectionUtils.isEmpty(userKeys)){
 			queryBuilder.append(userKeyQuery);
 			keyBuilder = new StringBuilder();
-			for(Long key:userKeys){
+			for(String key:userKeys){
 				keyBuilder.append(key);
 				keyBuilder.append(",");
 			}
@@ -129,7 +129,7 @@ public class DashboardCountService {
 		if(!CollectionUtils.isEmpty(userGroupKeys)){
 			queryBuilder.append(userGroupKeyQuery);
 			groupKeyBuilder = new StringBuilder();
-			for(Long key:userGroupKeys){
+			for(String key:userGroupKeys){
 				groupKeyBuilder.append(key);
 				groupKeyBuilder.append(",");
 			}

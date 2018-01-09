@@ -684,15 +684,15 @@ public class SignalService {
 		commentsRepository.delete(comments);
 	}
 	
-	public Long getValidateAndPrioritizeCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
+	public Long getValidateAndPrioritizeCount(String owner, List<String> userKeys, List<String> userGroupKeys) {
 		return dashboardCountService.getValidateAndPrioritizeCount(owner, userKeys, userGroupKeys);
 	}
 	
-	public Long getAssessmentCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
+	public Long getAssessmentCount(String owner, List<String> userKeys, List<String> userGroupKeys) {
 		return dashboardCountService.getAssessmentCount(owner, userKeys, userGroupKeys);
 	}
 	
-	public Long getRiskCount(String owner, List<Long> userKeys, List<Long> userGroupKeys) {
+	public Long getRiskCount(String owner, List<String> userKeys, List<String> userGroupKeys) {
 		return dashboardCountService.getRiskCount(owner, userKeys, userGroupKeys);
 	}
 

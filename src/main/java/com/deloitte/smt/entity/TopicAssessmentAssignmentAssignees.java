@@ -36,15 +36,15 @@ public class TopicAssessmentAssignmentAssignees implements Serializable{
 	    private String createdBy;
 	    private Date lastModifiedDate;
 	    private String assignTo;
-	    private Long userGroupKey;
-	    private Long userKey;
+	    private String userGroupKey;
+	    private String userKey;
 	    
 	    private Long assessmentId;
 	    public TopicAssessmentAssignmentAssignees(){
 			
 		}
 		
-		public TopicAssessmentAssignmentAssignees( Long userGroupKey,  Long userKey){
+		public TopicAssessmentAssignmentAssignees( String userGroupKey,  String userKey){
 			this.userKey = userKey;
 			this.userGroupKey = userGroupKey;
 		}
