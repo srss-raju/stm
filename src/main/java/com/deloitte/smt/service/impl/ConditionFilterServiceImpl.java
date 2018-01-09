@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -27,7 +28,8 @@ import com.deloitte.smt.util.Levels;
 
 @Service
 public class ConditionFilterServiceImpl {
-	private static final Logger LOGGER = Logger.getLogger(ConditionFilterServiceImpl.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
+	
 	@Autowired
 	private ConditionLevelRepository conditionLevelRepository;
 
@@ -52,11 +54,11 @@ public class ConditionFilterServiceImpl {
 		try {
 			conlevels = conditionLevelValuesCodes(type);
 			conditionLevels = conditionLevelRepository.findAllByOrderByIdAsc();
-			LOGGER.info("CONDITION LEVEL MAP ===" + conlevels);
-			LOGGER.info("CONDITION REPO MAP ===" + conditionLevels);
+			logger.info("CONDITION LEVEL MAP ===" + conlevels);
+			logger.info("CONDITION REPO MAP ===" + conditionLevels);
 			constructConditionFilter(filterList, conlevels, conditionLevels);
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 	}
 
@@ -83,7 +85,7 @@ public class ConditionFilterServiceImpl {
 							exists = false;
 					}
 				}
-				LOGGER.info("Exists...?" + level.getKey() + "----" + exists);
+				logger.info("Exists...?" + level.getKey() + "----" + exists);
 				if (exists)
 					dto.setFilterValues(existList);
 				else
@@ -111,18 +113,18 @@ public class ConditionFilterServiceImpl {
 		default:
 			break;
 		}
-		LOGGER.info("TYPE-------> " + type + " ############>>>>>" + conFillVals);
+		logger.info("TYPE-------> " + type + " ############>>>>>" + conFillVals);
 		if (!CollectionUtils.isEmpty(conFillVals)) {
 			levelMapList = new ArrayList<>();
 			Map<Integer, Set<String>> itemMap = splitRecordValues(conFillVals);
-			LOGGER.info("MAP #############>>>>>" + itemMap);
+			logger.info("MAP #############>>>>>" + itemMap);
 			Set<Entry<Integer, Set<String>>> st = itemMap.entrySet();
 			for (Entry<Integer, Set<String>> me : st) {
 				Set<String> recValues = me.getValue();
 				List<Object[]> assignmentProductList = getCategoryCodes(recValues);
 				createProductValues(levelMapList, assignmentProductList);
 			}
-			LOGGER.info("assignmentProductList #############>>>>>" + levelMapList);
+			logger.info("assignmentProductList #############>>>>>" + levelMapList);
 		}
 		return levelMapList;
 	}
@@ -134,11 +136,11 @@ public class ConditionFilterServiceImpl {
 			signalIds = riskPlanRepository.findAllSignalIds();
 		else
 			signalIds = assessmentPlanRepository.findAllSignalIds();
-		LOGGER.info("LIST OF SIGNAL IDS...." + signalIds);
+		logger.info("LIST OF SIGNAL IDS...." + signalIds);
 
 		if (!CollectionUtils.isEmpty(signalIds))
 			prds = topicRepository.getListOfConditionRecordKeys(signalIds);
-		LOGGER.info("LIST OF SIGNAL KEYS IDS...." + prds);
+		logger.info("LIST OF SIGNAL KEYS IDS...." + prds);
 		return prds;
 	}
 
@@ -192,7 +194,7 @@ public class ConditionFilterServiceImpl {
 			}
 		}
 		
-		LOGGER.info("FINAL CONDITION LIST....."+conRecKeys);
+		logger.info("FINAL CONDITION LIST....."+conRecKeys);
 		if(!AssignmentUtil.isNullOrEmpty(conRecKeys))
 		{
 			switch (type) {

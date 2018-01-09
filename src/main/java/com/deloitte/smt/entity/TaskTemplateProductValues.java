@@ -38,7 +38,7 @@ public class TaskTemplateProductValues implements Serializable {
     private String categoryDesc;
     private String categoryName;
     
-	@Transient
+	
 	@JsonIgnore
 	private TaskTemplateProducts taskTemplateProducts;
     

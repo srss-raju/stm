@@ -47,15 +47,15 @@ public class RiskPlan implements Serializable {
     private String assignTo;
     private Date riskDueDate;
     private String riskTaskStatus;
-    @Transient
+    
 	private List<Comments> comments;
     
     private Long assessmentId;
 
- 	@Transient
+ 	
     private List<SignalURL> signalUrls;
  	
- 	@Transient
+ 	
 	private List<Long> riskTemplateIds;
  	
  	private String owner;
@@ -68,9 +68,9 @@ public class RiskPlan implements Serializable {
      @JsonIgnore
      private AssessmentPlan assessmentPlan;
      
-     @Transient
+     
  	private List<Long> deletedAttachmentIds;
-     @Transient
+     
      private Map<String, Attachment> fileMetadata;
      
     public RiskPlan(){

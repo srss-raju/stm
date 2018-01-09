@@ -47,28 +47,28 @@ public class AssessmentPlan  implements Serializable {
 	private String finalAssessmentSummary;
 	@OneToOne
 	private RiskPlan riskPlan;
-	@Transient
+	
 	private List<Long> deletedAttachmentIds;
-	@Transient
+	
 	private Long cohortPercentage;
 
 	private Date createdDate;
 	private String createdBy;
 	private String modifiedBy;
 	private Date lastModifiedDate;
-	@Transient
+	
 	private Map<String, Attachment> fileMetadata;
 	
-	@Transient
+	
 	private List<Long> templateIds;
 
 	private String assignTo;
 	
-	@Transient
+	
     private List<SignalURL> signalUrls;
 	
 	private String assessmentTaskStatus;
-	@Transient
+	
 	private List<Comments> comments;
 	private String owner;
 	

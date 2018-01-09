@@ -29,7 +29,7 @@ public class Smq implements Serializable {
 	private Date validEndDate;
 	private Long detectionId;
 	
-	@Transient
+	
     private List<Pt> pts;
 	
 }

@@ -48,8 +48,7 @@ public class SignalDetection implements Serializable {
 	private Long casesCount;
 	private Long minCases;
 	
-
-	@Transient
+	@OneToMany
 	private List<QueryBuilder> queryBuilder;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -69,18 +68,25 @@ public class SignalDetection implements Serializable {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "signalDetection")
 	private Set<SignalDetectionStatistics> signalDetectionStatistics;
 
-	
+	@OneToMany
 	private List<Soc> socs;
 	
+	@OneToMany
 	private List<Smq> smqs;
 	
+	@OneToMany
 	private List<DenominatorForPoission> denominatorForPoission;
 
+	@OneToMany
 	private List<IncludeAE> includeAEs;
 
+	@OneToMany
 	private List<Date> nextRunDates;
 	
+	@OneToMany
     private List<TopicCondition> conditions;
+	
+	@OneToMany
     private List<TopicProduct> products;
 
 }

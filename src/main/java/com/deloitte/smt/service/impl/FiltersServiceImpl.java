@@ -15,7 +15,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -41,7 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class FiltersServiceImpl<E> implements FiltersService {
-	private static final Logger LOGGER = Logger.getLogger(FiltersServiceImpl.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	private static final String ASSESSMENT = "assessment";
 	private static final String RISK = "risk";
@@ -68,14 +69,14 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		List<FilterDTO> filterList = null;
 		try {
 			List<String> typeList = Arrays.asList("generic", type);
-			LOGGER.info("typeList.." + typeList);
+			logger.info("typeList.." + typeList);
 			List<Filters> listfi = filterRepository.findByFilterTypes(typeList);
 			if (!CollectionUtils.isEmpty(listfi)) {
-				LOGGER.info("RESULT......" + listfi);
+				logger.info("RESULT......" + listfi);
 				filterList = getAllFiltersTypes(listfi, type);
 			}
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 		return filterList;
 	}
@@ -92,14 +93,14 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				getFiltersList(filterList, filter, dto, name, type);
 			}
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 		return filterList;
 	}
 
 	private void getFiltersList(List<FilterDTO> filterList, Filters filter, FilterDTO dto, String key, String type) {
 		List<?> data;
-		LOGGER.info("KEY...." + key);
+		logger.info("KEY...." + key);
 		switch (key) {
 		case "statuses":
 		case "assessmenttaskstatus":
@@ -152,7 +153,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	}
 
 	private void getEmptyFilterValues(Filters filter, List<FilterDTO> filterList) {
-		LOGGER.info("getEmptyFilterValues----" + filter.getName());
+		logger.info("getEmptyFilterValues----" + filter.getName());
 		FilterDTO dto;
 		dto = new FilterDTO();
 		dto.setFilterKey(filter.getKey());
@@ -166,7 +167,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		FilterDTO dto = new FilterDTO();
 		dto.setFilterKey(filter.getKey());
 		dto.setFilterName(filter.getName());
-		LOGGER.info(filter.getType() + "..." + filter.getName());
+		logger.info(filter.getType() + "..." + filter.getName());
 		List<FilterValues> statusList = filter.getFiltersValues();
 		List<String> statuslist = null;
 		if (!CollectionUtils.isEmpty(statusList)) {
@@ -183,7 +184,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ServerResponseObject getSignalDataByFilter(String type, SearchCriteriaDTO searchCriteria) {
-		LOGGER.info("SignalDataByFilter....." + searchCriteria);
+		logger.info("SignalDataByFilter....." + searchCriteria);
 		ServerResponseObject response = null;
 		Map<String, Object> filMap = null;
 		StringBuilder queryBuilder = new StringBuilder();
@@ -215,21 +216,21 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				for (FilterDTO dto : filters) {
 					filMap.put(dto.getFilterKey(), dto.getFilterValues());
 				}
-				LOGGER.info("filMap.........." + filMap);
+				logger.info("filMap.........." + filMap);
 				Set<Entry<String, Object>> st = filMap.entrySet();
 				for (Entry<String, Object> me : st) {
 					String key = me.getKey();
 					buildPredicates(queryBuilder, me, key, type,parameterMap);
 				}
-				LOGGER.info("BUILDING OWNER AND ASSIGNEE PREDICATE------"+queryBuilder);
+				logger.info("BUILDING OWNER AND ASSIGNEE PREDICATE------"+queryBuilder);
 				// Create OWNER AND ASSIGNEE PREDICATE
 				addOwnersAssignees(filMap, queryBuilder,parameterMap,type);
 				
 				buildProductAndConditionPredicate(filters,queryBuilder,type,parameterMap);
 
-				LOGGER.info("BUILD PREDICATE QUERY-------");
+				logger.info("BUILD PREDICATE QUERY-------");
 			} else {
-				LOGGER.info("FILTER SIZE = 0.....");
+				logger.info("FILTER SIZE = 0.....");
 				switch (type) {
 				case SIGNAL:
 					queryBuilder.append("from Topic root");
@@ -249,11 +250,11 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			}
 			queryBuilder.append(" order by root.createdDate desc");
 			String queryStr = queryBuilder.toString();
-			LOGGER.info("queryStr....."+queryStr);
+			logger.info("queryStr....."+queryStr);
 			FilterResponse smtResponse = new FilterResponse();
 			Query query = entityManager.createQuery(queryStr);
-			LOGGER.info("parameterMap....."+parameterMap);
-			LOGGER.info("query....."+query.toString());
+			logger.info("parameterMap....."+parameterMap);
+			logger.info("query....."+query.toString());
 			setParametersMapToQuery(parameterMap,query);
 			
 			if (!CollectionUtils.isEmpty(query.getResultList())) {
@@ -272,7 +273,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			response.setStatus("SUCCESS");
 			return response;
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 		return response;
 	}
@@ -292,8 +293,8 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			}
 		}
 		
-		LOGGER.info("PRODUCT SET >>>>>>>>>>>>"+productSet);
-		LOGGER.info("CONDITION SET >>>>>>>>>>>>"+conditionSet);
+		logger.info("PRODUCT SET >>>>>>>>>>>>"+productSet);
+		logger.info("CONDITION SET >>>>>>>>>>>>"+conditionSet);
 		if(!CollectionUtils.isEmpty(productSet) && !CollectionUtils.isEmpty(conditionSet))
 		{
 			productFilterServiceImpl.constructProductPredicate(productSet,queryBuilder,type,parameterMap);
@@ -316,7 +317,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	
 	
 	private Set<String> constructObjectToSet(List<?> filterValues) {
-		LOGGER.info("filterValues...."+filterValues);
+		logger.info("filterValues...."+filterValues);
 		Set<String> valueSet = null;
 		try {
 			valueSet = new HashSet<>();
@@ -325,7 +326,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				valueSet.add(map.get("key").toString());
 			}
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 		return valueSet;
 	}
@@ -374,9 +375,9 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				userSet1 = userSet;
 				groupSet1 = groupSet;
 			}
-			LOGGER.info("ownerSet........" + ownerSet);
-			LOGGER.info("userKey  >>>>>>>>>>>>>>>>>>" + userSet1);
-			LOGGER.info("user_group_key >>>>>>>>>>>>>>>>>" + groupSet1);
+			logger.info("ownerSet........" + ownerSet);
+			logger.info("userKey  >>>>>>>>>>>>>>>>>>" + userSet1);
+			logger.info("user_group_key >>>>>>>>>>>>>>>>>" + groupSet1);
 
 			if (!CollectionUtils.isEmpty(userSet1)) {
 				user = new StringBuilder();
@@ -390,7 +391,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			}
 			buildOwnerUserGroupPredicate(queryBuilder, owner, user, group);
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 	}
 
@@ -456,7 +457,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			{
 				Calendar cal = Calendar.getInstance(); 
 				cal.setTime((Date) me.getValue()); 
-				LOGGER.info("CALENDER....."+cal);
+				logger.info("CALENDER....."+cal);
 				query.setParameter(me.getKey(), cal,TemporalType.TIMESTAMP);
 			}
 			*/
@@ -466,7 +467,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	}
 
 	private void buildPredicates(StringBuilder queryBuilder, Entry<String, Object> me, String key, String type, Map<String, Object> parameterMap) {
-		LOGGER.info("key...."+key);
+		logger.info("key...."+key);
 		switch (key) {
 		case "statuses":
 			addStatuses(me.getValue(), queryBuilder, type,parameterMap);
@@ -784,9 +785,9 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				groupSet1 = groupSet;
 			}
 
-			LOGGER.info("ownerSet........" + ownerSet);
-			LOGGER.info("userKey  >>>>>>>>>>>>>>>>>>" + userSet1);
-			LOGGER.info("user_group_key >>>>>>>>>>>>>>>>>" + groupSet1);
+			logger.info("ownerSet........" + ownerSet);
+			logger.info("userKey  >>>>>>>>>>>>>>>>>>" + userSet1);
+			logger.info("user_group_key >>>>>>>>>>>>>>>>>" + groupSet1);
 
 			if (!CollectionUtils.isEmpty(userSet1)) {
 				user = criteriaBuilder.isTrue(joinAssignees.get(SmtConstant.USER_KEY.getDescription()).in(userSet1));
@@ -799,7 +800,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			buildOwnerUserGroupPredicate(criteriaBuilder, predicates, owner, user, group);
 
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 
 	}

@@ -30,7 +30,7 @@ public class Soc implements Serializable {
 	private boolean hltSelected;
 	private boolean ptSelected;
 	
-	@Transient
+	
     private List<Pt> pts;
 	
 

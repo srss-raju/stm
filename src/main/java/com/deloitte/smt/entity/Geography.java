@@ -25,7 +25,7 @@ public class Geography  implements Serializable {
 	private String country;
 	private String countries;
 	
-	@Transient
+	
 	@JsonIgnore
 	private SignalDetection signalDetection;
 

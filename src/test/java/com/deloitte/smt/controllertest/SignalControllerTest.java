@@ -9,7 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,7 @@ import com.deloitte.smt.service.SignalService;
 @AutoConfigureMockMvc
 public class SignalControllerTest {
 
-	private static final Logger LOG = Logger.getLogger(SignalControllerTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -61,7 +62,7 @@ public class SignalControllerTest {
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -74,7 +75,7 @@ public class SignalControllerTest {
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 
@@ -87,7 +88,7 @@ public class SignalControllerTest {
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 					.andExpect(status().isOk());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	

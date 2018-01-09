@@ -1,13 +1,7 @@
 package com.deloitte.smt.controllertest;
 
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.junit.AfterClass;
-import org.junit.Rule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -47,28 +41,8 @@ public class AssessmentActionControllerTest {
 
 	HttpHeaders headers = new HttpHeaders();
 	
-	private static final Logger LOG = Logger.getLogger(AssessmentActionControllerTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
-	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
-	    {
-	      jobExecutorActivate = false;
-	      expressionManager = new MockExpressionManager();
-	      databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-	    }
-	  };
-	  
-	  private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration.buildProcessEngine();
-	  
-	  @Rule
-	  public final ProcessEngineRule processEngine = new ProcessEngineRule(PROCESS_ENGINE_NEEDS_CLOSE);
-
-	  @AfterClass
-	  public static void shutdown() {
-	    PROCESS_ENGINE_NEEDS_CLOSE.close();
-	  }
-
-	  
-
 	@Test
 	public void testCreateAssessmentAction() throws Exception{
 		
@@ -81,7 +55,7 @@ public class AssessmentActionControllerTest {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
 		ResponseEntity<String> response = restTemplate.postForEntity( createURLWithPort("/camunda/api/signal/createAssessmentAction"), request , String.class );
-		LOG.info(response);
+		logger.info(response);
 		
 	}
 	
@@ -97,7 +71,7 @@ public class AssessmentActionControllerTest {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
 		ResponseEntity<String> response = restTemplate.postForEntity( createURLWithPort("/camunda/api/signal/createAssessmentAction"), request , String.class );
-		LOG.info(response);
+		logger.info(response);
 		
 	}
 	

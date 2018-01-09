@@ -15,7 +15,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -36,7 +37,7 @@ import com.deloitte.smt.repository.SignalStatisticsRepository;
 @Service
 public class DashboardService {
 
-	private static final Logger LOG = Logger.getLogger(DashboardService.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -52,7 +53,7 @@ public class DashboardService {
 
 	@SuppressWarnings("unchecked")
 	public Map<String, List<SmtComplianceDto>> getSmtComplianceDetails() {
-		LOG.info("Method Start getSmtComplianceDetails");
+		logger.info("Method Start getSmtComplianceDetails");
 		Map<String, List<SmtComplianceDto>> smtComplianceMap = new HashMap<>();
 		Query signalQuery = entityManager.createNativeQuery(
 				"select case when current_timestamp > due_date then 'LATE' else 'ONTIME' end as STATUS,COUNT(*) from sm_topic where due_date is not null GROUP BY STATUS");
@@ -195,7 +196,7 @@ public class DashboardService {
 
 	@SuppressWarnings("unchecked")
 	public List<SignalDetectDTO> getDetectedSignalDetails() {
-		LOG.info("Method Start getDetectedSignalDetails");
+		logger.info("Method Start getDetectedSignalDetails");
 		Query signalQuery = entityManager.createNativeQuery(
 				"select to_timestamp(to_char(created_date,'Mon-yy'),'Mon-yy') \\:\\: timestamp without time zone cd, sum(case when signal_status='New' then 1 else 0 end) as signalcount,sum(case when signal_status<>'New' then 1 else 0 end) as recurringcount,count(signal_status) as totalsignalcount,sum(cases_count) as casesCount from sm_topic group by cd order by to_timestamp(to_char(created_date,'Mon-yy'),'Mon-yy') \\:\\: timestamp without time zone");
 		List<Object[]> signals = signalQuery.getResultList();

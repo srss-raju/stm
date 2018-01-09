@@ -38,7 +38,7 @@ public class TopicCondition implements Serializable {
     private Long assignmentConfigurationId;
     private Long topicId;
     private Long detectionId;
-    @Transient
+    
     private List<TopicConditionValues> recordValues;
     
 }

@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping(value = "/camunda/api/signal")
 public class SignalController {
-	private static final Logger LOG = Logger.getLogger(SignalController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	SignalService signalService;
@@ -47,7 +48,7 @@ public class SignalController {
         try {
         	topic = new ObjectMapper().readValue(topicString, Topic.class);
 		} catch (IOException e) {
-			LOG.info("Exception occured while creating "+e);
+			logger.info("Exception occured while creating "+e);
 		}
         
 		return signalService.createTopic(topic, attachments);
@@ -60,7 +61,7 @@ public class SignalController {
 			Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
 			signalService.updateTopic(topic, attachments);
 		} catch (ApplicationException | IOException e) {
-			LOG.info("Exception occured while updating "+e);
+			logger.info("Exception occured while updating "+e);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -107,7 +108,7 @@ public class SignalController {
 			Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
 			list = signalService.updateComments(topic);
 		} catch (IOException e) {
-			LOG.info("Exception occured while updating "+e);
+			logger.info("Exception occured while updating "+e);
 		}
 		return list;
 	}

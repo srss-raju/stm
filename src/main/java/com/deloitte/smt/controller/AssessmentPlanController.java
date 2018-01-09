@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/camunda/api/signal")
 public class AssessmentPlanController {
 	
-	private static final Logger LOG = Logger.getLogger(AssessmentPlanController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Autowired
     AssessmentPlanService assessmentPlanService;
@@ -60,7 +61,7 @@ public class AssessmentPlanController {
         	assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
 			assessmentPlanService.updateAssessment(assessmentPlan, attachments);
 		} catch (ApplicationException | IOException e) {
-			LOG.info("Exception occured while updating "+e);
+			logger.info("Exception occured while updating "+e);
 		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -73,7 +74,7 @@ public class AssessmentPlanController {
         	assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
 			assessmentPlanService.finalAssessment(assessmentPlan, attachments);
 		} catch (ApplicationException | IOException e) {
-			LOG.info("Exception occured in finalAssessment "+e);
+			logger.info("Exception occured in finalAssessment "+e);
 		}
         return new ResponseEntity<>(HttpStatus.OK);
     }

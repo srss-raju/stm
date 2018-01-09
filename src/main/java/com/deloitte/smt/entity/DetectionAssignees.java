@@ -34,7 +34,7 @@ public class DetectionAssignees {
 	    private Long userKey;
 	    
 	    private Long detectionId;
-	    @Transient
+	    
 		@JsonIgnore
 	    private SignalDetection signalDetection;
 	    

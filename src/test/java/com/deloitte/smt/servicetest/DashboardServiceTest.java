@@ -16,14 +16,8 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.junit.AfterClass;
-import org.junit.Rule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +44,7 @@ import com.deloitte.smt.service.SignalService;
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class DashboardServiceTest {
 	
-	private static final Logger LOG = Logger.getLogger(DashboardServiceTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	private DashboardService dashboardService;
@@ -72,27 +66,9 @@ public class DashboardServiceTest {
 	private SignalStatisticsRepository signalStatisticsRepository;
 	
 		
-	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
-	    {
-	      jobExecutorActivate = false;
-	      expressionManager = new MockExpressionManager();
-	      databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-	    }
-	  };
-	  
-	  private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration.buildProcessEngine();
-	  
-	  @Rule
-	  public final ProcessEngineRule processEngine = new ProcessEngineRule(PROCESS_ENGINE_NEEDS_CLOSE);
-
-	  @AfterClass
-	  public static void shutdown() {
-	    PROCESS_ENGINE_NEEDS_CLOSE.close();
-	  }
-	  
 	@Test
 	public void testGetSmtComplianceDetails() throws Exception {
-		LOG.info("testGetSmtComplianceDetails");
+		logger.info("testGetSmtComplianceDetails");
 		dashboardService.getSmtComplianceDetails();
 	}
 	
@@ -110,7 +86,7 @@ public class DashboardServiceTest {
 			signals.add(objects);
 			dashboardService.complianceResponse(smtComplianceMap, signals, "Signal");;
 		}catch(Exception ex){
-			LOG.info("Test getDashboardData");
+			logger.info("Test getDashboardData");
 		}
 	}
 	
@@ -119,7 +95,7 @@ public class DashboardServiceTest {
 		try{
 			dashboardService.generateDataForValidateOutcomesChart();
 		}catch(Exception ex){
-			LOG.info("ex");
+			logger.info("ex");
 		}
 	}
 	
@@ -129,7 +105,7 @@ public class DashboardServiceTest {
 			List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
 			dashboardService.continueToMontior(validateOutComesList, BigInteger.valueOf(1l));
 		}catch(Exception ex){
-			LOG.info("ex");
+			logger.info("ex");
 		}
 	}
 	
@@ -139,7 +115,7 @@ public class DashboardServiceTest {
 			List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
 			dashboardService.nonSignal(validateOutComesList, BigInteger.valueOf(1l));
 		}catch(Exception ex){
-			LOG.info("ex");
+			logger.info("ex");
 		}
 	}
 	
@@ -157,7 +133,7 @@ public class DashboardServiceTest {
 			signals.add(objects);
 			dashboardService.detectedSignals(signals);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -167,7 +143,7 @@ public class DashboardServiceTest {
 			List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
 			dashboardService.validatedSignalWithRisk(validateOutComesList, BigInteger.valueOf(1l));
 		}catch(Exception ex){
-			LOG.info("ex");
+			logger.info("ex");
 		}
 	}
 	
@@ -177,7 +153,7 @@ public class DashboardServiceTest {
 			List<ValidationOutComesDTO> validateOutComesList = new ArrayList<>();
 			dashboardService.valiatedSignalWithoutRisk(validateOutComesList, BigInteger.valueOf(1l));
 		}catch(Exception ex){
-			LOG.info("ex");
+			logger.info("ex");
 		}
 	}
 	
@@ -186,7 +162,7 @@ public class DashboardServiceTest {
 		try{
 			dashboardService.getDetectedSignalDetails();
 		}catch(Exception ex){
-			LOG.info("ex");
+			logger.info("ex");
 		}
 	}
 	

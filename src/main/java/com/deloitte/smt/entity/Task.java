@@ -52,12 +52,12 @@ public class Task {
 	private String report;
 	
 	private String recipients;
-	@Transient
+	
 	private Map<String, Attachment> fileMetadata;
-	@Transient
+	
 	private List<Long> deletedAttachmentIds;
 	
-	@Transient
+	
     private List<SignalURL> signalUrls;
 
 	private String assignTo;

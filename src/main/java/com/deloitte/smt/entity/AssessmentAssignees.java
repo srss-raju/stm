@@ -41,7 +41,7 @@ public class AssessmentAssignees implements Serializable{
 	    
 	    private Long assessmentId;
 	   
-	    @Transient
+	    
 	    @JsonIgnore
 	    private AssessmentPlan assessmentPlan;
 	    

@@ -38,9 +38,9 @@ public class Meeting implements Serializable {
     private Date meetingDate;
     private Long meetingResourceId;
     private MeetingType meetingType;
-    @Transient
+    
     private List<Long> deletedAttachmentIds;
-    @Transient
+    
     private Map<String, Attachment> fileMetadata;
 
     private Date createdDate;

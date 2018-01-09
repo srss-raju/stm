@@ -60,7 +60,7 @@ public class Topic implements Serializable{
 	private String cases;
 	private String caselistId;
 	private String modifiedBy;
-	@Transient
+	
 	private List<SignalURL> signalUrls;
 	private Long confidenceIndex;
 	private Long cohortPercentage;
@@ -77,7 +77,7 @@ public class Topic implements Serializable{
 	/**Signal created Manual or Automated **/
 	private String sourceLabel;
 	
-	@Transient
+	
 	private List<Comments> comments;
 	
     private Long casesCount;
@@ -85,25 +85,25 @@ public class Topic implements Serializable{
     @OneToMany(fetch = FetchType.EAGER, mappedBy="topic", cascade = CascadeType.ALL)
     private Set<SignalStatistics> signalStatistics;
 
-    @Transient
+    
     private List<Soc> socs;
     
     @ManyToOne(fetch = FetchType.EAGER)
     private AssessmentPlan assessmentPlan;
 
-    @Transient
+    
     private List<Long> deletedAttachmentIds;
 
-    @Transient
+    
     private Map<String, Attachment> fileMetadata;
     
-    @Transient
+    
     private List<AssessmentPlan> assessmentPlans;
     
     
-    @Transient
+    
 	private List<TopicCondition> conditions;
-    @Transient
+    
 	private List<TopicProduct> products;
     
     public Topic(Long id, String name, String description, String sourceName,

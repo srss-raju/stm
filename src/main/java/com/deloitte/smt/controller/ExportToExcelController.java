@@ -7,7 +7,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping("/camunda/api/signal")
 public class ExportToExcelController {
-	private static final Logger LOG = Logger
-			.getLogger(ExportToExcelController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	ExportExcelService exportExcelService;
@@ -54,7 +54,7 @@ public class ExportToExcelController {
 			out.close();
 
 		} catch (IOException e) {
-			LOG.info("Exception occured while exporting excel sheet " + e);
+			logger.info("Exception occured while exporting excel sheet " + e);
 		}
 	}
 

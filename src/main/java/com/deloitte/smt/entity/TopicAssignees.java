@@ -31,7 +31,7 @@ public class TopicAssignees implements Serializable{
 	
 	private Long topicId;
 	
-	@Transient
+	
 	@JsonIgnore
 	private Topic topic;
 	

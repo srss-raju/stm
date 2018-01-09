@@ -1,5 +1,6 @@
 package com.deloitte.smt.servicetest;
 
+
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
@@ -10,14 +11,8 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.junit.AfterClass;
-import org.junit.Rule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +34,7 @@ import com.deloitte.smt.service.AssessmentPlanService;
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class AssessmentPlanServiceTest {
 	
-	private static final Logger LOG = Logger.getLogger(AssessmentPlanServiceTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	private AssessmentPlanService assessmentPlanService;
@@ -50,25 +45,6 @@ public class AssessmentPlanServiceTest {
 	@MockBean
     AssessmentPlanRepository assessmentPlanRepository;
 
-	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
-	    {
-	      jobExecutorActivate = false;
-	      expressionManager = new MockExpressionManager();
-	      databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-	    }
-	  };
-	  
-	  private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration.buildProcessEngine();
-	  
-	  @Rule
-	  public final ProcessEngineRule processEngine = new ProcessEngineRule(PROCESS_ENGINE_NEEDS_CLOSE);
-
-	  @AfterClass
-	  public static void shutdown() {
-	    PROCESS_ENGINE_NEEDS_CLOSE.close();
-	  }
-
-    
 	@Test
 	public void testFindOne() throws Exception{
 		try{
@@ -77,7 +53,7 @@ public class AssessmentPlanServiceTest {
 			given(this.assessmentPlanRepository.findOne(121l)).willReturn(assessmentPlan);
 			assessmentPlanService.findById(121l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 		
 	}
@@ -91,7 +67,7 @@ public class AssessmentPlanServiceTest {
 		try{
 			assessmentPlanService.findById(121l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -100,7 +76,7 @@ public class AssessmentPlanServiceTest {
 		try{
 			assessmentPlanService.findById(121l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -144,7 +120,7 @@ public class AssessmentPlanServiceTest {
 			assessmentPlan.setId(11l);
 			assessmentPlanService.updateAssessment(assessmentPlan, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 		
 	}
@@ -155,7 +131,7 @@ public class AssessmentPlanServiceTest {
 		try{
 			assessmentPlanService.updateAssessment(assessmentPlan, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -165,7 +141,7 @@ public class AssessmentPlanServiceTest {
 		try{
 			assessmentPlanService.finalAssessment(assessmentPlan, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	

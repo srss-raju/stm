@@ -10,14 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.junit.AfterClass;
-import org.junit.Rule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +33,7 @@ import com.deloitte.smt.service.AttachmentService;
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class AttachmentServiceTest {
 	
-	private static final Logger LOG = Logger.getLogger(AttachmentServiceTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	private AttachmentService attachmentService;
@@ -48,25 +42,6 @@ public class AttachmentServiceTest {
 	AttachmentRepository attachmentRepository;
 	
 		
-	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
-	    {
-	      jobExecutorActivate = false;
-	      expressionManager = new MockExpressionManager();
-	      databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-	    }
-	  };
-	  
-	  private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration.buildProcessEngine();
-	  
-	  @Rule
-	  public final ProcessEngineRule processEngine = new ProcessEngineRule(PROCESS_ENGINE_NEEDS_CLOSE);
-
-	  @AfterClass
-	  public static void shutdown() {
-	    PROCESS_ENGINE_NEEDS_CLOSE.close();
-	  }
-
-    
 	@Test
 	public void testSave() throws Exception{
 		Attachment attachment = new Attachment();
@@ -88,7 +63,7 @@ public class AttachmentServiceTest {
 			given(this.attachmentRepository.findOne(11l)).willReturn(attachment);
 			attachmentService.delete(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -109,7 +84,7 @@ public class AttachmentServiceTest {
 		try{
 			attachmentService.findById(11l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -135,9 +110,9 @@ public class AttachmentServiceTest {
 			 metaData.put("test.properties", attachment);
 			 given(this.attachmentRepository.save(attachment)).willReturn(attachment);
 			 attachmentService.addAttachments(attachmentResourceId, attachments, AttachmentType.TOPIC_ATTACHMENT, deletedAttachmentIds, metaData,"Rajesh");
-			 LOG.info(multipartFile);
+			 logger.info(multipartFile);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	

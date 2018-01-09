@@ -8,16 +8,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.runtime.CaseInstance;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.junit.AfterClass;
-import org.junit.Rule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +39,7 @@ import com.deloitte.smt.service.RiskPlanService;
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class RiskPlanServiceTest {
 	
-	private static final Logger LOG = Logger.getLogger(RiskPlanServiceTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	private RiskPlanService riskPlanService;
@@ -68,9 +60,6 @@ public class RiskPlanServiceTest {
 	RiskTaskRepository riskTaskRepository;
 
 
-	@Autowired
-	CaseService caseService;
-
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -83,24 +72,7 @@ public class RiskPlanServiceTest {
 	@MockBean
 	AssignmentConfigurationRepository assignmentConfigurationRepository;
 	
-	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
-	    {
-	      jobExecutorActivate = false;
-	      expressionManager = new MockExpressionManager();
-	      databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-	    }
-	  };
-	  
-	  private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration.buildProcessEngine();
-	  
-	  @Rule
-	  public final ProcessEngineRule processEngine = new ProcessEngineRule(PROCESS_ENGINE_NEEDS_CLOSE);
-
-	  @AfterClass
-	  public static void shutdown() {
-	    PROCESS_ENGINE_NEEDS_CLOSE.close();
-	  }
-
+	
     
 	@Test
 	public void testInsertWithAssignmentConfiguration() {
@@ -119,7 +91,7 @@ public class RiskPlanServiceTest {
 			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlanUpdated);
 			riskPlanService.insert(riskPlan, null, assessmentId);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -139,7 +111,7 @@ public class RiskPlanServiceTest {
 			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlanUpdated);
 			riskPlanService.insert(riskPlan, null, assessmentId);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -156,7 +128,7 @@ public class RiskPlanServiceTest {
 			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlanUpdated);
 			riskPlanService.insert(riskPlan, null, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -174,7 +146,7 @@ public class RiskPlanServiceTest {
 			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlanUpdated);
 			riskPlanService.insert(riskPlan, null, assessmentId);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -196,31 +168,7 @@ public class RiskPlanServiceTest {
 			given(this. riskTaskRepository.save(riskTask)).willReturn(riskTaskUpdated);
 			riskPlanService.createRiskTask(riskTask, null);
 		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
-	
-	@Test
-	public void testCreateRiskTaskCompleted() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			Task riskTask = new Task();
-			CaseInstance instance = caseService.createCaseInstanceByKey("riskCaseId");
-			riskPlan.setCaseInstanceId(instance.getCaseInstanceId());
-			riskTask.setCaseInstanceId(instance.getCaseInstanceId());
-			riskTask.setStatus("Completed");
-			riskTask.setId(1l);
-			riskTask.setRiskId("1");
-			given(this. riskPlanRepository.findOne(1l)).willReturn(riskPlan);
-			Task riskTaskUpdated = new Task();
-			List<SignalURL> urls = new ArrayList<>();
-			SignalURL url = new SignalURL();
-			urls.add(url);
-			riskTaskUpdated.setSignalUrls(urls);
-			given(this. riskTaskRepository.save(riskTask)).willReturn(riskTaskUpdated);
-			riskPlanService.createRiskTask(riskTask, null);
-		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -234,7 +182,7 @@ public class RiskPlanServiceTest {
 			given(this.riskTaskRepository.save(riskTask)).willReturn(riskTask);
 			riskPlanService.findById(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -245,7 +193,7 @@ public class RiskPlanServiceTest {
 			given(this.riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc("1")).willReturn(list);
 			riskPlanService.findAllByRiskId("1", null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -256,7 +204,7 @@ public class RiskPlanServiceTest {
 			given(this.riskTaskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc("1", "Completed")).willReturn(list);
 			riskPlanService.findAllByRiskId("1", "Completed");
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -267,7 +215,7 @@ public class RiskPlanServiceTest {
 			given(this.riskTaskRepository.findOne(1l)).willReturn(riskTask);
 			riskPlanService.delete(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -276,7 +224,7 @@ public class RiskPlanServiceTest {
 		try{
 			riskPlanService.delete(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -294,7 +242,7 @@ public class RiskPlanServiceTest {
 			riskTask.setSignalUrls(urls);
 			riskPlanService.updateRiskTask(riskTask, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -315,7 +263,7 @@ public class RiskPlanServiceTest {
 			given(this.riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc("1")).willReturn(list);
 			riskPlanService.updateRiskTask(riskTask, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -329,7 +277,7 @@ public class RiskPlanServiceTest {
 			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
 			riskPlanService.findByRiskId(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -338,7 +286,7 @@ public class RiskPlanServiceTest {
 		try{
 			riskPlanService.findByRiskId(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -349,7 +297,7 @@ public class RiskPlanServiceTest {
 			riskPlan.setId(1l);
 			riskPlanService.riskPlanSummary(riskPlan, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -359,7 +307,7 @@ public class RiskPlanServiceTest {
 			RiskPlan riskPlan = new RiskPlan();
 			riskPlanService.riskPlanSummary(riskPlan, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -379,7 +327,7 @@ public class RiskPlanServiceTest {
 			riskPlan.setSignalUrls(urls);
 			riskPlanService.updateRiskPlan(riskPlan, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -390,7 +338,7 @@ public class RiskPlanServiceTest {
 			RiskPlan riskPlan = new RiskPlan();
 			riskPlanService.updateRiskPlan(riskPlan, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	

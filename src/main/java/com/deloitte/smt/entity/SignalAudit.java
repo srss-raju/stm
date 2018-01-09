@@ -40,7 +40,7 @@ public class SignalAudit   implements Serializable {
 	private Date modifiedDate;
 	private String operation;
 	
-	@Transient
+	
 	private List<SignalAttachmentAudit> signalAttachmentAudit;
 
 	

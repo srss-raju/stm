@@ -10,17 +10,8 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.CaseService;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.junit.AfterClass;
-import org.junit.Rule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +46,14 @@ import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.service.SignalMatchService;
 import com.deloitte.smt.service.SignalService;
+import com.deloitte.smt.service.TaskService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class)
 @TestPropertySource(locations = { "classpath:test.properties" })
 public class SignalServiceTest {
 
-	private static final Logger LOG = Logger.getLogger(SignalServiceTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	SignalService signalService;
@@ -72,16 +64,11 @@ public class SignalServiceTest {
 	@Autowired
 	SignalMatchService signalMatchService;
 
-	@Autowired
-	RuntimeService runtimeService;
 	@MockBean
 	TopicRepository topicRepository;
 
 	@MockBean
 	SignalURLRepository signalURLRepository;
-
-	@Autowired
-	CaseService caseService;
 
 	@MockBean
 	AssessmentPlanRepository assessmentPlanRepository;
@@ -116,26 +103,7 @@ public class SignalServiceTest {
 	@MockBean
 	AttachmentService attachmentService;
 
-	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
-		{
-			jobExecutorActivate = false;
-			expressionManager = new MockExpressionManager();
-			databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-		}
-	};
-
-	private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration
-			.buildProcessEngine();
-
-	@Rule
-	public final ProcessEngineRule processEngine = new ProcessEngineRule(
-			PROCESS_ENGINE_NEEDS_CLOSE);
-
-	@AfterClass
-	public static void shutdown() {
-		PROCESS_ENGINE_NEEDS_CLOSE.close();
-	}
-
+	
 	@Test
 	public void testCreateTopic() {
 		try {
@@ -162,7 +130,7 @@ public class SignalServiceTest {
 
 			signalService.createTopic(topic, null);
 		} catch (Exception ex) {
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -192,7 +160,7 @@ public class SignalServiceTest {
 
 			signalService.createTopic(topic, null);
 		} catch (Exception ex) {
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 
@@ -216,7 +184,7 @@ public class SignalServiceTest {
 			given(this.topicRepository.save(topic)).willReturn(topic);
 			signalService.updateTopic(topic, null);
 		} catch (Exception ex) {
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 
@@ -226,41 +194,11 @@ public class SignalServiceTest {
 			Topic topic = new Topic();
 			signalService.updateTopic(topic, null);
 		} catch (Exception ex) {
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
-	@Test
-	public void testValidateAndPrioritize() {
-		try{
-			Topic topic = new Topic();
-			topic.setSourceName("Test Source");
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-			assessmentPlan.setSource(topic.getSourceName());
-			given(this.topicRepository.findOne(1l)).willReturn(topic);
-			String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
-			topic.setProcessId(processInstanceId);
-			signalService.validateAndPrioritize(1l, assessmentPlan);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
 	
-	@Test
-	public void testValidateAndPrioritizeAssignNull() {
-		try{
-			Topic topic = new Topic();
-			topic.setSourceName("Test Source");
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-			assessmentPlan.setSource(topic.getSourceName());
-			given(this.topicRepository.findOne(1l)).willReturn(topic);
-			String processInstanceId = runtimeService.startProcessInstanceByKey("topicProcess").getProcessInstanceId();
-			topic.setProcessId(processInstanceId);
-			signalService.validateAndPrioritize(1l, assessmentPlan);
-		}catch(Exception ex){
-			LOG.info(ex);
-		}
-	}
 	
 	@Test
 	public void testValidateAndPrioritizeTaskNull() {
@@ -273,7 +211,7 @@ public class SignalServiceTest {
 			topic.setProcessId("1");
 			signalService.validateAndPrioritize(1l, assessmentPlan);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -282,7 +220,7 @@ public class SignalServiceTest {
 		try{
 			signalService.validateAndPrioritize(1l, null);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -303,7 +241,7 @@ public class SignalServiceTest {
 			given(this.topicRepository.findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(topicIds, "test", SmtConstant.COMPLETED.getDescription())).willReturn(signals);
 			signalService.getCountsByFilter("test");
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -318,7 +256,7 @@ public class SignalServiceTest {
 			 given(this.topicRepository.findTopicByRunInstanceIdOrderByCreatedDateAsc(1l)).willReturn(topics);
 			 signalService.findTopicsByRunInstanceId(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -329,7 +267,7 @@ public class SignalServiceTest {
 			given(this.signalURLRepository.findOne(1l)).willReturn(signalURL);
 			signalService.deleteSignalURL(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -338,7 +276,7 @@ public class SignalServiceTest {
 		try{
 			signalService.deleteSignalURL(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -347,7 +285,7 @@ public class SignalServiceTest {
 		try{
 			signalService.findNonSignalsByRunInstanceId(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -364,7 +302,7 @@ public class SignalServiceTest {
 			given(this.nonSignalRepository.findAll()).willReturn(nonSignals);
 			signalService.createOrupdateNonSignal(nonSignal);
 		} catch (Exception ex) {
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 
@@ -386,7 +324,7 @@ public class SignalServiceTest {
 			given(this.nonSignalRepository.findAll()).willReturn(nonSignals);
 			signalService.createOrupdateNonSignal(nonSignal2);
 		} catch (Exception ex) {
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 
@@ -404,7 +342,7 @@ public class SignalServiceTest {
 					topic.getSocs());
 			signalService.findById(1l);
 		} catch (Exception ex) {
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 
@@ -413,7 +351,7 @@ public class SignalServiceTest {
 		try {
 			signalService.findById(1l);
 		} catch (Exception ex) {
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 

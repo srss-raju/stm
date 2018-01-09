@@ -8,14 +8,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.junit.AfterClass;
-import org.junit.Rule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +40,7 @@ import com.deloitte.smt.util.TestUtil;
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class SignalMatchServiceTest {
 	
-	private static final Logger LOG = Logger.getLogger(SignalMatchServiceTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	private SignalMatchService signalMatchService;
@@ -73,35 +67,12 @@ public class SignalMatchServiceTest {
 	@MockBean
 	AttachmentRepository attachmentRepository;
 	
-	
-
-	
-		
-	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
-	    {
-	      jobExecutorActivate = false;
-	      expressionManager = new MockExpressionManager();
-	      databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-	    }
-	  };
-	  
-	  private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration.buildProcessEngine();
-	  
-	  @Rule
-	  public final ProcessEngineRule processEngine = new ProcessEngineRule(PROCESS_ENGINE_NEEDS_CLOSE);
-
-	  @AfterClass
-	  public static void shutdown() {
-	    PROCESS_ENGINE_NEEDS_CLOSE.close();
-	  }
-
-    
 	@Test
 	public void testFindMatchingSignal() {
 		try{
 			signalMatchService.findMatchingSignal(TestUtil.buildSignal());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -115,7 +86,7 @@ public class SignalMatchServiceTest {
 			pts.add(pt);
 			signalMatchService.buildPts(ptBuilder, pts);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -124,7 +95,7 @@ public class SignalMatchServiceTest {
 		try{
 			signalMatchService.checkConfidenceIndex(TestUtil.buildmatchingSignals(),TestUtil.buildSignal());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -133,7 +104,7 @@ public class SignalMatchServiceTest {
 		try{
 			signalMatchService.checkCohortPercentage(TestUtil.buildmatchingSignals(),TestUtil.buildSignal());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -142,7 +113,7 @@ public class SignalMatchServiceTest {
 		try{
 			signalMatchService.checkCohortPercentage(TestUtil.build95matchingSignals(),TestUtil.buildSignal());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -151,7 +122,7 @@ public class SignalMatchServiceTest {
 		try{
 			signalMatchService.checkCohortPercentage(TestUtil.build7595matchingSignals(),TestUtil.buildSignal());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -160,7 +131,7 @@ public class SignalMatchServiceTest {
 		try{
 			signalMatchService.checkCohortPercentage(TestUtil.build75matchingSignals(),TestUtil.buildSignal());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -177,7 +148,7 @@ public class SignalMatchServiceTest {
 			given(this. signalURLRepository.findByTopicId(1l)).willReturn(matchingTopicSignalUrls);
 			signalMatchService.applyMatchingSignalUrls(t1,t2);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -192,7 +163,7 @@ public class SignalMatchServiceTest {
 			given(this. meetingService.findAllyByResourceIdAndMeetingType(1l, MeetingType.getByDescription("Signal Meeting"))).willReturn(meetings);
 			signalMatchService.applyMatchingSignalMeetings(t1);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -210,7 +181,7 @@ public class SignalMatchServiceTest {
 			given(this. attachmentService.findByResourceIdAndAttachmentType(1l, AttachmentType.TOPIC_ATTACHMENT)).willReturn(matchingTopicAttachments);
 			signalMatchService.applyMatchingSignalAttachments(t1,t2);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	

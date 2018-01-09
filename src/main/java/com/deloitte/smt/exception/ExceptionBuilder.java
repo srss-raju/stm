@@ -1,7 +1,8 @@
 package com.deloitte.smt.exception;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Component;
@@ -15,12 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExceptionBuilder implements MessageSourceAware{
 	
-	private static final Logger LOG = Logger.getLogger(ExceptionBuilder.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	 MessageSource messageSource;
 	
 	public  ApplicationException buildException(ErrorType errorType,Throwable throwable){
-		LOG.info(throwable);
+		logger.info(throwable);
 		return new ApplicationException(errorType.getCode(),
 				messageSource.getMessage(errorType.getLabel(), null,errorType.getDefaultMessage(), null), null);
 	}

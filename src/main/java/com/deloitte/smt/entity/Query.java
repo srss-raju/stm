@@ -28,7 +28,7 @@ public class Query  implements Serializable {
 	@JsonProperty("QUERY_NAME")
 	private String queryName;
 	
-	@Transient
+	
 	@JsonIgnore
 	private SignalDetection signalDetection;
 

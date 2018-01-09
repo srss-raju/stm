@@ -3,7 +3,8 @@ package com.deloitte.smt.controller;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping(value = "/camunda/api/signal/detect")
 public class SignalDetectionController {
 	
-	private static final Logger LOG = Logger.getLogger(SignalDetectionController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	SignalDetectionService signalDetectionService;
@@ -46,7 +47,7 @@ public class SignalDetectionController {
 			try {
 				throw e;
 			} catch (IOException e1) {
-				LOG.info("Exception occured while creating "+e1);
+				logger.info("Exception occured while creating "+e1);
 			}
 		}
 		return signalDetectionService.createOrUpdateSignalDetection(signalDetection);
@@ -64,7 +65,7 @@ public class SignalDetectionController {
 			SignalDetection signalDetection = new ObjectMapper().readValue(topicString, SignalDetection.class);
 			signalDetectionService.createOrUpdateSignalDetection(signalDetection);
 		} catch (ApplicationException | IOException e) {
-			LOG.info("Exception occured while updating "+e);
+			logger.info("Exception occured while updating "+e);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

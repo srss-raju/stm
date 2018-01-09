@@ -5,14 +5,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.junit.AfterClass;
-import org.junit.Rule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +25,7 @@ import com.deloitte.smt.service.SignalConfirmationsService;
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class SignalConfirmationsServiceTest {
 	
-	private static final Logger LOG = Logger.getLogger(SignalConfirmationsServiceTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	private SignalConfirmationsService signalConfirmationsService;
@@ -39,26 +33,6 @@ public class SignalConfirmationsServiceTest {
 	@MockBean
 	SignalConfirmationRespository signalConfirmationRespository;
 	
-		
-	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
-	    {
-	      jobExecutorActivate = false;
-	      expressionManager = new MockExpressionManager();
-	      databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-	    }
-	  };
-	  
-	  private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration.buildProcessEngine();
-	  
-	  @Rule
-	  public final ProcessEngineRule processEngine = new ProcessEngineRule(PROCESS_ENGINE_NEEDS_CLOSE);
-
-	  @AfterClass
-	  public static void shutdown() {
-	    PROCESS_ENGINE_NEEDS_CLOSE.close();
-	  }
-
-    
 	@Test
 	public void testInsert() throws Exception{
 		List<SignalConfirmations> signalConfirmations = new ArrayList<>();
@@ -80,7 +54,7 @@ public class SignalConfirmationsServiceTest {
 			SignalConfirmations signalConfirmation = new SignalConfirmations();
 			signalConfirmationsService.update(signalConfirmation);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -96,7 +70,7 @@ public class SignalConfirmationsServiceTest {
 		try{
 			signalConfirmationsService.delete(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -111,7 +85,7 @@ public class SignalConfirmationsServiceTest {
 		try{
 			signalConfirmationsService.findById(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	

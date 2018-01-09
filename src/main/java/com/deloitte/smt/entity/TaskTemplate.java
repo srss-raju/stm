@@ -29,7 +29,7 @@ public class TaskTemplate {
 	private Date createdDate;
 	private String createdBy;
 	
-	@Transient
+	
 	private List<Long> deletedProductIds;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -31,7 +31,7 @@ public class TaskTemplateProducts {
 	private List<TaskTemplateProductValues> recordValues;
 	
 	
-	@Transient
+	
 	@JsonIgnore
 	private TaskTemplate taskTemplate;
 	

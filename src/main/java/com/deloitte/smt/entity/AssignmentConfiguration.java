@@ -42,40 +42,40 @@ public class AssignmentConfiguration implements Serializable {
     private String signalOwner;
     private String assessmentOwner;
     private String riskOwner;
-    @Transient
+    
 	private List<AssignmentSignalAssignees> signalAssignees;
-    @Transient
+    
 	private List<AssignmentAssessmentAssignees> assessmentAssignees;
-    @Transient
+    
 	private List<AssignmentRiskPlanAssignees> riskAssignees;
     
-    @Transient
+    
 	private List<AssignmentCondition> conditions;
-    @Transient
+    
 	private List<AssignmentProduct> products;
     
     @JsonIgnore
-    @Transient
+    
     private boolean conditionFlag;
     
     @JsonIgnore
-    @Transient
+    
     private boolean productFlag;
     
     @JsonIgnore
-    @Transient
+    
     private boolean repeatProductFlag;
     
     @JsonIgnore
-    @Transient
+    
     private boolean repeatSocFlag;
     
     @JsonIgnore
-    @Transient
+    
     private boolean conditionEmptyFlag;
     
     @JsonIgnore
-    @Transient
+    
     private boolean productEmptyFlag;
     
     @JsonIgnore
