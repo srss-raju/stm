@@ -30,7 +30,9 @@ public class DashboardCountService {
 			queryBuilder.append(userKeyQuery);
 			keyBuilder = new StringBuilder();
 			for(String key:userKeys){
+				keyBuilder.append("'");
 				keyBuilder.append(key);
+				keyBuilder.append("'");
 				keyBuilder.append(",");
 			}
 			userKey = keyBuilder.toString().substring(0, keyBuilder.lastIndexOf(","));
@@ -43,7 +45,9 @@ public class DashboardCountService {
 			queryBuilder.append(userGroupKeyQuery);
 			groupKeyBuilder = new StringBuilder();
 			for(String key:userGroupKeys){
+				groupKeyBuilder.append("'");
 				groupKeyBuilder.append(key);
+				groupKeyBuilder.append("'");
 				groupKeyBuilder.append(",");
 			}
 			groupKey = groupKeyBuilder.toString().substring(0, groupKeyBuilder.lastIndexOf(","));
@@ -74,7 +78,9 @@ public class DashboardCountService {
 			queryBuilder.append(userKeyQuery);
 			keyBuilder = new StringBuilder();
 			for(String key:userKeys){
+				keyBuilder.append("'");
 				keyBuilder.append(key);
+				keyBuilder.append("'");
 				keyBuilder.append(",");
 			}
 			userKey = keyBuilder.toString().substring(0, keyBuilder.lastIndexOf(","));
@@ -87,7 +93,9 @@ public class DashboardCountService {
 			queryBuilder.append(userGroupKeyQuery);
 			groupKeyBuilder = new StringBuilder();
 			for(String key:userGroupKeys){
+				groupKeyBuilder.append("'");
 				groupKeyBuilder.append(key);
+				groupKeyBuilder.append("'");
 				groupKeyBuilder.append(",");
 			}
 			groupKey = groupKeyBuilder.toString().substring(0, groupKeyBuilder.lastIndexOf(","));
@@ -117,7 +125,9 @@ public class DashboardCountService {
 			queryBuilder.append(userKeyQuery);
 			keyBuilder = new StringBuilder();
 			for(String key:userKeys){
+				keyBuilder.append("'");
 				keyBuilder.append(key);
+				keyBuilder.append("'");
 				keyBuilder.append(",");
 			}
 			userKey = keyBuilder.toString().substring(0, keyBuilder.lastIndexOf(","));
@@ -130,7 +140,9 @@ public class DashboardCountService {
 			queryBuilder.append(userGroupKeyQuery);
 			groupKeyBuilder = new StringBuilder();
 			for(String key:userGroupKeys){
+				groupKeyBuilder.append("'");
 				groupKeyBuilder.append(key);
+				groupKeyBuilder.append("'");
 				groupKeyBuilder.append(",");
 			}
 			groupKey = groupKeyBuilder.toString().substring(0, groupKeyBuilder.lastIndexOf(","));
