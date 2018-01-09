@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -44,6 +45,7 @@ public class AssessmentPlan  implements Serializable {
 	private String assessmentPlanStatus;
 	private String assessmentRiskStatus;
 	private Date assessmentDueDate;
+	@Lob
 	private String finalAssessmentSummary;
 	@OneToOne
 	private RiskPlan riskPlan;
