@@ -203,8 +203,10 @@ public class ConditionFilterServiceImpl {
 					conditionsList.add(" condition.detectionId=root.id ");
 					break;
 				case "risk":
+					conditionsList.add(" root.id=ass.riskPlan.id and topic.assessmentPlan.id = ass.id and condition.topicId=topic.id ");
+					break;
 				case "assessment":
-					conditionsList.add(" condition.topicId=topic.id ");
+					conditionsList.add(" topic.assessmentPlan.id = root.id and  condition.topicId=topic.id ");
 					break;
 				default:
 					break;

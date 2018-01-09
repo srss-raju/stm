@@ -19,12 +19,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by RKB on 04-04-2017.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "sm_topic")
 public class Topic implements Serializable{

@@ -249,16 +249,16 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				filTypeMap = new HashMap<>();
 				switch (type) {
 				case SIGNAL:
-						entitiesList.add("select  root from Topic root ");
-						break;
+					entitiesList.add("select  root from Topic root ");
+					break;
 				case RISK:
-					queryBuilder.append("select  root from RiskPlan root, AssessmentPlan ass, Topic topic ");
+					entitiesList.add("select  root from RiskPlan root ");
 					break;
 				case ASSESSMENT:
-					queryBuilder.append("select  root from AssessmentPlan root, Topic topic ");
+					entitiesList.add("select  root from AssessmentPlan root ");
 					break;
 				case DETECTION:
-					queryBuilder.append("select  root from SignalDetection root ");
+					entitiesList.add("select  root from SignalDetection root ");
 					break;
 				default:
 					break;
@@ -309,15 +309,61 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				
 				if(productExists && conditionExists)
 				{
-					entitiesList.add(",TopicSocAssignmentConfiguration condition ");
-					entitiesList.add(",TopicProductAssignmentConfiguration product ");
+					switch (type) {
+					case SIGNAL:
+					case DETECTION:
+							entitiesList.add(",TopicSocAssignmentConfiguration condition,TopicProductAssignmentConfiguration product ");
+							break;
+					case RISK:
+						queryBuilder.append(",TopicSocAssignmentConfiguration condition,TopicProductAssignmentConfiguration product,AssessmentPlan ass, Topic topic ");
+						break;
+					case ASSESSMENT:
+						queryBuilder.append(",TopicSocAssignmentConfiguration condition,TopicProductAssignmentConfiguration product,Topic topic ");
+						break;
+					default:
+						break;
+					}
+					/*entitiesList.add(",TopicSocAssignmentConfiguration condition ");
+					entitiesList.add(",TopicProductAssignmentConfiguration product ");*/
 				}
 				else
 				{
 					if(productExists)
-						entitiesList.add(",TopicProductAssignmentConfiguration product ");
+					{
+						switch (type) {
+						case SIGNAL:
+						case DETECTION:
+								entitiesList.add(",TopicProductAssignmentConfiguration product ");
+								break;
+						case RISK:
+							queryBuilder.append(",TopicProductAssignmentConfiguration product,AssessmentPlan ass, Topic topic ");
+							break;
+						case ASSESSMENT:
+							queryBuilder.append(",TopicProductAssignmentConfiguration product,Topic topic ");
+							break;
+						default:
+							break;
+						}
+						//entitiesList.add(",TopicProductAssignmentConfiguration product ");
+					}
 					if(conditionExists)
-						entitiesList.add(",TopicSocAssignmentConfiguration condition ");
+					{
+						switch (type) {
+						case SIGNAL:
+						case DETECTION:
+								entitiesList.add(",TopicSocAssignmentConfiguration condition ");
+								break;
+						case RISK:
+							queryBuilder.append(",TopicSocAssignmentConfiguration condition,AssessmentPlan ass, Topic topic ");
+							break;
+						case ASSESSMENT:
+							queryBuilder.append(",TopicSocAssignmentConfiguration condition,Topic topic ");
+							break;
+						default:
+							break;
+						}
+						//entitiesList.add(",TopicSocAssignmentConfiguration condition ");
+					}
 				}
 				
 				
@@ -328,10 +374,10 @@ public class FiltersServiceImpl<E> implements FiltersService {
 							conditionsList.add(" root.id=joinAss.topicId ");
 						break;
 					case RISK:
-						conditionsList.add(" root.id=ass.riskPlan.id and topic.assessmentPlan.id = ass.id and root.id=joinAss.riskId.id ");
+						conditionsList.add(" root.id=joinAss.riskId.id ");
 						break;
 					case ASSESSMENT:
-						conditionsList.add(" topic.assessmentPlan.id = root.id and root.id = joinAss.assessmentId ");
+						conditionsList.add(" root.id = joinAss.assessmentId ");
 						break;
 					case DETECTION:
 						conditionsList.add(" root.id=joinAss.detectionId ");
