@@ -3,7 +3,8 @@ package com.deloitte.smt.controller;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/camunda/api/signal/risk")
 public class RiskController {
 	
-	private static final Logger LOG = Logger.getLogger(RiskController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Autowired
     RiskPlanService riskPlanService;
@@ -46,7 +47,7 @@ public class RiskController {
         	riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
 			riskPlan = riskPlanService.insert(riskPlan, attachments, assessmentId);
 		} catch (Exception e) {
-			LOG.info("Exception occured while creating Risk Plan"+e);
+			logger.info("Exception occured while creating Risk Plan"+e);
 		}
         return riskPlan;
     }
@@ -64,7 +65,7 @@ public class RiskController {
     		}
         	
 		} catch (IOException e) {
-			LOG.info("Exception occured while creating Risk Action "+e);
+			logger.info("Exception occured while creating Risk Action "+e);
 		}
     	return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -94,7 +95,7 @@ public class RiskController {
         	Task riskTask = new ObjectMapper().readValue(riskTaskString, Task.class);
 			riskPlanService.updateRiskTask(riskTask, attachments);
 		} catch (IOException e) {
-			LOG.info("Exception occured while updating "+e);
+			logger.info("Exception occured while updating "+e);
 		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -112,7 +113,7 @@ public class RiskController {
         	RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
 			riskPlanService.updateRiskPlan(riskPlan, attachments);
 		} catch (ApplicationException | IOException e) {
-			LOG.info("Exception occured while updating "+e);
+			logger.info("Exception occured while updating "+e);
 		}
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -124,7 +125,7 @@ public class RiskController {
         	RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
 			riskPlanService.riskPlanSummary(riskPlan, attachments);
 		} catch (ApplicationException | IOException e) {
-			LOG.info("Exception occured in riskPlanSummary "+e);
+			logger.info("Exception occured in riskPlanSummary "+e);
 		}
         return new ResponseEntity<>(HttpStatus.OK);
     }

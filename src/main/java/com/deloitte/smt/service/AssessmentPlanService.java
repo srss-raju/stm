@@ -9,7 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -49,7 +50,7 @@ import com.deloitte.smt.util.JsonUtil;
 public class AssessmentPlanService {
 
 
-	private static final Logger LOG = Logger.getLogger(RiskPlanService.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
     AssessmentPlanRepository assessmentPlanRepository;
@@ -248,7 +249,7 @@ public class AssessmentPlanService {
 		try{
 			assessmentPlan = findById(assessmentId);
 		}catch(Exception ex){
-			LOG.error(ex);
+			logger.error(ex);
 		}
 		Topic topic = null;
 		if(assessmentPlan != null){

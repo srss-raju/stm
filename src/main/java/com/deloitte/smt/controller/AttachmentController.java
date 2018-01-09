@@ -6,7 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ import com.deloitte.smt.service.AttachmentService;
 @RequestMapping("/camunda/api/signal/attachment")
 public class AttachmentController {
 	
-	private static final Logger LOG = Logger.getLogger(AttachmentController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Autowired
     AttachmentService attachmentService;
@@ -80,7 +81,7 @@ public class AttachmentController {
             response.setHeader("Content-Disposition", "attachment;filename=" + a.getFileName());
 			IOUtils.copyLarge(new ByteArrayInputStream(a.getContent()), response.getOutputStream());
 		} catch (IOException | ApplicationException e) {
-			LOG.info("Exception occured while downloadContent "+e);
+			logger.info("Exception occured while downloadContent "+e);
 		}
     }
 }

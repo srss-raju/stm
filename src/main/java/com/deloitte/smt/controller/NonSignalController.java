@@ -2,7 +2,8 @@ package com.deloitte.smt.controller;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping(value = "/camunda/api/signal")
 public class NonSignalController {
 
-	private static final Logger LOG = Logger.getLogger(NonSignalController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
+	
 	@Autowired
 	private SignalService signalService;
 
@@ -27,7 +29,7 @@ public class NonSignalController {
 			try {
 				nonSignal = new ObjectMapper().readValue(nonSignalStr,NonSignal.class);
 			} catch (IOException e) {
-				LOG.error(e);
+				logger.error(e);
 			}
 			return signalService.createOrupdateNonSignal(nonSignal);
 	}
@@ -39,7 +41,7 @@ public class NonSignalController {
 		try {
 			nonSignal = new ObjectMapper().readValue(nonSignalStr,NonSignal.class);
 		} catch (IOException e) {
-			LOG.error(e);
+			logger.error(e);
 		}
 		return signalService.createOrupdateNonSignal(nonSignal);
     }

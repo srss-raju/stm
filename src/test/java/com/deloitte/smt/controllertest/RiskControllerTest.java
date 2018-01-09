@@ -14,7 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,7 @@ import com.deloitte.smt.util.TestUtil;
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class RiskControllerTest {
 	
-	private static final Logger LOG = Logger.getLogger(RiskControllerTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -139,7 +140,7 @@ public class RiskControllerTest {
 							.param("data", TestUtil.convertObjectToJsonString(riskTask)))
 					.andExpect(status().isOk());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -154,7 +155,7 @@ public class RiskControllerTest {
 							.param("data", TestUtil.convertObjectToJsonString(riskPlan)))
 					.andExpect(status().isOk());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -169,7 +170,7 @@ public class RiskControllerTest {
 							.param("data", TestUtil.convertObjectToJsonString(riskPlan)))
 					.andExpect(status().isOk());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -183,7 +184,7 @@ public class RiskControllerTest {
 							.param("data", "test"))
 					.andExpect(status().isOk());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -197,7 +198,7 @@ public class RiskControllerTest {
 							.param("data", "test"))
 					.andExpect(status().isOk());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -211,7 +212,7 @@ public class RiskControllerTest {
 							.param("data", "test"))
 					.andExpect(status().isOk());
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	

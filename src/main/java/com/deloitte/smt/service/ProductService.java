@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -20,7 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ProductService {
-	private static final Logger LOGGER = Logger.getLogger(ProductService.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
+	
 	@Autowired
 	ProductLevelRepository productLevelRepository;
 	
@@ -47,7 +49,7 @@ public class ProductService {
 			}
 			strVersions = mapper.writeValueAsString(versions);
 		} catch (JsonProcessingException e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 		response.setLevels(levelsList);
 		response.setVersions(Arrays.asList(strVersions));
@@ -61,7 +63,7 @@ public class ProductService {
 			prl.setShowCodes(productResponse.isShowCodes());
 			productLevelRepository.save(prl);
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 	}
 	

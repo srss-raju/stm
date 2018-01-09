@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
@@ -68,7 +69,7 @@ import com.deloitte.smt.util.SignalUtil;
 @Service
 public class SignalService {
 
-	private static final Logger LOG = Logger.getLogger(SignalService.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	MessageSource messageSource;
@@ -186,7 +187,7 @@ public class SignalService {
 		topic.setSignalUrls(signalURLRepository.findByTopicId(topicId));
 		findSoc(topic);
 		if (!SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(topic.getSignalStatus())) {
-			LOG.debug("FOUND SIGNAL" + topic.getId());
+			logger.debug("FOUND SIGNAL" + topic.getId());
 			topic = signalMatchService.findMatchingSignal(topic);
 		}
 		return topic;
@@ -267,7 +268,7 @@ public class SignalService {
 		
 		List<Attachment> attchmentList = attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null,
 				topicUpdated.getFileMetadata(), topic.getCreatedBy());
-		LOG.info("Start Algorithm for matching signal");
+		logger.info("Start Algorithm for matching signal");
 		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, null, attchmentList, SmtConstant.CREATE.getDescription());
 		return signalMatchService.findMatchingSignal(topicUpdated);
 	}

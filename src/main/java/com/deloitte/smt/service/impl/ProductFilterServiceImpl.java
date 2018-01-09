@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -27,7 +28,8 @@ import com.deloitte.smt.util.Levels;
 
 @Service
 public class ProductFilterServiceImpl {
-	private static final Logger LOGGER = Logger.getLogger(ProductFilterServiceImpl.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
+	
 	@Autowired
 	private ProductLevelRepository productLevelRepository;
 	
@@ -51,12 +53,12 @@ public class ProductFilterServiceImpl {
 		try {
 			prlevels = productLevelValuesCodes(type);
 			productLevels = productLevelRepository.findAllByOrderByIdAsc();
-			LOGGER.info("PRODUCT LEVEL MAP ==="+prlevels);
-			LOGGER.info("PRODUCT REPO MAP ==="+productLevels);
+			logger.info("PRODUCT LEVEL MAP ==="+prlevels);
+			logger.info("PRODUCT REPO MAP ==="+productLevels);
 			constructProductFilter(filterList, prlevels, productLevels);
 			
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.error(e);
 		}
 	}
 
@@ -85,7 +87,7 @@ public class ProductFilterServiceImpl {
 							exists=false;
 					}
 				}
-				LOGGER.info("Exists...?"+productLevel.getKey()+"----"+exists);
+				logger.info("Exists...?"+productLevel.getKey()+"----"+exists);
 				if(exists)
 					dto.setFilterValues(existList);
 				else
@@ -112,18 +114,18 @@ public class ProductFilterServiceImpl {
 		default:
 			break;
 		}
-		LOGGER.info("TYPE-------> "+type+" ############>>>>>" + prodFillVals);
+		logger.info("TYPE-------> "+type+" ############>>>>>" + prodFillVals);
 		if (!CollectionUtils.isEmpty(prodFillVals)) {
 			levelMapList = new ArrayList<>();
 			Map<Integer, Set<String>> itemMap = splitRecordValues(prodFillVals);
-			LOGGER.info("MAP #############>>>>>" + itemMap);
+			logger.info("MAP #############>>>>>" + itemMap);
 			Set<Entry<Integer, Set<String>>> st = itemMap.entrySet();
 			for (Entry<Integer, Set<String>> me : st) {
 				Set<String> recValues = me.getValue();
 				List<Object[]> assignmentProductList = getCategoryCodes(recValues);
 				createProductValues(levelMapList, assignmentProductList);
 			}
-			LOGGER.info("assignmentProductList #############>>>>>" + levelMapList);
+			logger.info("assignmentProductList #############>>>>>" + levelMapList);
 		}
 		return levelMapList;
 	}
@@ -135,12 +137,12 @@ public class ProductFilterServiceImpl {
 			signalIds = riskPlanRepository.findAllSignalIds();
 		else
 			signalIds = assessmentPlanRepository.findAllSignalIds();
-		LOGGER.info("LIST OF SIGNAL IDS...."+signalIds);
+		logger.info("LIST OF SIGNAL IDS...."+signalIds);
 		
 		if(!CollectionUtils.isEmpty(signalIds))
 			prds = topicRepository.getListOfProductRecordKeys(signalIds) ; 
 		
-		LOGGER.info("LIST OF SIGNAL KEYS IDS...."+prds);
+		logger.info("LIST OF SIGNAL KEYS IDS...."+prds);
 		return prds;
 	}
 
@@ -193,7 +195,7 @@ public class ProductFilterServiceImpl {
 			}
 		}
 		
-		LOGGER.info("FINAL LIST....."+productRecKeys);
+		logger.info("FINAL LIST....."+productRecKeys);
 		if(!AssignmentUtil.isNullOrEmpty(productRecKeys))
 		{
 			switch (type) 

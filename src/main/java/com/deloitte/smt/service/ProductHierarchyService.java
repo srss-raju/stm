@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -25,7 +26,7 @@ import com.deloitte.smt.repository.ProductLevelRepository;
  */
 @Service
 public class ProductHierarchyService {
-	private static final Logger LOGGER = Logger.getLogger(ProductHierarchyService.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	@Autowired
 	ProductMedraHierarchyDAO productMedraHierarchyDAO;
 
@@ -41,7 +42,7 @@ public class ProductHierarchyService {
 	 * @return
 	 */
 	public List<ProductSearchDTO> getHierarchyByCode(MedraBrowserDTO medraBrowserDto) {
-		LOGGER.info("getHierarchyByCode");
+		logger.info("getHierarchyByCode");
 		List<ProductHierarchyDto> productHierarchyList;
 		productHierarchyList = productMedraHierarchyDAO.findAllByActLvel(medraBrowserDto.getSearchValue(), medraBrowserDto.getSelectLevel(), medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
 		return responseMapper(productHierarchyList);

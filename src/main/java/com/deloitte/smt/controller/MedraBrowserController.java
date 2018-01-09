@@ -2,7 +2,8 @@ package com.deloitte.smt.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,7 @@ import com.deloitte.smt.service.SocHierarchyService;
 @RestController
 @RequestMapping("/camunda/api/signal")
 public class MedraBrowserController {
-	private static final Logger LOG = Logger.getLogger(MedraBrowserController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	SocHierarchyService socHierarchyService;
@@ -52,7 +53,7 @@ public class MedraBrowserController {
 	 */
 	@PostMapping(value = "/condition")
 	public List<SocSearchDTO> getAllbySocName(@RequestBody MedraBrowserDTO medraBrowserDto) {
-		LOG.info("Entry: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
+		logger.info("Entry: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
 		List<SocSearchDTO> socList;
 		if (null != medraBrowserDto.getSelectLevel()) {
 			//This method is invoked for getting Hierarchy by socname
@@ -63,7 +64,7 @@ public class MedraBrowserController {
 			socList=	socHierarchyService.getDetailsBySearchText(medraBrowserDto);
 		}
 
-		LOG.info("Exit: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
+		logger.info("Exit: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
 		return socList;
 	}
 
@@ -91,7 +92,7 @@ public class MedraBrowserController {
 	
 	@PostMapping(value = "/product")
 	public List<ProductSearchDTO> getAllbyProductName(@RequestBody MedraBrowserDTO medraBrowserDto) {
-		LOG.info("Entry: MedraBrowserController : getAllbyProductName() :: hierarchy on level and code ");
+		logger.info("Entry: MedraBrowserController : getAllbyProductName() :: hierarchy on level and code ");
 		List<ProductSearchDTO> socList;
 		if (null != medraBrowserDto.getSelectLevel()) {
 			//This method is invoked for getting Hierarchy by ProductName
@@ -102,7 +103,7 @@ public class MedraBrowserController {
 			socList=	productHierarchyService.getDetailsBySearchText(medraBrowserDto);
 		}
 
-		LOG.info("Exit: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
+		logger.info("Exit: MedraBrowserController : getAllbySocName() :: hierarchy on level and code ");
 		return socList;
 	}
 

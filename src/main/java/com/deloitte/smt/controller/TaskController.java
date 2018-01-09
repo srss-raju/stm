@@ -1,9 +1,10 @@
 package com.deloitte.smt.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/camunda/api/signal")
 public class TaskController    {
 	
-	private static final Logger LOG = Logger.getLogger(TaskController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Autowired
     TaskService assessmentActionService;
@@ -45,7 +46,7 @@ public class TaskController    {
 				signalAction = assessmentActionService.createAssessmentAction(signalAction, attachments);
 			}
 		} catch (IOException e) {
-			LOG.info("Exception occured while updating " + e);
+			logger.info("Exception occured while updating " + e);
 		}
         return signalAction;
     }
@@ -58,7 +59,7 @@ public class TaskController    {
         	signalAction = new ObjectMapper().readValue(signalActionString, Task.class);
 			assessmentActionService.updateAssessmentAction(signalAction, attachments);
 		} catch (IOException e) {
-			LOG.info("Exception occured while updating "+e);
+			logger.info("Exception occured while updating "+e);
 		}
         return new ResponseEntity<>(HttpStatus.OK);
     }

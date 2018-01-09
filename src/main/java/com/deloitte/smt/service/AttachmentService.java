@@ -6,12 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
@@ -24,7 +25,7 @@ import com.deloitte.smt.repository.AttachmentRepository;
  */
 @Service
 public class AttachmentService {
-	private static final Logger LOG = Logger.getLogger(AttachmentService.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Autowired
     AttachmentRepository attachmentRepository;
@@ -61,7 +62,7 @@ public class AttachmentService {
         if(attachments != null) {
             for (MultipartFile attachment : attachments) {
             	flag = true;
-                if(!attachment.isEmpty() || StringUtils.isNotBlank(attachment.getOriginalFilename())) {
+                if(!attachment.isEmpty() || (!StringUtils.isEmpty(attachment.getOriginalFilename()))) {
                     Attachment a = new Attachment();
                     a.setAttachmentType(attachmentType);
                     addDescriptionAndUrl(metaData, attachment, a);
@@ -89,7 +90,7 @@ public class AttachmentService {
 		try {
 			a.setContent(attachment.getBytes());
 		} catch (IOException e) {
-			LOG.info("Exception occured while reading bytes "+e);
+			logger.info("Exception occured while reading bytes "+e);
 		}
 	}
 
@@ -100,7 +101,7 @@ public class AttachmentService {
 	 */
 	private void addDescriptionAndUrl(Map<String, Attachment> metaData,
 			MultipartFile attachment, Attachment a) {
-		if(metaData != null && StringUtils.isNotBlank(metaData.get(attachment.getOriginalFilename()).getDescription())) {
+		if(metaData != null && (!StringUtils.isEmpty(metaData.get(attachment.getOriginalFilename()).getDescription()))) {
 		    a.setDescription(metaData.get(attachment.getOriginalFilename()).getDescription());
 		    a.setAttachmentsURL(metaData.get(attachment.getOriginalFilename()).getAttachmentsURL());
 		}

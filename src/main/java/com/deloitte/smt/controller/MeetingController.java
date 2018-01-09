@@ -3,7 +3,8 @@ package com.deloitte.smt.controller;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/camunda/api/signal/meeting")
 public class MeetingController {
 	
-	private static final Logger LOG = Logger.getLogger(MeetingController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Autowired
     MeetingService meetingService;
@@ -53,7 +54,7 @@ public class MeetingController {
         	Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
 			meetingService.update(meeting, attachments);
 		} catch (ApplicationException | IOException e) {
-			LOG.info("Exception occured while updating "+e);
+			logger.info("Exception occured while updating "+e);
 		}
         return new ResponseEntity<>(HttpStatus.OK);
     }

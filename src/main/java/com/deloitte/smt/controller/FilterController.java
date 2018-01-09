@@ -2,7 +2,8 @@ package com.deloitte.smt.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,13 +24,13 @@ import com.deloitte.smt.util.ServerResponseObject;
 @RestController
 @RequestMapping("/camunda/api/signal")
 public class FilterController    {
-	private static final Logger LOGGER = Logger.getLogger(FilterController.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
     @Autowired
     private FiltersService  filterService;
 
     @GetMapping(value="/filter/{type}")
     public List<FilterDTO> getFilters(@PathVariable String type){
-    	LOGGER.info("getFilters type...."+type);
+    	logger.info("getFilters type...."+type);
 		return filterService.getFiltersByType(type);
     }
 

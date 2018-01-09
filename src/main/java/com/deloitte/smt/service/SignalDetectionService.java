@@ -9,7 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ import com.deloitte.smt.util.SmtResponse;
 @Service
 public class SignalDetectionService {
 
-	private static final Logger LOG = Logger.getLogger(SignalDetectionService.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	MessageSource messageSource;
@@ -385,7 +386,7 @@ public class SignalDetectionService {
 		for (int i = 0; i < Integer.parseInt(signalDetection.getWindowType()); i++) {
 			createdDate = SignalUtil.getNextRunDate(signalDetection.getRunFrequency(), createdDate);
 			nextRunDates.add(createdDate);
-			LOG.info("Next Run Date  -->> " + createdDate);
+			logger.info("Next Run Date  -->> " + createdDate);
 		}
 		signalDetection.setNextRunDates(nextRunDates);
 	}

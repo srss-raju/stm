@@ -6,7 +6,8 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -29,7 +30,7 @@ import com.deloitte.smt.util.JsonUtil;
 @Service
 public class SignalAuditService {
 
-	private static final Logger LOG = Logger.getLogger(SignalService.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	SignalAuditRepository signalAuditRepository;
@@ -38,7 +39,7 @@ public class SignalAuditService {
 	SignalAttachmentAuditRepository signalAttachmentAuditRepository;
 
 	public List<SignalAudit> getAuditDetails() {
-		LOG.info("In getAuditDetails");
+		logger.info("In getAuditDetails");
 		List<SignalAudit> allSignals = signalAuditRepository.findAll();
 		if(!CollectionUtils.isEmpty(allSignals)){
 			for(SignalAudit signal : allSignals){

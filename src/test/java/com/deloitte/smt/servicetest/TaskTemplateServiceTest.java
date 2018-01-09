@@ -5,14 +5,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.junit.AfterClass;
-import org.junit.Rule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +25,7 @@ import com.deloitte.smt.service.TaskTemplateService;
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class TaskTemplateServiceTest {
 	
-	private static final Logger LOG = Logger.getLogger(TaskTemplateServiceTest.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Autowired
 	private TaskTemplateService taskTemplateService;
@@ -39,28 +33,10 @@ public class TaskTemplateServiceTest {
 	@MockBean
 	private TaskTemplateRepository taskTemplateRepository;
 	
-	private static final ProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {
-	    {
-	      jobExecutorActivate = false;
-	      expressionManager = new MockExpressionManager();
-	      databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-	    }
-	  };
-	  
-	  private static final ProcessEngine PROCESS_ENGINE_NEEDS_CLOSE = processEngineConfiguration.buildProcessEngine();
-	  
-	  @Rule
-	  public final ProcessEngineRule processEngine = new ProcessEngineRule(PROCESS_ENGINE_NEEDS_CLOSE);
-
-	  @AfterClass
-	  public static void shutdown() {
-	    PROCESS_ENGINE_NEEDS_CLOSE.close();
-	  }
-
-    
+	
 	@Test
 	public void testCreateTaskTemplate() throws Exception{
-		LOG.info("testCreateTaskTemplate");
+		logger.info("testCreateTaskTemplate");
 		TaskTemplate taskTemplate = new TaskTemplate();
 		taskTemplate.setId(1l);
 		given(this.taskTemplateRepository.save(taskTemplate)).willReturn(taskTemplate);
@@ -69,7 +45,7 @@ public class TaskTemplateServiceTest {
 	
 	@Test
 	public void testUpdateTaskTemplate() throws Exception{
-		LOG.info("testCreateTaskTemplate");
+		logger.info("testCreateTaskTemplate");
 		TaskTemplate taskTemplate = new TaskTemplate();
 		taskTemplate.setId(1l);
 		given(this.taskTemplateRepository.save(taskTemplate)).willReturn(taskTemplate);
@@ -90,7 +66,7 @@ public class TaskTemplateServiceTest {
 			given(this.taskTemplateRepository.findOne(11l)).willReturn(taskTemplate);
 			taskTemplateService.delete(1l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
@@ -119,7 +95,7 @@ public class TaskTemplateServiceTest {
 			given(this.taskTemplateRepository.findOne(1l)).willReturn(taskTemplate);
 			taskTemplateService.findById(11l);
 		}catch(Exception ex){
-			LOG.info(ex);
+			logger.info(ex);
 		}
 	}
 	
