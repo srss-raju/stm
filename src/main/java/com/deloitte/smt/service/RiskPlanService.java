@@ -135,31 +135,21 @@ public class RiskPlanService {
 		Long riskPlanExist = riskPlanRepository.countByNameIgnoreCase(riskPlan.getName());
 		
 		if (assessmentId != null) {
-			AssessmentPlan assessmentPlan = assessmentPlanRepository.findOne(assessmentId);
+			AssessmentPlan assessmentPlan = assessmentPlanService.findById(riskPlan.getAssessmentId());
 			if (assessmentPlan == null) {
 				throw new ApplicationException("Assessment Plan not found with the given Id : " + assessmentId);
 			}
-			assessmentPlan.setRiskPlan(riskPlan);
+			/*assessmentPlan.setRiskPlan(riskPlan);*/
 			riskPlan.setAssessmentPlan(assessmentPlan);
 			if (riskPlanExist>0) {
 				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
 			}
 			
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
-			assessmentPlanRepository.save(assessmentPlan);
-		} else {
-			if (riskPlanExist>0) {
-				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
-			}
-			riskPlanUpdated = riskPlanRepository.save(riskPlan);
-		}
-		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlanUpdated.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null,
-				riskPlanUpdated.getFileMetadata(), riskPlanUpdated.getCreatedBy());
-		updateSignalUrl(riskPlanUpdated);
-		AssessmentPlan assessmentPlan;
-		if(riskPlan.getAssessmentId() != null){
+			//assessmentPlanRepository.save(assessmentPlan);
+			
 			try{
-				assessmentPlan = assessmentPlanService.findById(riskPlan.getAssessmentId());
+				
 				Topic topic = getTopic(assessmentPlan);
 				
 				if(topic != null){
@@ -186,8 +176,16 @@ public class RiskPlanService {
 			}catch(Exception ex){
 				LOG.error(ex);
 			}
+			
+		} else {
+			if (riskPlanExist>0) {
+				throw exceptionBuilder.buildException(ErrorType.RISKPLAN_NAME_DUPLICATE, null);
+			}
+			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 		}
-		
+		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlanUpdated.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null,
+				riskPlanUpdated.getFileMetadata(), riskPlanUpdated.getCreatedBy());
+		updateSignalUrl(riskPlanUpdated);
 		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 		return riskPlanUpdated;
 	}
