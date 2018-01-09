@@ -8,7 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -34,7 +35,7 @@ import com.deloitte.smt.repository.TopicRepository;
 @Service
 public class SignalMatchService {
 
-	private static final Logger LOG = Logger.getLogger(SignalService.class);
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	private TopicRepository topicRepository;
@@ -61,7 +62,7 @@ public class SignalMatchService {
 	 * @param topic
 	 */
 	public Topic findMatchingSignal(Topic topic) {
-		LOG.info("Algorith started");
+		logger.info("Algorith started");
 		List<Topic> matchingSignals = getMatchingSignals(topic);
 		List<Topic> ciSignals = checkConfidenceIndex(matchingSignals, topic);
 		return checkCohortPercentage(ciSignals, topic);

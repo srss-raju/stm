@@ -6,13 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class SignalUtil {
-	private static final Logger LOGGER = Logger.getLogger(SignalUtil.class);
+	private static final Logger logger = LogManager.getLogger(SignalUtil.class);
 	
 	private SignalUtil(){}
 	
@@ -55,7 +56,7 @@ public class SignalUtil {
 			try {
 				frmDate = sdf.parse(date);
 			} catch (ParseException e) {
-				LOGGER.error(e);
+				logger.error(e);
 			}
 		}
 		return frmDate;
