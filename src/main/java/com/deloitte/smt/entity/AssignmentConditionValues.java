@@ -33,7 +33,5 @@ public class AssignmentConditionValues implements Serializable {
     private String category;
     private String categoryCode;
     private String categoryDesc;
-    private Long assignmentConfigurationId;
-    private Long socAssignmentConfigurationId;
     
 }

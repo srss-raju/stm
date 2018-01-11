@@ -28,18 +28,16 @@ public class AssignmentProduct implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+	private String category;
+    private String categoryCode;
+    private String categoryDesc;
+    private String productName;
+    private String recordKey;
     private Date createdDate;
     private String createdBy;
     private Date lastModifiedDate;
-	    private String category;
-    private String categoryCode;
-    private String categoryDesc;
-    private String lastModifiedBy;
-    private String productName;
-    private String recordKey;
-    private Long assignmentConfigurationId;
-    private Long productAssignmentConfigurationId;
-    
+	private String lastModifiedBy;
+        
     @OneToMany
     private List<AssignmentProductValues> recordValues;
     
