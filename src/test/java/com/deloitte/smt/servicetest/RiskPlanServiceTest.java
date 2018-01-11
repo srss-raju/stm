@@ -61,9 +61,6 @@ public class RiskPlanServiceTest {
 	@MockBean
 	AssignmentConfigurationRepository assignmentConfigurationRepository;
 	
-	
-	
-	
 	@Test
 	public void testDelete() {
 		try{
