@@ -55,7 +55,6 @@ public class AssessmentAssignmentService {
 	private void saveAssessmentAssignmentAssignees(AssignmentAssessmentAssignees aaAssignees, AssessmentPlan assessmentPlan, List<AssessmentAssignees> list) {
 		AssessmentAssignees assignee = new AssessmentAssignees();
 		assignee.setAssessmentId(assessmentPlan.getId());
-		assignee.setAssignTo(aaAssignees.getAssignTo());
 		assignee.setUserGroupKey(aaAssignees.getUserGroupKey());
 		assignee.setUserKey(aaAssignees.getUserKey());
 		assignee.setCreatedDate(assessmentPlan.getCreatedDate());

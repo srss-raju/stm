@@ -573,12 +573,6 @@ public class SignalService {
 		signalAction.setDescription(action.getDescription());
 		signalAction.setNotes(action.getNotes());
 		signalAction.setRecipients(action.getRecipients());
-		if (action.getAssignTo() == null) {
-			signalAction.setAssignTo(assessmentPlan.getAssignTo());
-		} else {
-			signalAction.setAssignTo(action.getAssignTo());
-		}
-		signalAction.setOwner(assessmentPlan.getAssignTo());
 		signalAction = taskRepository.save(signalAction);
 		signalActionList.add(signalAction);
 		associateTemplateAttachments(sort, action, signalAction);
