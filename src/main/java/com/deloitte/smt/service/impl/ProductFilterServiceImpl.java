@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dto.FilterDTO;
+import com.deloitte.smt.dto.LevelsDTO;
 import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentProductValuesRepository;
@@ -23,7 +24,6 @@ import com.deloitte.smt.repository.ProductLevelRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.util.LevelsDTO;
 
 @Service
 public class ProductFilterServiceImpl {
