@@ -42,7 +42,6 @@ import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
-import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
@@ -67,9 +66,6 @@ public class RiskPlanService {
 
 	@Autowired
 	RiskPlanRepository riskPlanRepository;
-
-	@Autowired
-	RiskTaskRepository riskTaskRepository;
 
 	@Autowired
 	AttachmentService attachmentService;
@@ -97,9 +93,6 @@ public class RiskPlanService {
 
 	@Autowired
 	private AssignmentConfigurationRepository assignmentConfigurationRepository;
-	
-	@Autowired
-	RiskPlanAssignmentService riskPlanAssignmentService;
 	
 	@Autowired
 	RiskPlanAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
@@ -179,7 +172,8 @@ public class RiskPlanService {
 					riskPlan.setOwner(assignmentConfiguration.getRiskOwner());
 					riskPlanUpdated.setOwner(assignmentConfiguration.getRiskOwner());
 				}
-				riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
+				//TODO
+				//riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
 			}
 		}
 		return riskPlanUpdated;

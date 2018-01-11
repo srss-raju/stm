@@ -32,7 +32,6 @@ import com.deloitte.smt.entity.SignalConfidence;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalStrength;
 import com.deloitte.smt.entity.SignalURL;
-import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicCondition;
@@ -46,12 +45,10 @@ import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
-import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfidenceRepository;
 import com.deloitte.smt.repository.SignalStrengthRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TopicConditionRepository;
 import com.deloitte.smt.repository.TopicConditionValuesRepository;
@@ -106,12 +103,6 @@ public class SignalService {
 	AttachmentService attachmentService;
 
 	@Autowired
-	private SocRepository socRepository;
-
-	@Autowired
-	private PtRepository ptRepository;
-
-	@Autowired
 	AttachmentRepository attachmentRepository;
 
 	@Autowired
@@ -123,9 +114,6 @@ public class SignalService {
 	
 	@Autowired
 	CommentsRepository commentsRepository;
-	
-	@Autowired
-	AssessmentAssignmentService assessmentAssignmentService;
 	
 	@Autowired
 	SignalStrengthRepository signalStrengthRepository;
@@ -460,7 +448,8 @@ public class SignalService {
 			if(assignmentConfiguration.getAssessmentOwner()!=null){
 				assessmentPlan.setOwner(assignmentConfiguration.getAssessmentOwner());
 			}
-			assessmentAssignmentService.saveAssignmentAssignees(assignmentConfiguration, assessmentPlan);
+			//TODO
+			//assessmentAssignmentService.saveAssignmentAssignees(assignmentConfiguration, assessmentPlan);
 		}
 		return assessmentPlan;
 	}
