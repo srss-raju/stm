@@ -29,11 +29,11 @@ public class NonSignal implements Serializable{
     private Long runInstanceId;
 	private String cases;
 	private String caselistId;
-	private Date createdDate;
-	private String createdBy;
-	private Date lastModifiedDate;
 	private Integer casesCount;
 	private String productKey;
 	private String ptDesc;
+	private Date createdDate;
+	private String createdBy;
+	private Date lastModifiedDate;
 	
 }

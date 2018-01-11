@@ -26,9 +26,7 @@ public class ProductLevels implements Serializable {
     private Long id;
 	
 	private String versions;
-	
 	private String key;
-	
 	private String value;
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean showCodes;
