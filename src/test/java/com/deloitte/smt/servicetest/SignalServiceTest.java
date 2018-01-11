@@ -38,7 +38,7 @@ import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
-import com.deloitte.smt.repository.SignalConfigurationRepository;
+import com.deloitte.smt.repository.SignalConfidenceRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
@@ -92,7 +92,7 @@ public class SignalServiceTest {
 	AttachmentRepository attachmentRepository;
 
 	@MockBean
-	SignalConfigurationRepository signalConfigurationRepository;
+	SignalConfidenceRepository signalConfigurationRepository;
 
 	@MockBean
 	NonSignalRepository nonSignalRepository;
