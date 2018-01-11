@@ -32,6 +32,7 @@ import com.deloitte.smt.entity.SignalConfidence;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalStrength;
 import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicCondition;
@@ -620,6 +621,11 @@ public class SignalService {
 			throw new ApplicationException("Risk Plan Action Type not found with the given Id : " + signalUrlId);
 		}
 		signalURLRepository.delete(signalURL);
+	}
+
+	public List<Topic> findTopicsByRunInstanceId(Long runInstanceId) {
+		return topicRepository.findTopicByRunInstanceIdOrderByCreatedDateAsc(runInstanceId);
+		
 	}
 
 	public List<NonSignal> findNonSignalsByRunInstanceId(Long runInstanceId) {
