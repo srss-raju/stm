@@ -9,10 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "sm_detection_geography")
 public class Geography  implements Serializable {
@@ -26,41 +28,8 @@ public class Geography  implements Serializable {
 	private String countries;
 	
 	
-	@JsonIgnore
-	private SignalDetection signalDetection;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	@ManyToOne
 	@JoinColumn(name = "detectionId")
-	public SignalDetection getSignalDetection() {
-		return signalDetection;
-	}
-
-	public void setSignalDetection(SignalDetection signalDetection) {
-		this.signalDetection = signalDetection;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public String getCountries() {
-		return countries;
-	}
-
-	public void setCountries(String countries) {
-		this.countries = countries;
-	}
-
-	}
+	@JsonIgnore
+	private SignalDetection signalDetection;
+}
