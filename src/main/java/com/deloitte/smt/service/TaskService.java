@@ -52,8 +52,6 @@ public class TaskService {
     @Autowired
     SignalURLRepository signalURLRepository;
     
-    @Autowired
-    SignalAuditService signalAuditService;
     /**
      * 
      * @param signalAction
@@ -75,7 +73,6 @@ public class TaskService {
 		}
     	
         Task signalActionUpdated = taskRepository.save(signalAction);
-        List<Attachment> attachmentList = attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata(), signalActionUpdated.getCreatedBy());
         if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
         	for(SignalURL url:signalActionUpdated.getSignalUrls()){
         		url.setTopicId(signalActionUpdated.getId());
@@ -87,7 +84,6 @@ public class TaskService {
         	signalURLRepository.save(signalActionUpdated.getSignalUrls());
         }
     	checkAssessmentTaskStatus(signalAction);
-        signalAuditService.saveOrUpdateSignalActionAudit(signalActionUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
         return signalActionUpdated;
     }
     /**
@@ -112,10 +108,8 @@ public class TaskService {
 			throw exceptionBuilder.buildException(ErrorType.ASSESSMENT_TASK_NAME_DUPLICATE, null);
 		}
        
-        String assessmentActionOriginal = JsonUtil.converToJson(taskRepository.findOne(signalAction.getId()));
         signalAction.setLastUpdatedDate(new Date());
         taskRepository.save(signalAction);
-        List<Attachment> attachmentList = attachmentService.addAttachments(signalAction.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, signalAction.getDeletedAttachmentIds(), signalAction.getFileMetadata(), signalAction.getCreatedBy());
         List<Task> actions = findAllByAssessmentId(signalAction.getAssessmentPlanId(), null);
         boolean allTasksCompletedFlag = true;
         if(!CollectionUtils.isEmpty(actions)){
@@ -141,9 +135,7 @@ public class TaskService {
         	AssessmentPlan assessmentPlan  = assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentPlanId()));
         	assessmentPlan.setLastModifiedDate(new Date());
         	assessmentPlan.setModifiedBy(signalAction.getLastUpdatedBy());
-        	signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, assessmentPlanOriginal, null, SmtConstant.UPDATE.getDescription());
         }
-        signalAuditService.saveOrUpdateSignalActionAudit(signalAction, assessmentActionOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
     }
     
     private void checkAssessmentTaskStatus(Task signalAction){
@@ -189,7 +181,6 @@ public class TaskService {
         }
         taskRepository.delete(signalAction);
         checkAssessmentTaskStatus(signalAction);
-        signalAuditService.saveOrUpdateSignalActionAudit(signalAction, null, null, SmtConstant.DELETE.getDescription());
     }
     
     public Task createOrphanAssessmentAction(Task signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
@@ -204,7 +195,6 @@ public class TaskService {
         signalAction.setDueDate(SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate()));
         signalAction.setStatus("New");
         Task signalActionUpdated = taskRepository.save(signalAction);
-    	attachmentService.addAttachments(signalActionUpdated.getId(), attachments, AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, null, signalActionUpdated.getFileMetadata(), signalActionUpdated.getCreatedBy());
     	if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
         	for(SignalURL url:signalActionUpdated.getSignalUrls()){
         		url.setTopicId(signalActionUpdated.getId());
