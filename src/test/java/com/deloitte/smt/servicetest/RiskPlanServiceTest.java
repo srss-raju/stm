@@ -2,9 +2,6 @@ package com.deloitte.smt.servicetest;
 
 import static org.mockito.BDDMockito.given;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -20,13 +17,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
-import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.service.RiskPlanService;
@@ -53,9 +48,6 @@ public class RiskPlanServiceTest {
 	@MockBean
 	RiskPlanRepository riskPlanRepository;
 
-	@MockBean
-	RiskTaskRepository riskTaskRepository;
-
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -70,52 +62,7 @@ public class RiskPlanServiceTest {
 	AssignmentConfigurationRepository assignmentConfigurationRepository;
 	
 	
-	@Test
-	public void testFindById() {
-		try{
-			Task riskTask = new Task();
-			riskTask.setId(1l);
-			riskTask.setStatus("New");
-			given(this.riskTaskRepository.findOne(1l)).willReturn(riskTask);
-			given(this.riskTaskRepository.save(riskTask)).willReturn(riskTask);
-			riskPlanService.findById(1l);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
-	@Test
-	public void testFindAllByRiskIdStatusNull() {
-		try{
-			List<Task> list = new ArrayList<>();
-			given(this.riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc("1")).willReturn(list);
-			riskPlanService.findAllByRiskId("1", null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testFindAllByRiskIdStatus() {
-		try{
-			List<Task> list = new ArrayList<>();
-			given(this.riskTaskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc("1", "Completed")).willReturn(list);
-			riskPlanService.findAllByRiskId("1", "Completed");
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testDeleteWithNull() {
-		try{
-			Task riskTask = new Task();
-			given(this.riskTaskRepository.findOne(1l)).willReturn(riskTask);
-			riskPlanService.delete(1l);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
 	@Test
 	public void testDelete() {
