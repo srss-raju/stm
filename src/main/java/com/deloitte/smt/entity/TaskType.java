@@ -27,11 +27,10 @@ public class TaskType implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date createdDate;
-    private String createdBy;
-    private Date lastModifiedDate;
     private String name;
     private String type;
     private String description;
-    
+    private Date createdDate;
+    private String createdBy;
+    private Date lastModifiedDate;
 }

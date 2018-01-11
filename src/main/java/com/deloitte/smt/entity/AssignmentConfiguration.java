@@ -84,8 +84,4 @@ public class AssignmentConfiguration implements Serializable {
     @JsonIgnore
     @Transient
     private boolean productEmptyFlag;
-    
-    @JsonIgnore
-    @Transient
-    private String totalRecordKey;
 }

@@ -26,17 +26,15 @@ public class TaskTemplate {
     private Long id;
 	private String name;
 	private String type;
-	private Date createdDate;
-	private String createdBy;
 	
-	
+	@Transient
 	private List<Long> deletedProductIds;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "taskTemplateId")
 	private List<TaskTemplateProducts> products;
-/*	Taken from RiskTaskTemplate	
- * @JoinColumn(name = "riskTaskTemplateId")
-	private List<RiskTaskTemplateProducts> products;*/
+
+	private Date createdDate;
+	private String createdBy;
 	
 }
