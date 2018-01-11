@@ -126,7 +126,6 @@ public class SignalServiceTest {
 			signalConfiguration.setConfidenceIndex(45);
 			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
 			given(this.topicRepository.save(topic)).willReturn(topic);
-			given(this.socRepository.save(topic.getSocs())).willReturn(topic.getSocs());
 
 			signalService.createTopic(topic, null);
 		} catch (Exception ex) {
@@ -156,7 +155,6 @@ public class SignalServiceTest {
 			signalConfiguration.setConfidenceIndex(45);
 			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
 			given(this.topicRepository.save(topic)).willReturn(topic);
-			given(this.socRepository.save(topic.getSocs())).willReturn(topic.getSocs());
 
 			signalService.createTopic(topic, null);
 		} catch (Exception ex) {
@@ -323,8 +321,6 @@ public class SignalServiceTest {
 
 			given(this.topicRepository.findOne(1l)).willReturn(topic);
 			given(this.topicRepository.save(topic)).willReturn(topic);
-			given(this.socRepository.findByTopicId(1l)).willReturn(
-					topic.getSocs());
 			signalService.findById(1l);
 		} catch (Exception ex) {
 			logger.info(ex);
@@ -350,7 +346,6 @@ public class SignalServiceTest {
 		pts.add(pt);
 		soc.setPts(pts);
 		socs.add(soc);
-		topic.setSocs(socs);
 		return socs;
 	}
 
