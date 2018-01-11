@@ -23,9 +23,7 @@ public class StrengthOfEvidence implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-	
 	private String strengthValue;
-	
 	private String strengthKey;
 	
 }
