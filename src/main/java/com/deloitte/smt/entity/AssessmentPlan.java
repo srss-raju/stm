@@ -24,13 +24,13 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "sm_assessment_plan")
-public class AssessmentPlan  implements Serializable {
+public class AssessmentPlan implements Serializable {
 
 	private static final long serialVersionUID = -3652414302035277522L;
-	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "assessmentPlan")
 	@JsonIgnore
 	private Set<Topic> topics;
@@ -38,44 +38,40 @@ public class AssessmentPlan  implements Serializable {
 	private String priority;
 	private int inDays;
 	private String source;
-    private String caseInstanceId;
+	private String caseInstanceId;
 	private String assessmentPlanStatus;
 	private String assessmentRiskStatus;
 	private Date assessmentDueDate;
 	private String finalAssessmentSummary;
 	@OneToOne
+	@JoinColumn(name = "assessmentPlanId")
 	private RiskPlan riskPlan;
-	
+
 	@OneToMany
 	@JoinColumn(name = "assessmentPlanId")
 	private List<Attachment> attachments;
-	
-	private Long cohortPercentage;
 
-	private Date createdDate;
-	private String createdBy;
-	private String modifiedBy;
-	private Date lastModifiedDate;
-	
-	
 	@Transient
 	private List<Long> templateIds;
 
-	private String assignTo;
-	
 	@OneToMany
 	@JoinColumn(name = "assessmentPlanId")
 	private List<SignalURL> signalUrls;
-	
-	private String assessmentTaskStatus;
-	
+
 	@OneToMany
 	@JoinColumn(name = "assessmentPlanId")
 	private List<Comments> comments;
 	private String owner;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "assessmentId")
+	@JoinColumn(name = "assessmentPlanId")
 	private List<AssessmentAssignees> assessmentAssignees;
+	
+	private Long cohortPercentage;
+	private Date createdDate;
+	private String createdBy;
+	private String modifiedBy;
+	private Date lastModifiedDate;
+	private String assessmentTaskStatus;
 
 }
