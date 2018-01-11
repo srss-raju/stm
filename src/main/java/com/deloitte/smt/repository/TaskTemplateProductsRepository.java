@@ -1,7 +1,5 @@
 package com.deloitte.smt.repository;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +14,4 @@ public interface TaskTemplateProductsRepository  extends JpaRepository<TaskTempl
 	
 	@Query(value = "SELECT DISTINCT task_template_id FROM sm_task_template_products WHERE id=:templateProductId", nativeQuery=true)
 	Long findTemplateId(@Param(value = "templateProductId") Long templateProductId);
-	
-	@Transactional
-	void deleteById(Long id);
 }

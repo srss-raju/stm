@@ -27,9 +27,6 @@ public class TaskTemplate {
 	private String name;
 	private String type;
 	
-	@Transient
-	private List<Long> deletedProductIds;
-	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "taskTemplateId")
 	private List<TaskTemplateProducts> products;
