@@ -21,13 +21,9 @@ public class AssignmentSignalAssignees {
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Long id;
-		private Date createdDate;
-	    private String createdBy;
-	    private Date lastModifiedDate;
-	    private String assignTo;
 	    private Long userGroupKey;
 	    private Long userKey;
-	    
-	    private Long assignmentConfigurationId;
-	    
+	    private Date createdDate;
+	    private String createdBy;
+	    private Date lastModifiedDate;
 }

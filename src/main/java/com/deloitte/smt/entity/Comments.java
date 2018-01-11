@@ -21,13 +21,14 @@ public class Comments  implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-	private String createdBy;
-	private Date createdDate;
-	private Date modifiedDate;
-	private String modifiedBy;
 	private String userComments;
 	private Long topicId;
 	private Long assessmentId;
 	private Long riskPlanId;
+	private String createdBy;
+	private Date createdDate;
+	private Date modifiedDate;
+	private String modifiedBy;
+
 	
 }

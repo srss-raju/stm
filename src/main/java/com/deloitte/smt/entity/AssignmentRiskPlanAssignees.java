@@ -21,13 +21,10 @@ public class AssignmentRiskPlanAssignees {
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Long id;
+		private Long userGroupKey;
+	    private Long userKey;
 		private Date createdDate;
 	    private String createdBy;
 	    private Date lastModifiedDate;
-	    private String assignTo;
-	    private Long userGroupKey;
-	    private Long userKey;
 	    
-	    private Long assignmentConfigurationId;
-		
 }
