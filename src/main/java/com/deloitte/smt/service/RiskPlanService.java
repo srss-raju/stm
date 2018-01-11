@@ -153,9 +153,9 @@ public class RiskPlanService {
 		}
 		updateSignalUrl(riskPlanUpdated);
 		AssessmentPlan assessmentPlan = null;
-		if(riskPlan.getAssessmentId() != null) {
+		if(riskPlan.getAssessmentPlan().getId() != null) {
 			try{
-				assessmentPlan = assessmentPlanService.findById(riskPlan.getAssessmentId());
+				assessmentPlan = assessmentPlanService.findById(riskPlan.getAssessmentPlan().getId());
 			}catch(Exception ex){
 				logger.error(ex);
 			}
@@ -260,9 +260,6 @@ public class RiskPlanService {
 			for(Task templateTask:templateRiskTasks){
 				Task riskTask = new Task();
 				riskTask.setActionType(templateTask.getActionType());
-				riskTask.setAssignTo(templateTask.getAssignTo());
-				
-				
 				riskTask.setCreatedBy(templateTask.getCreatedBy());
 				riskTask.setCreatedDate(new Date());
 				riskTask.setDescription(templateTask.getDescription());
