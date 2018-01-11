@@ -10,11 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lombok.Data;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
+
+import lombok.Data;
 
 @Data
 @Entity
@@ -34,14 +33,11 @@ public class SignalAudit   implements Serializable {
 	@Column(columnDefinition = "TEXT")
 	@JsonRawValue
 	private String modifiedValue;
+	private String operation;
+	private List<SignalAttachmentAudit> signalAttachmentAudit;
 	private String createdBy;
 	private String modifieddBy;
 	private Date createdDate;
 	private Date modifiedDate;
-	private String operation;
-	
-	
-	private List<SignalAttachmentAudit> signalAttachmentAudit;
-
 	
 }
