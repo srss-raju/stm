@@ -347,6 +347,6 @@ public class SignalServiceTest {
 		soc.setPts(pts);
 		socs.add(soc);
 		return socs;
-	}
+	} 
 
 }
