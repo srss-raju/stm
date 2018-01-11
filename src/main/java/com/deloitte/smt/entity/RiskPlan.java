@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -35,20 +35,17 @@ public class RiskPlan implements Serializable {
 	private String name;
 	private String description;
 	private int inDays;
-	private Date createdDate;
-	private String createdBy;
-	private String modifiedBy;
-	private Date lastModifiedDate;
-	@Lob
+	@Column(length=10000)
 	private String summary;
 	private String caseInstanceId;
 	private String status;
 	private String source;
-	private String assignTo;
 	private Date riskDueDate;
 	private String riskTaskStatus;
+	private String owner;
 
 	@OneToMany
+	@JoinColumn(name = "riskId")
 	private List<Comments> comments;
 	
 	@OneToMany(cascade = CascadeType.ALL)
@@ -59,7 +56,6 @@ public class RiskPlan implements Serializable {
 	@JoinColumn(name = "riskId")
 	private List<Long> riskTemplateIds;
 
-	private String owner;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "riskId")
@@ -72,4 +68,10 @@ public class RiskPlan implements Serializable {
 	@OneToMany
 	@JoinColumn(name = "riskId")
 	private List<Attachment> attachments;
+	
+	private Date createdDate;
+	private String createdBy;
+	private String modifiedBy;
+	private Date lastModifiedDate;
+	
 }

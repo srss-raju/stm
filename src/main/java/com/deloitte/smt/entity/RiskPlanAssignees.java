@@ -28,14 +28,14 @@ public class RiskPlanAssignees implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private Date createdDate;
-	private String createdBy;
-	private Date lastModifiedDate;
-	private String assignTo;
 	private Long userGroupKey;
 	private Long userKey;
 	@ManyToOne
 	@JoinColumn(name = "riskId")
 	private RiskPlan riskId;
+
+	private Date createdDate;
+	private String createdBy;
+	private Date lastModifiedDate;
 
 }
