@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.deloitte.smt.dto.LevelsDTO;
 import com.deloitte.smt.dto.ProductResponse;
 import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.repository.ProductLevelRepository;
-import com.deloitte.smt.util.LevelsDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

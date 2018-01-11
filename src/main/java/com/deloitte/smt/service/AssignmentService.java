@@ -20,7 +20,7 @@ import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssignmentConditionRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AssignmentProductRepository;
-import com.deloitte.smt.util.AssignmentUtil;
+import com.deloitte.smt.util.SignalUtil;
 
 /**
  * Created by RKB on 04-04-2017.
@@ -196,7 +196,7 @@ public class AssignmentService {
 			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 				String recordKey = productConfig.getRecordKey();
 					while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatProductFlag())){
-						recordKey = AssignmentUtil.getRecordKey(recordKey);
+						recordKey = SignalUtil.getRecordKey(recordKey);
 						if(recordKey != null){
 							productConfig.setRecordKey(recordKey);
 							assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
@@ -219,7 +219,7 @@ public class AssignmentService {
 			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 				String recordKey = socConfig.getRecordKey();
 					while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatSocFlag())){
-						recordKey = AssignmentUtil.getRecordKey(recordKey);
+						recordKey = SignalUtil.getRecordKey(recordKey);
 						if(recordKey != null){
 							socConfig.setRecordKey(recordKey);
 							assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
@@ -246,7 +246,7 @@ public class AssignmentService {
 			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 				String recordKey = productConfig.getRecordKey();
 					while(recordKey != null && assignmentConfigurationFromDB == null){
-						recordKey = AssignmentUtil.getRecordKey(recordKey);
+						recordKey = SignalUtil.getRecordKey(recordKey);
 						if(recordKey != null){
 							productConfig.setRecordKey(recordKey);
 							assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
@@ -266,7 +266,7 @@ public class AssignmentService {
 			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 				String recordKey = socConfig.getRecordKey();
 					while(recordKey != null && assignmentConfigurationFromDB == null){
-						recordKey = AssignmentUtil.getRecordKey(recordKey);
+						recordKey = SignalUtil.getRecordKey(recordKey);
 						if(recordKey != null){
 							socConfig.setRecordKey(recordKey);
 							assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);

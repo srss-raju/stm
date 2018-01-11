@@ -35,7 +35,7 @@ import com.deloitte.smt.repository.AssignmentRiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.AssignmentSignalAssigneesRepository;
 import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.TopicAssigneesRepository;
-import com.deloitte.smt.util.AssignmentUtil;
+import com.deloitte.smt.util.SignalUtil;
 
 /**
  * Created by RKB on 31-07-2017.
@@ -266,7 +266,7 @@ public class SignalAssignmentService {
 				// Only Socs
 				if(assignmentConfiguration.getConditions().size() == 1){
 					for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
-						 String key = AssignmentUtil.getRecordKey(socConfig.getRecordKey());
+						 String key = SignalUtil.getRecordKey(socConfig.getRecordKey());
 						if(!StringUtils.isEmpty(key)){
 							socConfig.setRecordKey(key);
 							assignmentConfiguration.setProductFlag(true);
@@ -288,7 +288,7 @@ public class SignalAssignmentService {
 				// Only Products
 				if(assignmentConfiguration.getProducts().size() == 1){
 					for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
-						 String key = AssignmentUtil.getRecordKey(productConfig.getRecordKey());
+						 String key = SignalUtil.getRecordKey(productConfig.getRecordKey());
 						if(!StringUtils.isEmpty(key)){
 							productConfig.setRecordKey(key);
 							assignmentConfiguration.setConditionFlag(true);
@@ -312,7 +312,7 @@ public class SignalAssignmentService {
 						String recordKey = productConfig.getRecordKey();
 						if(assignmentConfigurationFromDB == null){
 							while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatProductFlag())){
-								recordKey = AssignmentUtil.getRecordKey(recordKey);
+								recordKey = SignalUtil.getRecordKey(recordKey);
 								if(recordKey != null){
 									productConfig.setRecordKey(recordKey);
 									assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
@@ -332,7 +332,7 @@ public class SignalAssignmentService {
 							String recordKey = socConfig.getRecordKey();
 							if(assignmentConfigurationFromDB == null){
 								while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatSocFlag())){
-									recordKey = AssignmentUtil.getRecordKey(recordKey);
+									recordKey = SignalUtil.getRecordKey(recordKey);
 									if(recordKey != null){
 										socConfig.setRecordKey(recordKey);
 										assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);

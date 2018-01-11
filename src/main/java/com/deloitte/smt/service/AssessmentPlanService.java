@@ -36,7 +36,7 @@ import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.util.AssignmentUtil;
+import com.deloitte.smt.util.SignalUtil;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -259,7 +259,7 @@ public class AssessmentPlanService {
 			String recordKey = record.getRecordKey();
 			TaskTemplateProducts taskTemplateProduct = getTaskTemplateProduct(recordKey);
 			while(recordKey != null && taskTemplateProduct == null){
-				recordKey = AssignmentUtil.getRecordKey(recordKey);
+				recordKey = SignalUtil.getRecordKey(recordKey);
 				taskTemplateProduct = getTaskTemplateProduct(recordKey);
 			}
 			if(taskTemplateProduct != null){

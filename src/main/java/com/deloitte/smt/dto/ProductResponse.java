@@ -2,7 +2,6 @@ package com.deloitte.smt.dto;
 
 import java.util.List;
 
-import com.deloitte.smt.util.LevelsDTO;
 
 public class ProductResponse {
 	
