@@ -51,15 +51,14 @@ public class SignalController {
 			logger.info("Exception occured while creating "+e);
 		}
         
-		return signalService.createTopic(topic, attachments);
+		return signalService.createTopic(topic);
 	}
 
 	@PostMapping(value = "/updateTopic")
-	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString,
-							  @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+	public ResponseEntity<Void> updateTopic(@RequestParam(value = "data") String topicString) {
 		try {
 			Topic topic = new ObjectMapper().readValue(topicString, Topic.class);
-			signalService.updateTopic(topic, attachments);
+			signalService.updateTopic(topic);
 		} catch (ApplicationException | IOException e) {
 			logger.info("Exception occured while updating "+e);
 		}

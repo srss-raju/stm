@@ -46,7 +46,7 @@ public class AssessmentAssignmentService {
 			for(AssignmentAssessmentAssignees aaAssignees : assignmentConfiguration.getAssessmentAssignees()){
 				saveAssessmentAssignmentAssignees(aaAssignees,assessmentPlan, list);
         	}
-			assessmentPlan.setTopicAssessmentAssignmentAssignees(topicAssessmentAssignmentAssigneesRepository.save(list));
+			topicAssessmentAssignmentAssigneesRepository.save(list);
 		}
 		
 		return assessmentPlan;
@@ -54,7 +54,6 @@ public class AssessmentAssignmentService {
 
 	private void saveAssessmentAssignmentAssignees(AssignmentAssessmentAssignees aaAssignees, AssessmentPlan assessmentPlan, List<AssessmentAssignees> list) {
 		AssessmentAssignees assignee = new AssessmentAssignees();
-		assignee.setAssessmentId(assessmentPlan.getId());
 		assignee.setUserGroupKey(aaAssignees.getUserGroupKey());
 		assignee.setUserKey(aaAssignees.getUserKey());
 		assignee.setCreatedDate(assessmentPlan.getCreatedDate());
@@ -63,8 +62,5 @@ public class AssessmentAssignmentService {
 		list.add(assignee);
 	}
 	
-	public void findAssignmentAssignees(AssessmentPlan assessmentPlan) {
-		assessmentPlan.setTopicAssessmentAssignmentAssignees(topicAssessmentAssignmentAssigneesRepository.findByAssessmentId(assessmentPlan.getId()));
-	}
 
 }

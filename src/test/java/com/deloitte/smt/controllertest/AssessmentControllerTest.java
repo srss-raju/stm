@@ -103,34 +103,4 @@ public class AssessmentControllerTest {
 
 	}
 
-	@Test
-	public void testUpdateAssessment() throws Exception{
-
-		doNothing().when(assessmentPlanServiceMock1).updateAssessment(Matchers.any(AssessmentPlan.class),anyObject());
-		
-		AssessmentPlan assessmentPlan=new AssessmentPlan();
-		
-		this.mockMvc
-				.perform(post("/camunda/api/signal/updateAssessment")
-						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-						.param("data", TestUtil.convertObjectToJsonString(assessmentPlan)))
-						
-				.andExpect(status().isOk());
-
-	}
-	
-	@Test
-		public void testFinalAssessment() throws Exception{
-			doNothing().when(assessmentPlanServiceMock1).finalAssessment(Matchers.any(AssessmentPlan.class),anyObject());
-
-			AssessmentPlan assessmentPlan=new AssessmentPlan();
-			
-			this.mockMvc
-					.perform(post("/camunda/api/signal/finalAssessment")
-							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-					.param("data", TestUtil.convertObjectToJsonString(assessmentPlan)))
-					.andExpect(status().isOk());
-
-		}
-	
 }

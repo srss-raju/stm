@@ -64,8 +64,6 @@ public class AssignmentConfigurationService {
      
 
     public AssignmentConfiguration insert(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
-    	Long id = assignmentConfiguration.getId();
-    	StringBuilder totalRecordKeyFromUI = new StringBuilder();
     	assignmentConfiguration.setCreatedDate(new Date());
         assignmentConfiguration.setLastModifiedDate(new Date());
         
@@ -75,9 +73,7 @@ public class AssignmentConfigurationService {
         if(isExists){
     		throw new ApplicationException("Record already exists");
     	}
-        assignmentConfiguration.setTotalRecordKey(totalRecordKeyFromUI.toString());
-        AssignmentConfiguration assignmentConfigurationUpdated = assignmentConfigurationRepository.save(assignmentConfiguration);
-        return assignmentConfigurationUpdated;
+        return assignmentConfigurationRepository.save(assignmentConfiguration);
     }
 
 	private void duplicateConfigurationCheck(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
@@ -93,7 +89,6 @@ public class AssignmentConfigurationService {
 	
 	public AssignmentConfiguration update(AssignmentConfiguration assignmentConfiguration) throws ApplicationException {
     	
-		StringBuilder totalRecordKeyFromUI = new StringBuilder();
     	if(assignmentConfiguration.getId() == null) {
             throw new ApplicationException("Required field Id is no present in the given request.");
         }

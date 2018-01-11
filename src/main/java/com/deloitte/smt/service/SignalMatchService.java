@@ -271,7 +271,6 @@ public class SignalMatchService {
 			createdTopic.setDueDate(final95Signal.getDueDate());
 			createdTopic.setSourceName(final95Signal.getSourceName());
 			createdTopic.setSourceUrl(final95Signal.getSourceUrl());
-			createdTopic.setAssignTo(final95Signal.getAssignTo());
 			createdTopic.setStartDate(final95Signal.getStartDate());
 			createdTopic.setEndDate(final95Signal.getEndDate());
 			topicRepository.save(createdTopic);
