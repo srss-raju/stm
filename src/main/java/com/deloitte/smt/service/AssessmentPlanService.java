@@ -64,9 +64,6 @@ public class AssessmentPlanService {
     private EntityManager entityManager;
 
     @Autowired
-    AssessmentAssignmentService assessmentAssignmentService;
-    
-    @Autowired
     SignalURLRepository signalURLRepository;
     
     @Autowired
