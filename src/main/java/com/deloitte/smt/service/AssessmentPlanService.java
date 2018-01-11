@@ -19,7 +19,6 @@ import org.springframework.util.StringUtils;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Comments;
-import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateProducts;
@@ -31,7 +30,6 @@ import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
-import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
@@ -52,9 +50,6 @@ public class AssessmentPlanService {
     AssessmentPlanRepository assessmentPlanRepository;
 
     @Autowired
-    AttachmentService attachmentService;
-
-    @Autowired
     TopicRepository topicRepository;
 
     @Autowired
@@ -63,9 +58,6 @@ public class AssessmentPlanService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    SignalURLRepository signalURLRepository;
-    
     @Autowired
     RiskPlanService riskPlanService;
     
@@ -101,7 +93,6 @@ public class AssessmentPlanService {
         	assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY_COMPLETED.getDescription());
         }
         assessmentPlan.setComments(commentsRepository.findByAssessmentId(assessmentId));
-        assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentId));
         return assessmentPlan;
     }
 
@@ -153,17 +144,6 @@ public class AssessmentPlanService {
         	}
         }
         commentsRepository.save(assessmentPlan.getComments());
-        if(!CollectionUtils.isEmpty(assessmentPlan.getSignalUrls())){
-        	for(SignalURL url:assessmentPlan.getSignalUrls()){
-        		url.setTopicId(assessmentPlan.getId());
-        		url.setCreatedDate(assessmentPlan.getCreatedDate());
-				url.setCreatedBy(assessmentPlan.getCreatedBy());
-				url.setModifiedBy(assessmentPlan.getModifiedBy());
-				url.setModifiedDate(assessmentPlan.getLastModifiedDate());
-        	}
-        	signalURLRepository.save(assessmentPlan.getSignalUrls());
-        }
-        
     }
 
 	private void ownerCheck(AssessmentPlan assessmentPlan, AssessmentPlan assessmentPlanFromDB) throws ApplicationException {
@@ -236,7 +216,7 @@ public class AssessmentPlanService {
 		}
 		Topic topic = null;
 		if(assessmentPlan != null){
-			Set<Topic> topics = assessmentPlanRepository.findAllSignals(assessmentPlan.getId());
+			Set<Topic> topics = assessmentPlan.getTopics();
 			if(!CollectionUtils.isEmpty(topics)){
 				for(Topic signal : topics){
 					topic = signal;

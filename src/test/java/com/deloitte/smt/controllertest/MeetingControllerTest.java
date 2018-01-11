@@ -2,17 +2,22 @@ package com.deloitte.smt.controllertest;
 
 
 import static org.mockito.Matchers.anyLong;
-
-import org.junit.runner.RunWith;
-
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.deloitte.smt.service.MeetingService;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,19 +25,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
 
-import static org.mockito.Mockito.*;
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.constant.MeetingType;
-import com.deloitte.smt.util.TestUtil;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import com.deloitte.smt.entity.Meeting;
+import com.deloitte.smt.service.MeetingService;
+import com.deloitte.smt.util.TestUtil;
 
 
 /**
@@ -61,7 +59,7 @@ public class MeetingControllerTest {
 	@Test
 	public void testCreateMeeting() throws IOException, Exception{
 		
-		doNothing().when(meetingServiceMock).insert(Matchers.any(Meeting.class),Mockito.any(MultipartFile[].class));
+		doNothing().when(meetingServiceMock).insert(Matchers.any(Meeting.class));
 		
 		Meeting meeting=new Meeting();
 		this.mockMvc
@@ -75,7 +73,7 @@ public class MeetingControllerTest {
 	@Test
 	public void testUpdateMeeting() throws IOException, Exception{
 		
-		doNothing().when(meetingServiceMock).update(Matchers.any(Meeting.class),Mockito.any(MultipartFile[].class));
+		doNothing().when(meetingServiceMock).update(Matchers.any(Meeting.class));
 		
 		Meeting meeting=new Meeting();
 		this.mockMvc

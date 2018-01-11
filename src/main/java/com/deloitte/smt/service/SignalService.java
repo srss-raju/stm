@@ -12,11 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SignalConfigurationType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.ConditionProductDTO;
@@ -24,14 +22,12 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentCondition;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.AssignmentProduct;
-import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalConfidence;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalStrength;
-import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicCondition;
@@ -42,13 +38,11 @@ import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfidenceRepository;
 import com.deloitte.smt.repository.SignalStrengthRepository;
-import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TopicConditionRepository;
 import com.deloitte.smt.repository.TopicConditionValuesRepository;
@@ -91,19 +85,10 @@ public class SignalService {
 	private TopicRepository topicRepository;
 
 	@Autowired
-	SignalURLRepository signalURLRepository;
-	
-	@Autowired
 	AssessmentPlanRepository assessmentPlanRepository;
 
 	@Autowired
 	RiskPlanRepository riskPlanRepository;
-
-	@Autowired
-	AttachmentService attachmentService;
-
-	@Autowired
-	AttachmentRepository attachmentRepository;
 
 	@Autowired
 	SignalConfidenceRepository signalConfigurationRepository;
@@ -166,7 +151,6 @@ public class SignalService {
 		setTopicConditionsAndProducts(topicId, topic);
 		
 		
-		topic.setSignalUrls(signalURLRepository.findByTopicId(topicId));
 		if (!SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(topic.getSignalStatus())) {
 			logger.debug("FOUND SIGNAL" + topic.getId());
 			topic = signalMatchService.findMatchingSignal(topic);
@@ -244,7 +228,6 @@ public class SignalService {
 			topicUpdated = topicRepository.save(topicUpdated);
 			topicUpdated = signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topicUpdated);
 		}
-		saveSignalUrl(topicUpdated);
 		saveSignalStrength(topicUpdated);
 		
 		logger.info("Start Algorithm for matching signal");
@@ -349,21 +332,6 @@ public class SignalService {
 		return commentsRepository.save(topic.getComments());
 	}
 
-	/**
-	 * @param topicUpdated
-	 */
-	private void saveSignalUrl(Topic topicUpdated) {
-		if (!CollectionUtils.isEmpty(topicUpdated.getSignalUrls())) {
-			for (SignalURL url : topicUpdated.getSignalUrls()) {
-				url.setTopicId(topicUpdated.getId());
-				url.setCreatedDate(topicUpdated.getCreatedDate());
-				url.setCreatedBy(topicUpdated.getCreatedBy());
-				url.setModifiedBy(topicUpdated.getModifiedBy());
-				url.setModifiedDate(topicUpdated.getLastModifiedDate());
-			}
-			signalURLRepository.save(topicUpdated.getSignalUrls());
-		}
-	}
 	
 	private void saveSignalStrength(Topic topicUpdated){
 		if (!CollectionUtils.isEmpty(topicUpdated.getSignalStrengthAtrributes())) {
@@ -397,7 +365,6 @@ public class SignalService {
 		setTopicIdForSignalStatistics(topic);
 		
 		topicRepository.save(topic);
-		saveSignalUrl(topic);
 		return "Update Success";
 	}
 
@@ -448,8 +415,6 @@ public class SignalService {
 			if(assignmentConfiguration.getAssessmentOwner()!=null){
 				assessmentPlan.setOwner(assignmentConfiguration.getAssessmentOwner());
 			}
-			//TODO
-			//assessmentAssignmentService.saveAssignmentAssignees(assignmentConfiguration, assessmentPlan);
 		}
 		return assessmentPlan;
 	}
@@ -474,14 +439,13 @@ public class SignalService {
 	 * @return
 	 */
 	public List<Task> associateTemplateTasks(AssessmentPlan assessmentPlan) {
-		Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
 		 
 		List<Task> signalActionList = null;
 		if (!CollectionUtils.isEmpty(assessmentPlan.getTemplateIds())) {
 			for (Long id : assessmentPlan.getTemplateIds()) {
 				List<Task> actions = taskRepository.findAllByTemplateId(id);
 				signalActionList = new ArrayList<>();
-				createAssessmentActions(assessmentPlan, sort, signalActionList, actions);
+				createAssessmentActions(assessmentPlan, signalActionList, actions);
 			}
 		}
 		checkAssessmentTaskStatus(assessmentPlan);
@@ -512,11 +476,10 @@ public class SignalService {
 	 * @param signalActionList
 	 * @param actions
 	 */
-	private void createAssessmentActions(AssessmentPlan assessmentPlan, Sort sort, List<Task> signalActionList,
-			List<Task> actions) {
+	private void createAssessmentActions(AssessmentPlan assessmentPlan, List<Task> signalActionList, List<Task> actions) {
 		if (!CollectionUtils.isEmpty(actions)) {
 			for (Task action : actions) {
-				createAssessmentAction(assessmentPlan, sort, signalActionList, action);
+				createAssessmentAction(assessmentPlan, signalActionList, action);
 			}
 		}
 	}
@@ -527,7 +490,7 @@ public class SignalService {
 	 * @param signalActionList
 	 * @param action
 	 */
-	private void createAssessmentAction(AssessmentPlan assessmentPlan, Sort sort, List<Task> signalActionList,
+	private void createAssessmentAction(AssessmentPlan assessmentPlan, List<Task> signalActionList,
 			Task action) {
 		Task signalAction = new Task();
 		signalAction.setCaseInstanceId(assessmentPlan.getCaseInstanceId());
@@ -545,33 +508,6 @@ public class SignalService {
 		signalAction.setRecipients(action.getRecipients());
 		signalAction = taskRepository.save(signalAction);
 		signalActionList.add(signalAction);
-		associateTemplateAttachments(sort, action, signalAction);
-		associateTemplateURLs(action, signalAction);
-	}
-
-	/**
-	 * @param action
-	 * @param signalAction
-	 */
-	public List<SignalURL> associateTemplateURLs(Task action, Task signalAction) {
-		List<SignalURL> templateTaskUrls = signalURLRepository.findByTopicId(action.getId());
-		List<SignalURL> signalActionTaskUrls = null;
-		if (!CollectionUtils.isEmpty(templateTaskUrls)) {
-			List<SignalURL> assessmentActionSignalURLs = new ArrayList<>();
-			for (SignalURL url : templateTaskUrls) {
-				SignalURL assessmentActionSignalURL = new SignalURL();
-				assessmentActionSignalURL.setDescription(url.getDescription());
-				assessmentActionSignalURL.setTopicId(signalAction.getId());
-				assessmentActionSignalURL.setUrl(url.getUrl());
-				assessmentActionSignalURL.setCreatedDate(new Date());
-				assessmentActionSignalURL.setModifiedDate(new Date());
-				assessmentActionSignalURL.setCreatedBy(signalAction.getCreatedBy());
-				assessmentActionSignalURL.setModifiedBy(signalAction.getLastUpdatedBy());
-				assessmentActionSignalURLs.add(assessmentActionSignalURL);
-			}
-			signalActionTaskUrls = signalURLRepository.save(assessmentActionSignalURLs);
-		}
-		return signalActionTaskUrls;
 	}
 
 	/**
@@ -579,38 +515,6 @@ public class SignalService {
 	 * @param action
 	 * @param signalAction
 	 */
-	public List<Attachment> associateTemplateAttachments(Sort sort, Task action, Task signalAction) {
-		List<Attachment> attachments = attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(
-				action.getId(), AttachmentType.ASSESSMENT_ACTION_ATTACHMENT, sort);
-		List<Attachment> signalActionAttachments = null;
-		if (!CollectionUtils.isEmpty(attachments)) {
-			List<Attachment> assessmentActionAttachments = new ArrayList<>();
-			for (Attachment attachment : attachments) {
-				Attachment assessmentActionAttachment = new Attachment();
-
-				assessmentActionAttachment.setDescription(attachment.getDescription());
-				assessmentActionAttachment.setAttachmentsURL(attachment.getAttachmentsURL());
-				assessmentActionAttachment.setAttachmentResourceId(signalAction.getId());
-				assessmentActionAttachment.setContentType(attachment.getContentType());
-				assessmentActionAttachment.setContent(attachment.getContent());
-				assessmentActionAttachment.setFileName(attachment.getFileName());
-				assessmentActionAttachment.setCreatedDate(new Date());
-				assessmentActionAttachment.setAttachmentType(attachment.getAttachmentType());
-
-				assessmentActionAttachments.add(assessmentActionAttachment);
-			}
-			signalActionAttachments = attachmentRepository.save(assessmentActionAttachments);
-		}
-		return signalActionAttachments;
-	}
-
-	public void deleteSignalURL(Long signalUrlId) throws ApplicationException {
-		SignalURL signalURL = signalURLRepository.findOne(signalUrlId);
-		if (signalURL == null) {
-			throw new ApplicationException("Risk Plan Action Type not found with the given Id : " + signalUrlId);
-		}
-		signalURLRepository.delete(signalURL);
-	}
 
 	public List<Topic> findTopicsByRunInstanceId(Long runInstanceId) {
 		return topicRepository.findTopicByRunInstanceIdOrderByCreatedDateAsc(runInstanceId);

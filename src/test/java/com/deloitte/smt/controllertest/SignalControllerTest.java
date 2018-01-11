@@ -1,10 +1,8 @@
 package com.deloitte.smt.controllertest;
 
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,20 +59,6 @@ public class SignalControllerTest {
 					.perform(get("/camunda/api/signal/{signalId}", 1)
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-
-	@Test
-	public void testDeleteSignalURL() throws Exception{
-		try{
-			doNothing().when(signalServiceMock).deleteSignalURL(anyLong());
-			this.mockMvc
-					.perform(delete("/camunda/api/signal/url/{signalUrlId}", 1)
-							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-					.andExpect(status().isOk());
 		}catch(Exception ex){
 			logger.info(ex);
 		}

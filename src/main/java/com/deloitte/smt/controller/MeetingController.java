@@ -42,7 +42,7 @@ public class MeetingController {
             @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws IOException {
         Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
         meeting.setMeetingType(MeetingType.getByDescription(meetingType));
-        meetingService.insert(meeting, attachments);
+        meetingService.insert(meeting);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -52,7 +52,7 @@ public class MeetingController {
             @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
         try {
         	Meeting meeting = new ObjectMapper().readValue(meetingString, Meeting.class);
-			meetingService.update(meeting, attachments);
+			meetingService.update(meeting);
 		} catch (ApplicationException | IOException e) {
 			logger.info("Exception occured while updating "+e);
 		}

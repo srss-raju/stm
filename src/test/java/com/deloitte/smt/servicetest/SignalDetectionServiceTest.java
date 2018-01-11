@@ -30,7 +30,6 @@ import com.deloitte.smt.repository.DenominatorForPoissionRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.PtRepository;
-import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.service.SignalDetectionService;
@@ -64,9 +63,6 @@ public class SignalDetectionServiceTest {
 	@MockBean
 	private IncludeAERepository includeAERepository;
 	
-	@MockBean
-	private QueryBuilderRepository queryBuilderRepository;
-
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -123,9 +119,7 @@ public class SignalDetectionServiceTest {
 			given(this.signalDetectionRepository.findOne(1l)).willReturn(signalDetection);
 			given(this.socRepository.findByDetectionId(1l)).willReturn(signalDetection.getSocs());
 			
-			given(this.denominatorForPoissonRepository.findByDetectionId(1l)).willReturn(signalDetection.getDenominatorForPoission());
 			given(this.includeAERepository.findByDetectionId(1l)).willReturn(signalDetection.getIncludeAEs());
-			given(this.queryBuilderRepository.findByDetectionId(1l)).willReturn(signalDetection.getQueryBuilder());
 			
 			signalDetectionService.findById(1l);
 		}catch(Exception ex){

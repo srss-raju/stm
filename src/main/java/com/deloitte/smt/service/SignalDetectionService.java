@@ -16,11 +16,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.deloitte.smt.entity.DenominatorForPoission;
 import com.deloitte.smt.entity.DetectionAssignees;
 import com.deloitte.smt.entity.IncludeAE;
 import com.deloitte.smt.entity.Pt;
-import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Smq;
 import com.deloitte.smt.entity.Soc;
@@ -35,7 +33,6 @@ import com.deloitte.smt.repository.DenominatorForPoissionRepository;
 import com.deloitte.smt.repository.DetectionAssigneesRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
 import com.deloitte.smt.repository.PtRepository;
-import com.deloitte.smt.repository.QueryBuilderRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.SmqRepository;
 import com.deloitte.smt.repository.SocRepository;
@@ -79,9 +76,6 @@ public class SignalDetectionService {
 	@Autowired
 	private IncludeAERepository includeAERepository;
 
-	@Autowired
-	private QueryBuilderRepository queryBuilderRepository;
-	
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -129,8 +123,6 @@ public class SignalDetectionService {
 			saveSoc(signalDetection);
 			saveSmq(signalDetection);
 			saveIncludeAE(signalDetection);
-			saveDenominatorForPoission(signalDetection);
-			saveQueryBuilder(signalDetection);
 			return signalDetection;
 		} catch (ApplicationException ex) {
 				throw new ApplicationException("Problem Creating Signal Detection",  ex);
@@ -257,33 +249,6 @@ public class SignalDetectionService {
 		}
 	}
 
-	/**
-	 * @param signalDetection
-	 */
-	private void saveDenominatorForPoission(SignalDetection signalDetection) {
-		List<DenominatorForPoission> denominatorForPoissions = signalDetection.getDenominatorForPoission();
-		if (!CollectionUtils.isEmpty(denominatorForPoissions)) {
-			for (DenominatorForPoission dfp : denominatorForPoissions) {
-				dfp.setDetectionId(signalDetection.getId());
-			}
-			denominatorForPoissionRepository.deleteByDetectionId(signalDetection.getId());
-			denominatorForPoissionRepository.save(denominatorForPoissions);
-		}
-	}
-
-	/**
-	 * @param signalDetection
-	 */
-	private void saveQueryBuilder(SignalDetection signalDetection) {
-		List<QueryBuilder> queryBuilder = signalDetection.getQueryBuilder();
-		if (!CollectionUtils.isEmpty(queryBuilder)) {
-			for (QueryBuilder query : queryBuilder) {
-				query.setDetectionId(signalDetection.getId());
-			}
-			queryBuilderRepository.deleteByDetectionId(signalDetection.getId());
-			queryBuilderRepository.save(queryBuilder);
-		}
-	}
 
 	public void delete(Long signalDetectionId) throws ApplicationException {
 		SignalDetection signalDetection = signalDetectionRepository.findOne(signalDetectionId);
@@ -301,17 +266,6 @@ public class SignalDetectionService {
 		detectionAssigneesRepository.delete(assignee);
 	}
 
-	/*public SignalDetection findById(Long id) throws ApplicationException {
-		SignalDetection signalDetection = signalDetectionRepository.findOne(id);
-		if (null == signalDetection) {
-			throw new ApplicationException("Signal Detection not found with given Id :" + id);
-		}
-		addOtherInfoToSignalDetection(signalDetection);
-		setTopicConditionsAndProducts(signalDetection);
-		signalDetection.setTopicSignalDetectionAssignmentAssignees(topicSignalDetectionAssignmentAssigneesRepository.findByDetectionId(id));
-		return signalDetection;
-	}*/
-	
 	private void setTopicConditionsAndProducts(SignalDetection signalDetection) {
 		List<TopicCondition> socList = topicSocAssignmentConfigurationRepository.findByDetectionId(signalDetection.getId());
 		List<TopicProduct> productList = topicProductAssignmentConfigurationRepository.findByDetectionId(signalDetection.getId());
@@ -346,13 +300,6 @@ public class SignalDetectionService {
 			}
 		}
 		signalDetection.setSmqs(smqs);
-
-		List<DenominatorForPoission> denominatorForPoissionList = denominatorForPoissionRepository
-				.findByDetectionId(signalDetection.getId());
-		List<IncludeAE> includeAEList = includeAERepository.findByDetectionId(signalDetection.getId());
-		signalDetection.setDenominatorForPoission(denominatorForPoissionList);
-		signalDetection.setIncludeAEs(includeAEList);
-		signalDetection.setQueryBuilder(queryBuilderRepository.findByDetectionId(signalDetection.getId()));
 	}
 
 	/**
@@ -398,7 +345,6 @@ public class SignalDetectionService {
 		}
 		addOtherInfoToSignalDetection(signalDetection);
 		setTopicConditionsAndProducts(signalDetection);
-		signalDetection.setDetectionAssignees(detectionAssigneesRepository.findByDetectionId(id));
 		return signalDetection;
 	}
 	

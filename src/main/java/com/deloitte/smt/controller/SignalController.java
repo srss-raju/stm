@@ -93,13 +93,6 @@ public class SignalController {
       return map;
   }
 	
-	
-	@DeleteMapping(value = "/url/{signalUrlId}")
-    public ResponseEntity<Void> deleteSignalURL(@PathVariable Long signalUrlId) throws ApplicationException {
-		signalService.deleteSignalURL(signalUrlId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-	
 	@PostMapping(value = "/updateComments")
 	public List<Comments> updateComments(@RequestParam(value = "data") String topicString) {
 		List<Comments> list = null;

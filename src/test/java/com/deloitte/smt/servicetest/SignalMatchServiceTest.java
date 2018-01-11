@@ -19,18 +19,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.MeetingType;
-import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.entity.Pt;
-import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
-import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.MeetingRepository;
-import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.service.MeetingService;
 import com.deloitte.smt.service.SignalMatchService;
 import com.deloitte.smt.util.TestUtil;
@@ -50,23 +44,14 @@ public class SignalMatchServiceTest {
 	MeetingRepository meetingRepository;
 
 	@MockBean
-	AttachmentService attachmentService;
-	
-	@MockBean
     MeetingService meetingService;
 	
 	@MockBean
 	private TopicRepository topicRepository;
 
-	@MockBean
-	SignalURLRepository signalURLRepository;
-
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@MockBean
-	AttachmentRepository attachmentRepository;
-	
 	@Test
 	public void testFindMatchingSignal() {
 		try{
@@ -136,23 +121,6 @@ public class SignalMatchServiceTest {
 	}
 	
 	@Test
-	public void testApplyMatchingSignalUrls() {
-		try{
-			List<SignalURL> matchingTopicSignalUrls = new ArrayList<>();
-			SignalURL signalURL = new SignalURL();
-			matchingTopicSignalUrls.add(signalURL);
-			Topic t1 = TestUtil.buildSignal();
-			t1.setId(1l);
-			Topic t2 = TestUtil.buildSignal();
-			t2.setId(1l);
-			given(this. signalURLRepository.findByTopicId(1l)).willReturn(matchingTopicSignalUrls);
-			signalMatchService.applyMatchingSignalUrls(t1,t2);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
 	public void testApplyMatchingSignalMeetings() {
 		try{
 			List<Meeting> meetings = new ArrayList<>();
@@ -162,24 +130,6 @@ public class SignalMatchServiceTest {
 			t1.setId(1l);
 			given(this. meetingService.findAllyByResourceIdAndMeetingType(1l, MeetingType.getByDescription("Signal Meeting"))).willReturn(meetings);
 			signalMatchService.applyMatchingSignalMeetings(t1);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testApplyMatchingSignalAttachments() {
-		try{
-			Topic t1 = TestUtil.buildSignal();
-			t1.setId(1l);
-			Topic t2 = TestUtil.buildSignal();
-			t2.setId(1l);
-			List<Attachment> matchingTopicAttachments = new ArrayList<>();
-			Attachment attachment = new Attachment();
-			attachment.setAttachmentsURL("test");
-			matchingTopicAttachments.add(attachment);
-			given(this. attachmentService.findByResourceIdAndAttachmentType(1l, AttachmentType.TOPIC_ATTACHMENT)).willReturn(matchingTopicAttachments);
-			signalMatchService.applyMatchingSignalAttachments(t1,t2);
 		}catch(Exception ex){
 			logger.info(ex);
 		}

@@ -14,13 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.util.SignalUtil;
 
@@ -41,13 +39,8 @@ public class TaskService {
     TaskRepository taskRepository;
 
     @Autowired
-    AttachmentService attachmentService;
-    
-    @Autowired
     AssessmentPlanRepository assessmentPlanRepository;
     
-    @Autowired
-    SignalURLRepository signalURLRepository;
     
     /**
      * 
@@ -70,16 +63,6 @@ public class TaskService {
 		}
     	
         Task signalActionUpdated = taskRepository.save(signalAction);
-        if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
-        	for(SignalURL url:signalActionUpdated.getSignalUrls()){
-        		url.setTopicId(signalActionUpdated.getId());
-        		url.setCreatedDate(signalAction.getCreatedDate());
-				url.setCreatedBy(signalAction.getCreatedBy());
-				url.setModifiedBy(signalAction.getLastUpdatedBy());
-				url.setModifiedDate(signalAction.getLastUpdatedDate());
-        	}
-        	signalURLRepository.save(signalActionUpdated.getSignalUrls());
-        }
     	checkAssessmentTaskStatus(signalAction);
         return signalActionUpdated;
     }
@@ -116,16 +99,6 @@ public class TaskService {
         		}
         	}
         }
-        if(!CollectionUtils.isEmpty(signalAction.getSignalUrls())){
-        	for(SignalURL url:signalAction.getSignalUrls()){
-        		url.setTopicId(signalAction.getId());
-        		url.setCreatedDate(signalAction.getCreatedDate());
-				url.setCreatedBy(signalAction.getCreatedBy());
-				url.setModifiedBy(signalAction.getLastUpdatedBy());
-				url.setModifiedDate(signalAction.getLastUpdatedDate());
-        	}
-        	signalURLRepository.save(signalAction.getSignalUrls());
-        }
         if(allTasksCompletedFlag){
         	assessmentPlanRepository.updateAssessmentTaskStatus("Completed", Long.valueOf(signalAction.getAssessmentPlanId()));
         	AssessmentPlan assessmentPlan  = assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentPlanId()));
@@ -159,7 +132,6 @@ public class TaskService {
             signalAction.setStatus("In Progress");
             signalAction = taskRepository.save(signalAction);
         }
-        signalAction.setSignalUrls(signalURLRepository.findByTopicId(signalAction.getId()));
         return signalAction;
     }
 
@@ -190,15 +162,7 @@ public class TaskService {
         signalAction.setCreatedDate(d);
         signalAction.setDueDate(SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate()));
         signalAction.setStatus("New");
-        Task signalActionUpdated = taskRepository.save(signalAction);
-    	if(!CollectionUtils.isEmpty(signalActionUpdated.getSignalUrls())){
-        	for(SignalURL url:signalActionUpdated.getSignalUrls()){
-        		url.setTopicId(signalActionUpdated.getId());
-        		url.setModifiedDate(new Date());
-        	}
-        	signalURLRepository.save(signalActionUpdated.getSignalUrls());
-        }
-    	return signalActionUpdated;
+    	return taskRepository.save(signalAction);
     }
     
 }

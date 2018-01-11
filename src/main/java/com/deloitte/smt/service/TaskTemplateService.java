@@ -94,10 +94,6 @@ public class TaskTemplateService {
 			throw exceptionBuilder.buildException(ErrorType.DUPLICATE_RECORD, null);
 		}
 		
-		if(template.getDeletedProductIds() != null){
-			deleteProducts(template.getDeletedProductIds());
-		}
-		
 		return taskTemplateRepository.save(template);
 	}
 
@@ -107,12 +103,6 @@ public class TaskTemplateService {
             throw new ApplicationException("Failed to delete Task. Invalid Id received");
         }
 		taskTemplateRepository.delete(taskTemplate);
-	}
-	
-	void deleteProducts(List<Long> ids){
-		for(Long id:ids){
-			taskTemplateProductsRepository.deleteById(id);
-		}
 	}
 	
 	public List<TaskTemplate> findAll() {

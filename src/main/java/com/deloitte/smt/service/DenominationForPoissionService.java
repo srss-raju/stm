@@ -24,7 +24,6 @@ public class DenominationForPoissionService {
     DenominatorForPoissionRepository denominationForPoissionRespository;
 
     public List<DenominatorForPoission> insert(List<DenominatorForPoission> denominationForPoissions) {
-    	denominationForPoissionRespository.deleteByDetectionIdIsNull();
     	for(DenominatorForPoission denominationForPoission:denominationForPoissions){
     		denominationForPoission.setCreatedDate(new Date());
     		denominationForPoission.setLastModifiedDate(new Date());

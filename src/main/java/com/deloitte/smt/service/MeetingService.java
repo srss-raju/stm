@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.MeetingType;
 import com.deloitte.smt.entity.Meeting;
@@ -24,10 +23,7 @@ public class MeetingService {
     @Autowired
     MeetingRepository meetingRepository;
 
-    @Autowired
-    AttachmentService attachmentService;
-
-    public void insert(Meeting meeting, MultipartFile[] attachments) {
+    public void insert(Meeting meeting) {
         if(meeting.getId() != null) {
             meeting.setId(null);
         }
@@ -37,7 +33,7 @@ public class MeetingService {
         meetingRepository.save(meeting);
     }
 
-    public void update(Meeting meeting, MultipartFile[] attachments) throws ApplicationException {
+    public void update(Meeting meeting) throws ApplicationException {
         if(meeting.getId() == null) {
             throw new ApplicationException("Failed to update Meeting. Invalid Id received");
         }

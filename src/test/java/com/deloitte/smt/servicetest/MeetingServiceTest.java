@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.repository.MeetingRepository;
-import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.service.MeetingService;
 
 @RunWith(SpringRunner.class)
@@ -32,50 +31,6 @@ public class MeetingServiceTest {
 	@MockBean
 	MeetingRepository meetingRepository;
 
-	@MockBean
-	AttachmentService attachmentService;
-	
-	@Test
-	public void testInsertWithNull() {
-		try{
-			Meeting meeting = new Meeting();
-			meetingService.insert(meeting, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testInsert() {
-		try{
-			Meeting meeting = new Meeting();
-			meeting.setId(1l);
-			meetingService.insert(meeting, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testUpdate() {
-		try{
-			Meeting meeting = new Meeting();
-			meeting.setId(1l);
-			meetingService.update(meeting, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testUpdateWithNull() {
-		try{
-			Meeting meeting = new Meeting();
-			meetingService.update(meeting, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
 	@Test
 	public void testDelete() throws Exception{

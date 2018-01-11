@@ -22,8 +22,6 @@ import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
-import com.deloitte.smt.repository.SignalURLRepository;
-import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.service.RiskPlanService;
 
 @RunWith(SpringRunner.class)
@@ -40,9 +38,6 @@ public class RiskPlanServiceTest {
 	MeetingRepository meetingRepository;
 
 	@MockBean
-	AttachmentService attachmentService;
-	
-	@MockBean
 	AssessmentPlanRepository assessmentPlanRepository;
 
 	@MockBean
@@ -54,9 +49,6 @@ public class RiskPlanServiceTest {
 
 	@MockBean
 	CommentsRepository commentsRepository;
-
-	@MockBean
-	SignalURLRepository signalURLRepository;
 
 	@MockBean
 	AssignmentConfigurationRepository assignmentConfigurationRepository;

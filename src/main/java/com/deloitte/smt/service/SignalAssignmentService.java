@@ -31,8 +31,6 @@ import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.AssignmentConditionRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AssignmentProductRepository;
-import com.deloitte.smt.repository.AssignmentRiskPlanAssigneesRepository;
-import com.deloitte.smt.repository.AssignmentSignalAssigneesRepository;
 import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.TopicAssigneesRepository;
 import com.deloitte.smt.util.SignalUtil;
@@ -50,13 +48,6 @@ public class SignalAssignmentService {
 	@Autowired
     AssignmentConfigurationRepository assignmentConfigurationRepository;
 	
-	@Autowired
-    AssignmentSignalAssigneesRepository signalValidationAssignmentAssigneesRepository;
-    
-    
-    @Autowired
-    AssignmentRiskPlanAssigneesRepository riskPlanAssignmentAssigneesRepository;
-    
     @Autowired
     TopicAssigneesRepository topicSignalValidationAssignmentAssigneesRepository;
     
@@ -72,8 +63,7 @@ public class SignalAssignmentService {
     @Autowired
     AssignmentProductRepository productAssignmentConfigurationRepository;
     
-	public Topic saveSignalAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, Topic topicUpdated) {
-		assignmentConfiguration.setSignalAssignees(signalValidationAssignmentAssigneesRepository.findByAssignmentConfigurationId(assignmentConfiguration.getId()));
+    public Topic saveSignalAssignmentAssignees(AssignmentConfiguration assignmentConfiguration, Topic topicUpdated) {
 		return setTopicAssignmentConfigurationAssignees(assignmentConfiguration, topicUpdated);
 	}
     
@@ -87,6 +77,7 @@ public class SignalAssignmentService {
 			for(AssignmentSignalAssignees svaAssignees : assignmentConfiguration.getSignalAssignees()){
         		saveTopicSignalValidationAssignmentAssignees(svaAssignees,topic,list);
         	}
+			topic.setTopicAssignees(topicSignalValidationAssignmentAssigneesRepository.save(list));
         }
 		return topic;
 	}
@@ -100,8 +91,8 @@ public class SignalAssignmentService {
 		assignee.setTopic(topic);
 		list.add(assignee);
 	}
-
-	public AssignmentConfiguration convertToAssignmentConfiguration(Topic topic){
+    
+    public AssignmentConfiguration convertToAssignmentConfiguration(Topic topic){
 		List<AssignmentCondition> conditions;
 		List<AssignmentProduct> products;
 		AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
@@ -245,14 +236,16 @@ public class SignalAssignmentService {
 			if(records.size() > 1){
 				assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 			}else{
+				
 				BigInteger id = (BigInteger) records.get(0);
+				AssignmentConfiguration assignmentConfig = assignmentConfigurationRepository.findOne(id.longValue());
 				if(!noSocFlag){
-					if(!CollectionUtils.isEmpty(socAssignmentConfigurationRepository.findByAssignmentConfigurationId(id.longValue()))){
+					if(!CollectionUtils.isEmpty(assignmentConfig.getConditions())){
 						assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 					}
 				}
 				if(!noProductFlag){
-					if(!CollectionUtils.isEmpty(productAssignmentConfigurationRepository.findByAssignmentConfigurationId(id.longValue()))){
+					if(!CollectionUtils.isEmpty(assignmentConfig.getProducts())){
 						assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 					}
 				}

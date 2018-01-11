@@ -14,19 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.MeetingType;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Meeting;
 import com.deloitte.smt.entity.Pt;
-import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicCondition;
 import com.deloitte.smt.entity.TopicProduct;
-import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.MeetingRepository;
-import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRepository;
 
 /**
@@ -40,18 +36,9 @@ public class SignalMatchService {
 	@Autowired
 	private TopicRepository topicRepository;
 
-	@Autowired
-	SignalURLRepository signalURLRepository;
-
-	@Autowired
-	AttachmentService attachmentService;
-
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@Autowired
-	AttachmentRepository attachmentRepository;
-	
 	@Autowired
     MeetingService meetingService;
 	
@@ -274,9 +261,7 @@ public class SignalMatchService {
 			createdTopic.setStartDate(final95Signal.getStartDate());
 			createdTopic.setEndDate(final95Signal.getEndDate());
 			topicRepository.save(createdTopic);
-			List<Attachment> matchingTopicAttachments = applyMatchingSignalAttachments(createdTopic, final95Signal);
-			attachmentRepository.save(matchingTopicAttachments);
-			applyMatchingSignalUrls(createdTopic, final95Signal);
+			applyMatchingSignalAttachments(createdTopic, final95Signal);
 			applyMatchingSignalMeetings(final95Signal);
 		}
 	}
@@ -288,31 +273,13 @@ public class SignalMatchService {
 	 */
 	public List<Attachment> applyMatchingSignalAttachments(Topic createdTopic,
 			Topic final95Signal) {
-		List<Attachment> matchingTopicAttachments = attachmentService.findByResourceIdAndAttachmentType(final95Signal.getId(), AttachmentType.TOPIC_ATTACHMENT);
+		List<Attachment> matchingTopicAttachments = final95Signal.getAttachments();
 		if (!CollectionUtils.isEmpty(matchingTopicAttachments)) {
 			for (Attachment attachment : matchingTopicAttachments) {
 				attachment.setAttachmentResourceId(createdTopic.getId());
 			}
 		}
 		return matchingTopicAttachments;
-	}
-
-	/**
-	 * @param createdTopic
-	 * @param final95Signal
-	 */
-	public void applyMatchingSignalUrls(Topic createdTopic, Topic final95Signal) {
-		List<SignalURL> matchingTopicSignalUrls = signalURLRepository.findByTopicId(final95Signal.getId());
-		if (!CollectionUtils.isEmpty(matchingTopicSignalUrls)) {
-			for (SignalURL url : matchingTopicSignalUrls) {
-				url.setTopicId(createdTopic.getId());
-				url.setCreatedDate(createdTopic.getCreatedDate());
-				url.setCreatedBy(createdTopic.getCreatedBy());
-				url.setModifiedBy(createdTopic.getModifiedBy());
-				url.setModifiedDate(createdTopic.getLastModifiedDate());
-			}
-		}
-		signalURLRepository.save(matchingTopicSignalUrls);
 	}
 
 	/**

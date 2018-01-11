@@ -14,20 +14,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.ConditionProductDTO;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
-import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.RiskPlanAssignees;
-import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateProducts;
@@ -38,11 +34,9 @@ import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
-import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
-import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
@@ -72,9 +66,6 @@ public class RiskPlanService {
 	RiskPlanRepository riskPlanRepository;
 
 	@Autowired
-	AttachmentService attachmentService;
-
-	@Autowired
 	SignalService signalService;
 	
 	@Autowired
@@ -88,12 +79,6 @@ public class RiskPlanService {
 
 	@Autowired
 	CommentsRepository commentsRepository;
-
-	@Autowired
-	SignalURLRepository signalURLRepository;
-	
-	@Autowired
-	AttachmentRepository attachmentRepository;
 
 	@Autowired
 	private AssignmentConfigurationRepository assignmentConfigurationRepository;
@@ -147,7 +132,6 @@ public class RiskPlanService {
 			}
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 		}
-		updateSignalUrl(riskPlanUpdated);
 		AssessmentPlan assessmentPlan = null;
 		if(riskPlan.getAssessmentPlan().getId() != null) {
 			try{
@@ -176,8 +160,6 @@ public class RiskPlanService {
 					riskPlan.setOwner(assignmentConfiguration.getRiskOwner());
 					riskPlanUpdated.setOwner(assignmentConfiguration.getRiskOwner());
 				}
-				//TODO
-				//riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
 			}
 		}
 		return riskPlanUpdated;
@@ -185,7 +167,7 @@ public class RiskPlanService {
 	private Topic getTopic(AssessmentPlan assessmentPlan) {
 		Topic topic = null;
 		if(assessmentPlan != null){
-			Set<Topic> topics = assessmentPlanRepository.findAllSignals(assessmentPlan.getId());
+			Set<Topic> topics = assessmentPlan.getTopics();
 			if(!CollectionUtils.isEmpty(topics)){
 				for(Topic signal : topics){
 					topic = signal;
@@ -199,21 +181,8 @@ public class RiskPlanService {
 	 * 
 	 * @param riskPlanUpdated
 	 */
-	private void updateSignalUrl(RiskPlan riskPlanUpdated) {
-		if (!CollectionUtils.isEmpty(riskPlanUpdated.getSignalUrls())) {
-			for (SignalURL url : riskPlanUpdated.getSignalUrls()) {
-				url.setTopicId(riskPlanUpdated.getId());
-				url.setCreatedDate(riskPlanUpdated.getCreatedDate());
-				url.setCreatedBy(riskPlanUpdated.getCreatedBy());
-				url.setModifiedBy(riskPlanUpdated.getModifiedBy());
-				url.setModifiedDate(riskPlanUpdated.getLastModifiedDate());
-			}
-			signalURLRepository.save(riskPlanUpdated.getSignalUrls());
-		}
-	}
 	public List<Task> associateRiskTasks(RiskPlan riskPlan){
 		List<Task> tasks = null;
-		
 		if(!CollectionUtils.isEmpty(riskPlan.getRiskTemplateIds())){
 			List<Task> riskTaskList = new ArrayList<>();
 			for(Long id:riskPlan.getRiskTemplateIds()){
@@ -278,55 +247,6 @@ public class RiskPlanService {
 	}
 	
 	/**
-	 * @param sort
-	 * @param action
-	 * @param signalAction
-	 */
-	public void associateTemplateAttachments(Task riskTask, Task templateRiskTask) {
-		Sort sort = new Sort(Sort.Direction.DESC, SmtConstant.CREATED_DATE.getDescription());
-		List<Attachment> attachments = attachmentRepository.findAllByAttachmentResourceIdAndAttachmentType(templateRiskTask.getId(), AttachmentType.RISK_TASK_ASSESSMENT, sort);
-		if (!CollectionUtils.isEmpty(attachments)) {
-			List<Attachment> riskTaskAttachments = new ArrayList<>();
-			for (Attachment attachment : attachments) {
-				Attachment riskTaskAttachment = new Attachment();
-
-				riskTaskAttachment.setDescription(attachment.getDescription());
-				riskTaskAttachment.setAttachmentsURL(attachment.getAttachmentsURL());
-				riskTaskAttachment.setAttachmentResourceId(riskTask.getId());
-				riskTaskAttachment.setContentType(attachment.getContentType());
-				riskTaskAttachment.setContent(attachment.getContent());
-				riskTaskAttachment.setFileName(attachment.getFileName());
-				riskTaskAttachment.setCreatedDate(new Date());
-				riskTaskAttachment.setAttachmentType(attachment.getAttachmentType());
-
-				riskTaskAttachments.add(riskTaskAttachment);
-			}
-			attachmentRepository.save(riskTaskAttachments);
-		}
-	}
-	
-	/**
-	 * @param riskTask
-	 * @param templateTask
-	 */
-	public void associateTemplateURLs(Task riskTask, Task templateRiskTask) {
-		List<SignalURL> riskTemplateTaskUrls = signalURLRepository.findByTopicId(templateRiskTask.getId());
-		if (!CollectionUtils.isEmpty(riskTemplateTaskUrls)) {
-			List<SignalURL> riskTaskURLs = new ArrayList<>();
-			for (SignalURL url : riskTemplateTaskUrls) {
-				SignalURL riskTaskURL = new SignalURL();
-				riskTaskURL.setDescription(url.getDescription());
-				riskTaskURL.setTopicId(riskTask.getId());
-				riskTaskURL.setUrl(url.getUrl());
-				riskTaskURL.setModifiedDate(new Date());
-				riskTaskURLs.add(riskTaskURL);
-			}
-			signalURLRepository.save(riskTaskURLs);
-		}
-	}
-
-	
-	/**
 	 * 
 	 * @param riskTask
 	 * @param attachments
@@ -350,8 +270,6 @@ public class RiskPlanService {
 		
 		Task riskTaskUpdated = taskRepository.save(riskTask);
 		checkRiskTaskStatus(riskTaskUpdated);
-		saveUrls(riskTaskUpdated);
-		
 	}
 	
 	/**
@@ -372,10 +290,7 @@ public class RiskPlanService {
 		if (riskTaskExists != null) {
 			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
-		
-		Task riskTaskUpdated = taskRepository.save(riskTask);
-		saveUrls(riskTaskUpdated);
-		
+		taskRepository.save(riskTask);
 	}
 	
 	/**
@@ -407,7 +322,6 @@ public class RiskPlanService {
 			riskTask.setStatus("In Progress");
 			riskTask = taskRepository.save(riskTask);
 		}
-		riskTask.setSignalUrls(signalURLRepository.findByTopicId(riskTask.getId()));
 		return riskTask;
 	}
 
@@ -453,20 +367,10 @@ public class RiskPlanService {
 				}
 			}
 		}
-		saveUrls(riskTask);
 		if (allTasksCompletedFlag) {
 			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
 		}
 		
-	}
-	private void saveUrls(Task riskTask) {
-		if (!CollectionUtils.isEmpty(riskTask.getSignalUrls())) {
-			for (SignalURL url : riskTask.getSignalUrls()) {
-				url.setTopicId(riskTask.getId());
-				url.setModifiedDate(new Date());
-			}
-			signalURLRepository.save(riskTask.getSignalUrls());
-		}
 	}
 
 	public RiskPlan findByRiskId(Long riskId) throws ApplicationException {
@@ -479,11 +383,6 @@ public class RiskPlanService {
 			riskPlan = riskPlanRepository.save(riskPlan);
 		}
 		riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
-		riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskId));
-		AssessmentPlan assessmentPlan=riskPlan.getAssessmentPlan();
-		if(null!=assessmentPlan){
-		assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentPlan.getId()));
-		}
 		checkRiskTaskStatus(riskPlan);
 		return riskPlan;
 	}
@@ -529,8 +428,6 @@ public class RiskPlanService {
 			}
 		}
 		commentsRepository.save(riskPlan.getComments());
-		
-		updateSignalUrl(riskPlan);
 	}
 	private void ownerCheck(RiskPlan riskPlan, RiskPlan riskPlanFromDB)
 			throws ApplicationException {

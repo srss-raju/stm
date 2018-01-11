@@ -34,16 +34,13 @@ import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
-import com.deloitte.smt.repository.AttachmentRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfidenceRepository;
-import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.service.AttachmentService;
 import com.deloitte.smt.service.SignalMatchService;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.service.TaskService;
@@ -68,9 +65,6 @@ public class SignalServiceTest {
 	TopicRepository topicRepository;
 
 	@MockBean
-	SignalURLRepository signalURLRepository;
-
-	@MockBean
 	AssessmentPlanRepository assessmentPlanRepository;
 
 	@MockBean
@@ -89,9 +83,6 @@ public class SignalServiceTest {
 	TaskTemplateRepository taskTemplateRepository;
 
 	@MockBean
-	AttachmentRepository attachmentRepository;
-
-	@MockBean
 	SignalConfidenceRepository signalConfigurationRepository;
 
 	@MockBean
@@ -100,10 +91,6 @@ public class SignalServiceTest {
 	@MockBean
 	private AssignmentConfigurationRepository assignmentConfigurationRepository;
 
-	@MockBean
-	AttachmentService attachmentService;
-
-	
 	@Test
 	public void testCreateTopic() {
 		try {
@@ -228,26 +215,6 @@ public class SignalServiceTest {
 		}
 	}
 	
-	
-	@Test
-	public void testDeleteSignalURL() {
-		try{
-			SignalURL signalURL = new SignalURL();
-			given(this.signalURLRepository.findOne(1l)).willReturn(signalURL);
-			signalService.deleteSignalURL(1l);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testDeleteSignalURLWithNull() {
-		try{
-			signalService.deleteSignalURL(1l);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
 	@Test
 	public void testFindNonSignalsByRunInstanceId() {
