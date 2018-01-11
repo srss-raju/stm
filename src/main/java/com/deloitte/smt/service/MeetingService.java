@@ -1,18 +1,18 @@
 package com.deloitte.smt.service;
 
-import com.deloitte.smt.constant.AttachmentType;
-import com.deloitte.smt.constant.MeetingType;
-import com.deloitte.smt.entity.Meeting;
-import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.repository.MeetingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.deloitte.smt.constant.MeetingType;
+import com.deloitte.smt.entity.Meeting;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.repository.MeetingRepository;
 
 /**
  * Created by RajeshKumar on 12-04-2017.
