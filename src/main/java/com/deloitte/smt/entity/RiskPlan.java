@@ -50,16 +50,20 @@ public class RiskPlan implements Serializable {
 
 	@OneToMany
 	private List<Comments> comments;
-
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "riskId")
 	private List<SignalURL> signalUrls;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "riskId")
 	private List<Long> riskTemplateIds;
 
 	private String owner;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "riskId")
-	private List<RiskPlanAssignees> topicRiskPlanAssignmentAssignees;
+	private List<RiskPlanAssignees> riskPlanAssignees;
 
 	@OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "riskPlan")
 	@JsonIgnore

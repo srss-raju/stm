@@ -63,11 +63,14 @@ public class AssessmentPlan  implements Serializable {
 
 	private String assignTo;
 	
-	
-    private List<SignalURL> signalUrls;
+	@OneToMany
+	@JoinColumn(name = "assessmentPlanId")
+	private List<SignalURL> signalUrls;
 	
 	private String assessmentTaskStatus;
 	
+	@OneToMany
+	@JoinColumn(name = "assessmentPlanId")
 	private List<Comments> comments;
 	private String owner;
 	

@@ -55,18 +55,19 @@ public class Topic implements Serializable {
 	private String cases;
 	private String caselistId;
 	private String modifiedBy;
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "topicId")
 	private List<SignalURL> signalUrls;
 	
 	private Long confidenceIndex;
 	private Long cohortPercentage;
 	private String owner;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "topicId")
 	private List<TopicAssignees> topicAssignees;
 
-	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "topicId")
 	private List<SignalStrength> signalStrengthAtrributes;
 
