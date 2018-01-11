@@ -46,7 +46,6 @@ import com.deloitte.smt.repository.RiskTaskRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
-import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -508,7 +507,6 @@ public class RiskPlanService {
 		RiskPlan riskPlanFromDB = riskPlanRepository.findOne(riskPlan.getId());
 		ownerCheck(riskPlan, riskPlanFromDB);
 		
-		String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(riskPlan.getId()));
 		
 		riskPlan.setLastModifiedDate(new Date());
 		

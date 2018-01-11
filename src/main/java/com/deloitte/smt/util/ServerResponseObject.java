@@ -8,5 +8,5 @@ public class ServerResponseObject implements Serializable{
 	private static final long serialVersionUID = 5562360628214122761L;
 	private String status;
 	private String message;
-	private Object response;
+	private transient Object response;
 }

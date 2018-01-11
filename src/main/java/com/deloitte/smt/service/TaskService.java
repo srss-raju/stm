@@ -12,19 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.Attachment;
-import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.SignalURL;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TaskRepository;
-import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -130,7 +127,7 @@ public class TaskService {
         	signalURLRepository.save(signalAction.getSignalUrls());
         }
         if(allTasksCompletedFlag){
-        	String assessmentPlanOriginal = JsonUtil.converToJson(assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentPlanId())));
+        	String assessmentPlanOriginal = SignalUtil.converToJson(assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentPlanId())));
         	assessmentPlanRepository.updateAssessmentTaskStatus("Completed", Long.valueOf(signalAction.getAssessmentPlanId()));
         	AssessmentPlan assessmentPlan  = assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentPlanId()));
         	assessmentPlan.setLastModifiedDate(new Date());

@@ -9,7 +9,9 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class SignalUtil {
@@ -60,5 +62,14 @@ public class SignalUtil {
 			}
 		}
 		return frmDate;
+	}
+	public static String converToJson(Object object){
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		try {
+			return ow.writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			logger.info("Exception While Converting "+e);
+		}
+		return null;
 	}
 }
