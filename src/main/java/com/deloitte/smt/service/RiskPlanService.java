@@ -43,6 +43,7 @@ import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.RiskPlanAssigneesRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
+import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.util.SignalUtil;
@@ -64,6 +65,9 @@ public class RiskPlanService {
 	@Autowired
 	AssessmentPlanRepository assessmentPlanRepository;
 
+	@Autowired
+	TaskRepository taskRepository;
+	
 	@Autowired
 	RiskPlanRepository riskPlanRepository;
 
@@ -213,7 +217,7 @@ public class RiskPlanService {
 		if(!CollectionUtils.isEmpty(riskPlan.getRiskTemplateIds())){
 			List<Task> riskTaskList = new ArrayList<>();
 			for(Long id:riskPlan.getRiskTemplateIds()){
-				List<Task> riskTasks = riskTaskRepository.findAllByTemplateId(id);
+				List<Task> riskTasks = taskRepository.findAllByTemplateId(id);
 				tasks = createRiskTask(riskTaskList, riskTasks, riskPlan);
 			}
 		}
@@ -223,7 +227,7 @@ public class RiskPlanService {
 	
 	private void checkRiskTaskStatus(RiskPlan riskPlan){
 		boolean allTasksCompletedFlag=true;
-		List<Task> riskTaskList=riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
+		List<Task> riskTaskList=taskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
 		if(!CollectionUtils.isEmpty(riskTaskList)){
 			for(Task riskTask:riskTaskList){
         		if(!"Completed".equals(riskTask.getStatus())){
@@ -266,7 +270,7 @@ public class RiskPlanService {
 					riskTask.setDueDate(SignalUtil.getDueDate(templateTask.getInDays(), riskTask.getCreatedDate()));
 				}
 				riskTask.setRiskId(String.valueOf(riskPlan.getId()));
-				riskTask = riskTaskRepository.save(riskTask);
+				riskTask = taskRepository.save(riskTask);
 				riskTaskList.add(riskTask);
 			}
 		}
@@ -339,12 +343,12 @@ public class RiskPlanService {
 			riskPlanRepository.findOne(Long.valueOf(riskTask.getRiskId()));
 		}
 
-		Long riskTaskExists=riskTaskRepository.countByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
+		Long riskTaskExists=taskRepository.countByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
 		if (riskTaskExists > 0) {
 			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
 		
-		Task riskTaskUpdated = riskTaskRepository.save(riskTask);
+		Task riskTaskUpdated = taskRepository.save(riskTask);
 		checkRiskTaskStatus(riskTaskUpdated);
 		saveUrls(riskTaskUpdated);
 		
@@ -364,12 +368,12 @@ public class RiskPlanService {
 		riskTask.setLastUpdatedDate(d);
 		riskTask.setStatus("New");
 		
-		Task riskTaskExists=riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
+		Task riskTaskExists=taskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
 		if (riskTaskExists != null) {
 			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
 		
-		Task riskTaskUpdated = riskTaskRepository.save(riskTask);
+		Task riskTaskUpdated = taskRepository.save(riskTask);
 		saveUrls(riskTaskUpdated);
 		
 	}
@@ -398,10 +402,10 @@ public class RiskPlanService {
 		}
 	}
 	public Task findById(Long id) {
-		Task riskTask = riskTaskRepository.findOne(id);
+		Task riskTask = taskRepository.findOne(id);
 		if ("New".equalsIgnoreCase(riskTask.getStatus())) {
 			riskTask.setStatus("In Progress");
-			riskTask = riskTaskRepository.save(riskTask);
+			riskTask = taskRepository.save(riskTask);
 		}
 		riskTask.setSignalUrls(signalURLRepository.findByTopicId(riskTask.getId()));
 		return riskTask;
@@ -409,18 +413,18 @@ public class RiskPlanService {
 
 	public List<Task> findAllByRiskId(String riskId, String status) {
 		if (status != null) {
-			return riskTaskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc(riskId, status);
+			return taskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc(riskId, status);
 		}
-		return riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(riskId);
+		return taskRepository.findAllByRiskIdOrderByCreatedDateDesc(riskId);
 	}
 
 	public void delete(Long riskTaskId) throws ApplicationException {
-		Task riskTask = riskTaskRepository.findOne(riskTaskId);
+		Task riskTask = taskRepository.findOne(riskTaskId);
 		if (riskTask == null) {
 			throw new ApplicationException("Failed to delete Action. Invalid Id received");
 		}
 		
-		riskTaskRepository.delete(riskTask);
+		taskRepository.delete(riskTask);
 		checkRiskTaskStatus(riskTask);
 	}
 
@@ -430,16 +434,16 @@ public class RiskPlanService {
 		}
 		Task riskTaskExists;
 		if(riskTask.getTemplateId() != null){
-			riskTaskExists = riskTaskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
+			riskTaskExists = taskRepository.findByNameIgnoreCaseAndTemplateId(riskTask.getName(),riskTask.getTemplateId());
 		}else{
-			riskTaskExists = riskTaskRepository.findByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
+			riskTaskExists = taskRepository.findByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
 		}
 		if(riskTaskExists != null && (riskTaskExists.getId().intValue() != riskTask.getId().intValue())){
 			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
 		
 		riskTask.setLastUpdatedDate(new Date());
-		riskTaskRepository.save(riskTask);
+		taskRepository.save(riskTask);
 		List<Task> risks = findAllByRiskId(riskTask.getRiskId(), null);
 		boolean allTasksCompletedFlag = true;
 		if (!CollectionUtils.isEmpty(risks)) {
@@ -543,7 +547,7 @@ public class RiskPlanService {
 	 */
 	private void setRiskTaskStatus(RiskPlan riskPlan){
 		boolean riskTaskStatus=false;
-		List<Task> riskTaskStatues=	riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
+		List<Task> riskTaskStatues=	taskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
 		 if(!CollectionUtils.isEmpty(riskTaskStatues)){
 			 for(Task riskTask:riskTaskStatues){
 				 if(!riskTask.getStatus().equals(SmtConstant.COMPLETED.getDescription())){
