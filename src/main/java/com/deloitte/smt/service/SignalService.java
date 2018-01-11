@@ -47,7 +47,7 @@ import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
-import com.deloitte.smt.repository.SignalConfigurationRepository;
+import com.deloitte.smt.repository.SignalConfidenceRepository;
 import com.deloitte.smt.repository.SignalStrengthRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.SocRepository;
@@ -114,7 +114,7 @@ public class SignalService {
 	AttachmentRepository attachmentRepository;
 
 	@Autowired
-	SignalConfigurationRepository signalConfigurationRepository;
+	SignalConfidenceRepository signalConfigurationRepository;
 
 	@Autowired
 	NonSignalRepository nonSignalRepository;
