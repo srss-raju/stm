@@ -127,7 +127,6 @@ public class TaskService {
         	signalURLRepository.save(signalAction.getSignalUrls());
         }
         if(allTasksCompletedFlag){
-        	String assessmentPlanOriginal = SignalUtil.converToJson(assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentPlanId())));
         	assessmentPlanRepository.updateAssessmentTaskStatus("Completed", Long.valueOf(signalAction.getAssessmentPlanId()));
         	AssessmentPlan assessmentPlan  = assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentPlanId()));
         	assessmentPlan.setLastModifiedDate(new Date());
