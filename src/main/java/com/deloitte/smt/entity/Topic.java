@@ -35,14 +35,10 @@ public class Topic implements Serializable {
 
 	private String name;
 	private String description;
-
 	private String sourceName;
 	private String sourceUrl;
 	private Date startDate;
 	private Date endDate;
-	private Date createdDate;
-	private String createdBy;
-	private Date lastModifiedDate;
 	private String remarks;
 	private String signalValidation;
 	private String signalConfirmation;
@@ -50,18 +46,22 @@ public class Topic implements Serializable {
 	private String signalStatus;
 	private String signalStrength;  //TODO
 	private Date dueDate;
-	private String assignTo;
 	private Long runInstanceId;
 	private String cases;
 	private String caselistId;
 	private String modifiedBy;
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "topicId")
-	private List<SignalURL> signalUrls;
 	
 	private Long confidenceIndex;
 	private Long cohortPercentage;
 	private String owner;
+	/** Signal created Manual or Automated **/
+	private String sourceLabel;
+	private Long casesCount;
+
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "topicId")
+	private List<SignalURL> signalUrls;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "topicId")
@@ -71,21 +71,16 @@ public class Topic implements Serializable {
 	@JoinColumn(name = "topicId")
 	private List<SignalStrength> signalStrengthAtrributes;
 
-	/** Signal created Manual or Automated **/
-	private String sourceLabel;
-
 	@OneToMany
 	@JoinColumn(name = "topicId")
 	private List<Comments> comments;
 
-	private Long casesCount;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "topic", cascade = CascadeType.ALL)
 	private Set<SignalStatistics> signalStatistics;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	private AssessmentPlan assessmentPlan;
-
 	
 	@OneToMany
 	@JoinColumn(name = "topicId")
@@ -102,4 +97,7 @@ public class Topic implements Serializable {
 	@JoinColumn(name = "topicId")
 	private List<TopicProduct> products;
 
+	private Date createdDate;
+	private String createdBy;
+	private Date lastModifiedDate;
 }

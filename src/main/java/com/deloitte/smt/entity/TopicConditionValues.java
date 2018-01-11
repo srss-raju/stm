@@ -27,14 +27,14 @@ public class TopicConditionValues implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date createdDate;
-    private String createdBy;
-    private Date lastModifiedDate;
     private String category;
     private String categoryCode;
     private String categoryDesc;
     private String categoryName;
     private Long assignmentConfigurationId;
     private Long topicSocAssignmentConfigurationId;
+    private Date createdDate;
+    private String createdBy;
+    private Date lastModifiedDate;
     
 }

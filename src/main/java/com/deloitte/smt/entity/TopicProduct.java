@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.Data;
 
@@ -28,16 +27,16 @@ public class TopicProduct implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date createdDate;
-    private String createdBy;
-    private Date lastModifiedDate;
-    private String lastModifiedBy;
     private String productName;
     private String recordKey;
     private Long assignmentConfigurationId;
     private Long topicId;
     private Long detectionId;
-    
     private List<TopicProductValues> recordValues;
+
+    private Date createdDate;
+    private String createdBy;
+    private Date lastModifiedDate;
+    private String lastModifiedBy;
     
 }

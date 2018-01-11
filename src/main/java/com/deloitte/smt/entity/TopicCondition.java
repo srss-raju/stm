@@ -29,10 +29,6 @@ public class TopicCondition implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date createdDate;
-    private String createdBy;
-    private Date lastModifiedDate;
-    private String lastModifiedBy;
     private String recordKey;
     private String conditionName;
     private Long assignmentConfigurationId;
@@ -41,5 +37,10 @@ public class TopicCondition implements Serializable {
     
     @OneToMany
     private List<TopicConditionValues> recordValues;
+ 
+    private Date createdDate;
+    private String createdBy;
+    private Date lastModifiedDate;
+    private String lastModifiedBy;
     
 }

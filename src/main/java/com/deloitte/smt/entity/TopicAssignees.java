@@ -24,12 +24,11 @@ public class TopicAssignees implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	private String userGroupKey;
+	private String userKey;
 	private Date createdDate;
 	private String createdBy;
 	private Date lastModifiedDate;
-	private String assignTo;
-	private String userGroupKey;
-	private String userKey;
 	
 	@JsonIgnore
 	@ManyToOne

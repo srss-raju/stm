@@ -8,11 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lombok.Data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Data;
 
 /**
  * Created by rkb on 17-12-2017.
@@ -30,15 +29,14 @@ public class TaskTemplateProductValues implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date createdDate;
-    private String createdBy;
-    private Date lastModifiedDate;
     private String category;
     private String categoryCode;
     private String categoryDesc;
     private String categoryName;
+    private Date createdDate;
+    private String createdBy;
+    private Date lastModifiedDate;
     
-	
 	@JsonIgnore
 	private TaskTemplateProducts taskTemplateProducts;
     
