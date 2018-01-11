@@ -14,8 +14,6 @@ import com.deloitte.smt.entity.DetectionAssignees;
 @Repository
 public interface DetectionAssigneesRepository extends JpaRepository<DetectionAssignees, Long> {
 	
-	List<DetectionAssignees> findByDetectionId(Long detectionId);
-	
 	@Query("SELECT DISTINCT NEW DetectionAssignees(o.userGroupKey, o.userKey) FROM DetectionAssignees o")
 	List<DetectionAssignees> getDetectionAssignedUsers();
 	
