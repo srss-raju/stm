@@ -103,8 +103,6 @@ public class RiskPlanService {
 	RiskPlanAssignmentService riskPlanAssignmentService;
 	
 	@Autowired
-	SignalAuditService signalAuditService;
-	@Autowired
 	RiskPlanAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
 	
 	@Autowired
@@ -185,7 +183,6 @@ public class RiskPlanService {
 				riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
 			}
 		}
-		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, SmtConstant.CREATE.getDescription());
 		return riskPlanUpdated;
 	}
 	private Topic getTopic(AssessmentPlan assessmentPlan) {
@@ -264,11 +261,7 @@ public class RiskPlanService {
 				Task riskTask = new Task();
 				riskTask.setActionType(templateTask.getActionType());
 				riskTask.setAssignTo(templateTask.getAssignTo());
-				if (templateTask.getAssignTo() == null) {
-					riskTask.setAssignTo(riskPlan.getAssignTo());
-				} else {
-					riskTask.setAssignTo(templateTask.getAssignTo());
-				}
+				
 				
 				riskTask.setCreatedBy(templateTask.getCreatedBy());
 				riskTask.setCreatedDate(new Date());
@@ -277,7 +270,6 @@ public class RiskPlanService {
 				riskTask.setName(templateTask.getName());
 				riskTask.setNotes(templateTask.getNotes());
 				riskTask.setStatus("New");
-				riskTask.setOwner(riskPlan.getAssignTo());
 				riskTask.setRecipients(templateTask.getRecipients());
 				riskTask.setInDays(templateTask.getInDays());
 				if(templateTask.getInDays() != 0){
@@ -354,9 +346,7 @@ public class RiskPlanService {
 		riskTask.setLastUpdatedDate(d);
 		riskTask.setStatus("New");
 		if(riskTask.getRiskId() != null){
-			RiskPlan riskPlan = riskPlanRepository.findOne(Long.valueOf(riskTask.getRiskId()));
-			riskTask.setAssignTo(riskPlan.getAssignTo());
-			riskTask.setOwner(riskPlan.getAssignTo());
+			riskPlanRepository.findOne(Long.valueOf(riskTask.getRiskId()));
 		}
 
 		Long riskTaskExists=riskTaskRepository.countByNameIgnoreCaseAndRiskId(riskTask.getName(),riskTask.getRiskId());
@@ -548,7 +538,6 @@ public class RiskPlanService {
 		commentsRepository.save(riskPlan.getComments());
 		
 		updateSignalUrl(riskPlan);
-		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, SmtConstant.UPDATE.getDescription());
 	}
 	private void ownerCheck(RiskPlan riskPlan, RiskPlan riskPlanFromDB)
 			throws ApplicationException {

@@ -127,7 +127,7 @@ public class SignalServiceTest {
 			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
 			given(this.topicRepository.save(topic)).willReturn(topic);
 
-			signalService.createTopic(topic, null);
+			signalService.createTopic(topic);
 		} catch (Exception ex) {
 			logger.info(ex);
 		}
@@ -156,7 +156,7 @@ public class SignalServiceTest {
 			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
 			given(this.topicRepository.save(topic)).willReturn(topic);
 
-			signalService.createTopic(topic, null);
+			signalService.createTopic(topic);
 		} catch (Exception ex) {
 			logger.info(ex);
 		}
@@ -180,7 +180,7 @@ public class SignalServiceTest {
 			stats.add(signalStatistics);
 			topic.setSignalStatistics(stats);
 			given(this.topicRepository.save(topic)).willReturn(topic);
-			signalService.updateTopic(topic, null);
+			signalService.updateTopic(topic);
 		} catch (Exception ex) {
 			logger.info(ex);
 		}
@@ -190,7 +190,7 @@ public class SignalServiceTest {
 	public void testUpdateTopicWithNull() {
 		try {
 			Topic topic = new Topic();
-			signalService.updateTopic(topic, null);
+			signalService.updateTopic(topic);
 		} catch (Exception ex) {
 			logger.info(ex);
 		}
@@ -228,20 +228,6 @@ public class SignalServiceTest {
 		}
 	}
 	
-	
-	@Test
-	public void testFindTopicsByRunInstanceId() {
-		try{
-			 List<Topic> topics = new ArrayList<>();
-			 Topic topic = new Topic();
-			 topic.setId(1l);
-			 topics.add(topic);
-			 given(this.topicRepository.findTopicByRunInstanceIdOrderByCreatedDateAsc(1l)).willReturn(topics);
-			 signalService.findTopicsByRunInstanceId(1l);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
 	@Test
 	public void testDeleteSignalURL() {

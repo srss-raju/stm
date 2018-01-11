@@ -34,8 +34,7 @@ public class MeetingService {
         Date d = new Date();
         meeting.setCreatedDate(d);
         meeting.setLastModifiedDate(d);
-        Meeting meetingUpdated = meetingRepository.save(meeting);
-        attachmentService.addAttachments(meetingUpdated.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, null, meetingUpdated.getFileMetadata(), meetingUpdated.getCreatedBy());
+        meetingRepository.save(meeting);
     }
 
     public void update(Meeting meeting, MultipartFile[] attachments) throws ApplicationException {
@@ -43,7 +42,6 @@ public class MeetingService {
             throw new ApplicationException("Failed to update Meeting. Invalid Id received");
         }
         meeting.setLastModifiedDate(new Date());
-        attachmentService.addAttachments(meeting.getId(), attachments, AttachmentType.MEETING_ATTACHMENT, meeting.getDeletedAttachmentIds(), meeting.getFileMetadata(), meeting.getCreatedBy());
         meetingRepository.save(meeting);
     }
 

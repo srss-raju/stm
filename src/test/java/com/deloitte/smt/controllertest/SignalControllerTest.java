@@ -66,18 +66,6 @@ public class SignalControllerTest {
 		}
 	}
 	
-	@Test
-	public void testFindTopicsByRunInstanceId()  {
-		try{
-			when(signalServiceMock.findTopicsByRunInstanceId(anyLong())).thenReturn(null);
-			this.mockMvc
-					.perform(get("/camunda/api/signal/run/{runInstanceId}", 1)
-							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 
 	@Test
 	public void testDeleteSignalURL() throws Exception{
