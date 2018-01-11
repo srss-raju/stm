@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		<!-- Console Appender -->
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{dd.MM.yyyy HH:mm:ss:SSS} %5p (%F:%L) - %m%n" />
+		</Console>
+		<!-- FILE Appenders -->
+		<RollingFile name="RollingFile" fileName="smt/smt.log"
+			filePattern="smt/$${date:dd-MM-yyyy}/smt-%d{dd-MM-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<pattern>%d{dd.MM.yyyy HH:mm:ss:SSS} %5p (%F:%L) - %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20" />
+		</RollingFile>
+	</Appenders>
+	
+	<Loggers>
+		<Logger name="com.example.log4j2test" level="debug" additivity="false">
+			<AppenderRef ref="RollingFile" />
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Root level="trace">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="RollingFile" />
+		</Root>
+	</Loggers>
+</Configuration>
