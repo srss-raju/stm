@@ -214,7 +214,7 @@ public class SignalService {
 		}
 		if (null == topic.getSignalValidation()) {
 			topic.setSignalValidation(SmtConstant.IN_PROGRESS.getDescription());
-		}
+		} 
 		Calendar c = Calendar.getInstance();
 		topic.setCreatedDate(c.getTime());
 		topic.setLastModifiedDate(c.getTime());
