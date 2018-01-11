@@ -22,12 +22,10 @@ public class QueryBuilder  implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String name;
+	private Long detectionId;
+	private String queryId;
 	private Date createdDate;
 	private String createdBy;
 	private Date lastModifiedDate;
 	private String lastModifiedBy;
-	private Long detectionId;
-	private String queryId;
-	
-	
 }

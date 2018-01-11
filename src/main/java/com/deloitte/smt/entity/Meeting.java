@@ -3,18 +3,18 @@ package com.deloitte.smt.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lombok.Data;
 
 import com.deloitte.smt.constant.MeetingType;
+
+import lombok.Data;
 
 /**
  * Created by myelleswarapu on 12-04-2017.
@@ -39,9 +39,10 @@ public class Meeting implements Serializable {
     private Long meetingResourceId;
     private MeetingType meetingType;
     
-    private List<Long> deletedAttachmentIds;
-    
-    private Map<String, Attachment> fileMetadata;
+    @OneToMany
+	@JoinColumn(name = "meetingId")
+	private List<Attachment> attachments;
+	
 
     private Date createdDate;
     private String createdBy;

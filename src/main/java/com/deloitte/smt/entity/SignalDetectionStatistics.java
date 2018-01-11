@@ -23,15 +23,10 @@ public class SignalDetectionStatistics  implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	
 	private String algorithm;
-	
 	private double score;
-	
 	private double se;
-	
 	private double lb;
-	
 	private double ub;
 	
 	@JsonIgnore

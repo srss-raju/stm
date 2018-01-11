@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,41 +28,8 @@ public class Query  implements Serializable {
 	private String queryName;
 	
 	
-	@JsonIgnore
-	private SignalDetection signalDetection;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getQueryKey() {
-		return queryKey;
-	}
-
-	public void setQueryKey(Long queryKey) {
-		this.queryKey = queryKey;
-	}
-
-	public String getQueryName() {
-		return queryName;
-	}
-
-	public void setQueryName(String queryName) {
-		this.queryName = queryName;
-	}
-
 	@ManyToOne
 	@JoinColumn(name = "detectionId")
-	public SignalDetection getSignalDetection() {
-		return signalDetection;
-	}
-
-	public void setSignalDetection(SignalDetection signalDetection) {
-		this.signalDetection = signalDetection;
-	}
-
-	}
+	@JsonIgnore
+	private SignalDetection signalDetection;
+}

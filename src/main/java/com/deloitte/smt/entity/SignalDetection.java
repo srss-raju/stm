@@ -30,13 +30,8 @@ public class SignalDetection implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
 	private String name;
 	private String description;
-	private Date createdDate;
-	private String createdBy;
-	private Date lastModifiedDate;
-	private String lastModifiedBy;
 	private String query;
 	private String runFrequency;
 	private String windowType;
@@ -46,6 +41,7 @@ public class SignalDetection implements Serializable {
 	private String caselistId;
 	private Long casesCount;
 	private Long minCases;
+	private String owner;
 	
 	@OneToMany
 	private List<QueryBuilder> queryBuilder;
@@ -62,29 +58,38 @@ public class SignalDetection implements Serializable {
     @JoinColumn(name = "detectionId")
 	private List<DetectionAssignees> detectionAssignees;
 	
-	private String owner;
-	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "signalDetection")
 	private Set<SignalDetectionStatistics> signalDetectionStatistics;
 
 	@OneToMany
+    @JoinColumn(name = "detectionId")
 	private List<Soc> socs;
 	
 	@OneToMany
+    @JoinColumn(name = "detectionId")
 	private List<Smq> smqs;
 	
 	@OneToMany
+    @JoinColumn(name = "detectionId")
 	private List<DenominatorForPoission> denominatorForPoission;
 
 	@OneToMany
+    @JoinColumn(name = "detectionId")
 	private List<IncludeAE> includeAEs;
 
 	private List<Date> nextRunDates;
 	
 	@OneToMany
+    @JoinColumn(name = "detectionId")
     private List<TopicCondition> conditions;
 	
 	@OneToMany
+    @JoinColumn(name = "detectionId")
     private List<TopicProduct> products;
 
+	private Date createdDate;
+	private String createdBy;
+	private Date lastModifiedDate;
+	private String lastModifiedBy;
+	
 }

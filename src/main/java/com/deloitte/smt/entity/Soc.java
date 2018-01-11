@@ -7,8 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.Data;
 
@@ -30,7 +31,8 @@ public class Soc implements Serializable {
 	private boolean hltSelected;
 	private boolean ptSelected;
 	
-	
+	@OneToMany
+	@JoinColumn(name="socId")
     private List<Pt> pts;
 	
 

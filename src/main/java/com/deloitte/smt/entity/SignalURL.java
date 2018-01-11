@@ -21,13 +21,11 @@ public class SignalURL  implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-	private String createdBy;
-	private Date modifiedDate;
 	private String description;
 	private String url;
 	private Long topicId;
-	private String modifiedBy;
+	private String createdBy;
 	private Date createdDate;
-	
-	
+	private Date modifiedDate;
+	private String modifiedBy;
 }
