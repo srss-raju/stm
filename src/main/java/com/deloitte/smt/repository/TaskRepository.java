@@ -17,5 +17,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 	
 	Long countByNameIgnoreCaseAndAssessmentPlanId(String actionName,String assessmentId);
 	Task findByNameIgnoreCaseAndAssessmentPlanId(String actionName,String assessmentId);
-	Task findByNameIgnoreCaseAndTemplateId(String actionName,Long templateId);
+	
+	List<Task> findAllByRiskIdAndStatusOrderByCreatedDateDesc(String riskId, String status);
+	List<Task> findAllByRiskIdOrderByCreatedDateDesc(String riskId);
+	
+	Long countByNameIgnoreCaseAndRiskId(String risName,String riskId);
+	
+	Task findByNameIgnoreCaseAndRiskId(String risName, String riskId);
+	Task findByNameIgnoreCaseAndTemplateId(String name,Long templateId);
 }
