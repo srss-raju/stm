@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import com.deloitte.smt.dao.ProductMedraHierarchyDAO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
 import com.deloitte.smt.dto.ProductSearchDTO;
-import com.deloitte.smt.util.ProductHierarchyMapper;
-import com.deloitte.smt.util.ProductSearchMapper;
+import com.deloitte.smt.mapper.ProductHierarchyMapper;
+import com.deloitte.smt.mapper.ProductSearchMapper;
 
 @Service
 public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {

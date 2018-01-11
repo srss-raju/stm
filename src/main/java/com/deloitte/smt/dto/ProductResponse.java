@@ -2,19 +2,19 @@ package com.deloitte.smt.dto;
 
 import java.util.List;
 
-import com.deloitte.smt.util.Levels;
+import com.deloitte.smt.util.LevelsDTO;
 
 public class ProductResponse {
 	
 	//private List<Versions> versions;
-	private List<Levels> levels;
+	private List<LevelsDTO> levels;
 	private List<String> versions;
 	private boolean showCodes;
 	
-	public List<Levels> getLevels() {
+	public List<LevelsDTO> getLevels() {
 		return levels;
 	}
-	public void setLevels(List<Levels> levels) {
+	public void setLevels(List<LevelsDTO> levels) {
 		this.levels = levels;
 	}
 	public List<String> getVersions() {

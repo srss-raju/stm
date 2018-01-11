@@ -23,8 +23,7 @@ import com.deloitte.smt.repository.ProductLevelRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.util.AssignmentUtil;
-import com.deloitte.smt.util.Levels;
+import com.deloitte.smt.util.LevelsDTO;
 
 @Service
 public class ProductFilterServiceImpl {
@@ -48,7 +47,7 @@ public class ProductFilterServiceImpl {
 	@Autowired
 	private AssessmentPlanRepository assessmentPlanRepository;
 	public void productLevelFilter(List<FilterDTO> filterList, String type) {
-		List<Map<String, List<Levels>>> prlevels=null;
+		List<Map<String, List<LevelsDTO>>> prlevels=null;
 		List<ProductLevels> productLevels=null;
 		try {
 			prlevels = productLevelValuesCodes(type);
@@ -62,10 +61,10 @@ public class ProductFilterServiceImpl {
 		}
 	}
 
-	private void constructProductFilter(List<FilterDTO> filterList, List<Map<String, List<Levels>>> prlevels,
+	private void constructProductFilter(List<FilterDTO> filterList, List<Map<String, List<LevelsDTO>>> prlevels,
 			List<ProductLevels> productLevels) {
 		FilterDTO dto;
-		if(!AssignmentUtil.isNullOrEmpty(productLevels))
+		if(!CollectionUtils.isEmpty(productLevels))
 		{
 			for (ProductLevels productLevel : productLevels) {
 				dto = new FilterDTO();
@@ -74,9 +73,9 @@ public class ProductFilterServiceImpl {
 				dto.setFilterType("product");
 				boolean exists=false;
 				List<?>	existList=null;
-				if(!AssignmentUtil.isNullOrEmpty(prlevels))
+				if(!CollectionUtils.isEmpty(prlevels))
 				{
-					for (Map<String, List<Levels>> prlevelMap : prlevels) {
+					for (Map<String, List<LevelsDTO>> prlevelMap : prlevels) {
 						if(prlevelMap.containsKey(productLevel.getKey()))
 						{
 							existList = prlevelMap.get(productLevel.getKey());
@@ -97,8 +96,8 @@ public class ProductFilterServiceImpl {
 		}
 	}
 
-	private List<Map<String, List<Levels>>> productLevelValuesCodes(String type) {
-		List<Map<String, List<Levels>>> levelMapList = null;
+	private List<Map<String, List<LevelsDTO>>> productLevelValuesCodes(String type) {
+		List<Map<String, List<LevelsDTO>>> levelMapList = null;
 		List<String> prodFillVals =null;
 		switch (type) {
 		case "signal":
@@ -146,13 +145,13 @@ public class ProductFilterServiceImpl {
 		return prds;
 	}
 
-	private void createProductValues(List<Map<String, List<Levels>>> levelMapList,
+	private void createProductValues(List<Map<String, List<LevelsDTO>>> levelMapList,
 			List<Object[]> assignmentProductList) {
-		if (!AssignmentUtil.isNullOrEmpty(assignmentProductList)) {
-			Map<String, List<Levels>> levelMap = new LinkedHashMap<>();
-			List<Levels> levels = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(assignmentProductList)) {
+			Map<String, List<LevelsDTO>> levelMap = new LinkedHashMap<>();
+			List<LevelsDTO> levels = new ArrayList<>();
 			for (Object[] assignmentProduct : assignmentProductList) {
-				Levels level = new Levels();
+				LevelsDTO level = new LevelsDTO();
 				level.setKey(assignmentProduct[0].toString());
 				level.setValue(assignmentProduct[1].toString());
 				levels.add(level);
@@ -196,7 +195,7 @@ public class ProductFilterServiceImpl {
 		}
 		
 		logger.info("FINAL LIST....."+productRecKeys);
-		if(!AssignmentUtil.isNullOrEmpty(productRecKeys))
+		if(!CollectionUtils.isEmpty(productRecKeys))
 		{
 			switch (type) 
 			{

@@ -1,4 +1,4 @@
-package com.deloitte.smt.util;
+package com.deloitte.smt.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

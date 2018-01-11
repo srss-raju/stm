@@ -15,7 +15,7 @@ import org.springframework.util.CollectionUtils;
 import com.deloitte.smt.dto.ConditionResponse;
 import com.deloitte.smt.entity.ConditionLevels;
 import com.deloitte.smt.repository.ConditionLevelRepository;
-import com.deloitte.smt.util.Levels;
+import com.deloitte.smt.util.LevelsDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,7 +30,7 @@ public class ConditonService {
 		
 		String strVersions = null;
 		ConditionResponse response = null;
-		List<Levels> levelsList=null;
+		List<LevelsDTO> levelsList=null;
 		try {
 			response=new ConditionResponse();
 			Map<String,String> versions=new HashMap<>();
@@ -39,7 +39,7 @@ public class ConditonService {
 			levelsList =new ArrayList<>();
 			if (!CollectionUtils.isEmpty(conditionLevelList)) {
 				for (ConditionLevels condLevel : conditionLevelList) {
-					Levels level=new Levels();
+					LevelsDTO level=new LevelsDTO();
 					level.setKey(condLevel.getKey());
 					level.setValue(condLevel.getValue());
 					levelsList.add(level);

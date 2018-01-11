@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import com.deloitte.smt.dao.SocMedraHierarchyDAO;
 import com.deloitte.smt.dto.SocHierarchyDto;
 import com.deloitte.smt.dto.SocSearchDTO;
-import com.deloitte.smt.util.SocHierarchyMapper;
-import com.deloitte.smt.util.SocSearchMapper;
+import com.deloitte.smt.mapper.SocHierarchyMapper;
+import com.deloitte.smt.mapper.SocSearchMapper;
 
 @Service
 public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {

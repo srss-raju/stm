@@ -23,8 +23,7 @@ import com.deloitte.smt.repository.ConditionLevelRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.util.AssignmentUtil;
-import com.deloitte.smt.util.Levels;
+import com.deloitte.smt.util.LevelsDTO;
 
 @Service
 public class ConditionFilterServiceImpl {
@@ -49,7 +48,7 @@ public class ConditionFilterServiceImpl {
 	private AssessmentPlanRepository assessmentPlanRepository;
 
 	public void conditionLevelFilter(List<FilterDTO> filterList, String type) {
-		List<Map<String, List<Levels>>> conlevels = null;
+		List<Map<String, List<LevelsDTO>>> conlevels = null;
 		List<ConditionLevels> conditionLevels = null;
 		try {
 			conlevels = conditionLevelValuesCodes(type);
@@ -62,10 +61,10 @@ public class ConditionFilterServiceImpl {
 		}
 	}
 
-	private void constructConditionFilter(List<FilterDTO> filterList, List<Map<String, List<Levels>>> conlevels,
+	private void constructConditionFilter(List<FilterDTO> filterList, List<Map<String, List<LevelsDTO>>> conlevels,
 			List<ConditionLevels> levels) {
 		FilterDTO dto;
-		if(!AssignmentUtil.isNullOrEmpty(levels))
+		if(!CollectionUtils.isEmpty(levels))
 		{
 			for (ConditionLevels level : levels) {
 				dto = new FilterDTO();
@@ -74,9 +73,9 @@ public class ConditionFilterServiceImpl {
 				dto.setFilterType("condition");
 				boolean exists = false;
 				List<?> existList = null;
-				if(!AssignmentUtil.isNullOrEmpty(conlevels))
+				if(!CollectionUtils.isEmpty(conlevels))
 				{
-					for (Map<String, List<Levels>> levelMap : conlevels) {
+					for (Map<String, List<LevelsDTO>> levelMap : conlevels) {
 						if (levelMap.containsKey(level.getKey())) {
 							existList = levelMap.get(level.getKey());
 							exists = true;
@@ -95,8 +94,8 @@ public class ConditionFilterServiceImpl {
 		}
 	}
 
-	private List<Map<String, List<Levels>>> conditionLevelValuesCodes(String type) {
-		List<Map<String, List<Levels>>> levelMapList = null;
+	private List<Map<String, List<LevelsDTO>>> conditionLevelValuesCodes(String type) {
+		List<Map<String, List<LevelsDTO>>> levelMapList = null;
 		List<String> conFillVals = null;
 		switch (type) {
 		case "signal":
@@ -148,13 +147,13 @@ public class ConditionFilterServiceImpl {
 		return assignmentConditionValuesRepository.findDistinctByCategoryCodeIn(recValues);
 	}
 
-	private void createProductValues(List<Map<String, List<Levels>>> levelMapList,
+	private void createProductValues(List<Map<String, List<LevelsDTO>>> levelMapList,
 			List<Object[]> assignmentProductList) {
-		if (!AssignmentUtil.isNullOrEmpty(assignmentProductList)) {
-			Map<String, List<Levels>> levelMap = new LinkedHashMap<>();
-			List<Levels> levels = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(assignmentProductList)) {
+			Map<String, List<LevelsDTO>> levelMap = new LinkedHashMap<>();
+			List<LevelsDTO> levels = new ArrayList<>();
 			for (Object[] assignmentProduct : assignmentProductList) {
-				Levels level = new Levels();
+				LevelsDTO level = new LevelsDTO();
 				level.setKey(assignmentProduct[0].toString());
 				level.setValue(assignmentProduct[1].toString());
 				levels.add(level);
@@ -195,7 +194,7 @@ public class ConditionFilterServiceImpl {
 		}
 		
 		logger.info("FINAL CONDITION LIST....."+conRecKeys);
-		if(!AssignmentUtil.isNullOrEmpty(conRecKeys))
+		if(!CollectionUtils.isEmpty(conRecKeys))
 		{
 			switch (type) {
 				case "signal":

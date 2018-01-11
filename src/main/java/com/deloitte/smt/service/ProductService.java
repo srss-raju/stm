@@ -15,7 +15,7 @@ import org.springframework.util.CollectionUtils;
 import com.deloitte.smt.dto.ProductResponse;
 import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.repository.ProductLevelRepository;
-import com.deloitte.smt.util.Levels;
+import com.deloitte.smt.util.LevelsDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,7 +29,7 @@ public class ProductService {
 	public ProductResponse getAllProductsLevel(){
 		String strVersions = null;
 		ProductResponse response = null;
-		List<Levels> levelsList=null;
+		List<LevelsDTO> levelsList=null;
 		try {
 			response=new ProductResponse();
 			Map<String,String> versions=new HashMap<>();
@@ -38,7 +38,7 @@ public class ProductService {
 			levelsList =new ArrayList<>();
 			if (!CollectionUtils.isEmpty(productLevelList)) {
 				for (ProductLevels productlevel : productLevelList) {
-					Levels level=new Levels();
+					LevelsDTO level=new LevelsDTO();
 					level.setKey(productlevel.getKey());
 					level.setValue(productlevel.getValue());
 					levelsList.add(level);

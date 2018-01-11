@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.deloitte.smt.dao.PtDAO;
 import com.deloitte.smt.dto.PtDTO;
-import com.deloitte.smt.util.PtMapper;
+import com.deloitte.smt.mapper.PtMapper;
 
 public class PtDAOImpl implements PtDAO{
 

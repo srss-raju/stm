@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.deloitte.smt.dao.SmqDAO;
 import com.deloitte.smt.dto.SmqDTO;
-import com.deloitte.smt.util.SmqMapper;
+import com.deloitte.smt.mapper.SmqMapper;
 
 public class SmqDAOImpl implements SmqDAO{
 

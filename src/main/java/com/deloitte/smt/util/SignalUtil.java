@@ -19,6 +19,13 @@ public class SignalUtil {
 	
 	private SignalUtil(){}
 	
+	public static String getRecordKey(String recordKey){
+		if(recordKey.contains("@#")){
+			int latIndex = recordKey.lastIndexOf("@#");
+			return recordKey.substring(0, latIndex);
+		}
+		return null;
+	}
 	public static String getCounts(Long validateCount, Long assesmentCount, Long riskCount){
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode node = mapper.createObjectNode();
