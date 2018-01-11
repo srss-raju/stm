@@ -70,9 +70,6 @@ public class AssessmentPlanService {
     SignalURLRepository signalURLRepository;
     
     @Autowired
-    SignalAuditService signalAuditService;
-    
-    @Autowired
     RiskPlanService riskPlanService;
     
     @Autowired
@@ -106,7 +103,6 @@ public class AssessmentPlanService {
         if(assessmentPlan.getAssessmentPlanStatus().equals(SmtConstant.COMPLETED.getDescription()) && StringUtils.isEmpty(assessmentPlan.getFinalAssessmentSummary())){
         	assessmentPlan.setFinalAssessmentSummary(SmtConstant.SUMMARY_COMPLETED.getDescription());
         }
-        assessmentAssignmentService.findAssignmentAssignees(assessmentPlan);
         assessmentPlan.setComments(commentsRepository.findByAssessmentId(assessmentId));
         assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentId));
         return assessmentPlan;

@@ -54,24 +54,6 @@ public class AssignmentConfigurationController {
         return assignmentConfigurationService.findAll();
     }
     
-    @DeleteMapping(value = "/signalValidationAssignmentAssignee/{assigneeId}")
-    public ResponseEntity<Void> deleteSignalValidationAssignmentAssignee(@PathVariable Long assigneeId) throws ApplicationException {
-        assignmentConfigurationService.deleteSignalValidationAssignmentAssignee(assigneeId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-    
-    @DeleteMapping(value = "/assessmentAssignmentAssignee/{assigneeId}")
-    public ResponseEntity<Void> deleteAssessmentAssignmentAssignee(@PathVariable Long assigneeId) throws ApplicationException {
-        assignmentConfigurationService.deleteAssessmentAssignmentAssignee(assigneeId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-    
-    @DeleteMapping(value = "/riskPlanAssignmentAssignee/{assigneeId}")
-    public ResponseEntity<Void> deleteRiskPlanAssignmentAssignee(@PathVariable Long assigneeId) throws ApplicationException {
-        assignmentConfigurationService.deleteRiskPlanAssignmentAssignee(assigneeId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-    
     @DeleteMapping(value = "/soc/{socAssignmentConfigurationId}")
     public ResponseEntity<Void> deleteSocAssignmentConfiguration(@PathVariable Long socAssignmentConfigurationId) throws ApplicationException {
         assignmentConfigurationService.deleteSocAssignmentConfiguration(socAssignmentConfigurationId);

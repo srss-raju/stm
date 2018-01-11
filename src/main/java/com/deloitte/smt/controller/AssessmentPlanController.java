@@ -59,7 +59,7 @@ public class AssessmentPlanController {
         AssessmentPlan assessmentPlan = null;
         try {
         	assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
-			assessmentPlanService.updateAssessment(assessmentPlan, attachments);
+			assessmentPlanService.updateAssessment(assessmentPlan);
 		} catch (ApplicationException | IOException e) {
 			logger.info("Exception occured while updating "+e);
 		}
@@ -72,7 +72,7 @@ public class AssessmentPlanController {
         AssessmentPlan assessmentPlan = null;
         try {
         	assessmentPlan = new ObjectMapper().readValue(assessmentPlanString, AssessmentPlan.class);
-			assessmentPlanService.finalAssessment(assessmentPlan, attachments);
+			assessmentPlanService.finalAssessment(assessmentPlan);
 		} catch (ApplicationException | IOException e) {
 			logger.info("Exception occured in finalAssessment "+e);
 		}
