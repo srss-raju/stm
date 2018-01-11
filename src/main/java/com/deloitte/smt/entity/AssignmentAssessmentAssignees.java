@@ -25,8 +25,8 @@ public class AssignmentAssessmentAssignees {
 		private Date createdDate;
 	    private String createdBy;
 	    private Date lastModifiedDate;
-	    private Long userGroupKey;
-	    private Long userKey;
+	    private String userGroupKey;
+	    private String userKey;
 	    private Long assignmentConfigurationId;
 	    
 }

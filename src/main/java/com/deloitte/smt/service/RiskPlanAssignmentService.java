@@ -44,24 +44,17 @@ public class RiskPlanAssignmentService {
 			for(AssignmentRiskPlanAssignees rpaAssignees : assignmentConfiguration.getRiskAssignees()){
 				saveTopicRiskPlanAssignmentAssignees(rpaAssignees,riskPlan,list);
         	}
-			riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesRepository.save(list));
 		}
 		return riskPlan;
 	}
 
 	private void saveTopicRiskPlanAssignmentAssignees(AssignmentRiskPlanAssignees rpaAssignees, RiskPlan riskPlan, List<RiskPlanAssignees> list) {
 		RiskPlanAssignees assignee = new RiskPlanAssignees();
-		//assignee.setRiskId(riskPlan.getId());
-		assignee.setAssignTo(rpaAssignees.getAssignTo());
 		assignee.setUserGroupKey(rpaAssignees.getUserGroupKey());
 		assignee.setUserKey(rpaAssignees.getUserKey());
 		assignee.setCreatedDate(riskPlan.getCreatedDate());
 		assignee.setCreatedBy(riskPlan.getCreatedBy());
 		list.add(assignee);
-	}
-
-	public void findRiskAssignmentAssignees(RiskPlan riskPlan) {
-		riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskPlan.getId()));
 	}
 
 }

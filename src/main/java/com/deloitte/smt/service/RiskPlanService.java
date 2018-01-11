@@ -256,7 +256,6 @@ public class RiskPlanService {
 		List<RiskPlanAssignees> topicRiskPlanAssignmentAssigneesList=new ArrayList<>();
 		for(RiskPlan riskPlan :riskPlanList){
 			topicRiskPlanAssignmentAssigneesList =	topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskPlan.getId());
-			riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesList);
 		}
 		return topicRiskPlanAssignmentAssigneesList;
 	}
@@ -511,7 +510,6 @@ public class RiskPlanService {
 			riskPlan = riskPlanRepository.save(riskPlan);
 		}
 		List<RiskPlanAssignees> topicRiskPlanAssignmentAssigneesList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskId);
-		riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesList);
 		riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
 		riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskId));
 		AssessmentPlan assessmentPlan=riskPlan.getAssessmentPlan();
