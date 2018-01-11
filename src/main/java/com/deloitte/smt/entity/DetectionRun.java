@@ -21,11 +21,10 @@ public class DetectionRun {
 	private String detectionName;
 	private Long detectionId;
 	private Date runDate;
-	private Date createdDate;
-    private String createdBy;
-    private Date lastModifiedDate;
     private String message;
     private String jobId;
     private String jobStatus;
-    
+	private Date createdDate;
+    private String createdBy;
+    private Date lastModifiedDate;
 }
