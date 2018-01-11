@@ -15,7 +15,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SignalConfigurationType;
@@ -33,7 +32,6 @@ import com.deloitte.smt.entity.SignalConfidence;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalStrength;
 import com.deloitte.smt.entity.SignalURL;
-import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicCondition;
@@ -59,7 +57,6 @@ import com.deloitte.smt.repository.TopicConditionValuesRepository;
 import com.deloitte.smt.repository.TopicProductRepository;
 import com.deloitte.smt.repository.TopicProductValuesRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
 /**
@@ -97,9 +94,6 @@ public class SignalService {
 
 	@Autowired
 	SignalURLRepository signalURLRepository;
-	
-	@Autowired
-	SignalAuditService signalAuditService;
 	
 	@Autowired
 	AssessmentPlanRepository assessmentPlanRepository;
@@ -182,10 +176,8 @@ public class SignalService {
 		
 		setTopicConditionsAndProducts(topicId, topic);
 		
-		signalAssignmentService.findSignalAssignmentAssignees(topic);
 		
 		topic.setSignalUrls(signalURLRepository.findByTopicId(topicId));
-		findSoc(topic);
 		if (!SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(topic.getSignalStatus())) {
 			logger.debug("FOUND SIGNAL" + topic.getId());
 			topic = signalMatchService.findMatchingSignal(topic);
@@ -216,7 +208,7 @@ public class SignalService {
 		return commentsRepository.findByTopicId(topicId);
 	}
 
-	public Topic createTopic(Topic topic, MultipartFile[] attachments) throws ApplicationException {
+	public Topic createTopic(Topic topic) throws ApplicationException {
 		if (topic.getId() != null) {
 			topic.setId(null);
 		}
@@ -266,10 +258,7 @@ public class SignalService {
 		saveSignalUrl(topicUpdated);
 		saveSignalStrength(topicUpdated);
 		
-		List<Attachment> attchmentList = attachmentService.addAttachments(topicUpdated.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT, null,
-				topicUpdated.getFileMetadata(), topic.getCreatedBy());
 		logger.info("Start Algorithm for matching signal");
-		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, null, attchmentList, SmtConstant.CREATE.getDescription());
 		return signalMatchService.findMatchingSignal(topicUpdated);
 	}
 
@@ -278,7 +267,6 @@ public class SignalService {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
 			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 				AssignmentProduct config = new AssignmentProduct();
-				config.setAssignmentConfigurationId(productConfig.getAssignmentConfigurationId());
 				config.setProductName(productConfig.getProductName());
 				config.setCreatedBy(productConfig.getCreatedBy());
 				config.setCreatedDate(productConfig.getCreatedDate());
@@ -391,7 +379,6 @@ public class SignalService {
 	private void saveSignalStrength(Topic topicUpdated){
 		if (!CollectionUtils.isEmpty(topicUpdated.getSignalStrengthAtrributes())) {
 			for(SignalStrength signalStrength : topicUpdated.getSignalStrengthAtrributes()){
-				signalStrength.setTopicId(topicUpdated.getId());
 				signalStrength.setCreatedDate(topicUpdated.getCreatedDate());
 				signalStrength.setCreatedBy(topicUpdated.getCreatedBy());
 				signalStrength.setModifiedBy(topicUpdated.getModifiedBy());
@@ -412,20 +399,16 @@ public class SignalService {
 		}
 	}
 
-	public String updateTopic(Topic topic, MultipartFile[] attachments) throws ApplicationException {
+	public String updateTopic(Topic topic) throws ApplicationException {
 		if (topic.getId() == null) {
 			throw new ApplicationException("Update failed for Topic, since it does not have any valid Id field.");
 		}
 		ownerCheck(topic);
 		topic.setLastModifiedDate(new Date());
 		setTopicIdForSignalStatistics(topic);
-		List<Attachment> attchmentList = attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT,
-				topic.getDeletedAttachmentIds(), topic.getFileMetadata(), topic.getCreatedBy());
-		String topicOriginal = JsonUtil.converToJson(findById(topic.getId()));
 		
-		Topic topicUpdated = topicRepository.save(topic);
+		topicRepository.save(topic);
 		saveSignalUrl(topic);
-		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
 		return "Update Success";
 	}
 
@@ -443,7 +426,6 @@ public class SignalService {
 		if (topic == null) {
 			throw new ApplicationException("Topic not found with the given Id [" + topicId + "]");
 		}
-		String topicOriginal = JsonUtil.converToJson(topic);
 		if (assessmentPlan.getId() == null) {
 		
 			Date d = new Date();
@@ -472,15 +454,13 @@ public class SignalService {
 		topic.setSignalStatus(SmtConstant.COMPLETED.getDescription());
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());
 		topic.setLastModifiedDate(new Date());
-		Topic topicUpdated = topicRepository.save(topic);
-		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, null, SmtConstant.UPDATE.getDescription());
+		topicRepository.save(topic);
 		if (assignmentConfiguration != null) {
 			if(assignmentConfiguration.getAssessmentOwner()!=null){
 				assessmentPlan.setOwner(assignmentConfiguration.getAssessmentOwner());
 			}
 			assessmentAssignmentService.saveAssignmentAssignees(assignmentConfiguration, assessmentPlan);
 		}
-		signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, null, null, SmtConstant.CREATE.getDescription());
 		return assessmentPlan;
 	}
 
@@ -632,30 +612,6 @@ public class SignalService {
 			signalActionAttachments = attachmentRepository.save(assessmentActionAttachments);
 		}
 		return signalActionAttachments;
-	}
-
-	public List<Topic> findTopicsByRunInstanceId(Long runInstanceId) {
-		List<Topic> topics = topicRepository.findTopicByRunInstanceIdOrderByCreatedDateAsc(runInstanceId);
-		if (!CollectionUtils.isEmpty(topics)) {
-			for (Topic topic : topics) {
-				topic.setSocs(findSoc(topic));
-			}
-		}
-		return topics;
-	}
-
-	/**
-	 * @param topic
-	 * @return
-	 */
-	private List<Soc> findSoc(Topic topic) {
-		List<Soc> socs = socRepository.findByTopicId(topic.getId());
-		if (!CollectionUtils.isEmpty(socs)) {
-			for (Soc soc : socs) {
-				soc.setPts(ptRepository.findBySocId(soc.getId()));
-			}
-		}
-		return socs;
 	}
 
 	public void deleteSignalURL(Long signalUrlId) throws ApplicationException {

@@ -19,10 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
@@ -72,105 +69,6 @@ public class RiskPlanServiceTest {
 	@MockBean
 	AssignmentConfigurationRepository assignmentConfigurationRepository;
 	
-	
-    
-	@Test
-	public void testInsertWithAssignmentConfiguration() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlan.setSource("Test Source");
-			
-			Long assessmentId = 1l;
-			List<SignalURL> urls = new ArrayList<>();
-			SignalURL url = new SignalURL();
-			urls.add(url);
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-			given(this.assessmentPlanRepository.findOne(assessmentId)).willReturn(assessmentPlan);
-			RiskPlan riskPlanUpdated = new RiskPlan();
-			riskPlanUpdated.setSignalUrls(urls);
-			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlanUpdated);
-			riskPlanService.insert(riskPlan, null, assessmentId);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testInsertWithAssignmentConfigurationNull() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlan.setSource("Test Source");
-			Long assessmentId = 1l;
-			List<SignalURL> urls = new ArrayList<>();
-			SignalURL url = new SignalURL();
-			urls.add(url);
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-			given(this.assessmentPlanRepository.findOne(assessmentId)).willReturn(assessmentPlan);
-			RiskPlan riskPlanUpdated = new RiskPlan();
-			riskPlanUpdated.setSignalUrls(urls);
-			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlanUpdated);
-			riskPlanService.insert(riskPlan, null, assessmentId);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testInsertWithAssessmentIdNull() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlan.setSource("Test Source");
-			List<SignalURL> urls = new ArrayList<>();
-			SignalURL url = new SignalURL();
-			urls.add(url);
-			RiskPlan riskPlanUpdated = new RiskPlan();
-			riskPlanUpdated.setSignalUrls(urls);
-			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlanUpdated);
-			riskPlanService.insert(riskPlan, null, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testInsertWithAssessmentPlanNull() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlan.setSource("Test Source");
-			Long assessmentId = 1l;
-			List<SignalURL> urls = new ArrayList<>();
-			SignalURL url = new SignalURL();
-			urls.add(url);
-			RiskPlan riskPlanUpdated = new RiskPlan();
-			riskPlanUpdated.setSignalUrls(urls);
-			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlanUpdated);
-			riskPlanService.insert(riskPlan, null, assessmentId);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testCreateRiskTask() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			Task riskTask = new Task();
-			riskTask.setCaseInstanceId("11");
-			riskTask.setStatus("Completed1");
-			riskTask.setId(1l);
-			riskTask.setRiskId("1");
-			given(this. riskPlanRepository.findOne(1l)).willReturn(riskPlan);
-			Task riskTaskUpdated = new Task();
-			List<SignalURL> urls = new ArrayList<>();
-			SignalURL url = new SignalURL();
-			urls.add(url);
-			riskTaskUpdated.setSignalUrls(urls);
-			given(this. riskTaskRepository.save(riskTask)).willReturn(riskTaskUpdated);
-			riskPlanService.createRiskTask(riskTask, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
 	@Test
 	public void testFindById() {
@@ -228,44 +126,7 @@ public class RiskPlanServiceTest {
 		}
 	}
 	
-	@Test
-	public void testUpdateRiskTask() {
-		try{
-			Task riskTask = new Task();
-			riskTask.setCaseInstanceId("11");
-			riskTask.setStatus("Completed1");
-			riskTask.setId(1l);
-			riskTask.setRiskId("1");
-			List<SignalURL> urls = new ArrayList<>();
-			SignalURL url = new SignalURL();
-			urls.add(url);
-			riskTask.setSignalUrls(urls);
-			riskPlanService.updateRiskTask(riskTask, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
-	@Test
-	public void testUpdateRiskTaskClosed() {
-		try{
-			Task riskTask = new Task();
-			riskTask.setCaseInstanceId("11");
-			riskTask.setStatus("Completed1");
-			riskTask.setId(1l);
-			riskTask.setRiskId("1");
-			List<SignalURL> urls = new ArrayList<>();
-			SignalURL url = new SignalURL();
-			urls.add(url);
-			riskTask.setSignalUrls(urls);
-			List<Task> list = new ArrayList<>();
-			list.add(riskTask);
-			given(this.riskTaskRepository.findAllByRiskIdOrderByCreatedDateDesc("1")).willReturn(list);
-			riskPlanService.updateRiskTask(riskTask, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
 	@Test
 	public void testFindByRiskId() {
@@ -290,56 +151,6 @@ public class RiskPlanServiceTest {
 		}
 	}
 	
-	@Test
-	public void testRiskPlanSummary() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlan.setId(1l);
-			riskPlanService.riskPlanSummary(riskPlan, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
-	@Test
-	public void testRiskPlanSummaryWithNull() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlanService.riskPlanSummary(riskPlan, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testUpdateRiskPlan() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlan.setId(1l);
-			List<Comments> list = new ArrayList<>();
-			Comments comments = new Comments();
-			comments.setUserComments("Test Comments");
-			list.add(comments);
-			riskPlan.setComments(list);
-			List<SignalURL> urls = new ArrayList<>();
-			SignalURL url = new SignalURL();
-			urls.add(url);
-			riskPlan.setSignalUrls(urls);
-			riskPlanService.updateRiskPlan(riskPlan, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	
-	@Test
-	public void testUpdateRiskPlanWithNull() {
-		try{
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlanService.updateRiskPlan(riskPlan, null);
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
 	
 }

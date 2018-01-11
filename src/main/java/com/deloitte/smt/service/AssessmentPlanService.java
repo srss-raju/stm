@@ -15,12 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
-import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Task;
@@ -40,7 +37,6 @@ import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.util.AssignmentUtil;
-import com.deloitte.smt.util.JsonUtil;
 
 /**
  * Created by myelleswarapu on 10-04-2017.
@@ -135,7 +131,7 @@ public class AssessmentPlanService {
         }
     }
 
-    public void updateAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException {
+    public void updateAssessment(AssessmentPlan assessmentPlan) throws ApplicationException {
         if(assessmentPlan.getId() == null) {
             throw new ApplicationException("Failed to update Assessment. Invalid Id received");
         }
@@ -143,9 +139,7 @@ public class AssessmentPlanService {
         AssessmentPlan assessmentPlanFromDB = assessmentPlanRepository.findOne(assessmentPlan.getId());
         ownerCheck(assessmentPlan, assessmentPlanFromDB);
         
-        String assessmentPlanOriginal = JsonUtil.converToJson(topicRepository.findOne(assessmentPlan.getId()));
         assessmentPlan.setLastModifiedDate(new Date());
-        List<Attachment> attchmentList = attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.ASSESSMENT_ATTACHMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata(), assessmentPlan.getCreatedBy());
         setAssessmentTaskStatus(assessmentPlan);
         
         if(null==assessmentPlan.getFinalAssessmentSummary()|| assessmentPlan.getFinalAssessmentSummary().isEmpty()){
@@ -177,7 +171,6 @@ public class AssessmentPlanService {
         	signalURLRepository.save(assessmentPlan.getSignalUrls());
         }
         
-        signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlan, assessmentPlanOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
     }
 
 	private void ownerCheck(AssessmentPlan assessmentPlan, AssessmentPlan assessmentPlanFromDB) throws ApplicationException {
@@ -207,16 +200,13 @@ public class AssessmentPlanService {
        
     }
  
-    public void finalAssessment(AssessmentPlan assessmentPlan, MultipartFile[] attachments) throws ApplicationException {
+    public void finalAssessment(AssessmentPlan assessmentPlan) throws ApplicationException {
         if(assessmentPlan.getId() == null) {
             throw new ApplicationException("Failed to update Assessment. Invalid Id received");
         }
-        String assessmentPlanOriginal = JsonUtil.converToJson(topicRepository.findOne(assessmentPlan.getId()));
         assessmentPlan.setLastModifiedDate(new Date());
         assessmentPlan.setAssessmentPlanStatus("Completed");
-        List<Attachment> attchmentList = attachmentService.addAttachments(assessmentPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT, assessmentPlan.getDeletedAttachmentIds(), assessmentPlan.getFileMetadata(), assessmentPlan.getCreatedBy());
-        AssessmentPlan assessmentPlanUpdated = assessmentPlanRepository.save(assessmentPlan);
-        signalAuditService.saveOrUpdateAssessmentPlanAudit(assessmentPlanUpdated, assessmentPlanOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
+        assessmentPlanRepository.save(assessmentPlan);
     }
     
 	/**

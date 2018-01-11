@@ -45,7 +45,7 @@ public class RiskController {
     	RiskPlan riskPlan = null;
     	try {
         	riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
-			riskPlan = riskPlanService.insert(riskPlan, attachments, assessmentId);
+			riskPlan = riskPlanService.insert(riskPlan, assessmentId);
 		} catch (Exception e) {
 			logger.info("Exception occured while creating Risk Plan"+e);
 		}
@@ -59,9 +59,9 @@ public class RiskController {
     	try {
     		Task riskTask = new ObjectMapper().readValue(riskPlanActionString, Task.class);
     		if(riskTask.getTemplateId() != null){
-    			riskPlanService.createRiskTemplateTask(riskTask, attachments);
+    			riskPlanService.createRiskTemplateTask(riskTask);
     		}else{
-    			riskPlanService.createRiskTask(riskTask, attachments);
+    			riskPlanService.createRiskTask(riskTask);
     		}
         	
 		} catch (IOException e) {
@@ -93,7 +93,7 @@ public class RiskController {
                                          @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
         try {
         	Task riskTask = new ObjectMapper().readValue(riskTaskString, Task.class);
-			riskPlanService.updateRiskTask(riskTask, attachments);
+			riskPlanService.updateRiskTask(riskTask);
 		} catch (IOException e) {
 			logger.info("Exception occured while updating "+e);
 		}
@@ -111,7 +111,7 @@ public class RiskController {
                                   @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
         try {
         	RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
-			riskPlanService.updateRiskPlan(riskPlan, attachments);
+			riskPlanService.updateRiskPlan(riskPlan);
 		} catch (ApplicationException | IOException e) {
 			logger.info("Exception occured while updating "+e);
 		}
@@ -123,7 +123,7 @@ public class RiskController {
                                   @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
         try {
         	RiskPlan riskPlan = new ObjectMapper().readValue(riskPlanString, RiskPlan.class);
-			riskPlanService.riskPlanSummary(riskPlan, attachments);
+			riskPlanService.riskPlanSummary(riskPlan);
 		} catch (ApplicationException | IOException e) {
 			logger.info("Exception occured in riskPlanSummary "+e);
 		}

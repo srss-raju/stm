@@ -93,15 +93,12 @@ public class SignalAssignmentService {
 			for(AssignmentSignalAssignees svaAssignees : assignmentConfiguration.getSignalAssignees()){
         		saveTopicSignalValidationAssignmentAssignees(svaAssignees,topic,list);
         	}
-			topic.setTopicSignalValidationAssignmentAssignees(topicSignalValidationAssignmentAssigneesRepository.save(list));
         }
 		return topic;
 	}
 	
 	private void saveTopicSignalValidationAssignmentAssignees(AssignmentSignalAssignees svaAssignees, Topic topic, List<TopicAssignees> list) {
 		TopicAssignees assignee = new TopicAssignees();
-		assignee.setTopicId(topic.getId());
-		assignee.setAssignTo(svaAssignees.getAssignTo());
 		assignee.setUserGroupKey(svaAssignees.getUserGroupKey());
 		assignee.setUserKey(svaAssignees.getUserKey());
 		assignee.setCreatedDate(topic.getCreatedDate());
@@ -110,10 +107,6 @@ public class SignalAssignmentService {
 		list.add(assignee);
 	}
 
-	public void findSignalAssignmentAssignees(Topic topic) {
-		topic.setTopicSignalValidationAssignmentAssignees(topicSignalValidationAssignmentAssigneesRepository.findByTopicId(topic.getId()));
-	}
-	
 	public AssignmentConfiguration convertToAssignmentConfiguration(Topic topic){
 		List<AssignmentCondition> conditions;
 		List<AssignmentProduct> products;
@@ -140,7 +133,6 @@ public class SignalAssignmentService {
 			products = new ArrayList<>();
 			for(TopicProduct topicProductConfig : topic.getProducts()){
 				AssignmentProduct productConfig = new AssignmentProduct();
-				productConfig.setAssignmentConfigurationId(topicProductConfig.getAssignmentConfigurationId());
 				productConfig.setCreatedBy(topicProductConfig.getCreatedBy());
 				productConfig.setCreatedDate(topicProductConfig.getCreatedDate());
 				productConfig.setId(topicProductConfig.getId());
@@ -185,7 +177,6 @@ public class SignalAssignmentService {
 			for(TopicConditionValues record : topicSocConfig.getRecordValues()){
 				records = new ArrayList<>();
 				AssignmentConditionValues ac = new AssignmentConditionValues();
-				ac.setAssignmentConfigurationId(record.getAssignmentConfigurationId());
 				ac.setCategory(record.getCategory());
 				ac.setCategoryCode(record.getCategoryCode());
 				ac.setCategoryDesc(record.getCategoryDesc());

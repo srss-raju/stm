@@ -17,7 +17,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.AttachmentType;
 import com.deloitte.smt.constant.SmtConstant;
@@ -122,7 +121,7 @@ public class RiskPlanService {
 	 * @return
 	 * @throws ApplicationException
 	 */
-	public RiskPlan insert(RiskPlan riskPlan, MultipartFile[] attachments, Long assessmentId)
+	public RiskPlan insert(RiskPlan riskPlan, Long assessmentId)
 			throws ApplicationException {
 		riskPlan.setStatus("New");
 		Date d = new Date();
@@ -154,8 +153,6 @@ public class RiskPlanService {
 			}
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 		}
-		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlanUpdated.getId(), attachments, AttachmentType.RISK_ASSESSMENT, null,
-				riskPlanUpdated.getFileMetadata(), riskPlanUpdated.getCreatedBy());
 		updateSignalUrl(riskPlanUpdated);
 		AssessmentPlan assessmentPlan = null;
 		if(riskPlan.getAssessmentId() != null) {
@@ -188,7 +185,7 @@ public class RiskPlanService {
 				riskPlanAssignmentService.saveAssignmentAssignees(assignmentConfiguration, riskPlanUpdated);
 			}
 		}
-		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
+		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanUpdated, null, SmtConstant.CREATE.getDescription());
 		return riskPlanUpdated;
 	}
 	private Topic getTopic(AssessmentPlan assessmentPlan) {
@@ -350,7 +347,7 @@ public class RiskPlanService {
 	 * @throws IOException
 	 * @throws ApplicationException
 	 */
-	public void createRiskTask(Task riskTask, MultipartFile[] attachments) throws ApplicationException {
+	public void createRiskTask(Task riskTask) throws ApplicationException {
 		    
 		Date d = new Date();
 		riskTask.setCreatedDate(d);
@@ -369,11 +366,8 @@ public class RiskPlanService {
 		
 		Task riskTaskUpdated = riskTaskRepository.save(riskTask);
 		checkRiskTaskStatus(riskTaskUpdated);
-		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
-				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
 		saveUrls(riskTaskUpdated);
 		
-		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 	}
 	
 	/**
@@ -383,7 +377,7 @@ public class RiskPlanService {
 	 * @throws IOException
 	 * @throws ApplicationException
 	 */
-	public void createRiskTemplateTask(Task riskTask, MultipartFile[] attachments) throws ApplicationException {
+	public void createRiskTemplateTask(Task riskTask) throws ApplicationException {
 		    
 		Date d = new Date();
 		riskTask.setCreatedDate(d);
@@ -396,11 +390,8 @@ public class RiskPlanService {
 		}
 		
 		Task riskTaskUpdated = riskTaskRepository.save(riskTask);
-		List<Attachment> attachmentList = attachmentService.addAttachments(riskTaskUpdated.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
-				null, riskTaskUpdated.getFileMetadata(), riskTaskUpdated.getCreatedBy());
 		saveUrls(riskTaskUpdated);
 		
-		signalAuditService.saveOrUpdateRiskTaskAudit(riskTaskUpdated, null, attachmentList, SmtConstant.CREATE.getDescription());
 	}
 	
 	/**
@@ -453,7 +444,7 @@ public class RiskPlanService {
 		checkRiskTaskStatus(riskTask);
 	}
 
-	public void updateRiskTask(Task riskTask, MultipartFile[] attachments) throws ApplicationException {
+	public void updateRiskTask(Task riskTask) throws ApplicationException {
 		if (riskTask.getId() == null) {
 			throw new ApplicationException("Failed to update Action. Invalid Id received");
 		}
@@ -466,12 +457,9 @@ public class RiskPlanService {
 		if(riskTaskExists != null && (riskTaskExists.getId().intValue() != riskTask.getId().intValue())){
 			throw exceptionBuilder.buildException(ErrorType.RISKTASK_NAME_DUPLICATE, null);
 		}
-		String riskTaskOriginal = JsonUtil.converToJson(riskTaskRepository.findOne(riskTask.getId()));
 		
 		riskTask.setLastUpdatedDate(new Date());
 		riskTaskRepository.save(riskTask);
-		List<Attachment> attachmentList = attachmentService.addAttachments(riskTask.getId(), attachments, AttachmentType.RISK_TASK_ASSESSMENT,
-				riskTask.getDeletedAttachmentIds(), riskTask.getFileMetadata(), riskTask.getCreatedBy());
 		List<Task> risks = findAllByRiskId(riskTask.getRiskId(), null);
 		boolean allTasksCompletedFlag = true;
 		if (!CollectionUtils.isEmpty(risks)) {
@@ -483,12 +471,9 @@ public class RiskPlanService {
 		}
 		saveUrls(riskTask);
 		if (allTasksCompletedFlag) {
-			String riskPlanOriginal = JsonUtil.converToJson(riskPlanRepository.findOne(Long.parseLong(riskTask.getRiskId())));
 			riskPlanRepository.updateRiskTaskStatus(SmtConstant.COMPLETED.getDescription(), Long.valueOf(riskTask.getRiskId()));
-			signalAuditService.saveOrUpdateRiskPlanAudit(riskPlanRepository.findOne(Long.parseLong(riskTask.getRiskId())), riskPlanOriginal, null, SmtConstant.UPDATE.getDescription());
 		}
 		
-		signalAuditService.saveOrUpdateRiskTaskAudit(riskTask, riskTaskOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
 	}
 	private void saveUrls(Task riskTask) {
 		if (!CollectionUtils.isEmpty(riskTask.getSignalUrls())) {
@@ -509,7 +494,6 @@ public class RiskPlanService {
 			riskPlan.setStatus("In Progress");
 			riskPlan = riskPlanRepository.save(riskPlan);
 		}
-		List<RiskPlanAssignees> topicRiskPlanAssignmentAssigneesList=topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskId);
 		riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
 		riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskId));
 		AssessmentPlan assessmentPlan=riskPlan.getAssessmentPlan();
@@ -520,18 +504,16 @@ public class RiskPlanService {
 		return riskPlan;
 	}
 
-	public void riskPlanSummary(RiskPlan riskPlan, MultipartFile[] attachments) throws ApplicationException {
+	public void riskPlanSummary(RiskPlan riskPlan) throws ApplicationException {
 		if (riskPlan.getId() == null) {
 			throw new ApplicationException("Failed to update Risk. Invalid Id received");
 		}
 		riskPlan.setLastModifiedDate(new Date());
 		riskPlan.setStatus(SmtConstant.COMPLETED.getDescription());
-		attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.FINAL_ASSESSMENT,
-				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
 		riskPlanRepository.save(riskPlan);
 	}
 
-	public void updateRiskPlan(RiskPlan riskPlan, MultipartFile[] attachments) throws ApplicationException {
+	public void updateRiskPlan(RiskPlan riskPlan) throws ApplicationException {
 		if (riskPlan.getId() == null) {
 			throw new ApplicationException("Failed to update Risk. Invalid Id received");
 		}
@@ -552,15 +534,9 @@ public class RiskPlanService {
 		else{
 			riskPlan.setSummary(riskPlan.getSummary());
 		}
-		List<Attachment> attachmentList = attachmentService.addAttachments(riskPlan.getId(), attachments, AttachmentType.RISK_ASSESSMENT,
-				riskPlan.getDeletedAttachmentIds(), riskPlan.getFileMetadata(), riskPlan.getCreatedBy());
 		setRiskTaskStatus(riskPlan);
-		RiskPlan riskPlanUpdated = riskPlanRepository.save(riskPlan);
-		List<RiskPlanAssignees> assigneeList = riskPlan.getTopicRiskPlanAssignmentAssignees();
-		if(!CollectionUtils.isEmpty(assigneeList)){
-			topicRiskPlanAssignmentAssigneesRepository.deleteByRiskId(riskPlanUpdated.getId());
-			topicRiskPlanAssignmentAssigneesRepository.save(assigneeList);
-		}
+		riskPlanRepository.save(riskPlan);
+		
 		
 		List<Comments> list = riskPlan.getComments();
 		if (!CollectionUtils.isEmpty(list)) {
@@ -572,7 +548,7 @@ public class RiskPlanService {
 		commentsRepository.save(riskPlan.getComments());
 		
 		updateSignalUrl(riskPlan);
-		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, attachmentList, SmtConstant.UPDATE.getDescription());
+		signalAuditService.saveOrUpdateRiskPlanAudit(riskPlan, riskPlanOriginal, SmtConstant.UPDATE.getDescription());
 	}
 	private void ownerCheck(RiskPlan riskPlan, RiskPlan riskPlanFromDB)
 			throws ApplicationException {
