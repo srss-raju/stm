@@ -28,7 +28,6 @@ import com.deloitte.smt.entity.TopicConditionValues;
 import com.deloitte.smt.entity.TopicProduct;
 import com.deloitte.smt.entity.TopicProductValues;
 import com.deloitte.smt.exception.ApplicationException;
-import com.deloitte.smt.repository.AssessmentAssigneesRepository;
 import com.deloitte.smt.repository.AssignmentConditionRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.AssignmentProductRepository;
@@ -54,17 +53,12 @@ public class SignalAssignmentService {
 	@Autowired
     AssignmentSignalAssigneesRepository signalValidationAssignmentAssigneesRepository;
     
-    @Autowired
-    AssessmentAssigneesRepository assessmentAssignmentAssigneesRepository;
     
     @Autowired
     AssignmentRiskPlanAssigneesRepository riskPlanAssignmentAssigneesRepository;
     
     @Autowired
     TopicAssigneesRepository topicSignalValidationAssignmentAssigneesRepository;
-    
-    @Autowired
-    AssessmentAssigneesRepository topicAssessmentAssignmentAssigneesRepository;
     
     @Autowired
     RiskPlanAssigneesRepository topicRiskPlanAssignmentAssigneesRepository;
