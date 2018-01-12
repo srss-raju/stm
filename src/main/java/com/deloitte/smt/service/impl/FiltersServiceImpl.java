@@ -53,12 +53,16 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private static final String RISK = "risk";
 	private static final String SIGNAL = "signal";
 	private static final String DETECTION = "detection";
+	
 	@Autowired
 	private FilterRepository filterRepository;
+	
 	@Autowired
 	private TopicRepository topicRepository;
+	
 	@Autowired
 	private AssessmentPlanRepository assessmentPlanRepository;
+	
 	@Autowired
 	private TopicSignalDetectionAssignmentAssigneesRepository topicSignalDetectionAssignmentAssigneesRepository;
 
@@ -546,13 +550,13 @@ public class FiltersServiceImpl<E> implements FiltersService {
 					map.forEach((k, v) -> {
 						if (k.contains("userKey")) {
 							if (!"".equals(v.toString()))
-								userSet.add(Long.parseLong(v.toString()));
+								userSet.add(v.toString());
 
 						} else {
 							List<?> l = (ArrayList<?>) v;
 							for (Object obj : l) {
 								if (!"".equals(obj.toString()))
-									groupSet.add(Long.parseLong(obj.toString()));
+									groupSet.add(obj.toString());
 							}
 						}
 					});
@@ -844,8 +848,8 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			conditionsList.add(" root.assessmentTaskStatus in :assessmenttaskstatus ");
 			parameterMap.put("assessmenttaskstatus", list);
 		}
-
 	}
+	
 	private void addSignalConfirmations(Object statusValue,  Map<String, Object> parameterMap, List<String> conditionsList) {
 		Set<Object> statusList = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(statusList)) {
@@ -877,7 +881,6 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			}
 			parameterMap.put("statuses", statusList);
 		}
-
 	}
 	
 
