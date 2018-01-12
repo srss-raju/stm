@@ -511,20 +511,6 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private void addCreatedDate(Object value, StringBuilder queryBuilder, String type,Map<String, Object> parameterMap) {
 		Set<Object> emptyDates = prepareFieldValuesSet(value);
 		String dateType ="root.createdDate";
-		/*switch (type) {
-		case RISK:
-			dateType = "root.createdDate";
-			break;
-		case ASSESSMENT:
-			dateType = "a.createdDate";
-			break;
-		case SIGNAL:
-			dateType = "t.createdDate";
-			break;	
-		default:
-			dateType = "d.createdDate";
-			break;
-		}*/
 		if (!"".equalsIgnoreCase(emptyDates.iterator().next().toString())) {
 			getDatePredicates(value, queryBuilder, parameterMap, dateType);
 		}
