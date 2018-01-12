@@ -2,6 +2,7 @@ package com.deloitte.smt.repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,5 +28,8 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	
 	@Query("SELECT o.assessmentName from AssessmentPlan o where o.assessmentName not in (select a.assessmentName from AssessmentPlan a where a.assessmentName= :assessmentName AND a.id=:id)")
 	List<String> findByAssessmentName(@Param(value = "assessmentName") String assessmentName,@Param(value = "id") Long id);
+	
+	@Query(value = "select t.id from AssessmentPlan a inner join a.topics t")
+	Set<Long> findAllSignalIds();
 	
 }
