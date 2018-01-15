@@ -29,7 +29,6 @@ import com.deloitte.smt.entity.TopicProductValues;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
-import com.deloitte.smt.repository.DenominatorForPoissionRepository;
 import com.deloitte.smt.repository.DetectionAssigneesRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
 import com.deloitte.smt.repository.PtRepository;
@@ -69,9 +68,6 @@ public class SignalDetectionService {
 
 	@Autowired
 	private SignalDetectionRepository signalDetectionRepository;
-
-	@Autowired
-	private DenominatorForPoissionRepository denominatorForPoissionRepository;
 
 	@Autowired
 	private IncludeAERepository includeAERepository;

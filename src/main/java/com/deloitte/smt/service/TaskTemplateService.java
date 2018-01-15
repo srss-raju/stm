@@ -19,7 +19,6 @@ import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.exception.ErrorType;
 import com.deloitte.smt.exception.ExceptionBuilder;
-import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 
 @Transactional
@@ -28,9 +27,6 @@ public class TaskTemplateService {
 	
 	@Autowired
 	private TaskTemplateRepository taskTemplateRepository;
-	
-	@Autowired
-	private TaskTemplateProductsRepository taskTemplateProductsRepository;
 	
 	@Autowired
 	ExceptionBuilder  exceptionBuilder;
