@@ -9,11 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -32,8 +29,4 @@ public class TaskTemplateProducts {
     @JoinColumn(name = "taskTemplateProductId")
 	private List<TaskTemplateProductValues> recordValues;
 	
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "taskTemplateId")
-	private TaskTemplate taskTemplate;
 }
