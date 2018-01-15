@@ -22,11 +22,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.constant.SignalConfigurationType;
-import com.deloitte.smt.constant.SmtConstant;
-import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.Pt;
-import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalConfidence;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalURL;
@@ -193,28 +190,6 @@ public class SignalServiceTest {
 			logger.info(ex);
 		}
 	}
-	
-	@Test
-	public void testGetCountsByFilter() {
-		try{
-			List<Long> topicIds = new ArrayList<>();
-			topicIds.add(1l);
-			List<Topic> signals = new ArrayList<>();
-			Topic signal = new Topic();
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-			assessmentPlan.setAssessmentPlanStatus("Completed");
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlan.setStatus("Completed");
-			assessmentPlan.setRiskPlan(riskPlan);
-			signal.setAssessmentPlan(assessmentPlan);
-			signals.add(signal);
-			given(this.topicRepository.findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(topicIds, "test", SmtConstant.COMPLETED.getDescription())).willReturn(signals);
-			signalService.getCountsByFilter("test");
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
 	
 	@Test
 	public void testFindNonSignalsByRunInstanceId() {

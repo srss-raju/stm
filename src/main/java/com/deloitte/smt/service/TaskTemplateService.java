@@ -134,7 +134,7 @@ public class TaskTemplateService {
 	}
 	
 	public List<Task> findAllByTemplateId(Long templateId) {
-        return taskTemplateRepository.findAllByTemplateId(templateId);
+        return taskTemplateRepository.findAllById(templateId);
     }
 	
 	/**

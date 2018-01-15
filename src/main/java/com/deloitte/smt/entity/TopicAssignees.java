@@ -34,4 +34,11 @@ public class TopicAssignees implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "topicId")
 	private Topic topic;
+	
+	public TopicAssignees(){}
+	
+	public TopicAssignees(String userGroupKey, String userKey){
+		this.userGroupKey = userGroupKey;
+		this.userKey = userKey;
+	}
 }

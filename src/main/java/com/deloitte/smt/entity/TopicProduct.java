@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -32,6 +33,8 @@ public class TopicProduct implements Serializable {
     private Long assignmentConfigurationId;
     private Long topicId;
     private Long detectionId;
+    
+    @OneToMany
     private List<TopicProductValues> recordValues;
 
     private Date createdDate;

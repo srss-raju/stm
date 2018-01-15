@@ -9,7 +9,7 @@ import com.deloitte.smt.entity.SignalConfidence;
 
 public interface SignalConfidenceRepository extends JpaRepository<SignalConfidence, Long> {
 	
-	@Query(value = "SELECT c FROM SignalConfiguration c WHERE c.configName = :configName")
+	@Query(value = "SELECT c FROM SignalConfidence c WHERE c.configName = :configName")
 	SignalConfidence  findByConfigName(@Param("configName") String configName);
 	
 }

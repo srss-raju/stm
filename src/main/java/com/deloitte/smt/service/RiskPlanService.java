@@ -40,7 +40,6 @@ import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TaskTemplateProductsRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
-import com.deloitte.smt.util.SignalUtil;
 
 /**
  * Created by RajeshKumar on 12-04-2017.
@@ -100,8 +99,7 @@ public class RiskPlanService {
 	 * @return
 	 * @throws ApplicationException
 	 */
-	public RiskPlan insert(RiskPlan riskPlan, Long assessmentId)
-			throws ApplicationException {
+	public RiskPlan insert(RiskPlan riskPlan, Long assessmentId) throws ApplicationException {
 		riskPlan.setStatus("New");
 		Date d = new Date();
 		riskPlan.setCreatedDate(d);
@@ -177,22 +175,7 @@ public class RiskPlanService {
 		}
 		return topic;
 	}
-	/**
-	 * 
-	 * @param riskPlanUpdated
-	 */
-	public List<Task> associateRiskTasks(RiskPlan riskPlan){
-		List<Task> tasks = null;
-		if(!CollectionUtils.isEmpty(riskPlan.getRiskTemplateIds())){
-			List<Task> riskTaskList = new ArrayList<>();
-			for(Long id:riskPlan.getRiskTemplateIds()){
-				List<Task> riskTasks = taskRepository.findAllByTemplateId(id);
-				tasks = createRiskTask(riskTaskList, riskTasks, riskPlan);
-			}
-		}
-		checkRiskTaskStatus(riskPlan);
-		return tasks;
-	}
+	
 	
 	private void checkRiskTaskStatus(RiskPlan riskPlan){
 		boolean allTasksCompletedFlag=true;
@@ -221,31 +204,6 @@ public class RiskPlanService {
 	}
 
 
-	private List<Task> createRiskTask(List<Task> riskTaskList, List<Task> templateRiskTasks, RiskPlan riskPlan) {
-		if(!CollectionUtils.isEmpty(templateRiskTasks)){
-			for(Task templateTask:templateRiskTasks){
-				Task riskTask = new Task();
-				riskTask.setActionType(templateTask.getActionType());
-				riskTask.setCreatedBy(templateTask.getCreatedBy());
-				riskTask.setCreatedDate(new Date());
-				riskTask.setDescription(templateTask.getDescription());
-				riskTask.setDueDate(templateTask.getDueDate());
-				riskTask.setName(templateTask.getName());
-				riskTask.setNotes(templateTask.getNotes());
-				riskTask.setStatus("New");
-				riskTask.setRecipients(templateTask.getRecipients());
-				riskTask.setInDays(templateTask.getInDays());
-				if(templateTask.getInDays() != 0){
-					riskTask.setDueDate(SignalUtil.getDueDate(templateTask.getInDays(), riskTask.getCreatedDate()));
-				}
-				riskTask.setRiskId(String.valueOf(riskPlan.getId()));
-				riskTask = taskRepository.save(riskTask);
-				riskTaskList.add(riskTask);
-			}
-		}
-		return riskTaskList;
-	}
-	
 	/**
 	 * 
 	 * @param riskTask
@@ -457,10 +415,6 @@ public class RiskPlanService {
 		 }
 	}
 		 
-	public List<Task> associateRiskTemplateTasks(RiskPlan riskPlan) {
-		return associateRiskTasks(riskPlan);
-	}
-	
 	/**
 	 * 
 	 * @param id

@@ -16,9 +16,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Created by RajeshKumarB on 12-04-2017.
@@ -54,7 +54,7 @@ public class RiskPlan implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "riskId")
-	private List<Long> riskTemplateIds;
+	private List<TaskTemplate> riskTaskTemplates;
 
 
 	@OneToMany(cascade = CascadeType.ALL)

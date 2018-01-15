@@ -16,8 +16,6 @@ import com.deloitte.smt.entity.Topic;
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
 
-    List<Topic> findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(List<Long> ids,String assignTo, String signalStatus);
-
     @Query(value = "SELECT DISTINCT (o.name) FROM Topic o WHERE o.name IS NOT NULL ")
     List<String> findDistinctSignalName();
 
@@ -32,15 +30,15 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	
 	@Query("SELECT DISTINCT(o.owner) FROM Topic o WHERE o.owner IS NOT NULL ")
 	List<String> findDistinctOwnerNames();
-	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas, Topic t where t.id = pas.topicId")
+	@Query("select pas.recordKey from TopicProduct pas, Topic t where t.id = pas.topicId")
 	List<String> getProductFilterValues();
-	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas, Topic t where t.id = pas.topicId")
+	@Query("select pas.recordKey from TopicCondition pas, Topic t where t.id = pas.topicId")
 	List<String> getConditionFilterValues();
 	
-	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas where pas.topicId in :ids")
+	@Query("select pas.recordKey from TopicProduct pas where pas.topicId in :ids")
 	List<String> getListOfProductRecordKeys(@Param("ids") Set<Long> riskAssSingnalIds);
 	
-	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas where pas.topicId in :ids")
+	@Query("select pas.recordKey from TopicCondition pas where pas.topicId in :ids")
 	List<String> getListOfConditionRecordKeys(@Param("ids") Set<Long> riskAssSingnalIds);
 	
 }

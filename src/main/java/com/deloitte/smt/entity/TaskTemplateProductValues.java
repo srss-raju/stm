@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 /**
@@ -36,8 +34,5 @@ public class TaskTemplateProductValues implements Serializable {
     private Date createdDate;
     private String createdBy;
     private Date lastModifiedDate;
-    
-	@JsonIgnore
-	private TaskTemplateProducts taskTemplateProducts;
     
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -24,7 +23,6 @@ import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.AssignmentProduct;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.NonSignal;
-import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalConfidence;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.SignalStrength;
@@ -417,20 +415,6 @@ public class SignalService {
 			}
 		}
 		return assessmentPlan;
-	}
-
-	public String getCountsByFilter(String assignTo) {
-		List<Long> topicIds = new ArrayList<>();
-		List<Topic> signals = topicRepository.findAllByIdInAndAssignToAndSignalStatusNotLikeOrderByCreatedDateDesc(
-				topicIds, assignTo, SmtConstant.COMPLETED.getDescription());
-		List<AssessmentPlan> assessmentPlanList = signals.stream().map(signal -> signal.getAssessmentPlan()).filter(
-				e -> e != null && !SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(e.getAssessmentPlanStatus()))
-				.collect(Collectors.toList());
-		List<RiskPlan> riskPlanList = assessmentPlanList.stream().map(assessmentPlan -> assessmentPlan.getRiskPlan())
-				.filter(e -> e != null && !SmtConstant.COMPLETED.getDescription().equalsIgnoreCase(e.getStatus()))
-				.collect(Collectors.toList());
-		return SignalUtil.getCounts(Long.valueOf(signals.size()), Long.valueOf(assessmentPlanList.size()),
-				Long.valueOf(riskPlanList.size()));
 	}
 
 	/**

@@ -28,8 +28,8 @@ public class RiskPlanAssignees implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private Long userGroupKey;
-	private Long userKey;
+	private String userGroupKey;
+	private String userKey;
 	@ManyToOne
 	@JoinColumn(name = "riskId")
 	private RiskPlan riskId;
@@ -37,5 +37,10 @@ public class RiskPlanAssignees implements Serializable{
 	private Date createdDate;
 	private String createdBy;
 	private Date lastModifiedDate;
+	
+	public RiskPlanAssignees(String userGroupKey, String userKey) {
+		this.userGroupKey = userGroupKey;
+		this.userKey = userKey;
+	}
 
 }

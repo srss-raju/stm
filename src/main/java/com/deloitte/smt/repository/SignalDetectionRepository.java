@@ -15,10 +15,10 @@ public interface SignalDetectionRepository extends JpaRepository<SignalDetection
 	List<String> findDistinctOwnerOnDetection();
 	
 	
-	@Query("select pas.recordKey from TopicProductAssignmentConfiguration pas, SignalDetection d where d.id = pas.detectionId")
+	@Query("select pas.recordKey from TopicProduct pas, SignalDetection d where d.id = pas.detectionId")
 	List<String> getProductFilterValues();
 	
-	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas, SignalDetection d where d.id = pas.detectionId")
+	@Query("select pas.recordKey from TopicCondition pas, SignalDetection d where d.id = pas.detectionId")
 	List<String> getConditionFilterValues();
 	
 		

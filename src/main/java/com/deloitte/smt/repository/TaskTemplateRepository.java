@@ -24,5 +24,5 @@ public interface TaskTemplateRepository  extends JpaRepository<TaskTemplate, Lon
 
 	TaskTemplate findByNameIgnoreCase(String name);
 
-	List<Task> findAllByTemplateId(Long templateId);
+	List<Task> findAllById(Long id);
 }
