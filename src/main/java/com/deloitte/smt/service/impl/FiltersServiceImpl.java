@@ -361,13 +361,13 @@ public class FiltersServiceImpl<E> implements FiltersService {
 					map.forEach((k, v) -> {
 						if (k.contains("userKey")) {
 							if (!"".equals(v.toString()))
-								userSet.add(Long.parseLong(v.toString()));
+								userSet.add(v.toString());
 
 						} else {
 							List<?> l = (ArrayList<?>) v;
 							for (Object obj : l) {
 								if (!"".equals(obj.toString()))
-									groupSet.add(Long.parseLong(obj.toString()));
+									groupSet.add(obj.toString());
 							}
 						}
 					});
