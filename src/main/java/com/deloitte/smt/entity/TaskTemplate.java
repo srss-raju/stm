@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -18,8 +19,12 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "sm_task_template")
-public class TaskTemplate {
+public class TaskTemplate implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8237026118104460345L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

@@ -119,11 +119,6 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		/*case "assignees":
-			data = topicSignalDetectionAssignmentAssigneesRepository.getDetectionAssignedUsers();
-			dto.setFilterValues(data == null ? new ArrayList<>() : data);
-			filterList.add(dto);
-			break;*/
 		case "signalconfirmation":
 			data = topicRepository.findDistinctSignalConfirmationNames();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
@@ -224,7 +219,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				}
 				logger.info("BUILDING OWNER AND ASSIGNEE PREDICATE------"+queryBuilder);
 				// Create OWNER AND ASSIGNEE PREDICATE
-				addOwnersAssignees(filMap, queryBuilder,parameterMap,type);
+				addOwnersAssignees(filMap, queryBuilder,parameterMap);
 				
 				buildProductAndConditionPredicate(filters,queryBuilder,type,parameterMap);
 
@@ -332,8 +327,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	}
 	
 	
-	private void addOwnersAssignees(Map<String, Object> filMap, StringBuilder queryBuilder,
-			Map<String, Object> parameterMap, String type) {
+	private void addOwnersAssignees(Map<String, Object> filMap, StringBuilder queryBuilder, Map<String, Object> parameterMap) {
 		Set<Object> ownerSet = null;
 		Set<Object> userSet1 = null;
 		Set<Object> groupSet1 = null;
@@ -453,14 +447,6 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private void setParametersMapToQuery(Map<String, Object> parameterMap, Query query) {
 		Set<Entry<String, Object>> st = parameterMap.entrySet();
 		for (Entry<String, Object> me : st) {
-			/*if("greaterDate".equalsIgnoreCase(me.getKey()) || "lessDate".equalsIgnoreCase(me.getKey()))
-			{
-				Calendar cal = Calendar.getInstance(); 
-				cal.setTime((Date) me.getValue()); 
-				logger.info("CALENDER....."+cal);
-				query.setParameter(me.getKey(), cal,TemporalType.TIMESTAMP);
-			}
-			*/
 			query.setParameter(me.getKey(), me.getValue());
 		}
 
@@ -483,7 +469,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			break;
 		case "createdDates":
 		case "detectedDates":
-			addCreatedDate(me.getValue(), queryBuilder, type,parameterMap);
+			addCreatedDate(me.getValue(), queryBuilder, parameterMap);
 			break;
 		case "assessmenttaskstatus":
 			addAssessmentTaskStatus(me.getValue(), queryBuilder, parameterMap);
@@ -508,7 +494,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		}
 	}
 
-	private void addCreatedDate(Object value, StringBuilder queryBuilder, String type,Map<String, Object> parameterMap) {
+	private void addCreatedDate(Object value, StringBuilder queryBuilder, Map<String, Object> parameterMap) {
 		Set<Object> emptyDates = prepareFieldValuesSet(value);
 		String dateType ="root.createdDate";
 		if (!"".equalsIgnoreCase(emptyDates.iterator().next().toString())) {
@@ -728,104 +714,6 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		}
 
 	}
-	/*
-	private void addOwnersAssignees(Map<String, Object> filMap, CriteriaBuilder criteriaBuilder,
-			Join<E, E> joinAssignees, List<Predicate> predicates, Root<E> root) {
-		Set<String> ownerSet = null;
-		Set<String> userSet1 = null;
-		Set<String> groupSet1 = null;
-		Predicate owner = null;
-		Predicate user = null;
-		Predicate group = null;
-		try {
-			Object ownerMap = filMap.get("owners");
-			Object assigneesMap = filMap.get("assignees");
-			if (null != ownerMap) {
-				ownerSet = prepareFieldValuesSet(ownerMap);
-				owner = criteriaBuilder.isTrue(root.get(SmtConstant.OWNER.getDescription()).in(ownerSet));
-			}
-
-			if (null != assigneesMap) {
-				List<?> assigneeMap = (ArrayList<?>) assigneesMap;
-				ObjectMapper oMapper = new ObjectMapper();
-				Set<String> userSet = new HashSet<>();
-				Set<String> groupSet = new HashSet<>();
-				for (Object assignObj : assigneeMap) {
-					@SuppressWarnings("unchecked")
-					Map<String, Object> map = oMapper.convertValue(assignObj, Map.class);
-					map.forEach((k, v) -> {
-						if (k.contains("userKey")) {
-							if (!"".equals(v.toString()))
-								userSet.add(v.toString());
-
-						} else {
-							List<?> l = (ArrayList<?>) v;
-							for (Object obj : l) {
-								if (!"".equals(obj.toString()))
-									groupSet.add(obj.toString());
-							}
-						}
-					});
-				}
-				userSet1 = userSet;
-				groupSet1 = groupSet;
-			}
-
-			logger.info("ownerSet........" + ownerSet);
-			logger.info("userKey  >>>>>>>>>>>>>>>>>>" + userSet1);
-			logger.info("user_group_key >>>>>>>>>>>>>>>>>" + groupSet1);
-
-			if (!CollectionUtils.isEmpty(userSet1)) {
-				user = criteriaBuilder.isTrue(joinAssignees.get(SmtConstant.USER_KEY.getDescription()).in(userSet1));
-			}
-			if (!CollectionUtils.isEmpty(groupSet1)) {
-				group = criteriaBuilder
-						.isTrue(joinAssignees.get(SmtConstant.USER_GROUP_KEY.getDescription()).in(groupSet1));
-			}
-
-			buildOwnerUserGroupPredicate(criteriaBuilder, predicates, owner, user, group);
-
-		} catch (Exception e) {
-			logger.error(e);
-		}
-
-	}
-
-	private void buildOwnerUserGroupPredicate(CriteriaBuilder criteriaBuilder, List<Predicate> predicates,
-			Predicate owner, Predicate user, Predicate group) {
-		if (owner != null) {
-			checkOwnerUserAndGroupExists(criteriaBuilder, predicates, owner, user, group);
-		} else {
-			checkUserAndGroupExists(criteriaBuilder, predicates, user, group);
-		}
-	}
-
-	private void checkOwnerUserAndGroupExists(CriteriaBuilder criteriaBuilder, List<Predicate> predicates,
-			Predicate owner, Predicate user, Predicate group) {
-		if (user != null && group != null)
-			predicates.add(criteriaBuilder.or(user, group, owner));
-		else {
-			if (user != null)
-				predicates.add(criteriaBuilder.or(user, owner));
-			else if (group != null)
-				predicates.add(criteriaBuilder.or(group, owner));
-			else
-				predicates.add(criteriaBuilder.or(owner));
-		}
-	}
-
-	private void checkUserAndGroupExists(CriteriaBuilder criteriaBuilder, List<Predicate> predicates, Predicate user,
-			Predicate group) {
-		if (user != null && group != null)
-			predicates.add(criteriaBuilder.or(user, group));
-		else {
-			if (user != null)
-				predicates.add(criteriaBuilder.or(user));
-			else if (group != null)
-				predicates.add(criteriaBuilder.or(group));
-		}
-	}*/
-
 	private Set<Object> prepareFieldValuesSet(Object ownerMap) {
 		Set<Object> ownersSet = new HashSet<>();
 		List<?> l = (ArrayList<?>) ownerMap;

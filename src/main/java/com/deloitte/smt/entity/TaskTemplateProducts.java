@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -17,8 +18,12 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "sm_task_template_products")
-public class TaskTemplateProducts {
+public class TaskTemplateProducts implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8818329884290092851L;
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

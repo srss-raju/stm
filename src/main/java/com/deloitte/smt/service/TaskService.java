@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.entity.AssessmentPlan;
@@ -50,7 +49,7 @@ public class TaskService {
      * @throws IOException
      * @throws ApplicationException
      */
-    public Task createAssessmentAction(Task signalAction, MultipartFile[] attachments) throws ApplicationException {
+    public Task createAssessmentAction(Task signalAction) throws ApplicationException {
         
         Date d = new Date();
         signalAction.setCreatedDate(d);
@@ -72,7 +71,7 @@ public class TaskService {
      * @param attachments
      * @throws ApplicationException
      */
-    public void updateAssessmentAction(Task signalAction, MultipartFile[] attachments) throws ApplicationException {
+    public void updateAssessmentAction(Task signalAction) throws ApplicationException {
         if(signalAction.getId() == null) {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
@@ -151,7 +150,7 @@ public class TaskService {
         checkAssessmentTaskStatus(signalAction);
     }
     
-    public Task createOrphanAssessmentAction(Task signalAction, MultipartFile[] attachments) throws IOException, ApplicationException {
+    public Task createOrphanAssessmentAction(Task signalAction) throws IOException, ApplicationException {
     	
     	Task actionsExist=taskRepository.findByNameIgnoreCaseAndTemplateId(signalAction.getName(), signalAction.getTemplateId());
     	if (actionsExist != null) {

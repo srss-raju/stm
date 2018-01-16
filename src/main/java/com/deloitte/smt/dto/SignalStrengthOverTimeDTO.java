@@ -1,12 +1,7 @@
 package com.deloitte.smt.dto;
 
 public class SignalStrengthOverTimeDTO {
-	
-	
 
-//	private int closed;
-//	private int opened;
-	
 	private String signalStatus;
 	public String getSignalStatus() {
 		return signalStatus;

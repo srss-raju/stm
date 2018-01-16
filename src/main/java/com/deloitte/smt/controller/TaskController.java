@@ -41,9 +41,9 @@ public class TaskController    {
 		try {
 			signalAction = new ObjectMapper().readValue(signalActionString, Task.class);
 			if (signalAction.getTemplateId() != 0) {
-				signalAction = assessmentActionService.createOrphanAssessmentAction(signalAction, attachments);
+				signalAction = assessmentActionService.createOrphanAssessmentAction(signalAction);
 			} else {
-				signalAction = assessmentActionService.createAssessmentAction(signalAction, attachments);
+				signalAction = assessmentActionService.createAssessmentAction(signalAction);
 			}
 		} catch (IOException e) {
 			logger.info("Exception occured while updating " + e);
@@ -52,12 +52,11 @@ public class TaskController    {
     }
 
     @PostMapping(value = "/updateAssessmentAction")
-    public ResponseEntity<Void> updateAssessmentAction(@RequestParam("data") String signalActionString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
+    public ResponseEntity<Void> updateAssessmentAction(@RequestParam("data") String signalActionString) throws ApplicationException {
         Task signalAction = null;
         try {
         	signalAction = new ObjectMapper().readValue(signalActionString, Task.class);
-			assessmentActionService.updateAssessmentAction(signalAction, attachments);
+			assessmentActionService.updateAssessmentAction(signalAction);
 		} catch (IOException e) {
 			logger.info("Exception occured while updating "+e);
 		}

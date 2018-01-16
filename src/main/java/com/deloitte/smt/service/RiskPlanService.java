@@ -153,11 +153,9 @@ public class RiskPlanService {
 			}
 			
 			
-			if (assignmentConfiguration != null) {
-				if(assignmentConfiguration.getRiskOwner()!=null){
+			if (assignmentConfiguration != null && assignmentConfiguration.getRiskOwner()!=null) {
 					riskPlan.setOwner(assignmentConfiguration.getRiskOwner());
 					riskPlanUpdated.setOwner(assignmentConfiguration.getRiskOwner());
-				}
 			}
 		}
 		return riskPlanUpdated;

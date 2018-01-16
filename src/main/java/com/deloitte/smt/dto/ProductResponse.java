@@ -5,7 +5,6 @@ import java.util.List;
 
 public class ProductResponse {
 	
-	//private List<Versions> versions;
 	private List<LevelsDTO> levels;
 	private List<String> versions;
 	private boolean showCodes;

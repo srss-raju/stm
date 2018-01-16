@@ -239,15 +239,11 @@ public class SignalAssignmentService {
 				
 				BigInteger id = (BigInteger) records.get(0);
 				AssignmentConfiguration assignmentConfig = assignmentConfigurationRepository.findOne(id.longValue());
-				if(!noSocFlag){
-					if(!CollectionUtils.isEmpty(assignmentConfig.getConditions())){
-						assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
-					}
+				if((!noSocFlag) && (!CollectionUtils.isEmpty(assignmentConfig.getConditions()))){
+					assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 				}
-				if(!noProductFlag){
-					if(!CollectionUtils.isEmpty(assignmentConfig.getProducts())){
-						assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
-					}
+				if((!noProductFlag) && (!CollectionUtils.isEmpty(assignmentConfig.getProducts()))){
+					assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 				}
 				if(assignmentConfigurationFromDB == null){
 					assignmentConfigurationFromDB = assignmentConfigurationService.findById(id.longValue());
@@ -318,20 +314,18 @@ public class SignalAssignmentService {
 					}
 				}
 				
-				if(!assignmentConfiguration.isRepeatSocFlag()){
-					if(assignmentConfigurationFromDB == null){
-						assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
-						for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
-							String recordKey = socConfig.getRecordKey();
-							if(assignmentConfigurationFromDB == null){
-								while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatSocFlag())){
-									recordKey = SignalUtil.getRecordKey(recordKey);
-									if(recordKey != null){
-										socConfig.setRecordKey(recordKey);
-										assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
-									}else{
-										assignmentConfiguration.setRepeatSocFlag(true);
-									}
+				if((!assignmentConfiguration.isRepeatSocFlag()) && assignmentConfigurationFromDB == null){
+					assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
+					for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
+						String recordKey = socConfig.getRecordKey();
+						if(assignmentConfigurationFromDB == null){
+							while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatSocFlag())){
+								recordKey = SignalUtil.getRecordKey(recordKey);
+								if(recordKey != null){
+									socConfig.setRecordKey(recordKey);
+									assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+								}else{
+									assignmentConfiguration.setRepeatSocFlag(true);
 								}
 							}
 						}

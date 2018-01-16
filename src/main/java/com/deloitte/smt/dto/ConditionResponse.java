@@ -4,7 +4,6 @@ import java.util.List;
 
 public class ConditionResponse {
 
-	// private List<Versions> versions;
 	private List<String> versions;
 	private List<LevelsDTO> levels;
 	private boolean showCodes;

@@ -409,10 +409,8 @@ public class SignalService {
 		topic.setSignalValidation(SmtConstant.COMPLETED.getDescription());
 		topic.setLastModifiedDate(new Date());
 		topicRepository.save(topic);
-		if (assignmentConfiguration != null) {
-			if(assignmentConfiguration.getAssessmentOwner()!=null){
+		if (assignmentConfiguration != null && assignmentConfiguration.getAssessmentOwner()!=null) {
 				assessmentPlan.setOwner(assignmentConfiguration.getAssessmentOwner());
-			}
 		}
 		return assessmentPlan;
 	}

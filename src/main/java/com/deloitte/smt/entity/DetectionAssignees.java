@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -20,8 +21,12 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "sm_detection_assignees")
-public class DetectionAssignees {
+public class DetectionAssignees implements Serializable{
 		
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6267067771708043858L;
 		@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Long id;

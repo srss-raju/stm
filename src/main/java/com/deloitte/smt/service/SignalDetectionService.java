@@ -109,12 +109,6 @@ public class SignalDetectionService {
 			SignalDetection clone = signalDetection;
 			clone = signalDetectionRepository.save(clone);
 			saveProductsAndConditions(signalDetection, clone);
-			/*List<TopicSignalDetectionAssignmentAssignees>  detectionAssigneesList = clone.getTopicSignalDetectionAssignmentAssignees();
-			if(!CollectionUtils.isEmpty(detectionAssigneesList)){
-				for(TopicSignalDetectionAssignmentAssignees assignee:detectionAssigneesList){
-					assignee.setDetectionId(clone.getId());
-				} 
-			}*/
 			signalDetection.setId(clone.getId());
 			saveSoc(signalDetection);
 			saveSmq(signalDetection);

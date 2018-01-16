@@ -111,7 +111,7 @@ public class AssignmentConfigurationService {
         return assignmentConfiguration;
     }
     
-    public List<AssignmentConfiguration> findAll() throws ApplicationException {
+    public List<AssignmentConfiguration> findAll(){
           return assignmentConfigurationRepository.findAll(new Sort(Sort.Direction.DESC, "createdDate"));
     }
     
@@ -166,7 +166,6 @@ public class AssignmentConfigurationService {
 		if(!CollectionUtils.isEmpty(records)){
 			return true;
 		}
-		
 		return false;
 	}
 

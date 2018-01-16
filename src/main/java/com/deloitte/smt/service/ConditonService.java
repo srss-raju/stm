@@ -55,34 +55,6 @@ public class ConditonService {
 		response.setLevels(levelsList);
 		response.setVersions(Arrays.asList(strVersions));
 		return response;
-		
-		/*
-		ConditionResponse response=new ConditionResponse();
-		List<ConditionLevels> conditionLevelList=conditionLevelRepository.findAllByOrderByIdAsc();
-		List<String> conditionVersions=conditionLevelRepository.findByVersions();
-		
-		List<Levels> levelsList=new ArrayList<>();
-		if(!CollectionUtils.isEmpty(conditionLevelList)){
-			for(ConditionLevels conditionlevel:conditionLevelList){
-				Levels level=new Levels();
-				level.setKey(conditionlevel.getKey());
-				level.setValue(conditionlevel.getValue());
-				levelsList.add(level);
-			}
-		}
-		
-		List<Versions> versionsList=new ArrayList<>();
-		Versions version=new Versions();
-		
-		for(String versionNum:conditionVersions){
-			version.setVersionNumber(versionNum);
-		}
-		versionsList.add(version);
-		response.setVersions(versionsList);
-		response.setLevels(levelsList);
-		
-		return response;
-		*/
 	}
 
 	public void updateShowCodes(ConditionResponse conditionResponse) {
