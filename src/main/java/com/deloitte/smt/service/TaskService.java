@@ -49,7 +49,7 @@ public class TaskService {
      * @throws IOException
      * @throws ApplicationException
      */
-    public Task createAssessmentAction(Task signalAction) throws ApplicationException {
+    public Task createTask(Task signalAction) throws ApplicationException {
         
         Date d = new Date();
         signalAction.setCreatedDate(d);
@@ -71,25 +71,25 @@ public class TaskService {
      * @param attachments
      * @throws ApplicationException
      */
-    public void updateAssessmentAction(Task signalAction) throws ApplicationException {
-        if(signalAction.getId() == null) {
+    public Task updateAssessmentAction(Task task) throws ApplicationException {
+        if(task.getId() == null) {
             throw new ApplicationException("Failed to update Action. Invalid Id received");
         }
         
-        Task actionsExist = null;
-        if(signalAction.getTemplateId() != 0){
-        	actionsExist =	taskRepository.findByNameIgnoreCaseAndTemplateId(signalAction.getName(), signalAction.getTemplateId());
+        Task actionsExist;
+        if(task.getTemplateId() != 0){
+        	actionsExist =	taskRepository.findByNameIgnoreCaseAndTemplateId(task.getName(), task.getTemplateId());
         }else{
-        	actionsExist =	taskRepository.findByNameIgnoreCaseAndAssessmentPlanId(signalAction.getName(), signalAction.getAssessmentPlanId());
+        	actionsExist =	taskRepository.findByNameIgnoreCaseAndAssessmentPlanId(task.getName(), task.getAssessmentPlanId());
         }
         
-    	if(actionsExist != null && (actionsExist.getId().intValue() != signalAction.getId().intValue())){
+    	if(actionsExist != null && (actionsExist.getId().intValue() != task.getId().intValue())){
 			throw exceptionBuilder.buildException(ErrorType.ASSESSMENT_TASK_NAME_DUPLICATE, null);
 		}
        
-        signalAction.setLastUpdatedDate(new Date());
-        taskRepository.save(signalAction);
-        List<Task> actions = findAllByAssessmentId(signalAction.getAssessmentPlanId(), null);
+    	task.setLastUpdatedDate(new Date());
+    	Task taskUpdated = taskRepository.save(task);
+        List<Task> actions = findAllByAssessmentId(task.getAssessmentPlanId(), null);
         boolean allTasksCompletedFlag = true;
         if(!CollectionUtils.isEmpty(actions)){
         	for(Task action:actions){
@@ -99,11 +99,12 @@ public class TaskService {
         	}
         }
         if(allTasksCompletedFlag){
-        	assessmentPlanRepository.updateAssessmentTaskStatus("Completed", Long.valueOf(signalAction.getAssessmentPlanId()));
-        	AssessmentPlan assessmentPlan  = assessmentPlanRepository.findOne(Long.valueOf(signalAction.getAssessmentPlanId()));
+        	assessmentPlanRepository.updateAssessmentTaskStatus("Completed", Long.valueOf(task.getAssessmentPlanId()));
+        	AssessmentPlan assessmentPlan  = assessmentPlanRepository.findOne(Long.valueOf(task.getAssessmentPlanId()));
         	assessmentPlan.setLastModifiedDate(new Date());
-        	assessmentPlan.setModifiedBy(signalAction.getLastUpdatedBy());
+        	assessmentPlan.setModifiedBy(task.getLastUpdatedBy());
         }
+        return taskUpdated;
     }
     
     private void checkAssessmentTaskStatus(Task signalAction){
@@ -134,7 +135,7 @@ public class TaskService {
         return signalAction;
     }
 
-    public List<Task> findAllByAssessmentId(String assessmentId, String actionStatus) {
+    public List<Task> findAllByAssessmentId(Long assessmentId, String actionStatus) {
         if(actionStatus != null) {
             return taskRepository.findAllByAssessmentPlanIdAndStatus(assessmentId, actionStatus);
         }
@@ -150,7 +151,7 @@ public class TaskService {
         checkAssessmentTaskStatus(signalAction);
     }
     
-    public Task createOrphanAssessmentAction(Task signalAction) throws IOException, ApplicationException {
+    public Task createTemplateTask(Task signalAction) throws ApplicationException {
     	
     	Task actionsExist=taskRepository.findByNameIgnoreCaseAndTemplateId(signalAction.getName(), signalAction.getTemplateId());
     	if (actionsExist != null) {
@@ -162,6 +163,16 @@ public class TaskService {
         signalAction.setDueDate(SignalUtil.getDueDate(signalAction.getDaysLeft(), signalAction.getCreatedDate()));
         signalAction.setStatus("New");
     	return taskRepository.save(signalAction);
+    }
+    
+    public List<Task> findAll(String type, Long id) {
+    	if("assessmentplan".equalsIgnoreCase(type)){
+    		return taskRepository.findAllByAssessmentPlanId(id);
+    	}else if("riskplan".equalsIgnoreCase(type)){
+    		return taskRepository.findAllByRiskId(id);
+    	}else{
+    		return taskRepository.findAllByTemplateId(id);
+    	}
     }
     
 }

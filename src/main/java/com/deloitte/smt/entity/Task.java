@@ -3,7 +3,9 @@ package com.deloitte.smt.entity;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +24,6 @@ public class Task {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String riskId;
 	private String name;
 	private String description;
 	private Date dueDate;
@@ -32,18 +33,21 @@ public class Task {
 	private String actionType;
 	private String type;
 	private int daysLeft;
-	private String assessmentPlanId;
 	private String report;
 	private String recipients;
 	private String owner;
-	private Long templateId;
 	private int inDays;
 	
-	@OneToMany
+	private Long templateId;
+	private Long assessmentPlanId;
+	private Long riskId;
+	
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "taskId")
 	private List<Attachment> attachments;
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "taskId")
     private List<SignalURL> signalUrls;
 

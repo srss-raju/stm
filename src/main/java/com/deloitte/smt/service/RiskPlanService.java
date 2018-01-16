@@ -177,7 +177,7 @@ public class RiskPlanService {
 	
 	private void checkRiskTaskStatus(RiskPlan riskPlan){
 		boolean allTasksCompletedFlag=true;
-		List<Task> riskTaskList=taskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
+		List<Task> riskTaskList=taskRepository.findAllByRiskIdOrderByCreatedDateDesc(riskPlan.getId());
 		if(!CollectionUtils.isEmpty(riskTaskList)){
 			for(Task riskTask:riskTaskList){
         		if(!"Completed".equals(riskTask.getStatus())){
@@ -281,7 +281,7 @@ public class RiskPlanService {
 		return riskTask;
 	}
 
-	public List<Task> findAllByRiskId(String riskId, String status) {
+	public List<Task> findAllByRiskId(Long riskId, String status) {
 		if (status != null) {
 			return taskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc(riskId, status);
 		}
@@ -400,7 +400,7 @@ public class RiskPlanService {
 	 */
 	private void setRiskTaskStatus(RiskPlan riskPlan){
 		boolean riskTaskStatus=false;
-		List<Task> riskTaskStatues=	taskRepository.findAllByRiskIdOrderByCreatedDateDesc(String.valueOf(riskPlan.getId()));
+		List<Task> riskTaskStatues=	taskRepository.findAllByRiskIdOrderByCreatedDateDesc(riskPlan.getId());
 		 if(!CollectionUtils.isEmpty(riskTaskStatues)){
 			 for(Task riskTask:riskTaskStatues){
 				 if(!riskTask.getStatus().equals(SmtConstant.COMPLETED.getDescription())){

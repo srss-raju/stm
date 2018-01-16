@@ -75,7 +75,7 @@ public class RiskController {
     }
 
     @GetMapping(value = "/task/{riskId}/allRiskTasks")
-    public List<Task> getAllByRiskId(@PathVariable String riskId,
+    public List<Task> getAllByRiskId(@PathVariable Long riskId,
                                                    @RequestParam(value = "status", required = false) String status) {
         return riskPlanService.findAllByRiskId(riskId, status);
     }

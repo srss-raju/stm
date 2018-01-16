@@ -71,7 +71,7 @@ public class RiskControllerTest {
 	public void testGetAllByRiskId() throws Exception{
 		
 		List<Task> list=new ArrayList<>();
-		when(riskPlanServiceMock.findAllByRiskId(anyString(), anyString())).thenReturn(list);
+		when(riskPlanServiceMock.findAllByRiskId(anyLong(), anyString())).thenReturn(list);
 		
 		this.mockMvc
 		.perform(get("/camunda/api/signal/risk/task/{riskId}/allRiskTasks",1)

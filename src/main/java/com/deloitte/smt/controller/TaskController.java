@@ -1,8 +1,5 @@
 package com.deloitte.smt.controller;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,72 +9,53 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.TaskService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Created by myelleswarapu on 10-04-2017.
+ * Created by RKB on 13-01-2018.
  */
 @RestController
-@RequestMapping("/camunda/api/signal")
+@RequestMapping("/camunda/api/signal/{type}/task")
 public class TaskController    {
 	
-	private final Logger logger = LogManager.getLogger(this.getClass());
-
     @Autowired
-    TaskService assessmentActionService;
+    TaskService taskService;
 
-    @PostMapping(value = "/createAssessmentAction")
-    public Task createAssessmentAction(@RequestParam("data") String signalActionString,
-                                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) throws ApplicationException {
-    	Task signalAction = null;
-		try {
-			signalAction = new ObjectMapper().readValue(signalActionString, Task.class);
-			if (signalAction.getTemplateId() != 0) {
-				signalAction = assessmentActionService.createOrphanAssessmentAction(signalAction);
-			} else {
-				signalAction = assessmentActionService.createAssessmentAction(signalAction);
-			}
-		} catch (IOException e) {
-			logger.info("Exception occured while updating " + e);
+    @PostMapping
+    public Task createTask(@RequestBody Task task) throws ApplicationException {
+    	if (task.getTemplateId() != 0) {
+    		return taskService.createTemplateTask(task);
+		} else {
+			return taskService.createTask(task);
 		}
-        return signalAction;
     }
 
-    @PostMapping(value = "/updateAssessmentAction")
-    public ResponseEntity<Void> updateAssessmentAction(@RequestParam("data") String signalActionString) throws ApplicationException {
-        Task signalAction = null;
-        try {
-        	signalAction = new ObjectMapper().readValue(signalActionString, Task.class);
-			assessmentActionService.updateAssessmentAction(signalAction);
-		} catch (IOException e) {
-			logger.info("Exception occured while updating "+e);
-		}
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/assessmentAction/{assessmentActionId}")
-    public Task getAssessmentActionById(@PathVariable Long assessmentActionId){
-        return assessmentActionService.findById(assessmentActionId);
-    }
-
-    @GetMapping(value = "/{assessmentId}/allAssessmentActions")
-    public List<Task> getAllByAssessmentId(@PathVariable String assessmentId,
-                                                   @RequestParam(value = "status", required = false) String actionStatus) {
-        return assessmentActionService.findAllByAssessmentId(assessmentId, actionStatus);
-    }
-
-    @DeleteMapping(value = "/assessmentAction/{assessmentActionId}/{taskId}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long assessmentActionId, @PathVariable String taskId) throws ApplicationException {
-        assessmentActionService.delete(assessmentActionId);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PutMapping
+    public Task updateTask(@RequestBody Task task) throws ApplicationException {
+    	return taskService.updateAssessmentAction(task);
     }
     
+    @DeleteMapping(value = "/{taskId}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long taskId) throws ApplicationException {
+    	taskService.delete(taskId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+	
+    @GetMapping(value = "/all/{id}")
+    public List<Task> findAll(@PathVariable String type, @PathVariable Long id) {
+        return taskService.findAll(type, id);
+    }
+	
+	@GetMapping(value = "/{taskId}")
+    public Task findByTemplateId(@PathVariable Long taskId) throws ApplicationException {
+        return taskService.findById(taskId);
+    }
+	
 }

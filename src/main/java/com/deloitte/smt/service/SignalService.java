@@ -437,7 +437,7 @@ public class SignalService {
 	private void checkAssessmentTaskStatus(AssessmentPlan assessmentPlan){
 		boolean allTasksCompletedFlag = true;
 		
-		List<Task> actions=	taskRepository.findAllByAssessmentPlanId(String.valueOf(assessmentPlan.getId()));
+		List<Task> actions=	taskRepository.findAllByAssessmentPlanId(assessmentPlan.getId());
 		if(!CollectionUtils.isEmpty(actions)){
 			for(Task signalAction:actions){
         		if(!"Completed".equals(signalAction.getStatus())){
@@ -481,7 +481,7 @@ public class SignalService {
 		signalAction.setLastUpdatedDate(action.getLastUpdatedDate());
 		signalAction.setStatus(action.getStatus());
 		signalAction.setDueDate(action.getDueDate());
-		signalAction.setAssessmentPlanId(String.valueOf(assessmentPlan.getId()));
+		signalAction.setAssessmentPlanId(assessmentPlan.getId());
 		signalAction.setActionType(action.getActionType());
 		signalAction.setDueDate(SignalUtil.getDueDate(action.getInDays(), signalAction.getCreatedDate()));
 		signalAction.setInDays(action.getInDays());

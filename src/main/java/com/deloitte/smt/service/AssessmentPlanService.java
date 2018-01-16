@@ -158,7 +158,7 @@ public class AssessmentPlanService {
      */
     private void setAssessmentTaskStatus(AssessmentPlan assessmentPlan){
     	boolean assessmentTaskStatus=false;
-       List<Task> signalActionsStatus=taskRepository.findAllByAssessmentPlanId(String.valueOf(assessmentPlan.getId()));
+       List<Task> signalActionsStatus=taskRepository.findAllByAssessmentPlanId(assessmentPlan.getId());
        if(!CollectionUtils.isEmpty(signalActionsStatus)){
     	   for(Task signalAction:signalActionsStatus){
     		   if(!signalAction.getStatus().equals(SmtConstant.COMPLETED.getDescription())){
