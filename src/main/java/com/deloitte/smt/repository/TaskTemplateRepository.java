@@ -17,7 +17,7 @@ public interface TaskTemplateRepository  extends JpaRepository<TaskTemplate, Lon
 	
 	List<TaskTemplate> findByIdIn(List<Long> ids);
 	
-	Long countTaskTemplateByNameIgnoreCase(String name);
+	Long countTaskTemplateByNameIgnoreCaseAndType(String name, String type);
 	
 	@Query("SELECT o.name from TaskTemplate o where o.name not in (select a.name from TaskTemplate a where a.name= :name AND a.id=:id)")
 	List<String> findByName(@Param(value = "name") String name,@Param(value = "id") Long id);

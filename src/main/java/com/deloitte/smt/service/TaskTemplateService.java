@@ -39,7 +39,7 @@ public class TaskTemplateService {
 		if(StringUtils.isEmpty(taskTemplate.getName())){
 			throw exceptionBuilder.buildException(ErrorType.NO_NAME, null);
 		}
-		Long taskTemplateExists=taskTemplateRepository.countTaskTemplateByNameIgnoreCase(taskTemplate.getName());
+		Long taskTemplateExists=taskTemplateRepository.countTaskTemplateByNameIgnoreCaseAndType(taskTemplate.getName(), taskTemplate.getType());
 		if(taskTemplateExists>0){
 			throw exceptionBuilder.buildException(ErrorType.ASSESSMENTACCTION_NAME_DUPLICATE, null);
 		}
@@ -52,7 +52,7 @@ public class TaskTemplateService {
 	@SuppressWarnings("unchecked")
 	private boolean duplicateRecordCheck(TaskTemplate taskTemplate) {
 		boolean duplicateFlag = false;
-		StringBuilder queryBuilder = new StringBuilder("select DISTINCT a.id from sm_task_template_products a where a.record_key IN (");
+		StringBuilder queryBuilder = new StringBuilder("select DISTINCT t.*  from sm_task_template t left join sm_task_template_products p on t.id = p.task_template_id where p.record_key in (");
 		List<TaskTemplateProducts> products = taskTemplate.getProducts();
 		StringBuilder productBuilder = new StringBuilder();
 		if(!CollectionUtils.isEmpty(products)){
@@ -69,10 +69,14 @@ public class TaskTemplateService {
 			}
 			queryBuilder.append(")");
 			if(!StringUtils.isEmpty(productBuilderValue)){
-				Query query = entityManager.createNativeQuery(queryBuilder.toString());
-				List<Object> records = query.getResultList();
+				Query query = entityManager.createNativeQuery(queryBuilder.toString(), TaskTemplate.class);
+				List<TaskTemplate> records = query.getResultList();
 				if(!CollectionUtils.isEmpty(records)){
-					duplicateFlag = true;
+					for(TaskTemplate template:records){
+						if(taskTemplate.getType().equalsIgnoreCase(template.getType())){
+							duplicateFlag = true;
+						}
+					}
 				}
 			}
 		}
