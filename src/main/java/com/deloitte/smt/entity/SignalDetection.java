@@ -58,6 +58,10 @@ public class SignalDetection implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "detectionId")
+	private List<Stratification> stratifications;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "detectionId")
 	private List<Geography> geography;
 	
 	
