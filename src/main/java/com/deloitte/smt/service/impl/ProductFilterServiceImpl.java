@@ -56,7 +56,7 @@ public class ProductFilterServiceImpl {
 			constructProductFilter(filterList, prlevels, productLevels);
 			
 		} catch (Exception e) {
-			LOGGER.error(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -167,14 +167,17 @@ public class ProductFilterServiceImpl {
 	private Map<Integer, Set<String>> splitRecordValues(List<String> prodFillVals) {
 		Map<Integer, Set<String>> itemMap = new LinkedHashMap<>();
 		for (String value : prodFillVals) {
-			String[] splitArr = value.split("@#");
-			for (int i = 0; i < splitArr.length; i++) {
-				if (itemMap.containsKey(i)) {
-					itemMap.get(i).add(splitArr[i]);
-				} else {
-					Set<String> set = new HashSet<>();
-					set.add(splitArr[i]);
-					itemMap.put(i, set);
+			if(value!=null)
+			{
+				String[] splitArr = value.split("@#");
+				for (int i = 0; i < splitArr.length; i++) {
+					if (itemMap.containsKey(i)) {
+						itemMap.get(i).add(splitArr[i]);
+					} else {
+						Set<String> set = new HashSet<>();
+						set.add(splitArr[i]);
+						itemMap.put(i, set);
+					}
 				}
 			}
 		}

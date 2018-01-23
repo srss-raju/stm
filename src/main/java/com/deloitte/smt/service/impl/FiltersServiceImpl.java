@@ -432,7 +432,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 					break;
 				}
 			}
-			queryBuilder.append(" order by root.createdDate desc");
+			queryBuilder.append(" order by root.id desc");
 			String queryStr = queryBuilder.toString();
 			LOGGER.info("queryStr....."+queryStr);
 			FilterResponse smtResponse = new FilterResponse();
