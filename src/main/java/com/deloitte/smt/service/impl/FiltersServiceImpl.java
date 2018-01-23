@@ -803,6 +803,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setSourceName(topic.getSourceName());
 			res.setCreatedDate(topic.getCreatedDate());
 			LOGGER.info("topic.getCreatedDate()....."+topic.getCreatedDate());
+			LOGGER.info("res.getCreatedDate()....."+res.getCreatedDate());
 			fres.add(res);
 		}
 		return fres;
