@@ -744,8 +744,8 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setId(detection.getId());
 			res.setName(detection.getName());
 			res.setRunFrequency(detection.getRunFrequency());
-			res.setLastRunDate(SignalUtil.convertDateTOString(detection.getLastRunDate()));
-			res.setNextRunDate(SignalUtil.convertDateTOString(detection.getNextRunDate()));
+			res.setLastRunDate(detection.getLastRunDate()!=null ? SignalUtil.convertDateTOString(detection.getLastRunDate()):null);
+			res.setNextRunDate(detection.getNextRunDate()!=null ? SignalUtil.convertDateTOString(detection.getNextRunDate()):null);
 			res.setDenominatorForPoisson(detection.getDenominatorForPoisson());
 			res.setSignalDetected(detection.getSignalDetected());
 			res.setDescription(detection.getDescription());
@@ -764,8 +764,8 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setId(assessment.getId());
 			res.setAssessmentName(assessment.getAssessmentName());
 			res.setAssessmentPlanStatus(assessment.getAssessmentPlanStatus());
-			res.setAssessmentDueDate(SignalUtil.convertDateTOString(assessment.getAssessmentDueDate()));
-			res.setCreatedDate(SignalUtil.convertDateTOString(assessment.getCreatedDate()));
+			res.setAssessmentDueDate(assessment.getAssessmentDueDate()!=null ? SignalUtil.convertDateTOString(assessment.getAssessmentDueDate()):null);
+			res.setCreatedDate(assessment.getCreatedDate()!=null ? SignalUtil.convertDateTOString(assessment.getCreatedDate()):null);
 			res.setPriority(assessment.getPriority());
 			fres.add(res);
 		}
@@ -782,7 +782,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setId(risk.getId());
 			res.setName(risk.getName());
 			res.setStatus(risk.getStatus());
-			res.setCreatedDate(SignalUtil.convertDateTOString(risk.getCreatedDate()));
+			res.setCreatedDate(risk.getCreatedDate()!=null ?SignalUtil.convertDateTOString(risk.getCreatedDate()):null);
 			fres.add(res);
 		}
 		return fres;
@@ -801,7 +801,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setDescription(topic.getDescription());
 			res.setSignalConfirmation(topic.getSignalConfirmation());
 			res.setSourceName(topic.getSourceName());
-			res.setCreatedDate(SignalUtil.convertDateTOString(topic.getCreatedDate()));
+			res.setCreatedDate(topic.getCreatedDate()!=null ?SignalUtil.convertDateTOString(topic.getCreatedDate()):null);
 			LOGGER.info("topic.getCreatedDate()....."+topic.getCreatedDate());
 			LOGGER.info("res.getCreatedDate()....."+res.getCreatedDate());
 			fres.add(res);
