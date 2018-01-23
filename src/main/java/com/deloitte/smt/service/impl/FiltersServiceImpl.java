@@ -348,7 +348,6 @@ public class FiltersServiceImpl<E> implements FiltersService {
 						default:
 							break;
 						}
-						//entitiesList.add(",TopicProductAssignmentConfiguration product ");
 					}
 					if(conditionExists)
 					{
@@ -366,7 +365,6 @@ public class FiltersServiceImpl<E> implements FiltersService {
 						default:
 							break;
 						}
-						//entitiesList.add(",TopicSocAssignmentConfiguration condition ");
 					}
 				}
 				
@@ -804,6 +802,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setSignalConfirmation(topic.getSignalConfirmation());
 			res.setSourceName(topic.getSourceName());
 			res.setCreatedDate(topic.getCreatedDate());
+			LOGGER.info("topic.getCreatedDate()....."+topic.getCreatedDate());
 			fres.add(res);
 		}
 		return fres;
