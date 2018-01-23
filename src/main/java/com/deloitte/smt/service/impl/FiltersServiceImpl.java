@@ -744,8 +744,8 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setId(detection.getId());
 			res.setName(detection.getName());
 			res.setRunFrequency(detection.getRunFrequency());
-			res.setLastRunDate(detection.getLastRunDate());
-			res.setNextRunDate(detection.getNextRunDate());
+			res.setLastRunDate(SignalUtil.convertDateTOString(detection.getLastRunDate()));
+			res.setNextRunDate(SignalUtil.convertDateTOString(detection.getNextRunDate()));
 			res.setDenominatorForPoisson(detection.getDenominatorForPoisson());
 			res.setSignalDetected(detection.getSignalDetected());
 			res.setDescription(detection.getDescription());
@@ -764,8 +764,8 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setId(assessment.getId());
 			res.setAssessmentName(assessment.getAssessmentName());
 			res.setAssessmentPlanStatus(assessment.getAssessmentPlanStatus());
-			res.setAssessmentDueDate(assessment.getAssessmentDueDate());
-			res.setCreatedDate(assessment.getCreatedDate());
+			res.setAssessmentDueDate(SignalUtil.convertDateTOString(assessment.getAssessmentDueDate()));
+			res.setCreatedDate(SignalUtil.convertDateTOString(assessment.getCreatedDate()));
 			res.setPriority(assessment.getPriority());
 			fres.add(res);
 		}
@@ -782,7 +782,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setId(risk.getId());
 			res.setName(risk.getName());
 			res.setStatus(risk.getStatus());
-			res.setCreatedDate(risk.getCreatedDate());
+			res.setCreatedDate(SignalUtil.convertDateTOString(risk.getCreatedDate()));
 			fres.add(res);
 		}
 		return fres;
@@ -801,7 +801,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setDescription(topic.getDescription());
 			res.setSignalConfirmation(topic.getSignalConfirmation());
 			res.setSourceName(topic.getSourceName());
-			res.setCreatedDate(topic.getCreatedDate());
+			res.setCreatedDate(SignalUtil.convertDateTOString(topic.getCreatedDate()));
 			LOGGER.info("topic.getCreatedDate()....."+topic.getCreatedDate());
 			LOGGER.info("res.getCreatedDate()....."+res.getCreatedDate());
 			fres.add(res);

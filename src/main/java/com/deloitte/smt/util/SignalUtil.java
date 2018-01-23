@@ -60,4 +60,10 @@ public class SignalUtil {
 		}
 		return frmDate;
 	}
+	
+	public static String convertDateTOString(Date currdate)
+	{
+		DateFormat sdff = new SimpleDateFormat("dd-MMM-yyyy");
+		return sdff.format(currdate);
+	}
 }
