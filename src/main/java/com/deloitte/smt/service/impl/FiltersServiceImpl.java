@@ -253,16 +253,16 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				filTypeMap = new HashMap<>();
 				switch (type) {
 				case SIGNAL:
-					entitiesList.add("select root from Topic root ");
+					entitiesList.add("select distinct root from Topic root ");
 					break;
 				case RISK:
-					entitiesList.add("select  root from RiskPlan root ");
+					entitiesList.add("select  distinct root from RiskPlan root ");
 					break;
 				case ASSESSMENT:
-					entitiesList.add("select  root from AssessmentPlan root ");
+					entitiesList.add("select  distinct root from AssessmentPlan root ");
 					break;
 				case DETECTION:
-					entitiesList.add("select  root from SignalDetection root ");
+					entitiesList.add("select  distinct root from SignalDetection root ");
 					break;
 				default:
 					break;
