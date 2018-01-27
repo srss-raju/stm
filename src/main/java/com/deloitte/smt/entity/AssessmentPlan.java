@@ -38,6 +38,7 @@ public class AssessmentPlan  implements Serializable {
 	@JsonIgnore
 	private Set<Topic> topics;
 	private String assessmentName;
+	private String name;
 	private String priority;
 	private int inDays;
 	private String source;

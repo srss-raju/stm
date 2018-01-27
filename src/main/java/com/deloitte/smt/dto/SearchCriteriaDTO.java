@@ -10,5 +10,6 @@ public class SearchCriteriaDTO {
 	private int fetchSize;
 	private int fromRecord;
 	private int totalRecords;
-	
+	private String sortBy;
+	private String orderBy;
 }
