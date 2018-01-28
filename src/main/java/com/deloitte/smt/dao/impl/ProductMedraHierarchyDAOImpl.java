@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +23,15 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 	private static final String OFFSET=" offset ";
 	
 	private static final String SEARCHVALUE="searchText";
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	
+	/*public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}*/
 
 	public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
@@ -94,5 +103,10 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 		return namedParameterJdbcTemplate.query(query, params, new ProductSearchMapper());
 	}
 
-
+	@Override
+	public List<String> getRxNormKeys(String columnName, String value) {
+		StringBuilder sql = new StringBuilder("select distinct trim(RXNORM) from PRODUCT_MEDDRA_HIERARCHY where ");
+		sql.append(columnName).append("='").append(value.toUpperCase()).append("'");
+		return jdbcTemplate.queryForList(sql.toString(), String.class);
+	}
 }

@@ -285,4 +285,8 @@ public class ProductHierarchyService {
 		return productSearchDtoAllList;
 	}
 
+	public List<String> getRxNormKeys(String columnName, String value) {
+		return productMedraHierarchyDAO.getRxNormKeys(columnName, value);
+	}
+
 }

@@ -20,6 +20,8 @@ public interface ProductMedraHierarchyDAO {
 	List<ProductSearchDTO> findByActLvelFive(String searchText,int scrollOffset,int scrollCount);
 	
 	List<ProductSearchDTO> findByRxNorm(String searchText,int scrollOffset,int scrollCount);
+
+	List<String> getRxNormKeys(String columnName, String value);
 	
 
 }
