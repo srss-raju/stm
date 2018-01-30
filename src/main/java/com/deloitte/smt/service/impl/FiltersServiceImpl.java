@@ -376,7 +376,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 							conditionsList.add(" root.id=joinAss.topicId ");
 						break;
 					case RISK:
-						conditionsList.add(" root.id=joinAss.riskId.id ");
+						conditionsList.add("  root.id=joinAss.riskId  ");
 						break;
 					case ASSESSMENT:
 						conditionsList.add(" root.id = joinAss.assessmentId ");
