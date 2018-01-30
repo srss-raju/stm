@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -107,9 +106,9 @@ public class MedraBrowserController {
 		return socList;
 	}
 	
-	@GetMapping(value = "/product/{key}/{value}")
-	public List<String> getRxNormKeys(@PathVariable String key, @PathVariable String value) {
-		return productHierarchyService.getRxNormKeys(key,value);
+	@PostMapping(value = "/product/rxNormKeys")
+	public List<String> getRxNormKeys(@RequestBody ProductSearchDTO productSearchDTO) {
+		return productHierarchyService.getRxNormKeys(productSearchDTO);
 
 	}
 
