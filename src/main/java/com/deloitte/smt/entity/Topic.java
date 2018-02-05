@@ -116,6 +116,10 @@ public class Topic implements Serializable{
     @JoinColumn(name = "topicId")
 	private List<Stratification> stratifications;
 	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "topicId")
+	private List<Ingredient> ingredients;
+	
     
     public Topic(Long id, String name, String description, String sourceName,
 			String signalConfirmation, String signalStatus, Date createdDate) {
