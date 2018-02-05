@@ -21,7 +21,7 @@ public interface ProductMedraHierarchyDAO {
 	
 	List<ProductSearchDTO> findByRxNorm(String searchText,int scrollOffset,int scrollCount);
 
-	List<String> getRxNormKeys(String columnName, String value);
+	List<Integer> getProducEventKeys(String query);
 	
 
 }

@@ -1,6 +1,8 @@
 package com.deloitte.smt.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.dto.ConditionResponse;
 import com.deloitte.smt.dto.MedraBrowserDTO;
+import com.deloitte.smt.dto.ProductEventDTO;
 import com.deloitte.smt.dto.ProductResponse;
 import com.deloitte.smt.dto.ProductSearchDTO;
 import com.deloitte.smt.dto.SocSearchDTO;
@@ -106,9 +109,9 @@ public class MedraBrowserController {
 		return socList;
 	}
 	
-	@PostMapping(value = "/product/rxNormKeys")
-	public List<String> getRxNormKeys(@RequestBody ProductSearchDTO productSearchDTO) {
-		return productHierarchyService.getRxNormKeys(productSearchDTO);
+	@PostMapping(value = "/product/getProducEventKeys")
+	public Map<String, Set<Integer>> getProducEventKeys(@RequestBody ProductEventDTO productEventDTO) {
+		return productHierarchyService.getProducEventKeys(productEventDTO);
 
 	}
 

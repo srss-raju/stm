@@ -104,9 +104,7 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 	}
 
 	@Override
-	public List<String> getRxNormKeys(String columnName, String value) {
-		StringBuilder sql = new StringBuilder("select distinct trim(RXNORM) from PRODUCT_MEDDRA_HIERARCHY where ");
-		sql.append(columnName).append("='").append(value.toUpperCase()).append("'");
-		return jdbcTemplate.queryForList(sql.toString(), String.class);
+	public List<Integer> getProducEventKeys(String query) {
+		return jdbcTemplate.queryForList(query, Integer.class);
 	}
 }

@@ -2,8 +2,10 @@ package com.deloitte.smt.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,14 @@ import org.springframework.util.CollectionUtils;
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dao.ProductMedraHierarchyDAO;
 import com.deloitte.smt.dto.MedraBrowserDTO;
+import com.deloitte.smt.dto.ProductEventDTO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
 import com.deloitte.smt.dto.ProductSearchDTO;
 import com.deloitte.smt.entity.ProductLevels;
+import com.deloitte.smt.entity.TopicAssignmentCondition;
+import com.deloitte.smt.entity.TopicAssignmentProduct;
+import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
+import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.repository.ProductLevelRepository;
 
 /**
@@ -285,8 +292,55 @@ public class ProductHierarchyService {
 		return productSearchDtoAllList;
 	}
 
-	public List<String> getRxNormKeys(ProductSearchDTO productSearchDTO) {
-		return productMedraHierarchyDAO.getRxNormKeys(productSearchDTO.getCategory(), productSearchDTO.getCategoryCode());
+	public Map<String, Set<Integer>> getProducEventKeys(ProductEventDTO productEventDTO) {
+		Map<String, Set<Integer>> result = new HashMap<>();
+		result.put("event_key", getEventKeys(productEventDTO));
+		result.put("product_key", getProductKeys(productEventDTO));
+		return result;
+	}
+
+	private Set<Integer> getEventKeys(ProductEventDTO productEventDTO) {
+		Set<Integer> conditionKeys = new HashSet<>();
+		if(!CollectionUtils.isEmpty(productEventDTO.getConditions())){
+			for(TopicSocAssignmentConfiguration condition : productEventDTO.getConditions()){
+				StringBuilder conditionQuery = new StringBuilder("select distinct event_key from SOC_MEDDRA_HIERARCHY where ");
+				getEventQuery(condition, conditionQuery);
+				String query = conditionQuery.toString().substring(0, conditionQuery.lastIndexOf("AND"));
+				conditionKeys.addAll(productMedraHierarchyDAO.getProducEventKeys(query));
+			}
+		}
+		return conditionKeys;
+	}
+
+	private void getEventQuery(TopicSocAssignmentConfiguration condition, StringBuilder conditionQuery) {
+		if(!CollectionUtils.isEmpty(condition.getRecordValues())){
+			for(TopicAssignmentCondition record : condition.getRecordValues()){
+				conditionQuery.append(record.getCategory()).append("='").append(record.getCategoryCode().toUpperCase()).append("'");
+				conditionQuery.append(" AND ");
+			}
+		}
+	}
+
+	private Set<Integer> getProductKeys(ProductEventDTO productEventDTO) {
+		Set<Integer> productKeys = new HashSet<>();
+		if(!CollectionUtils.isEmpty(productEventDTO.getProducts())){
+			for(TopicProductAssignmentConfiguration product : productEventDTO.getProducts()){
+				StringBuilder productQuery = new StringBuilder("select distinct product_key from PRODUCT_MEDDRA_HIERARCHY where ");
+				getProductQuery(product, productQuery);
+				String query = productQuery.toString().substring(0, productQuery.lastIndexOf("AND"));
+				productKeys.addAll(productMedraHierarchyDAO.getProducEventKeys(query));
+			}
+		}
+		return productKeys;
+	}
+
+	private void getProductQuery(TopicProductAssignmentConfiguration product, StringBuilder productQuery) {
+		if(!CollectionUtils.isEmpty(product.getRecordValues())){
+			for(TopicAssignmentProduct record : product.getRecordValues()){
+				productQuery.append(record.getCategory()).append("=").append(record.getCategoryCode().toUpperCase());
+				productQuery.append(" AND ");
+			}
+		}
 	}
 
 }
