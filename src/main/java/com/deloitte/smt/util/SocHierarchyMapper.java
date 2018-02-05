@@ -30,7 +30,7 @@ public class SocHierarchyMapper implements RowMapper<SocHierarchyDto> {
 		
 		socHierarchyDto.setMedra_version_number(rs.getString("meddra_version_number").trim());
 		socHierarchyDto.setIntl_soc_order(rs.getLong("international_soc_order"));
-		socHierarchyDto.setPrimary_soc_flag(rs.getString("primary_soc_flag").trim());
+		socHierarchyDto.setPrimary_soc_flag(rs.getString("primary_soc_flag"));
 		
 		
 		return socHierarchyDto;
