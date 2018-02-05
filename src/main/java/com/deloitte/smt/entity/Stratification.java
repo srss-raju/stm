@@ -31,6 +31,10 @@ public class Stratification  implements Serializable {
 	@Transient
 	@JsonIgnore
 	private SignalDetection signalDetection;
+	
+	@Transient
+	@JsonIgnore
+	private Topic topic;
 
 	public Long getId() {
 		return id;
@@ -64,6 +68,16 @@ public class Stratification  implements Serializable {
 
 	public void setStratificationName(String stratificationName) {
 		this.stratificationName = stratificationName;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "topicId")
+	public Topic getTopic() {
+		return topic;
+	}
+
+	public void setTopic(Topic topic) {
+		this.topic = topic;
 	}
 
 	}

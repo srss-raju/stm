@@ -108,6 +108,15 @@ public class Topic implements Serializable{
     @Transient
 	private List<TopicProductAssignmentConfiguration> products;
     
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "topicId")
+	private List<Query> queries;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "topicId")
+	private List<Stratification> stratifications;
+	
+    
     public Topic(Long id, String name, String description, String sourceName,
 			String signalConfirmation, String signalStatus, Date createdDate) {
 		super();
