@@ -292,7 +292,7 @@ public class ProductHierarchyService {
 		return productSearchDtoAllList;
 	}
 
-	public Map<String, Set<Integer>> getProducEventKeys(ProductEventDTO productEventDTO) {
+	public Map<String, Set<Integer>> getProductEventKeys(ProductEventDTO productEventDTO) {
 		Map<String, Set<Integer>> result = new HashMap<>();
 		result.put("event_key", getEventKeys(productEventDTO));
 		result.put("product_key", getProductKeys(productEventDTO));

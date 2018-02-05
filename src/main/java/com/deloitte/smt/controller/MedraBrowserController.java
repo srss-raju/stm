@@ -109,9 +109,9 @@ public class MedraBrowserController {
 		return socList;
 	}
 	
-	@PostMapping(value = "/product/getProducEventKeys")
-	public Map<String, Set<Integer>> getProducEventKeys(@RequestBody ProductEventDTO productEventDTO) {
-		return productHierarchyService.getProducEventKeys(productEventDTO);
+	@PostMapping(value = "/product/getProductEventKeys")
+	public Map<String, Set<Integer>> getProductEventKeys(@RequestBody ProductEventDTO productEventDTO) {
+		return productHierarchyService.getProductEventKeys(productEventDTO);
 
 	}
 
