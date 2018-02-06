@@ -512,6 +512,7 @@ public class RiskPlanService {
 		riskPlan.setTopicRiskPlanAssignmentAssignees(topicRiskPlanAssignmentAssigneesList);
 		riskPlan.setComments(commentsRepository.findByRiskPlanId(riskId));
 		riskPlan.setSignalUrls(signalURLRepository.findByTopicId(riskId));
+		riskPlan.setAssessmentPlan(assessmentPlanRepository.findOne(riskPlan.getAssessmentId()));
 		AssessmentPlan assessmentPlan=riskPlan.getAssessmentPlan();
 		if(null!=assessmentPlan){
 		assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentPlan.getId()));
