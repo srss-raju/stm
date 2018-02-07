@@ -43,7 +43,7 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 			query = "SELECT ATC_LVL_1,ATC_LVL_1_DESC,ATC_LVL_2,ATC_LVL_2_DESC,ATC_LVL_3,ATC_LVL_3_DESC,ATC_LVL_4,ATC_LVL_4_DESC,ATC_LVL_5,ATC_LVL_5_DESC,RXNORM, RXNORM_DESC "
 					+ "FROM product_meddra_hierarchy WHERE "+ columnName+" =:code" +" limit "+ scrollCount+ OFFSET +scrollOffset;
 		Map<String, Object> params = new HashMap<>();
-		params.put("code", Integer.parseInt(code));
+		params.put("code", code);
 		return namedParameterJdbcTemplate.query(query, params, new ProductHierarchyMapper());
 	}
 
@@ -107,4 +107,13 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 	public List<Integer> getProducEventKeys(String query) {
 		return jdbcTemplate.queryForList(query, Integer.class);
 	}
+	
+	@Override
+	public List<ProductHierarchyDto> findActLevelsByIngredient(List<String> ingredientNames) {
+		query = "SELECT ATC_LVL_1,ATC_LVL_1_DESC,ATC_LVL_2,ATC_LVL_2_DESC,ATC_LVL_3,ATC_LVL_3_DESC,ATC_LVL_4,ATC_LVL_4_DESC,ATC_LVL_5,ATC_LVL_5_DESC,RXNORM,RXNORM_DESC FROM VW_ATC_PROD_DIM WHERE FAMILY_DESC IN (:ingredientNames)" ;
+		Map<String, Object> params = new HashMap<>();
+		params.put("ingredientNames", ingredientNames);
+		return namedParameterJdbcTemplate.query(query, params, new ProductHierarchyMapper());
+	}
+	
 }

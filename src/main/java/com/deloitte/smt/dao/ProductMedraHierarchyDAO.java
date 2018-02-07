@@ -22,6 +22,8 @@ public interface ProductMedraHierarchyDAO {
 	List<ProductSearchDTO> findByRxNorm(String searchText,int scrollOffset,int scrollCount);
 
 	List<Integer> getProducEventKeys(String query);
-	
+
+	List<ProductHierarchyDto> findActLevelsByIngredient(List<String> ingredientNames);
+
 
 }

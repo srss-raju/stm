@@ -342,5 +342,71 @@ public class ProductHierarchyService {
 			}
 		}
 	}
+	
+	public List<TopicProductAssignmentConfiguration> findActLevelsByIngredient(List<String> ingredientNames){
+		List<TopicProductAssignmentConfiguration> products = new ArrayList<>();
+		List<ProductHierarchyDto> actLevels = productMedraHierarchyDAO.findActLevelsByIngredient(ingredientNames);
+		if(!CollectionUtils.isEmpty(actLevels)){
+			for(ProductHierarchyDto record : actLevels){
+				getProducts(products, record);
+			}
+		}
+		return products;
+	}
+
+	private void getProducts(List<TopicProductAssignmentConfiguration> products, ProductHierarchyDto record) {
+		List<TopicAssignmentProduct> recordValues;
+		TopicProductAssignmentConfiguration topicProductAssignmentConfiguration;
+		topicProductAssignmentConfiguration = new TopicProductAssignmentConfiguration();
+		recordValues = new ArrayList<>();
+		StringBuilder recordKey = new StringBuilder();
+		if(record.getActLevelOneCode() != null){
+			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
+			topicAssignmentProduct.setCategory("ATC_LVL_1");
+			topicAssignmentProduct.setCategoryCode(record.getActLevelOneCode());
+			topicAssignmentProduct.setCategoryDesc(record.getActLevelOneDesc());
+			recordKey.append(record.getActLevelOneCode());
+			recordValues.add(topicAssignmentProduct);
+		}
+		if(record.getActLevelTwoCode() != null){
+			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
+			recordKey.append("#");
+			recordKey.append(record.getActLevelTwoCode());
+			topicAssignmentProduct.setCategory("ATC_LVL_2");
+			topicAssignmentProduct.setCategoryCode(record.getActLevelTwoCode());
+			topicAssignmentProduct.setCategoryDesc(record.getActLevelTwoDesc());
+			recordValues.add(topicAssignmentProduct);
+		}
+		if(record.getActLevelThreeCode() != null){
+			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
+			recordKey.append("#");
+			recordKey.append(record.getActLevelThreeCode());
+			topicAssignmentProduct.setCategory("ATC_LVL_3");
+			topicAssignmentProduct.setCategoryCode(record.getActLevelThreeCode());
+			topicAssignmentProduct.setCategoryDesc(record.getActLevelThreeDesc());
+			recordValues.add(topicAssignmentProduct);
+		}
+		if(record.getActLevelFourCode() != null){
+			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
+			recordKey.append("#");
+			recordKey.append(record.getActLevelFourCode());
+			topicAssignmentProduct.setCategory("ATC_LVL_4");
+			topicAssignmentProduct.setCategoryCode(record.getActLevelFourCode());
+			topicAssignmentProduct.setCategoryDesc(record.getActLevelFourDesc());
+			recordValues.add(topicAssignmentProduct);
+		}
+		if(record.getActLevelFiveCode() != null){
+			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
+			recordKey.append("#");
+			recordKey.append(record.getActLevelFiveCode());
+			topicAssignmentProduct.setCategory("ATC_LVL_5");
+			topicAssignmentProduct.setCategoryCode(record.getActLevelFiveCode());
+			topicAssignmentProduct.setCategoryDesc(record.getActLevelFiveDesc());
+			recordValues.add(topicAssignmentProduct);
+		}
+		topicProductAssignmentConfiguration.setRecordKey(recordKey.toString());
+		topicProductAssignmentConfiguration.setRecordValues(recordValues);
+		products.add(topicProductAssignmentConfiguration);
+	}
 
 }

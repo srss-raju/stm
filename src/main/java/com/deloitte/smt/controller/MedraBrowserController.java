@@ -19,6 +19,7 @@ import com.deloitte.smt.dto.ProductEventDTO;
 import com.deloitte.smt.dto.ProductResponse;
 import com.deloitte.smt.dto.ProductSearchDTO;
 import com.deloitte.smt.dto.SocSearchDTO;
+import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 import com.deloitte.smt.service.ConditonService;
 import com.deloitte.smt.service.ProductHierarchyService;
 import com.deloitte.smt.service.ProductService;
@@ -112,6 +113,12 @@ public class MedraBrowserController {
 	@PostMapping(value = "/product/getProductEventKeys")
 	public Map<String, Set<Integer>> getProductEventKeys(@RequestBody ProductEventDTO productEventDTO) {
 		return productHierarchyService.getProductEventKeys(productEventDTO);
+
+	}
+	
+	@PostMapping(value = "/product/ingredient")
+	public List<TopicProductAssignmentConfiguration> findActLevelsByIngredient(@RequestBody List<String> ingredientNames) {
+		return productHierarchyService.findActLevelsByIngredient(ingredientNames);
 
 	}
 
