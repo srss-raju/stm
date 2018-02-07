@@ -40,7 +40,7 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 	@Override
 	public List<ProductHierarchyDto> findAllByActLvel(String code,String columnName,int scrollOffset,int scrollCount) {
 		
-			query = "SELECT ATC_LVL_1,ATC_LVL_1_DESC,ATC_LVL_2,ATC_LVL_2_DESC,ATC_LVL_3,ATC_LVL_3_DESC,ATC_LVL_4,ATC_LVL_4_DESC,ATC_LVL_5,ATC_LVL_5_DESC,RXNORM, RXNORM_DESC "
+			query = "SELECT ATC_LVL_1,ATC_LVL_1_DESC,ATC_LVL_2,ATC_LVL_2_DESC,ATC_LVL_3,ATC_LVL_3_DESC,ATC_LVL_4,ATC_LVL_4_DESC,ATC_LVL_5,ATC_LVL_5_DESC "
 					+ "FROM product_meddra_hierarchy WHERE "+ columnName+" =:code" +" limit "+ scrollCount+ OFFSET +scrollOffset;
 		Map<String, Object> params = new HashMap<>();
 		params.put("code", code);
