@@ -24,6 +24,7 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
+import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.ProductAssignmentConfiguration;
 import com.deloitte.smt.entity.RiskPlan;
@@ -72,6 +73,9 @@ public class SignalService {
 
 	@Autowired
 	MessageSource messageSource;
+
+	@Autowired
+	ProductHierarchyService productHierarchyService;
 	
 	@Autowired
 	ExceptionBuilder exceptionBuilder;
@@ -243,6 +247,8 @@ public class SignalService {
 		}
 
 		Topic topicUpdated = topicRepository.save(topic);
+		List<TopicProductAssignmentConfiguration> productsOfIngredients = productHierarchyService.findActLevelsByIngredient(getIngredientNames(topic));
+		topic.setProducts(productsOfIngredients);
 		saveProductsAndConditions(topic, topicUpdated);
 		AssignmentConfiguration assignmentConfiguration = signalAssignmentService.convertToAssignmentConfiguration(topic);
 		
@@ -270,6 +276,14 @@ public class SignalService {
 		LOG.info("Start Algorithm for matching signal");
 		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, null, attchmentList, SmtConstant.CREATE.getDescription());
 		return signalMatchService.findMatchingSignal(topicUpdated);
+	}
+
+	private List<String> getIngredientNames(Topic topic) {
+		List<String> ingredientNames = new ArrayList<>();
+		for(Ingredient ingredient:topic.getIngredients()){
+			ingredientNames.add(ingredient.getIngredientName());
+		}
+		return ingredientNames;
 	}
 
 	private void setProducts(AssignmentConfiguration assignmentConfiguration,
