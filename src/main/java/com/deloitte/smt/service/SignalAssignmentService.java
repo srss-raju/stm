@@ -222,7 +222,10 @@ public class SignalAssignmentService {
 		if(assignmentConfiguration.isProductFlag()){
 			queryBuilder.append(" LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
 		}
-		queryBuilder.append(" where ");
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()) || !CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
+			queryBuilder.append(" where ");
+		}
+		
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
 			for(SocAssignmentConfiguration socConfig : assignmentConfiguration.getConditions()){
 				socBuilder.append("'").append(socConfig.getRecordKey()).append("'");

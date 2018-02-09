@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.deloitte.smt.dto.TopicDTO;
 import com.deloitte.smt.entity.Topic;
 
 /**
@@ -42,6 +43,9 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	
 	@Query("select pas.recordKey from TopicSocAssignmentConfiguration pas where pas.topicId in :ids")
 	List<String> getListOfConditionRecordKeys(@Param("ids") Set<Long> riskAssSingnalIds);
+	
+	@Query(value="select NEW com.deloitte.smt.dto.TopicDTO(t.id,i.ingredientName,t.name,t.signalStatus) from Topic  t , Ingredient  i order by i.ingredientName", nativeQuery=false)
+	List<TopicDTO> findByIngredientName();
 	
 }
 

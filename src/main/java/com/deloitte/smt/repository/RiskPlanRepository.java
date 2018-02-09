@@ -44,4 +44,6 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	
 	@Query("SELECT o.name from RiskPlan o where o.name not in (select a.name from RiskPlan a where a.name= :name AND a.id=:id)")
 	List<String> findByRiskName(@Param(value = "name") String name,@Param(value = "id") Long id);
+	
+	RiskPlan findByAssessmentId(Long assessmentId);
 }
