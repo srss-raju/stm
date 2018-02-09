@@ -248,7 +248,9 @@ public class SignalService {
 
 		Topic topicUpdated = topicRepository.save(topic);
 		List<TopicProductAssignmentConfiguration> productsOfIngredients = productHierarchyService.findActLevelsByIngredient(getIngredientNames(topic));
-		topic.setProducts(productsOfIngredients);
+		if(!CollectionUtils.isEmpty(productsOfIngredients)){
+			topic.setProducts(productsOfIngredients);
+		}
 		saveProductsAndConditions(topic, topicUpdated);
 		AssignmentConfiguration assignmentConfiguration = signalAssignmentService.convertToAssignmentConfiguration(topic);
 		

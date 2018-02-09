@@ -141,11 +141,16 @@ public class AssignmentService {
 	}
 	
 	private void updateQueryBuilderWithFlags(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder) {
-		if(assignmentConfiguration.isConditionEmptyFlag()){
-			queryBuilder.append(" and c.record_key is null");
-		}
-		if(assignmentConfiguration.isProductEmptyFlag()){
+		if(assignmentConfiguration.isConditionEmptyFlag() && assignmentConfiguration.isProductEmptyFlag()){
+			queryBuilder.append("  c.record_key is null");
 			queryBuilder.append(" and p.record_key is null");
+		}else{
+			if(assignmentConfiguration.isConditionEmptyFlag()){
+				queryBuilder.append(" and c.record_key is null");
+			}
+			if(assignmentConfiguration.isProductEmptyFlag()){
+				queryBuilder.append(" and p.record_key is null");
+			}
 		}
 	}
 	

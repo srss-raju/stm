@@ -4,11 +4,13 @@ public class RiskPlanDTO {
 	private Long riskPlanId;
 	private String name;
 	private String riskPlanStatus;
+	private String ingredientName;
 	
 	
-	public RiskPlanDTO(Long riskPlanId,String name, String riskPlanStatus) {
+	public RiskPlanDTO(Long riskPlanId,String ingredientName, String name, String riskPlanStatus) {
 		super();
 		this.riskPlanId=riskPlanId;
+		this.ingredientName = ingredientName;
 		this.name = name;
 		this.riskPlanStatus = riskPlanStatus;
 	}
@@ -38,6 +40,11 @@ public class RiskPlanDTO {
 		this.riskPlanStatus = riskPlanStatus;
 	}
 	
-	
+	public String getIngredientName() {
+		return ingredientName;
+	}
+	public void setIngredientName(String ingredientName) {
+		this.ingredientName = ingredientName;
+	}
 
 }

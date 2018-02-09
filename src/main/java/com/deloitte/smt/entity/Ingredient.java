@@ -10,12 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "sm_ingredient")
@@ -33,11 +29,6 @@ public class Ingredient  implements Serializable{
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredientId")
 	private List<Product> products;
-	
-	
-	@Transient
-	@JsonIgnore
-	private Topic topic;
 	
 	public Long getId() {
 		return id;
@@ -57,14 +48,6 @@ public class Ingredient  implements Serializable{
 	public void setProducts(List<Product> products) {
 		this.products = products;
 	}
-	@ManyToOne
-	@JoinColumn(name = "topicId")
-	public Topic getTopic() {
-		return topic;
-	}
-
-	public void setTopic(Topic topic) {
-		this.topic = topic;
-	}
+	
 }
 

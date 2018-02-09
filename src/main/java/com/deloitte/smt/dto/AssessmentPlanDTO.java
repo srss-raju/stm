@@ -4,10 +4,12 @@ public class AssessmentPlanDTO {
 	private Long planId;
 	private String assessmentName;
 	private String assessmentPlanStatus;
+	private String ingredientName;
 	
-	public AssessmentPlanDTO(Long planId, String assessmentName, String assessmentPlanStatus) {
+	public AssessmentPlanDTO(Long planId,String ingredientName, String assessmentName, String assessmentPlanStatus) {
 		super();
 		this.planId=planId;
+		this.ingredientName = ingredientName;
 		this.assessmentName = assessmentName;
 		this.assessmentPlanStatus = assessmentPlanStatus;
 	}
@@ -36,5 +38,10 @@ public class AssessmentPlanDTO {
 	public void setAssessmentPlanStatus(String assessmentPlanStatus) {
 		this.assessmentPlanStatus = assessmentPlanStatus;
 	}
-	
+	public String getIngredientName() {
+		return ingredientName;
+	}
+	public void setIngredientName(String ingredientName) {
+		this.ingredientName = ingredientName;
+	}
 }	

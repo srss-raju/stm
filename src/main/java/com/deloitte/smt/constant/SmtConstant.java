@@ -33,6 +33,7 @@ public enum SmtConstant {
     RXNORM("RXNORM"),
     USER_KEY("userKey"),
     USER_GROUP_KEY("userGroupKey"),
+    INGREDIENT_NAME("ingredientName"),
     SCORE("score"),
     ASSIGNEES_GROUP_KEY("-99"),
     SUMMARY("{\"Heading1 <You can edit this>\":\"<Please enter appropriate description for this section>\",\"Heading2 <You can edit this>\":\"<Please enter appropriate description for this section>\",\"Heading3 <You can edit this>\":\"<Please enter appropriate description for this section>\"}"),
