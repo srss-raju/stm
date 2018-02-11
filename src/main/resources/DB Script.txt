@@ -18,7 +18,7 @@ INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, descri
 INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (13, 'Rajesh', null, 'Patient Information Update', null, 'Patient Information Update');
 INSERT INTO public.sm_risk_plan_action_type(id, created_by, created_date, description, last_modified_date, name) VALUES (14, 'Rajesh', null, 'Post-Marketing Study', null, 'Post-Marketing Study');
 				
-INSERT INTO public.sm_signal_configuration(id, cohort_percentage, confidence_index, config_name) VALUES (15, 95, 60, 'DEFAULT_CONFIG');
+INSERT INTO public.sm_signal_confidence(id, cohort_percentage, confidence_index, config_name) VALUES (15, 95, 60, 'DEFAULT_CONFIG');
  
 INSERT INTO public.sm_signal_confirmations(id, created_by, created_date, description, last_modified_date, name) VALUES (15, 'Rajesh', null, 'Continue To Monitor', null, 'Continue To Monitor');
 INSERT INTO public.sm_signal_confirmations(id, created_by, created_date, description, last_modified_date, name) VALUES (16, 'Rajesh', null, 'Validated Signal', null, 'Validated Signal');
@@ -28,5 +28,5 @@ INSERT INTO public.sm_signal_sources(id, created_by, created_date, description, 
 INSERT INTO public.sm_signal_sources(id, created_by, created_date, description, last_modified_date, name) VALUES (19, 'Rajesh', null, 'Literature', null, 'Literature');
 INSERT INTO public.sm_signal_sources(id, created_by, created_date, description, last_modified_date, name) VALUES (20, 'Rajesh', null, 'Social media', null, 'Social media');
 
-INSERT INTO sm_assignment_configuration(id, assessment_owner, created_by, created_date, ingredient, is_default, last_modified_date, name, risk_owner, severity, signal_owner, signal_source)  VALUES (1, '24392902', null, '2017-01-01', null, true, null, 'Default configuration', '24392902', null, '24392902', null);
+INSERT INTO sm_assignment_configuration(id, assessment_owner, created_by, created_date, is_default, last_modified_date, name, risk_owner, severity, signal_owner, signal_source)  VALUES (1, '24392902', null, '2017-01-01',  true, null, 'Default configuration', '24392902', null, '24392902', null);
 				

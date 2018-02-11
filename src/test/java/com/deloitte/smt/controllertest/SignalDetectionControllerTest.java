@@ -11,8 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +25,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.service.SignalDetectionService;
-import com.deloitte.smt.util.SmtResponse;
 import com.deloitte.smt.util.TestUtil;
 
 /**
@@ -110,45 +106,4 @@ public class SignalDetectionControllerTest {
 				.andExpect(status().isOk());
 	}
 	
-	@Test
-	public void testGetAllByStatus() throws IOException, Exception{
-		
-		SearchDto searchDto=new SearchDto();
-		searchDto.setGantt(true);
-		
-		List<SignalDetection> detectionList=new ArrayList<>();
-		SignalDetection signalDection = new SignalDetection();
-		detectionList.add(signalDection);
-		SmtResponse smtResponse = new SmtResponse();
-		smtResponse.setResult(detectionList);
-		when(signalDetectionServiceMock.ganttDetections(smtResponse)).thenReturn(smtResponse);
-		
-		this.mockMvc
-		.perform(post("/camunda/api/signal/detect/all")
-				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(TestUtil.convertObjectToJsonBytes(searchDto)))
-		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-		
-	}
-	
-	@Test
-	public void testGetAllByStatusFalse() throws IOException, Exception{
-		
-		SearchDto searchDto=new SearchDto();
-		searchDto.setGantt(false);
-		
-		List<SignalDetection> detectionList=new ArrayList<>();
-		SignalDetection signalDection = new SignalDetection();
-		detectionList.add(signalDection);
-		SmtResponse smtResponse = new SmtResponse();
-		smtResponse.setResult(detectionList);
-		when(signalDetectionServiceMock.ganttDetections(smtResponse)).thenReturn(smtResponse);
-		
-		this.mockMvc
-		.perform(post("/camunda/api/signal/detect/all")
-				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(TestUtil.convertObjectToJsonBytes(searchDto)))
-		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-		
-	}
 }

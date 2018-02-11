@@ -1,4 +1,4 @@
-package com.deloitte.smt.controllertest;
+/*package com.deloitte.smt.controllertest;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doNothing;
@@ -33,11 +33,11 @@ import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.service.TaskTemplateService;
 import com.deloitte.smt.util.TestUtil;
 
-/**
+*//**
  * 
  * @author RajeshKumar
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -127,4 +127,4 @@ public class TaskTemplateControllerTest {
 		verifyNoMoreInteractions(taskTemplateServiceMock);
 	}
 
-}
+}*/

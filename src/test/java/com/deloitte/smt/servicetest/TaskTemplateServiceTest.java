@@ -34,14 +34,7 @@ public class TaskTemplateServiceTest {
 	private TaskTemplateRepository taskTemplateRepository;
 	
 	
-	@Test
-	public void testCreateTaskTemplate() throws Exception{
-		logger.info("testCreateTaskTemplate");
-		TaskTemplate taskTemplate = new TaskTemplate();
-		taskTemplate.setId(1l);
-		given(this.taskTemplateRepository.save(taskTemplate)).willReturn(taskTemplate);
-		taskTemplateService.createTaskTemplate(taskTemplate);
-	}
+	
 	
 	@Test
 	public void testUpdateTaskTemplate() throws Exception{
