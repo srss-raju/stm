@@ -54,10 +54,7 @@ public class DetectionRunService {
         RestTemplate restTemplate = new RestTemplate();
    
         // Data attached to the request.
-        HttpEntity<DetectionRunDTO> requestBody = new HttpEntity<>(dto, headers);
-   
-        // Send request with POST method.
-        restTemplate.postForObject(detectionRunServiceURL, requestBody, DetectionRunDTO.class);
+        
         
         
     	
@@ -95,8 +92,13 @@ public class DetectionRunService {
     				}
     			}
     		}
+    		dto.setRunInstanceId(detectionRunUpdated.getId());
     		dto.setQueries(signalDetection.getQueries());
     		dto.setStratifications(signalDetection.getStratifications());
+    		
+    		HttpEntity<DetectionRunDTO> requestBody = new HttpEntity<>(dto, headers);
+            // Send request with POST method.
+            restTemplate.postForObject(detectionRunServiceURL, requestBody, DetectionRunDTO.class);
     		
 		} catch (ApplicationException e) {
 			LOG.error(e);
