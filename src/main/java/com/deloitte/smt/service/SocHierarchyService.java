@@ -15,6 +15,7 @@ import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.SocHierarchyDto;
 import com.deloitte.smt.dto.SocSearchDTO;
 import com.deloitte.smt.entity.ConditionLevels;
+import com.deloitte.smt.entity.TopicAssignmentCondition;
 import com.deloitte.smt.repository.ConditionLevelRepository;
 
 /**
@@ -274,6 +275,18 @@ public class SocHierarchyService {
 		}
 
 		return socSearchDtoAllList;
+	}
+	
+	public String getEventKeyOfSelectedLevel(List<TopicAssignmentCondition> recordValues){
+		StringBuilder queryBuider = new StringBuilder("SELECT DISTINCT EVENT_KEY FROM EVENT_DIM WHERE ");
+		if(!CollectionUtils.isEmpty(recordValues)){
+			for(TopicAssignmentCondition record:recordValues){
+				queryBuider.append(record.getCategory()).append("='").append(record.getCategoryCode());
+				queryBuider.append("' AND ");
+			}
+		}
+		String query = queryBuider.toString().substring(0, queryBuider.lastIndexOf("AND"));
+		return socMedraHierarchyDAO.getEventKey(query);
 	}
 
 }

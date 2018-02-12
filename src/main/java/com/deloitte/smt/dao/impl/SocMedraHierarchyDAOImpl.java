@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dao.SocMedraHierarchyDAO;
 import com.deloitte.smt.dto.SocHierarchyDto;
@@ -23,6 +26,9 @@ public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {
 	private static final String SEARCHVALUE="searchText";
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
@@ -83,6 +89,15 @@ public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {
 		Map<String, Object> params = new HashMap<>();
 		params.put(SEARCHVALUE, "%" + searchText + "%");
 		return namedParameterJdbcTemplate.query(query, params, new SocSearchMapper());
+	}
+	
+	@Override
+	public String getEventKey(String query) {
+		List<String> list = jdbcTemplate.queryForList(query, String.class);
+		if(!CollectionUtils.isEmpty(list)){
+			return list.get(0);
+		}
+		return null;
 	}
 
 

@@ -18,6 +18,8 @@ public interface SocMedraHierarchyDAO {
 	List<SocSearchDTO> findByPtName(String searchText,int scrollOffset,int scrollCount);
 	
 	List<SocSearchDTO> findByLltName(String searchText,int scrollOffset,int scrollCount);
+
+	String getEventKey(String query);
 	
 	
 	

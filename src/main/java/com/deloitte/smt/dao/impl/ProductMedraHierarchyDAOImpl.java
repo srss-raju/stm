@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dao.ProductMedraHierarchyDAO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
@@ -29,10 +30,6 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 	
-	/*public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}*/
-
 	public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
@@ -114,6 +111,15 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 		Map<String, Object> params = new HashMap<>();
 		params.put("ingredientNames", ingredientNames);
 		return namedParameterJdbcTemplate.query(query, params, new ProductHierarchyMapper());
+	}
+	
+	@Override
+	public String getProductKey(String query) {
+		List<String> list = jdbcTemplate.queryForList(query, String.class);
+		if(!CollectionUtils.isEmpty(list)){
+			return list.get(0);
+		}
+		return null;
 	}
 	
 }

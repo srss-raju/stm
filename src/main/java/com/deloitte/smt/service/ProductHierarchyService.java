@@ -408,5 +408,17 @@ public class ProductHierarchyService {
 		topicProductAssignmentConfiguration.setRecordValues(recordValues);
 		products.add(topicProductAssignmentConfiguration);
 	}
-
+	
+	public String getProductKeyOfActLevel(List<TopicAssignmentProduct> recordValues){
+		StringBuilder queryBuider = new StringBuilder("SELECT DISTINCT PRODUCT_KEY FROM VW_ATC_PROD_DIM WHERE ");
+		if(!CollectionUtils.isEmpty(recordValues)){
+			for(TopicAssignmentProduct record:recordValues){
+				queryBuider.append(record.getCategory()).append("='").append(record.getCategoryCode());
+				queryBuider.append("' AND ");
+			}
+		}
+		String query = queryBuider.toString().substring(0, queryBuider.lastIndexOf("AND"));
+		return productMedraHierarchyDAO.getProductKey(query);
+	}
+	
 }
