@@ -98,8 +98,7 @@ public class DetectionRunService {
     		
     		HttpEntity<DetectionRunDTO> requestBody = new HttpEntity<>(dto, headers);
             // Send request with POST method.
-            restTemplate.postForObject(detectionRunServiceURL, requestBody, DetectionRunDTO.class);
-    		
+    		LOG.info(restTemplate.postForObject(detectionRunServiceURL, requestBody, DetectionRunDTO.class));
 		} catch (ApplicationException e) {
 			LOG.error(e);
 		}
