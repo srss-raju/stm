@@ -150,134 +150,216 @@ public class AssignmentService {
 	}
 	
 	private AssignmentConfiguration getAssignmentConfigurationRecursively(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
-		if(!assignmentConfiguration.isRepeatProductFlag() && (!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()))){
-			assignmentConfigurationFromDB = getAssignmentConfigurationWithProducts(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDB);
-		}
+		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
+		assignmentConfigurationFromDBx = configWithProducts(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDB, assignmentConfigurationFromDBx);
 		
 		
-		if(!assignmentConfiguration.isRepeatSocFlag() && (assignmentConfigurationFromDB == null && (!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())))){
+		if(!assignmentConfiguration.isRepeatSocFlag() && (assignmentConfigurationFromDBx == null && (!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())))){
 			assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
-			assignmentConfigurationFromDB = getAssignmentConfigurationWithConditions(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDB);
+			assignmentConfigurationFromDBx = getAssignmentConfigurationWithConditions(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDBx);
 		}
 		
-		if(assignmentConfigurationFromDB == null && (!assignmentConfiguration.isProductEmptyFlag()) && (!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()))){
-			assignmentConfiguration.setConditions(conditionProductDTO.getConditions());
-			assignmentConfiguration.setProducts(null);
-			assignmentConfiguration.setProductEmptyFlag(true);
-			assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
-		}
+		assignmentConfigurationFromDBx = setEmptyProductFlag(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDBx);
 		
-		if(assignmentConfigurationFromDB == null  && (!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()))){
+		if(assignmentConfigurationFromDBx == null  && (!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()))){
 			assignmentConfiguration.setProducts(null);
 			assignmentConfiguration.setConditions(conditionProductDTO.getConditions());
-			assignmentConfigurationFromDB = getAssignmentConfigurationWithConditionsOnly(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDB);
+			assignmentConfigurationFromDBx = getAssignmentConfigurationWithConditionsOnly(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDBx);
 		}
 		
-		if(assignmentConfigurationFromDB == null && (!assignmentConfiguration.isConditionEmptyFlag()) && (!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()))){
+		assignmentConfigurationFromDBx = setConditions(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDBx);
+		if(assignmentConfigurationFromDBx == null && (!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()))){
+			assignmentConfiguration.setConditions(null);
+			assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
+			assignmentConfigurationFromDBx = getAssignmentConfigurationWithProductsOnly(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDBx);
+		}
+		assignmentConfigurationFromDBx = getDefaultAssignmentConfiguration(assignmentConfigurationFromDBx);
+		return assignmentConfigurationFromDBx;
+	}
+
+	private AssignmentConfiguration setConditions(
+			AssignmentConfiguration assignmentConfiguration,
+			ConditionProductDTO conditionProductDTO,
+			AssignmentConfiguration assignmentConfigurationFromDBx)
+			throws ApplicationException {
+		AssignmentConfiguration assignmentConfigurationFromDBxx = assignmentConfigurationFromDBx;
+		if(assignmentConfigurationFromDBxx == null && (!assignmentConfiguration.isConditionEmptyFlag()) && (!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()))){
 			assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
 			assignmentConfiguration.setConditions(null);
 			assignmentConfiguration.setConditionEmptyFlag(true);
-			assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+			assignmentConfigurationFromDBxx = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
 		}
-		if(assignmentConfigurationFromDB == null && (!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()))){
-			assignmentConfiguration.setConditions(null);
-			assignmentConfiguration.setProducts(conditionProductDTO.getProducts());
-			assignmentConfigurationFromDB = getAssignmentConfigurationWithProductsOnly(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDB);
+		return assignmentConfigurationFromDBxx;
+	}
+
+	private AssignmentConfiguration setEmptyProductFlag(
+			AssignmentConfiguration assignmentConfiguration,
+			ConditionProductDTO conditionProductDTO,
+			AssignmentConfiguration assignmentConfigurationFromDBx)
+			throws ApplicationException {
+		AssignmentConfiguration assignmentConfigurationFromDBxx = assignmentConfigurationFromDBx;
+		if(assignmentConfigurationFromDBxx == null && (!assignmentConfiguration.isProductEmptyFlag()) && (!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()))){
+			assignmentConfiguration.setConditions(conditionProductDTO.getConditions());
+			assignmentConfiguration.setProducts(null);
+			assignmentConfiguration.setProductEmptyFlag(true);
+			assignmentConfigurationFromDBxx = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
 		}
-		assignmentConfigurationFromDB = getDefaultAssignmentConfiguration(assignmentConfigurationFromDB);
-		return assignmentConfigurationFromDB;
+		return assignmentConfigurationFromDBxx;
+	}
+
+	private AssignmentConfiguration configWithProducts(
+			AssignmentConfiguration assignmentConfiguration,
+			ConditionProductDTO conditionProductDTO,
+			AssignmentConfiguration assignmentConfigurationFromDB,
+			AssignmentConfiguration assignmentConfigurationFromDBx)
+			throws ApplicationException {
+		AssignmentConfiguration assignmentConfigurationFromDBxx = assignmentConfigurationFromDBx;
+		if(!assignmentConfiguration.isRepeatProductFlag() && (!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()))){
+			assignmentConfigurationFromDBxx = getAssignmentConfigurationWithProducts(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDB);
+		}
+		return assignmentConfigurationFromDBxx;
 	}
 	
 	private AssignmentConfiguration getAssignmentConfigurationWithProducts(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
-		if(assignmentConfigurationFromDB == null){
+		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
+		if(assignmentConfigurationFromDBx == null){
 			if(assignmentConfiguration.isConditionEmptyFlag()){
 				assignmentConfiguration.setConditions(null);
 			}
 			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 				String recordKey = productConfig.getRecordKey();
-					while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatProductFlag())){
-						recordKey = SignalUtil.getRecordKey(recordKey);
-						if(recordKey != null){
-							productConfig.setRecordKey(recordKey);
-							assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
-						}else{
-							assignmentConfiguration.setRepeatProductFlag(true);
-							break;
-						}
-						
-					}
+					assignmentConfigurationFromDBx = setRepeatProductFlag(
+							assignmentConfiguration, conditionProductDTO,
+							assignmentConfigurationFromDBx, productConfig,
+							recordKey);
 			}
 		}
-		return assignmentConfigurationFromDB;
+		return assignmentConfigurationFromDBx;
+	}
+
+	private AssignmentConfiguration setRepeatProductFlag(
+			AssignmentConfiguration assignmentConfiguration,
+			ConditionProductDTO conditionProductDTO,
+			AssignmentConfiguration assignmentConfigurationFromDBx,
+			AssignmentProduct productConfig, String recordKey)
+			throws ApplicationException {
+		String recordKeyx = recordKey;
+		AssignmentConfiguration assignmentConfigurationFromDBxx = assignmentConfigurationFromDBx;
+		while(recordKeyx != null && assignmentConfigurationFromDBxx == null && (!assignmentConfiguration.isRepeatProductFlag())){
+			recordKeyx = SignalUtil.getRecordKey(recordKeyx);
+			if(recordKeyx != null){
+				productConfig.setRecordKey(recordKeyx);
+				assignmentConfigurationFromDBxx = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+			}else{
+				assignmentConfiguration.setRepeatProductFlag(true);
+				break;
+			}
+			
+		}
+		return assignmentConfigurationFromDBx;
 	}
 	
 	private AssignmentConfiguration getAssignmentConfigurationWithConditions(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
-		if(assignmentConfigurationFromDB == null){
+		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
+		if(assignmentConfigurationFromDBx == null){
 			if(assignmentConfiguration.isProductEmptyFlag()){
 				assignmentConfiguration.setProducts(null);
 			}
-			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
-				String recordKey = socConfig.getRecordKey();
-					while(recordKey != null && assignmentConfigurationFromDB == null && (!assignmentConfiguration.isRepeatSocFlag())){
-						recordKey = SignalUtil.getRecordKey(recordKey);
-						if(recordKey != null){
-							socConfig.setRecordKey(recordKey);
-							assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
-						}else{
-							assignmentConfiguration.setRepeatSocFlag(true);
-							break;
-						}
+			assignmentConfigurationFromDBx = getConfiguration(
+					assignmentConfiguration, conditionProductDTO,
+					assignmentConfigurationFromDBx);
+		}
+		return assignmentConfigurationFromDBx;
+	}
+
+	private AssignmentConfiguration getConfiguration(
+			AssignmentConfiguration assignmentConfiguration,
+			ConditionProductDTO conditionProductDTO,
+			AssignmentConfiguration assignmentConfigurationFromDB)
+			throws ApplicationException {
+		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
+		for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
+			String recordKey = socConfig.getRecordKey();
+				while(recordKey != null && assignmentConfigurationFromDBx == null && (!assignmentConfiguration.isRepeatSocFlag())){
+					recordKey = SignalUtil.getRecordKey(recordKey);
+					if(recordKey != null){
+						socConfig.setRecordKey(recordKey);
+						assignmentConfigurationFromDBx = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+					}else{
+						assignmentConfiguration.setRepeatSocFlag(true);
+						break;
 					}
-			}
+				}
 		}
 		return assignmentConfigurationFromDB;
 	}
 	
 	private AssignmentConfiguration getDefaultAssignmentConfiguration(AssignmentConfiguration assignmentConfigurationFromDB) {
-		if(assignmentConfigurationFromDB == null){
-			assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
+		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
+		if(assignmentConfigurationFromDBx == null){
+			assignmentConfigurationFromDBx = assignmentConfigurationRepository.findByIsDefault(true);
 		}
-		return assignmentConfigurationFromDB;
+		return assignmentConfigurationFromDBx;
 	}
 	
 	
 	private AssignmentConfiguration getAssignmentConfigurationWithProductsOnly(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
-		if(assignmentConfigurationFromDB == null){
-			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
-				String recordKey = productConfig.getRecordKey();
-					while(recordKey != null && assignmentConfigurationFromDB == null){
-						recordKey = SignalUtil.getRecordKey(recordKey);
-						if(recordKey != null){
-							productConfig.setRecordKey(recordKey);
-							assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
-						}else{
-							assignmentConfiguration.setRepeatProductFlag(true);
-							break;
-						}
-						
-					}
-			}
+		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
+		if(assignmentConfigurationFromDBx == null){
+			assignmentConfigurationFromDBx = getProductConfiguration(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDBx);
 		}
-		return assignmentConfigurationFromDB;
+		return assignmentConfigurationFromDBx;
+	}
+
+	private AssignmentConfiguration getProductConfiguration(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
+		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
+		for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
+			String recordKey = productConfig.getRecordKey();
+				while(recordKey != null && assignmentConfigurationFromDBx == null){
+					recordKey = SignalUtil.getRecordKey(recordKey);
+					if(recordKey != null){
+						productConfig.setRecordKey(recordKey);
+						assignmentConfigurationFromDBx = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+					}else{
+						assignmentConfiguration.setRepeatProductFlag(true);
+						break;
+					}
+					
+				}
+		}
+		return assignmentConfigurationFromDBx;
 	}
 	
 	private AssignmentConfiguration getAssignmentConfigurationWithConditionsOnly(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
-		if(assignmentConfigurationFromDB == null){
-			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
-				String recordKey = socConfig.getRecordKey();
-					while(recordKey != null && assignmentConfigurationFromDB == null){
-						recordKey = SignalUtil.getRecordKey(recordKey);
-						if(recordKey != null){
-							socConfig.setRecordKey(recordKey);
-							assignmentConfigurationFromDB = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
-						}else{
-							assignmentConfiguration.setRepeatSocFlag(true);
-							break;
-						}
-					}
-			}
+		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
+		if(assignmentConfigurationFromDBx == null){
+			assignmentConfigurationFromDBx = getConditionConfiguration(
+					assignmentConfiguration, conditionProductDTO,
+					assignmentConfigurationFromDBx);
 		}
-		return assignmentConfigurationFromDB;
+		return assignmentConfigurationFromDBx;
+	}
+
+	private AssignmentConfiguration getConditionConfiguration(
+			AssignmentConfiguration assignmentConfiguration,
+			ConditionProductDTO conditionProductDTO,
+			AssignmentConfiguration assignmentConfigurationFromDB)
+			throws ApplicationException {
+		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
+		for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
+			String recordKey = socConfig.getRecordKey();
+				while(recordKey != null && assignmentConfigurationFromDBx == null){
+					recordKey = SignalUtil.getRecordKey(recordKey);
+					if(recordKey != null){
+						socConfig.setRecordKey(recordKey);
+						assignmentConfigurationFromDBx = getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO);
+					}else{
+						assignmentConfiguration.setRepeatSocFlag(true);
+						break;
+					}
+				}
+		}
+		return assignmentConfigurationFromDBx;
 	}
 	
 	

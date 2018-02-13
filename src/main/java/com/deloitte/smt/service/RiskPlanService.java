@@ -106,7 +106,7 @@ public class RiskPlanService {
 		riskPlan.setLastModifiedDate(d);
 		riskPlan.setRiskTaskStatus("Completed");
 		riskPlan.setSummary(SmtConstant.SUMMARY.getDescription());
-		AssignmentConfiguration assignmentConfiguration = null;
+		
 
 		RiskPlan riskPlanUpdated;
 		Long riskPlanExist = riskPlanRepository.countByNameIgnoreCase(riskPlan.getName());
@@ -130,7 +130,13 @@ public class RiskPlanService {
 			}
 			riskPlanUpdated = riskPlanRepository.save(riskPlan);
 		}
+		setAssignmentConfiguration(riskPlan, riskPlanUpdated);
+		
+		return riskPlanUpdated;
+	}
+	private void setAssignmentConfiguration(RiskPlan riskPlan, RiskPlan riskPlanUpdated) throws ApplicationException {
 		AssessmentPlan assessmentPlan = null;
+		AssignmentConfiguration assignmentConfiguration = null;
 		if(riskPlan.getAssessmentPlan().getId() != null) {
 			try{
 				assessmentPlan = assessmentPlanService.findById(riskPlan.getAssessmentPlan().getId());
@@ -158,7 +164,6 @@ public class RiskPlanService {
 					riskPlanUpdated.setOwner(assignmentConfiguration.getRiskOwner());
 			}
 		}
-		return riskPlanUpdated;
 	}
 	private Topic getTopic(AssessmentPlan assessmentPlan) {
 		Topic topic = null;

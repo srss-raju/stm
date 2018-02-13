@@ -49,7 +49,6 @@ public class TaskTemplateService {
 		return taskTemplateRepository.save(taskTemplate);
 	}
 
-	@SuppressWarnings("unchecked")
 	private boolean duplicateRecordCheck(TaskTemplate taskTemplate) {
 		boolean duplicateFlag = false;
 		StringBuilder queryBuilder = new StringBuilder("select DISTINCT t.*  from sm_task_template t left join sm_task_template_products p on t.id = p.task_template_id where p.record_key in (");
@@ -62,24 +61,29 @@ public class TaskTemplateService {
 					productBuilder.append(",");
 				}
 			}
-			String productBuilderValue = null;
+			String productBuilderValue;
 			if(!StringUtils.isEmpty(productBuilder.toString())){
 				productBuilderValue = productBuilder.toString().substring(0, productBuilder.lastIndexOf(","));
 				queryBuilder.append(productBuilderValue);
 			}
 			queryBuilder.append(")");
-			if(!StringUtils.isEmpty(productBuilderValue)){
-				Query query = entityManager.createNativeQuery(queryBuilder.toString(), TaskTemplate.class);
-				List<TaskTemplate> records = query.getResultList();
-				if(!CollectionUtils.isEmpty(records)){
-					for(TaskTemplate template:records){
-						if(taskTemplate.getType().equalsIgnoreCase(template.getType())){
-							duplicateFlag = true;
-						}
+			duplicateFlag = getDuplicateFlag(taskTemplate, queryBuilder);
+		}
+		return duplicateFlag;
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean getDuplicateFlag(TaskTemplate taskTemplate, StringBuilder queryBuilder) {
+		boolean duplicateFlag = false;
+			Query query = entityManager.createNativeQuery(queryBuilder.toString(), TaskTemplate.class);
+			List<TaskTemplate> records = query.getResultList();
+			if(!CollectionUtils.isEmpty(records)){
+				for(TaskTemplate template:records){
+					if(taskTemplate.getType().equalsIgnoreCase(template.getType())){
+						duplicateFlag = true;
 					}
 				}
 			}
-		}
 		return duplicateFlag;
 	}
 

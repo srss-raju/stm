@@ -48,6 +48,13 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private static final String RISK = "risk";
 	private static final String SIGNAL = "signal";
 	private static final String DETECTION = "detection";
+	private static final String STATUSES = "statuses";
+	private static final String ASSESSMENTTASKSTATUS = "assessmenttaskstatus";
+	private static final String RISKPLANACTIONSTATUS = "riskplanactionstatus";
+	private static final String FREQUENCY = "frequency";
+	private static final String SIGNALCONFIRMATION = "signalconfirmation";
+	private static final String SIGNALSOURCE = "signalsource";
+	private static final String FINALDISPOSITIONS = "finaldispositions";
 	@Autowired
 	private FilterRepository filterRepository;
 	@Autowired
@@ -102,10 +109,10 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		List<?> data;
 		logger.info("KEY...." + key);
 		switch (key) {
-		case "statuses":
-		case "assessmenttaskstatus":
-		case "riskplanactionstatus":
-		case "frequency":
+		case STATUSES:
+		case ASSESSMENTTASKSTATUS:
+		case RISKPLANACTIONSTATUS:
+		case FREQUENCY:
 			filterList.add(getFiltersType(filter));
 			break;
 		case "products":
@@ -119,17 +126,17 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "signalconfirmation":
+		case SIGNALCONFIRMATION:
 			data = topicRepository.findDistinctSignalConfirmationNames();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "signalsource":
+		case SIGNALSOURCE:
 			data = topicRepository.getSourceNames();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "finaldispositions":
+		case FINALDISPOSITIONS:
 			data = assessmentPlanRepository.getAssessmentRiskStatus();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
@@ -148,6 +155,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	}
 
 	private void getEmptyFilterValues(Filters filter, List<FilterDTO> filterList) {
+		
 		logger.info("getEmptyFilterValues----" + filter.getName());
 		FilterDTO dto;
 		dto = new FilterDTO();
@@ -311,7 +319,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	}
 	
 	
-	private Set<String> constructObjectToSet(List<?> filterValues) {
+	Set<String> constructObjectToSet(List<?> filterValues) {
 		logger.info("filterValues...."+filterValues);
 		Set<String> valueSet = null;
 		try {
@@ -349,23 +357,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				ObjectMapper oMapper = new ObjectMapper();
 				Set<Object> userSet = new HashSet<>();
 				Set<Object> groupSet = new HashSet<>();
-				for (Object assignObj : assigneeMap) {
-					@SuppressWarnings("unchecked")
-					Map<String, Object> map = oMapper.convertValue(assignObj, Map.class);
-					map.forEach((k, v) -> {
-						if (k.contains("userKey")) {
-							if (!"".equals(v.toString()))
-								userSet.add(v.toString());
-
-						} else {
-							List<?> l = (ArrayList<?>) v;
-							for (Object obj : l) {
-								if (!"".equals(obj.toString()))
-									groupSet.add(obj.toString());
-							}
-						}
-					});
-				}
+				setUserOwnerGroup(assigneeMap, oMapper, userSet, groupSet);
 				userSet1 = userSet;
 				groupSet1 = groupSet;
 			}
@@ -389,36 +381,60 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		}
 	}
 
-	private void buildOwnerUserGroupPredicate(StringBuilder queryBuilder, StringBuilder owner, StringBuilder user,
-			StringBuilder group) {
-		if (owner != null) {
-			checkOwnerUserAndGroupExists(queryBuilder, owner, user, group);
-		} else {
-			checkUserAndGroupExists(queryBuilder, user, group);
+	private void setUserOwnerGroup(List<?> assigneeMap, ObjectMapper oMapper,
+			Set<Object> userSet, Set<Object> groupSet) {
+		for (Object assignObj : assigneeMap) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> map = oMapper.convertValue(assignObj, Map.class);
+			map.forEach((k, v) -> {
+				if (k.contains("userKey")) {
+					if (!"".equals(v.toString()))
+						userSet.add(v.toString());
+
+				} else {
+					setGroup(groupSet, v);
+				}
+			});
 		}
 	}
 
-	private void checkOwnerUserAndGroupExists(StringBuilder queryBuilder, StringBuilder owner, StringBuilder user,
-			StringBuilder group) {
+	private void setGroup(Set<Object> groupSet, Object v) {
+		List<?> l = (ArrayList<?>) v;
+		for (Object obj : l) {
+			if (!"".equals(obj.toString()))
+				groupSet.add(obj.toString());
+		}
+	}
+
+	private void buildOwnerUserGroupPredicate(StringBuilder queryBuilder, StringBuilder owner, StringBuilder user, StringBuilder group) {
+		String queryString = " and (";
+		if (owner != null) {
+			checkOwnerUserAndGroupExists(queryBuilder, owner, user, group, queryString);
+		} else {
+			checkUserAndGroupExists(queryBuilder, user, group, queryString);
+		}
+	}
+
+	private void checkOwnerUserAndGroupExists(StringBuilder queryBuilder, StringBuilder owner, StringBuilder user, StringBuilder group, String queryString) {
 		if (user != null && group != null)
 			queryBuilder.append(" and (").append(user).append(" or ").append(group).append(" or ").append(owner).append(")");
 		else {
 			if (user != null)
-				queryBuilder.append(" and (").append(user).append(" or ").append(owner).append(")");
+				queryBuilder.append(queryString).append(user).append(" or ").append(owner).append(")");
 			else if (group != null)
-				queryBuilder.append(" and (").append(group).append(" or ").append(owner).append(")");
+				queryBuilder.append(queryString).append(group).append(" or ").append(owner).append(")");
 			else
-				queryBuilder.append(" and (").append(owner).append(")");
+				queryBuilder.append(queryString).append(owner).append(")");
 		}
 	}
-	private void checkUserAndGroupExists(StringBuilder queryBuilder, StringBuilder user, StringBuilder group) {
+	private void checkUserAndGroupExists(StringBuilder queryBuilder, StringBuilder user, StringBuilder group, String queryString) {
 		if (user != null && group != null)
-			queryBuilder.append(" and (").append(user).append(" or ").append(group).append(")");
+			queryBuilder.append(queryString).append(user).append(" or ").append(group).append(")");
 		else {
 			if (user != null)
-			queryBuilder.append(" and (").append(user).append(")");
+			queryBuilder.append(queryString).append(user).append(")");
 			else if (group != null)
-				queryBuilder.append(" and (").append(group).append(")");
+				queryBuilder.append(queryString).append(group).append(")");
 		}
 	}
 	
@@ -455,13 +471,13 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private void buildPredicates(StringBuilder queryBuilder, Entry<String, Object> me, String key, String type, Map<String, Object> parameterMap) {
 		logger.info("key...."+key);
 		switch (key) {
-		case "statuses":
+		case STATUSES:
 			addStatuses(me.getValue(), queryBuilder, type,parameterMap);
 			break;
-		case "signalsource":
+		case SIGNALSOURCE:
 			addSourceNames(me.getValue(), queryBuilder, parameterMap);
 			break;
-		case "signalconfirmation":
+		case SIGNALCONFIRMATION:
 			addSignalConfirmations(me.getValue(), queryBuilder, parameterMap);
 			break;
 		case "dueDates":
@@ -471,16 +487,16 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		case "detectedDates":
 			addCreatedDate(me.getValue(), queryBuilder, parameterMap);
 			break;
-		case "assessmenttaskstatus":
+		case ASSESSMENTTASKSTATUS:
 			addAssessmentTaskStatus(me.getValue(), queryBuilder, parameterMap);
 			break;
-		case "finaldispositions":
+		case FINALDISPOSITIONS:
 			addFinalDispositions(me.getValue(), queryBuilder, parameterMap);
 			break;
-		case "riskplanactionstatus":
+		case RISKPLANACTIONSTATUS:
 			addRiskPlanActionStatus(me.getValue(), queryBuilder, parameterMap);
 			break;
-		case "frequency":
+		case FREQUENCY:
 			addFrequency(me.getValue(), queryBuilder, parameterMap);
 			break;
 		case "lastRunDates":
@@ -545,7 +561,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			}
 	}
 	
-	private List<FilterDataObject> prepareSignalResponse(List<E> resultList, String type) {
+	List<FilterDataObject> prepareSignalResponse(List<E> resultList, String type) {
 		List<FilterDataObject> fres = null;
 		switch (type) {
 		case SIGNAL:
@@ -652,14 +668,14 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		Set<Object> list = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(list)) {
 			queryBuilder.append(" and root.runFrequency in :frequency");
-			parameterMap.put("frequency", list);
+			parameterMap.put(FREQUENCY, list);
 		}
 	}
 	private void addRiskPlanActionStatus(Object statusValue, StringBuilder queryBuilder, Map<String, Object> parameterMap) {
 		Set<Object> list = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(list)) {
 			queryBuilder.append(" and root.riskTaskStatus in :riskplanactionstatus");
-			parameterMap.put("riskplanactionstatus", list);
+			parameterMap.put(RISKPLANACTIONSTATUS, list);
 		}
 	}
 	
@@ -668,7 +684,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		Set<Object> list = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(list)) {
 			queryBuilder.append(" and root.assessmentRiskStatus in :finaldispositions");
-			parameterMap.put("finaldispositions", list);
+			parameterMap.put(FINALDISPOSITIONS, list);
 		}
 
 	}
@@ -677,7 +693,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		Set<Object> list = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(list)) {
 			queryBuilder.append(" and root.assessmentTaskStatus in :assessmenttaskstatus");
-			parameterMap.put("assessmenttaskstatus", list);
+			parameterMap.put(ASSESSMENTTASKSTATUS, list);
 		}
 
 	}
@@ -685,7 +701,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		Set<Object> statusList = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(statusList)) {
 			queryBuilder.append(" and root.signalConfirmation in :signalconfirmation");
-			parameterMap.put("signalconfirmation", statusList);
+			parameterMap.put(SIGNALCONFIRMATION, statusList);
 		}
 
 	}
@@ -693,7 +709,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		Set<Object> statusList = prepareFieldValuesSet(statusValue);
 		if (!CollectionUtils.isEmpty(statusList)) {
 			queryBuilder.append(" and root.sourceName in :signalsource");
-			parameterMap.put("signalsource", statusList);
+			parameterMap.put(SIGNALSOURCE, statusList);
 		}
 	}
 	private void addStatuses(Object statusValue, StringBuilder queryBuilder,  String type, Map<String, Object> parameterMap) {
@@ -710,7 +726,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				queryBuilder.append(" and root.signalStatus in :statuses");
 				break;
 			}
-			parameterMap.put("statuses", statusList);
+			parameterMap.put(STATUSES, statusList);
 		}
 
 	}

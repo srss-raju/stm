@@ -3,7 +3,6 @@ package com.deloitte.smt.service.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,6 +23,7 @@ import com.deloitte.smt.repository.ProductLevelRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import com.deloitte.smt.util.ProductUtil;
 
 @Service
 public class ProductFilterServiceImpl {
@@ -54,46 +54,54 @@ public class ProductFilterServiceImpl {
 			productLevels = productLevelRepository.findAllByOrderByIdAsc();
 			logger.info("PRODUCT LEVEL MAP ==="+prlevels);
 			logger.info("PRODUCT REPO MAP ==="+productLevels);
+			if(!CollectionUtils.isEmpty(productLevels))
+			{
 			constructProductFilter(filterList, prlevels, productLevels);
-			
+			}
 		} catch (Exception e) {
 			logger.error(e);
 		}
 	}
 
-	private void constructProductFilter(List<FilterDTO> filterList, List<Map<String, List<LevelsDTO>>> prlevels,
-			List<ProductLevels> productLevels) {
-		FilterDTO dto;
-		if(!CollectionUtils.isEmpty(productLevels))
-		{
+	private void constructProductFilter(List<FilterDTO> filterList, List<Map<String, List<LevelsDTO>>> prlevels, List<ProductLevels> productLevels) {
 			for (ProductLevels productLevel : productLevels) {
-				dto = new FilterDTO();
-				dto.setFilterKey(productLevel.getValue().replace(" ", ""));
-				dto.setFilterName(productLevel.getValue());
-				dto.setFilterType("product");
-				boolean exists=false;
-				List<?>	existList=null;
-				if(!CollectionUtils.isEmpty(prlevels))
+				setFilters(filterList, prlevels, productLevel);
+			}
+	}
+
+	private void setFilters(List<FilterDTO> filterList,
+			List<Map<String, List<LevelsDTO>>> prlevels,
+			ProductLevels productLevel) {
+		FilterDTO dto;
+		dto = new FilterDTO();
+		dto.setFilterKey(productLevel.getValue().replace(" ", ""));
+		dto.setFilterName(productLevel.getValue());
+		dto.setFilterType("product");
+		boolean exists=false;
+		List<?>	existList=null;
+		if(!CollectionUtils.isEmpty(prlevels))
+		{
+			for (Map<String, List<LevelsDTO>> prlevelMap : prlevels) {
+				if(prlevelMap.containsKey(productLevel.getKey()))
 				{
-					for (Map<String, List<LevelsDTO>> prlevelMap : prlevels) {
-						if(prlevelMap.containsKey(productLevel.getKey()))
-						{
-							existList = prlevelMap.get(productLevel.getKey());
-							exists=true;
-							break;
-						}
-						else
-							exists=false;
-					}
+					existList = prlevelMap.get(productLevel.getKey());
+					exists=true;
+					break;
 				}
-				logger.info("Exists...?"+productLevel.getKey()+"----"+exists);
-				if(exists)
-					dto.setFilterValues(existList);
 				else
-					dto.setFilterValues(new ArrayList<>());
-				filterList.add(dto);
+					exists=false;
 			}
 		}
+		logger.info("Exists...?"+productLevel.getKey()+"----"+exists);
+		setFilterValues(dto, existList, exists);
+		filterList.add(dto);
+	}
+	
+	private void setFilterValues(FilterDTO dto, List<?> existList, boolean exists) {
+		if (exists)
+			dto.setFilterValues(existList);
+		else
+			dto.setFilterValues(new ArrayList<>());
 	}
 
 	private List<Map<String, List<LevelsDTO>>> productLevelValuesCodes(String type) {
@@ -116,13 +124,14 @@ public class ProductFilterServiceImpl {
 		logger.info("TYPE-------> "+type+" ############>>>>>" + prodFillVals);
 		if (!CollectionUtils.isEmpty(prodFillVals)) {
 			levelMapList = new ArrayList<>();
-			Map<Integer, Set<String>> itemMap = splitRecordValues(prodFillVals);
+			ProductUtil productUtil = new ProductUtil();
+			Map<Integer, Set<String>> itemMap = productUtil.splitRecordValues(prodFillVals);
 			logger.info("MAP #############>>>>>" + itemMap);
 			Set<Entry<Integer, Set<String>>> st = itemMap.entrySet();
 			for (Entry<Integer, Set<String>> me : st) {
 				Set<String> recValues = me.getValue();
 				List<Object[]> assignmentProductList = getCategoryCodes(recValues);
-				createProductValues(levelMapList, assignmentProductList);
+				productUtil.createProductValues(levelMapList, assignmentProductList);
 			}
 			logger.info("assignmentProductList #############>>>>>" + levelMapList);
 		}
@@ -145,41 +154,10 @@ public class ProductFilterServiceImpl {
 		return prds;
 	}
 
-	private void createProductValues(List<Map<String, List<LevelsDTO>>> levelMapList,
-			List<Object[]> assignmentProductList) {
-		if (!CollectionUtils.isEmpty(assignmentProductList)) {
-			Map<String, List<LevelsDTO>> levelMap = new LinkedHashMap<>();
-			List<LevelsDTO> levels = new ArrayList<>();
-			for (Object[] assignmentProduct : assignmentProductList) {
-				LevelsDTO level = new LevelsDTO();
-				level.setKey(assignmentProduct[0].toString());
-				level.setValue(assignmentProduct[1].toString());
-				levels.add(level);
-			}
-			levelMap.put(assignmentProductList.get(0)[2].toString(), levels);
-			levelMapList.add(levelMap);
-		}
-	}
+	
 
 	private List<Object[]> getCategoryCodes(Set<String> recValues) {
 		return assignmentProductValuesRepository.findDistinctByCategoryCodeIn(recValues);
-	}
-
-	private Map<Integer, Set<String>> splitRecordValues(List<String> prodFillVals) {
-		Map<Integer, Set<String>> itemMap = new LinkedHashMap<>();
-		for (String value : prodFillVals) {
-			String[] splitArr = value.split("@#");
-			for (int i = 0; i < splitArr.length; i++) {
-				if (itemMap.containsKey(i)) {
-					itemMap.get(i).add(splitArr[i]);
-				} else {
-					Set<String> set = new HashSet<>();
-					set.add(splitArr[i]);
-					itemMap.put(i, set);
-				}
-			}
-		}
-		return itemMap;
 	}
 
 	public void constructProductPredicate(Set<String> productSet, StringBuilder queryBuilder, String type, Map<String, Object> parameterMap) {
