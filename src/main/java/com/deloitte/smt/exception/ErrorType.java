@@ -21,17 +21,19 @@ public enum ErrorType {
 	private final Integer code;
 	private final String label;
 	private final String defaultMessage;
-
-	public String getDefaultMessage() {
-		return defaultMessage;
-	}
-
+	
 	private ErrorType(Integer code, String label, String defaultMessage) {
 		this.code = code;
 		this.label = label;
 		this.defaultMessage = defaultMessage;
 	}
 
+
+	public String getDefaultMessage() {
+		return defaultMessage;
+	}
+
+	
 	public String getLabel() {
 		return label;
 	}
