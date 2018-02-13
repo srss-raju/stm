@@ -55,9 +55,6 @@ public class DetectionRunService {
    
         // Data attached to the request.
         
-        
-        
-    	
     	boolean productFlag = false;
     	boolean eventFlag = false;
     	detectionRun.setCreatedDate(new Date());
@@ -70,25 +67,29 @@ public class DetectionRunService {
     		if(!CollectionUtils.isEmpty(signalDetection.getConditions())){
     			String eventKey;
     			for(TopicSocAssignmentConfiguration condition:signalDetection.getConditions()){
-    				eventKey = socHierarchyService.getEventKeyOfSelectedLevel(condition.getRecordValues());
+    				eventKey = socHierarchyService.getEventKeyOfSelectedLevel(condition.getRecordValues(),dto);
     				if(!eventFlag){
     					eventFlag = true;
-    					dto.setEventKey(eventKey);
+    					dto.setPrimaryEventKey(eventKey);
     				}else{
-    					dto.setEventKey2(eventKey);
+    					dto.setSecondaryEventKey(eventKey);
     				}
     			}
     		}
     		
     		if(!CollectionUtils.isEmpty(signalDetection.getProducts())){
     			String productKey;
-    			for(TopicProductAssignmentConfiguration condition:signalDetection.getProducts()){
-    				productKey = productHierarchyService.getProductKeyOfActLevel(condition.getRecordValues());
+    			String ingredient;
+    			for(TopicProductAssignmentConfiguration product:signalDetection.getProducts()){
+    				productKey = productHierarchyService.getProductKeyOfActLevel(product.getRecordValues(), dto);
+    				ingredient = productHierarchyService.getIngredientOfActLevel(product.getRecordValues());
     				if(!productFlag){
     					productFlag = true;
-    					dto.setProductKey(productKey);
+    					dto.setPrimaryProductKey(productKey);
+    					dto.setPrimaryProductIngredientKey(ingredient);
     				}else{
-    					dto.setProductKey2(productKey);
+    					dto.setSecondaryProductKey(productKey);
+    					dto.setSecondaryProductIngredientKey(ingredient);
     				}
     			}
     		}

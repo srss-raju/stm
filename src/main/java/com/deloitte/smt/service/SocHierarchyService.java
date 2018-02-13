@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dao.SocMedraHierarchyDAO;
+import com.deloitte.smt.dto.DetectionRunDTO;
 import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.SocHierarchyDto;
 import com.deloitte.smt.dto.SocSearchDTO;
@@ -189,7 +190,7 @@ public class SocHierarchyService {
 		return socSearchDtoList;
 	}
 
-	private String getConditionByKeyName(String keyName) {
+	String getConditionByKeyName(String keyName) {
 		ConditionLevels crl= conditionLevelRepository.findByKey(keyName);
 		if(crl!=null)
 			return crl.getValue();
@@ -277,16 +278,27 @@ public class SocHierarchyService {
 		return socSearchDtoAllList;
 	}
 	
-	public String getEventKeyOfSelectedLevel(List<TopicAssignmentCondition> recordValues){
+	public String getEventKeyOfSelectedLevel(List<TopicAssignmentCondition> recordValues, DetectionRunDTO dto){
+		String socLevel = null;
 		StringBuilder queryBuider = new StringBuilder("SELECT DISTINCT EVENT_KEY FROM EVENT_DIM WHERE ");
 		if(!CollectionUtils.isEmpty(recordValues)){
 			for(TopicAssignmentCondition record:recordValues){
 				queryBuider.append(record.getCategory()).append("='").append(record.getCategoryCode());
 				queryBuider.append("' AND ");
+				socLevel = record.getCategory();
 			}
+			String query = queryBuider.toString().substring(0, queryBuider.lastIndexOf("AND"));
+			if(dto.getPrimaryEventLevel()!=null){
+				dto.setSecondaryEventLevel(socLevel);
+			}else{
+				dto.setPrimaryEventLevel(socLevel);
+			}
+			return socMedraHierarchyDAO.getEventKey(query);
+		}else{
+			dto.setPrimaryEventLevel("All");
+			dto.setSecondaryEventLevel("All");
 		}
-		String query = queryBuider.toString().substring(0, queryBuider.lastIndexOf("AND"));
-		return socMedraHierarchyDAO.getEventKey(query);
+		return "";
 	}
 
 }

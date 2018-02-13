@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.deloitte.smt.entity.Query;
 import com.deloitte.smt.entity.Stratification;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DetectionRunDTO  implements Serializable{
 
@@ -14,14 +13,16 @@ public class DetectionRunDTO  implements Serializable{
 	private List<Query> queries;
 	private List<Stratification> stratifications;
 	private Long runInstanceId;
-	@JsonProperty("PRODUCT_KEY")
-	private String productKey;
-	@JsonProperty("PRODUCT_KEY2")
-	private String productKey2;
-	@JsonProperty("EVENT_KEY")
-	private String eventKey;
-	@JsonProperty("EVENT_KEY2")
-	private String eventKey2;
+	private String primaryProductKey;
+	private String primaryEventKey;
+	private String primaryProductIngredientKey;
+	private String secondaryProductKey;
+	private String secondaryEventKey;
+	private String secondaryProductIngredientKey;
+	private String primaryProductActLevel;
+	private String secondaryProductActLevel;
+	private String primaryEventLevel;
+	private String secondaryEventLevel;
 	
 	
 	public List<Query> getQueries() {
@@ -42,29 +43,66 @@ public class DetectionRunDTO  implements Serializable{
 	public void setRunInstanceId(Long runInstanceId) {
 		this.runInstanceId = runInstanceId;
 	}
-	public String getProductKey() {
-		return productKey;
+	public String getPrimaryProductKey() {
+		return primaryProductKey;
 	}
-	public void setProductKey(String productKey) {
-		this.productKey = productKey;
+	public void setPrimaryProductKey(String primaryProductKey) {
+		this.primaryProductKey = primaryProductKey;
 	}
-	public String getProductKey2() {
-		return productKey2;
+	public String getPrimaryEventKey() {
+		return primaryEventKey;
 	}
-	public void setProductKey2(String productKey2) {
-		this.productKey2 = productKey2;
+	public void setPrimaryEventKey(String primaryEventKey) {
+		this.primaryEventKey = primaryEventKey;
 	}
-	public String getEventKey() {
-		return eventKey;
+	public String getPrimaryProductIngredientKey() {
+		return primaryProductIngredientKey;
 	}
-	public void setEventKey(String eventKey) {
-		this.eventKey = eventKey;
+	public void setPrimaryProductIngredientKey(String primaryProductIngredientKey) {
+		this.primaryProductIngredientKey = primaryProductIngredientKey;
 	}
-	public String getEventKey2() {
-		return eventKey2;
+	public String getSecondaryProductKey() {
+		return secondaryProductKey;
 	}
-	public void setEventKey2(String eventKey2) {
-		this.eventKey2 = eventKey2;
+	public void setSecondaryProductKey(String secondaryProductKey) {
+		this.secondaryProductKey = secondaryProductKey;
+	}
+	public String getSecondaryEventKey() {
+		return secondaryEventKey;
+	}
+	public void setSecondaryEventKey(String secondaryEventKey) {
+		this.secondaryEventKey = secondaryEventKey;
+	}
+	public String getSecondaryProductIngredientKey() {
+		return secondaryProductIngredientKey;
+	}
+	public void setSecondaryProductIngredientKey(
+			String secondaryProductIngredientKey) {
+		this.secondaryProductIngredientKey = secondaryProductIngredientKey;
+	}
+	public String getPrimaryProductActLevel() {
+		return primaryProductActLevel;
+	}
+	public void setPrimaryProductActLevel(String primaryProductActLevel) {
+		this.primaryProductActLevel = primaryProductActLevel;
+	}
+	public String getSecondaryProductActLevel() {
+		return secondaryProductActLevel;
+	}
+	public void setSecondaryProductActLevel(String secondaryProductActLevel) {
+		this.secondaryProductActLevel = secondaryProductActLevel;
+	}
+	public String getPrimaryEventLevel() {
+		return primaryEventLevel;
+	}
+	public void setPrimaryEventLevel(String primaryEventLevel) {
+		this.primaryEventLevel = primaryEventLevel;
+	}
+	public String getSecondaryEventLevel() {
+		return secondaryEventLevel;
+	}
+	public void setSecondaryEventLevel(String secondaryEventLevel) {
+		this.secondaryEventLevel = secondaryEventLevel;
 	}
 	
 }

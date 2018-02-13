@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dao.ProductMedraHierarchyDAO;
+import com.deloitte.smt.dto.DetectionRunDTO;
 import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.ProductEventDTO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
@@ -409,16 +410,40 @@ public class ProductHierarchyService {
 		products.add(topicProductAssignmentConfiguration);
 	}
 	
-	public String getProductKeyOfActLevel(List<TopicAssignmentProduct> recordValues){
+	public String getProductKeyOfActLevel(List<TopicAssignmentProduct> recordValues, DetectionRunDTO dto){
+		String productLevel = null;
 		StringBuilder queryBuider = new StringBuilder("SELECT DISTINCT PRODUCT_KEY FROM VW_ATC_PROD_DIM WHERE ");
 		if(!CollectionUtils.isEmpty(recordValues)){
 			for(TopicAssignmentProduct record:recordValues){
 				queryBuider.append(record.getCategory()).append("='").append(record.getCategoryCode());
 				queryBuider.append("' AND ");
+				productLevel = record.getCategory();
 			}
+			String query = queryBuider.toString().substring(0, queryBuider.lastIndexOf("AND"));
+			if(dto.getPrimaryProductActLevel()!=null){
+				dto.setSecondaryProductActLevel(productLevel);
+			}else{
+				dto.setPrimaryProductActLevel(productLevel);
+			}
+			return productMedraHierarchyDAO.getProductKey(query);
+		}else{
+			dto.setPrimaryProductActLevel("All");
+			dto.setSecondaryProductActLevel("All");
 		}
-		String query = queryBuider.toString().substring(0, queryBuider.lastIndexOf("AND"));
-		return productMedraHierarchyDAO.getProductKey(query);
+		return "";
+	}
+	
+	public String getIngredientOfActLevel(List<TopicAssignmentProduct> recordValues){
+		StringBuilder queryBuider = new StringBuilder("SELECT DISTINCT FAMILY_DESC FROM VW_ATC_PROD_DIM WHERE ");
+		if(!CollectionUtils.isEmpty(recordValues)){
+			for(TopicAssignmentProduct record:recordValues){
+				queryBuider.append(record.getCategory()).append("='").append(record.getCategoryCode());
+				queryBuider.append("' AND ");
+			}
+			String query = queryBuider.toString().substring(0, queryBuider.lastIndexOf("AND"));
+			return productMedraHierarchyDAO.getProductKey(query);
+		}
+		return "";
 	}
 	
 }
