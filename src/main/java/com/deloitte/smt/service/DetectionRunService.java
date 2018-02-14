@@ -109,7 +109,7 @@ public class DetectionRunService {
 				LOG.error(e);
 			}
     		
-    		
+    		LOG.info("Request ======== "+jsonInString);
     		HttpEntity<String> requestBody = new HttpEntity<>(jsonInString, headers);
     		response = restTemplate.postForObject(detectionRunServiceURL, requestBody, DetectionRunResponseDTO.class);
             // Send request with POST method.
