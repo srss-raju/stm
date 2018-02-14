@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import com.deloitte.smt.dao.SocMedraHierarchyDAO;
 import com.deloitte.smt.dto.SocHierarchyDto;
 import com.deloitte.smt.dto.SocSearchDTO;
+import com.deloitte.smt.util.PtLltMapper;
 import com.deloitte.smt.util.SocHierarchyMapper;
 import com.deloitte.smt.util.SocSearchMapper;
 
@@ -99,6 +100,20 @@ public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {
 		}
 		return null;
 	}
+	
+	@Override
+	public List<SocHierarchyDto> findPtsAndLlts(String query) {
+		return jdbcTemplate.query(query, new PtLltMapper());
+	}
 
+	@Override
+	public List<String> getPts(String query) {
+		return jdbcTemplate.queryForList(query, String.class);
+	}
+
+	@Override
+	public List<String> getLlts(String query) {
+		return jdbcTemplate.queryForList(query, String.class);
+	}
 
 }

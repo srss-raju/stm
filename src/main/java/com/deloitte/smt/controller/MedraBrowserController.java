@@ -18,8 +18,10 @@ import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.ProductEventDTO;
 import com.deloitte.smt.dto.ProductResponse;
 import com.deloitte.smt.dto.ProductSearchDTO;
+import com.deloitte.smt.dto.PtLltDTO;
 import com.deloitte.smt.dto.SocSearchDTO;
 import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
+import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.service.ConditonService;
 import com.deloitte.smt.service.ProductHierarchyService;
 import com.deloitte.smt.service.ProductService;
@@ -120,6 +122,11 @@ public class MedraBrowserController {
 	public List<TopicProductAssignmentConfiguration> findActLevelsByIngredient(@RequestBody List<String> ingredientNames) {
 		return productHierarchyService.findActLevelsByIngredient(ingredientNames);
 
+	}
+	
+	@PostMapping(value = "/condition/getPtsLlts")
+	public PtLltDTO findPtsAndLlts(@RequestBody List<TopicSocAssignmentConfiguration> conditions) {
+		return socHierarchyService.findPtsAndLlts(conditions);
 	}
 
 }

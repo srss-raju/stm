@@ -2,8 +2,10 @@ package com.deloitte.smt.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,12 @@ import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dao.SocMedraHierarchyDAO;
 import com.deloitte.smt.dto.DetectionRunDTO;
 import com.deloitte.smt.dto.MedraBrowserDTO;
+import com.deloitte.smt.dto.PtLltDTO;
 import com.deloitte.smt.dto.SocHierarchyDto;
 import com.deloitte.smt.dto.SocSearchDTO;
 import com.deloitte.smt.entity.ConditionLevels;
 import com.deloitte.smt.entity.TopicAssignmentCondition;
+import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.repository.ConditionLevelRepository;
 
 /**
@@ -299,6 +303,39 @@ public class SocHierarchyService {
 			dto.setSecondaryEventLevel("All");
 		}
 		return "";
+	}
+
+	public PtLltDTO findPtsAndLlts(List<TopicSocAssignmentConfiguration> conditions) {
+		List<String> allPts = new ArrayList<>();
+		List<String> allLlts = new ArrayList<>();
+		Set<String> ptSet = null;
+		Set<String> lltSet = null;
+		StringBuilder ptQueryBuider = new StringBuilder("SELECT DISTINCT PT_DESC FROM SOC_MEDDRA_HIERARCHY ");
+		StringBuilder lltQueryBuider = new StringBuilder("SELECT DISTINCT LLT_DESC FROM SOC_MEDDRA_HIERARCHY ");
+		if(!CollectionUtils.isEmpty(conditions)){
+			ptQueryBuider.append("WHERE ");
+			lltQueryBuider.append("WHERE ");
+			for(TopicSocAssignmentConfiguration condition:conditions){
+				for(TopicAssignmentCondition record:condition.getRecordValues()){
+					ptQueryBuider.append(record.getCategory()).append("='").append(record.getCategoryCode());
+					ptQueryBuider.append("' AND ");
+					
+					lltQueryBuider.append(record.getCategory()).append("='").append(record.getCategoryCode());
+					lltQueryBuider.append("' AND ");
+					
+				}
+				String ptQuery = ptQueryBuider.toString().substring(0, ptQueryBuider.lastIndexOf("AND"));
+				String lltQuery = lltQueryBuider.toString().substring(0, lltQueryBuider.lastIndexOf("AND"));
+				allPts.addAll(socMedraHierarchyDAO.getPts(ptQuery));
+				allLlts.addAll(socMedraHierarchyDAO.getLlts(lltQuery));
+			}
+			ptSet = new HashSet<>(allPts);
+			lltSet = new HashSet<>(allLlts);
+		}
+		PtLltDTO ptLltDTO = new PtLltDTO();
+		ptLltDTO.setPts(ptSet);
+		ptLltDTO.setLlts(lltSet);
+		return ptLltDTO;
 	}
 
 }

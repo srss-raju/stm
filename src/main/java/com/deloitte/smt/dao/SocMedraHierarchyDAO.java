@@ -20,6 +20,12 @@ public interface SocMedraHierarchyDAO {
 	List<SocSearchDTO> findByLltName(String searchText,int scrollOffset,int scrollCount);
 
 	String getEventKey(String query);
+
+	List<SocHierarchyDto> findPtsAndLlts(String query);
+	
+	List<String> getPts(String query);
+	
+	List<String> getLlts(String query);
 	
 	
 	
