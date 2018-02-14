@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.deloitte.smt.dto.DetectionRunDTO;
+import com.deloitte.smt.dto.DetectionRunResponseDTO;
 import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
@@ -98,8 +99,9 @@ public class DetectionRunService {
     		dto.setStratifications(signalDetection.getStratifications());
     		
     		HttpEntity<DetectionRunDTO> requestBody = new HttpEntity<>(dto, headers);
+    		DetectionRunResponseDTO response = restTemplate.postForObject(detectionRunServiceURL, requestBody, DetectionRunResponseDTO.class);
             // Send request with POST method.
-    		LOG.info(restTemplate.postForObject(detectionRunServiceURL, requestBody, DetectionRunDTO.class));
+    		LOG.info("Response === "+ response);
 		} catch (ApplicationException e) {
 			LOG.error(e);
 		}
