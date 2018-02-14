@@ -13,7 +13,15 @@ public class DetectionRunResponseDTO  implements Serializable{
 	
 	@JsonProperty("STATUS")
 	private String jobStatus;
+	
+	private Long runInstanceId;
 
+	public Long getRunInstanceId() {
+		return runInstanceId;
+	}
+	public void setRunInstanceId(Long runInstanceId) {
+		this.runInstanceId = runInstanceId;
+	}
 	public Long getJobId() {
 		return jobId;
 	}

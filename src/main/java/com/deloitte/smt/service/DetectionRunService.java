@@ -22,6 +22,8 @@ import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.DetectionRunRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by rajesh on 05-05-2017.
@@ -46,7 +48,8 @@ public class DetectionRunService {
     @Autowired
     SocHierarchyService socHierarchyService;
     
-    public DetectionRun insert(DetectionRun detectionRun) {
+    public DetectionRunResponseDTO insert(DetectionRun detectionRun) {
+    	DetectionRunResponseDTO response = null;
     	DetectionRunDTO dto = new DetectionRunDTO();
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -98,14 +101,24 @@ public class DetectionRunService {
     		dto.setQueries(signalDetection.getQueries());
     		dto.setStratifications(signalDetection.getStratifications());
     		
-    		HttpEntity<DetectionRunDTO> requestBody = new HttpEntity<>(dto, headers);
-    		DetectionRunResponseDTO response = restTemplate.postForObject(detectionRunServiceURL, requestBody, DetectionRunResponseDTO.class);
+    		ObjectMapper mapper = new ObjectMapper();
+    		String jsonInString = null;
+			try {
+				jsonInString = mapper.writeValueAsString(dto);
+			} catch (JsonProcessingException e) {
+				LOG.error(e);
+			}
+    		
+    		
+    		HttpEntity<String> requestBody = new HttpEntity<>(jsonInString, headers);
+    		response = restTemplate.postForObject(detectionRunServiceURL, requestBody, DetectionRunResponseDTO.class);
             // Send request with POST method.
     		LOG.info("Response === "+ response);
 		} catch (ApplicationException e) {
 			LOG.error(e);
 		}
-        return detectionRunUpdated;
+    	response.setRunInstanceId(detectionRunUpdated.getId());
+        return response;
     }
     
     public DetectionRun update(DetectionRun detectionRun) throws ApplicationException {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.deloitte.smt.entity.Query;
 import com.deloitte.smt.entity.Stratification;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DetectionRunDTO  implements Serializable{
 
@@ -12,6 +13,7 @@ public class DetectionRunDTO  implements Serializable{
 	
 	private List<Query> queries;
 	private List<Stratification> stratifications;
+	@JsonProperty("run_instance_id")
 	private Long runInstanceId;
 	private String primaryProductKey;
 	private String primaryEventKey;

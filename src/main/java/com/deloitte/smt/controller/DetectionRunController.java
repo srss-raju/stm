@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deloitte.smt.dto.DetectionRunResponseDTO;
 import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.service.DetectionRunService;
@@ -25,7 +26,7 @@ public class DetectionRunController {
 	DetectionRunService detectionRunService;
 
     @PostMapping
-    public DetectionRun createDetectionRun(@RequestBody DetectionRun detectionRun) {
+    public DetectionRunResponseDTO createDetectionRun(@RequestBody DetectionRun detectionRun) {
         return detectionRunService.insert(detectionRun);
     }
     
