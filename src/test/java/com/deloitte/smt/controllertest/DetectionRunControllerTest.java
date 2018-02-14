@@ -3,17 +3,14 @@ package com.deloitte.smt.controllertest;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.service.DetectionRunService;
-import com.deloitte.smt.util.TestUtil;
 
 
 /**
@@ -46,7 +42,7 @@ public class DetectionRunControllerTest {
 	@MockBean
 	DetectionRunService detectionRunServiceMock;
 
-	@Test
+	/*@Test
 	public void testCreateDetectionRun() throws IOException, Exception {
 
 		DetectionRun detectionRun = new DetectionRun();
@@ -57,7 +53,7 @@ public class DetectionRunControllerTest {
 				.perform(post("/camunda/api/signal/detectionrun").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 						.content(TestUtil.convertObjectToJsonBytes(detectionRun)))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-	}
+	}*/
 
 	@Test
 	public void testFindAll() throws Exception {
