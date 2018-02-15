@@ -24,9 +24,10 @@ public class Test {
         
         List<String> pkeys = new ArrayList<>();
         pkeys.add("242967");
+        pkeys.add("226838");
         List<String> events = new ArrayList<>();
         events.add("31272886");
-   
+        events.add("31231711");
         DetectionRunResponseDTO response = null;
     	DetectionRunDTO dto = new DetectionRunDTO();
     	dto.setRunInstanceId(1l);
