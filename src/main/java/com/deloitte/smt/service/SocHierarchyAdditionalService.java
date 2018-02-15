@@ -150,15 +150,7 @@ public class SocHierarchyAdditionalService {
 				recordKey.append(record.getPt_code());
 				recordValues.add(topicAssignmentCondition);
 			}
-			if(record.getLlt_code() != null){
-				TopicAssignmentCondition topicAssignmentCondition = new TopicAssignmentCondition();
-				recordKey.append("#");
-				topicAssignmentCondition.setCategory("LLT_CODE");
-				topicAssignmentCondition.setCategoryCode(record.getLlt_code());
-				topicAssignmentCondition.setCategoryDesc(record.getLlt_desc());
-				recordKey.append(record.getLlt_code());
-				recordValues.add(topicAssignmentCondition);
-			}
+			
 			topicProductAssignmentConfiguration.setRecordKey(recordKey.toString());
 			topicProductAssignmentConfiguration.setRecordValues(recordValues);
 			conditions.add(topicProductAssignmentConfiguration);
