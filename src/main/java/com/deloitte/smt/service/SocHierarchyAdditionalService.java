@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dao.SocMedraHierarchyDAO;
 import com.deloitte.smt.dto.SocHierarchyDto;
+import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.entity.Pt;
+import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicAssignmentCondition;
 import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
+import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.repository.DetectionRunRepository;
 
 /**
  * 
@@ -22,17 +28,26 @@ import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
  */
 @Service
 public class SocHierarchyAdditionalService {
+	
+	private static final Logger LOG = Logger.getLogger(SocHierarchyAdditionalService.class);
 
 	@Autowired
 	SocMedraHierarchyDAO socMedraHierarchyDAO;
+	
+	@Autowired
+	DetectionRunRepository detectionRunRepository;
+	
+	@Autowired
+	SignalDetectionService signalDetectionService;
 
 	public List<TopicSocAssignmentConfiguration> getConditions(Topic topic){
 		List<TopicSocAssignmentConfiguration> conditions = new ArrayList<>();
-		
+		StringBuilder ptBuilder = new StringBuilder();
 		if(!CollectionUtils.isEmpty(topic.getSocs())){
+			getDetectionCondition(topic, ptBuilder);
 			for(Soc soc:topic.getSocs()){
 				if(!CollectionUtils.isEmpty(soc.getPts())){
-					getConditions(conditions, soc);
+					getConditions(conditions, soc, ptBuilder);
 				}
 			}
 		}
@@ -40,9 +55,54 @@ public class SocHierarchyAdditionalService {
 		
 	}
 
-	private void getConditions(List<TopicSocAssignmentConfiguration> conditions, Soc soc) {
+	private void getDetectionCondition(Topic topic, StringBuilder ptBuilder) {
+		DetectionRun detectionRun = detectionRunRepository.findOne(topic.getRunInstanceId());
+		if(detectionRun != null){
+			try {
+				SignalDetection signalDetection = signalDetectionService.findById(detectionRun.getDetectionId());
+				buildPtConditionQuery(ptBuilder, signalDetection);
+				
+			} catch (ApplicationException e) {
+				LOG.error(e);
+			}
+		}
+	}
+
+	private void buildPtConditionQuery(StringBuilder ptBuilder,SignalDetection signalDetection) {
+		if(!CollectionUtils.isEmpty(signalDetection.getConditions())){
+			for(TopicSocAssignmentConfiguration condition : signalDetection.getConditions()){
+				if(!CollectionUtils.isEmpty(condition.getRecordValues())){
+					buildPtQuery(ptBuilder, condition);
+				}
+			}
+		}
+	}
+
+	private void buildPtQuery(StringBuilder ptBuilder,
+			TopicSocAssignmentConfiguration condition) {
+		for(TopicAssignmentCondition record : condition.getRecordValues()){
+			if("SOC_CODE".equalsIgnoreCase(record.getCategory())){
+				ptBuilder.append("SOC_DESC='").append(record.getCategoryDesc()).append("' ");
+			}
+			if("HLGT_CODE".equalsIgnoreCase(record.getCategory())){
+				ptBuilder.append(SmtConstant.AND).append(" HLGT_DESC='").append(record.getCategoryDesc()).append("' ");	
+			}
+			if("HLT_CODE".equalsIgnoreCase(record.getCategory())){
+				ptBuilder.append(SmtConstant.AND).append(" HLT_DESC='").append(record.getCategoryDesc()).append("' ");
+			}
+			if("LLT_CODE".equalsIgnoreCase(record.getCategory())){
+				ptBuilder.append(SmtConstant.AND).append(" LLT_DESC='").append(record.getCategoryDesc()).append("' ");
+			}
+		}
+	}
+
+	private void getConditions(List<TopicSocAssignmentConfiguration> conditions, Soc soc, StringBuilder ptBuilder ) {
 		for(Pt pt:soc.getPts()){
-			 List<SocHierarchyDto> ptList = socMedraHierarchyDAO.findActLevelsByPtDesc(pt.getPtName());
+			if(ptBuilder.toString().length() != 0){
+				ptBuilder.append(SmtConstant.AND);
+			}
+			ptBuilder.append(" PT_DESC='").append(pt.getPtName()).append("'");
+			 List<SocHierarchyDto> ptList = socMedraHierarchyDAO.findActLevelsByPtDesc(ptBuilder.toString());
 			 if(!CollectionUtils.isEmpty(ptList)){
 				getRecordValues(conditions, ptList);
 			 }

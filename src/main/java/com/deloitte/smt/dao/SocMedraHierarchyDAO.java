@@ -27,7 +27,7 @@ public interface SocMedraHierarchyDAO {
 	
 	List<String> getLlts(String query);
 
-	List<SocHierarchyDto> findActLevelsByPtDesc(String ptDesc);
+	List<SocHierarchyDto> findActLevelsByPtDesc(String ptQueryBuilder);
 	
 	
 	
