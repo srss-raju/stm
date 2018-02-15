@@ -426,11 +426,8 @@ public class ProductHierarchyService {
 				dto.setPrimaryProductActLevel(productLevel);
 			}
 			return productMedraHierarchyDAO.getProductKey(query);
-		}else{
-			dto.setPrimaryProductActLevel("All");
-			dto.setSecondaryProductActLevel("All");
 		}
-		return "";
+		return "all";
 	}
 	
 	public String getIngredientOfActLevel(List<TopicAssignmentProduct> recordValues){
@@ -443,7 +440,7 @@ public class ProductHierarchyService {
 			String query = queryBuider.toString().substring(0, queryBuider.lastIndexOf("AND"));
 			return productMedraHierarchyDAO.getProductKey(query);
 		}
-		return "";
+		return "all";
 	}
 	
 }
