@@ -43,5 +43,10 @@ public class DetectionRunResponseDTO  implements Serializable{
 	public void setJobStatus(String jobStatus) {
 		this.jobStatus = jobStatus;
 	}
+	@Override
+	public String toString() {
+		return "DetectionRunResponseDTO [jobId=" + jobId + ", jobStatus=" + jobStatus + ", createdDate=" + createdDate
+				+ ", runInstanceId=" + runInstanceId + "]";
+	}
 	
 }
