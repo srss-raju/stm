@@ -120,6 +120,7 @@ public class SocHierarchyAdditionalService {
 				topicAssignmentCondition.setCategory("SOC_CODE");
 				topicAssignmentCondition.setCategoryCode(record.getSoc_code());
 				topicAssignmentCondition.setCategoryDesc(record.getSoc_desc());
+				topicAssignmentCondition.setCategoryName("SOC");
 				recordKey.append(record.getSoc_code());
 				recordValues.add(topicAssignmentCondition);
 			}
@@ -129,6 +130,7 @@ public class SocHierarchyAdditionalService {
 				topicAssignmentCondition.setCategory("HLGT_CODE");
 				topicAssignmentCondition.setCategoryCode(record.getHlgt_code());
 				topicAssignmentCondition.setCategoryDesc(record.getHlgt_desc());
+				topicAssignmentCondition.setCategoryName("HLGT");
 				recordKey.append(record.getHlgt_code());
 				recordValues.add(topicAssignmentCondition);
 			}
@@ -138,6 +140,7 @@ public class SocHierarchyAdditionalService {
 				topicAssignmentCondition.setCategory("HLT_CODE");
 				topicAssignmentCondition.setCategoryCode(record.getHlt_code());
 				topicAssignmentCondition.setCategoryDesc(record.getHlt_desc());
+				topicAssignmentCondition.setCategoryName("HLT");
 				recordKey.append(record.getHlt_code());
 				recordValues.add(topicAssignmentCondition);
 			}
@@ -147,6 +150,7 @@ public class SocHierarchyAdditionalService {
 				topicAssignmentCondition.setCategory("PT_CODE");
 				topicAssignmentCondition.setCategoryCode(record.getPt_code());
 				topicAssignmentCondition.setCategoryDesc(record.getPt_desc());
+				topicAssignmentCondition.setCategoryName("PT");
 				recordKey.append(record.getPt_code());
 				recordValues.add(topicAssignmentCondition);
 			}
