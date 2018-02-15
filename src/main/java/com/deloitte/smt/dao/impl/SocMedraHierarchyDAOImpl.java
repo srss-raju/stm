@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import com.deloitte.smt.dao.SocMedraHierarchyDAO;
 import com.deloitte.smt.dto.SocHierarchyDto;
@@ -93,12 +92,8 @@ public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {
 	}
 	
 	@Override
-	public String getEventKey(String query) {
-		List<String> list = jdbcTemplate.queryForList(query, String.class);
-		if(!CollectionUtils.isEmpty(list)){
-			return list.get(0);
-		}
-		return null;
+	public List<String> getEventKey(String query) {
+		return jdbcTemplate.queryForList(query, String.class);
 	}
 	
 	@Override

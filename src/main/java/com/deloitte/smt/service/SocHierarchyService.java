@@ -282,8 +282,10 @@ public class SocHierarchyService {
 		return socSearchDtoAllList;
 	}
 	
-	public String getEventKeyOfSelectedLevel(List<TopicAssignmentCondition> recordValues, DetectionRunDTO dto){
+	public List<String> getEventKeyOfSelectedLevel(List<TopicAssignmentCondition> recordValues, DetectionRunDTO dto){
 		String socLevel = null;
+		List<String> list = new ArrayList<>();
+		list.add("all");
 		StringBuilder queryBuider = new StringBuilder("SELECT DISTINCT EVENT_KEY FROM EVENT_DIM WHERE ");
 		if(!CollectionUtils.isEmpty(recordValues)){
 			for(TopicAssignmentCondition record:recordValues){
@@ -298,11 +300,8 @@ public class SocHierarchyService {
 				dto.setPrimaryEventLevel(socLevel);
 			}
 			return socMedraHierarchyDAO.getEventKey(query);
-		}else{
-			dto.setPrimaryEventLevel("All");
-			dto.setSecondaryEventLevel("All");
 		}
-		return "";
+		return list;
 	}
 
 	public PtLltDTO findPtsAndLlts(List<TopicSocAssignmentConfiguration> conditions) {

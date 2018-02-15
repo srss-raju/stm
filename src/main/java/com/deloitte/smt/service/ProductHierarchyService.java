@@ -410,8 +410,10 @@ public class ProductHierarchyService {
 		products.add(topicProductAssignmentConfiguration);
 	}
 	
-	public String getProductKeyOfActLevel(List<TopicAssignmentProduct> recordValues, DetectionRunDTO dto){
+	public List<String> getProductKeyOfActLevel(List<TopicAssignmentProduct> recordValues, DetectionRunDTO dto){
 		String productLevel = null;
+		List<String> list = new ArrayList<>();
+		list.add("all");
 		StringBuilder queryBuider = new StringBuilder("SELECT DISTINCT PRODUCT_KEY FROM VW_ATC_PROD_DIM WHERE ");
 		if(!CollectionUtils.isEmpty(recordValues)){
 			for(TopicAssignmentProduct record:recordValues){
@@ -427,10 +429,12 @@ public class ProductHierarchyService {
 			}
 			return productMedraHierarchyDAO.getProductKey(query);
 		}
-		return "all";
+		return list;
 	}
 	
-	public String getIngredientOfActLevel(List<TopicAssignmentProduct> recordValues){
+	public List<String> getIngredientOfActLevel(List<TopicAssignmentProduct> recordValues){
+		List<String> list = new ArrayList<>();
+		list.add("all");
 		StringBuilder queryBuider = new StringBuilder("SELECT DISTINCT FAMILY_DESC FROM VW_ATC_PROD_DIM WHERE ");
 		if(!CollectionUtils.isEmpty(recordValues)){
 			for(TopicAssignmentProduct record:recordValues){
@@ -440,7 +444,7 @@ public class ProductHierarchyService {
 			String query = queryBuider.toString().substring(0, queryBuider.lastIndexOf("AND"));
 			return productMedraHierarchyDAO.getProductKey(query);
 		}
-		return "all";
+		return list;
 	}
 	
 }

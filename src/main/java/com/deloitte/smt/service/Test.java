@@ -1,5 +1,8 @@
 package com.deloitte.smt.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,12 +21,17 @@ public class Test {
         headers.setContentType(MediaType.APPLICATION_JSON);
    
         RestTemplate restTemplate = new RestTemplate();
+        
+        List<String> pkeys = new ArrayList<>();
+        pkeys.add("242967");
+        List<String> events = new ArrayList<>();
+        events.add("31272886");
    
         DetectionRunResponseDTO response = null;
     	DetectionRunDTO dto = new DetectionRunDTO();
     	dto.setRunInstanceId(1l);
-    	dto.setPrimaryProductKey("242967");
-    	dto.setPrimaryEventKey("31272886");
+    	dto.setPrimaryProductKey(pkeys);
+    	dto.setPrimaryEventKey(events);
     	
     	ObjectMapper mapper = new ObjectMapper();
 		String jsonInString = null;

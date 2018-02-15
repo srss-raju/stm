@@ -69,7 +69,7 @@ public class DetectionRunService {
     		SignalDetection signalDetection = signalDetectionService.findById(detectionRun.getDetectionId());
     		
     		if(!CollectionUtils.isEmpty(signalDetection.getConditions())){
-    			String eventKey;
+    			List<String> eventKey;
     			for(TopicSocAssignmentConfiguration condition:signalDetection.getConditions()){
     				eventKey = socHierarchyService.getEventKeyOfSelectedLevel(condition.getRecordValues(),dto);
     				if(!eventFlag){
@@ -82,8 +82,8 @@ public class DetectionRunService {
     		}
     		
     		if(!CollectionUtils.isEmpty(signalDetection.getProducts())){
-    			String productKey;
-    			String ingredient;
+    			List<String> productKey;
+    			List<String> ingredient;
     			for(TopicProductAssignmentConfiguration product:signalDetection.getProducts()){
     				productKey = productHierarchyService.getProductKeyOfActLevel(product.getRecordValues(), dto);
     				ingredient = productHierarchyService.getIngredientOfActLevel(product.getRecordValues());

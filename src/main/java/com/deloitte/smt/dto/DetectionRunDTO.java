@@ -15,17 +15,16 @@ public class DetectionRunDTO  implements Serializable{
 	private List<Stratification> stratifications;
 	@JsonProperty("run_instance_id")
 	private Long runInstanceId;
-	private String primaryProductKey;
-	private String primaryEventKey;
-	private String primaryProductIngredientKey;
-	private String secondaryProductKey;
-	private String secondaryEventKey;
-	private String secondaryProductIngredientKey;
+	private List<String> primaryProductKey;
+	private List<String> primaryEventKey;
+	private List<String> primaryProductIngredientKey;
+	private List<String> secondaryProductKey;
+	private List<String> secondaryEventKey;
+	private List<String> secondaryProductIngredientKey;
 	private String primaryProductActLevel;
 	private String secondaryProductActLevel;
 	private String primaryEventLevel;
 	private String secondaryEventLevel;
-	
 	
 	public List<Query> getQueries() {
 		return queries;
@@ -45,41 +44,42 @@ public class DetectionRunDTO  implements Serializable{
 	public void setRunInstanceId(Long runInstanceId) {
 		this.runInstanceId = runInstanceId;
 	}
-	public String getPrimaryProductKey() {
+	public List<String> getPrimaryProductKey() {
 		return primaryProductKey;
 	}
-	public void setPrimaryProductKey(String primaryProductKey) {
+	public void setPrimaryProductKey(List<String> primaryProductKey) {
 		this.primaryProductKey = primaryProductKey;
 	}
-	public String getPrimaryEventKey() {
+	public List<String> getPrimaryEventKey() {
 		return primaryEventKey;
 	}
-	public void setPrimaryEventKey(String primaryEventKey) {
+	public void setPrimaryEventKey(List<String> primaryEventKey) {
 		this.primaryEventKey = primaryEventKey;
 	}
-	public String getPrimaryProductIngredientKey() {
+	public List<String> getPrimaryProductIngredientKey() {
 		return primaryProductIngredientKey;
 	}
-	public void setPrimaryProductIngredientKey(String primaryProductIngredientKey) {
+	public void setPrimaryProductIngredientKey(
+			List<String> primaryProductIngredientKey) {
 		this.primaryProductIngredientKey = primaryProductIngredientKey;
 	}
-	public String getSecondaryProductKey() {
+	public List<String> getSecondaryProductKey() {
 		return secondaryProductKey;
 	}
-	public void setSecondaryProductKey(String secondaryProductKey) {
+	public void setSecondaryProductKey(List<String> secondaryProductKey) {
 		this.secondaryProductKey = secondaryProductKey;
 	}
-	public String getSecondaryEventKey() {
+	public List<String> getSecondaryEventKey() {
 		return secondaryEventKey;
 	}
-	public void setSecondaryEventKey(String secondaryEventKey) {
+	public void setSecondaryEventKey(List<String> secondaryEventKey) {
 		this.secondaryEventKey = secondaryEventKey;
 	}
-	public String getSecondaryProductIngredientKey() {
+	public List<String> getSecondaryProductIngredientKey() {
 		return secondaryProductIngredientKey;
 	}
 	public void setSecondaryProductIngredientKey(
-			String secondaryProductIngredientKey) {
+			List<String> secondaryProductIngredientKey) {
 		this.secondaryProductIngredientKey = secondaryProductIngredientKey;
 	}
 	public String getPrimaryProductActLevel() {
