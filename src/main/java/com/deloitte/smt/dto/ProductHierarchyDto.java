@@ -31,6 +31,8 @@ public class ProductHierarchyDto {
 	private Long intlProductOrder;
 	
 	private String primaryProductFlag;
+	
+	private String familyDescription;
 
 	public String getActLevelOneCode() {
 		return actLevelOneCode;
@@ -150,6 +152,14 @@ public class ProductHierarchyDto {
 
 	public void setRxNormDesc(String rxNormDesc) {
 		this.rxNormDesc = rxNormDesc;
+	}
+
+	public String getFamilyDescription() {
+		return familyDescription;
+	}
+
+	public void setFamilyDescription(String familyDescription) {
+		this.familyDescription = familyDescription;
 	}
 
 }

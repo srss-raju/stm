@@ -79,6 +79,8 @@ public class Topic implements Serializable{
 	/**Signal created Manual or Automated **/
 	private String sourceLabel;
 	
+	private String productKey;
+	
 	@Transient
 	private List<Comments> comments;
 	

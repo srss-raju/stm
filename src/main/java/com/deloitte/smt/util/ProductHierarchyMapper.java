@@ -28,6 +28,10 @@ public class ProductHierarchyMapper implements RowMapper<ProductHierarchyDto> {
 		productHierarchyDto.setActLevelFiveCode(rs.getString("ATC_LVL_5").trim());
 		productHierarchyDto.setActLevelFiveDesc(rs.getString("ATC_LVL_5_DESC").trim());
 		
+		if(rs.getString("FAMILY_DESC").trim() != null){
+			productHierarchyDto.setFamilyDescription(rs.getString("FAMILY_DESC").trim());
+		}
+		
 		return productHierarchyDto;
 	}
 	

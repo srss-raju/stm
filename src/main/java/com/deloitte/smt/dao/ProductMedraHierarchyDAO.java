@@ -27,4 +27,6 @@ public interface ProductMedraHierarchyDAO {
 
 	String getProductKey(String query);
 
+	List<ProductHierarchyDto> findActLevelsByProductKey(String productKey);
+
 }

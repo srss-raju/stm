@@ -148,6 +148,12 @@ public class SignalService {
 	@Autowired
 	TopicAssignmentProductRepository topicAssignmentProductRepository;
 	
+	@Autowired
+	ProductHierarchyAdditionalService productHierarchyAdditionalService;
+	
+	@Autowired
+	SocHierarchyAdditionalService socHierarchyAdditionalService;
+	
 	public NonSignal createOrupdateNonSignal(NonSignal nonSignal) {
 		Calendar c = Calendar.getInstance();
 
@@ -226,6 +232,10 @@ public class SignalService {
 		if (null == topic.getSignalValidation()) {
 			topic.setSignalValidation(SmtConstant.IN_PROGRESS.getDescription());
 		}
+		if(topic.getRunInstanceId() != null){
+			topic.setProducts(productHierarchyAdditionalService.getProducts(topic));
+			topic.setConditions(socHierarchyAdditionalService.getConditions(topic));
+		}
 		Calendar c = Calendar.getInstance();
 		topic.setCreatedDate(c.getTime());
 		topic.setLastModifiedDate(c.getTime());
@@ -247,9 +257,11 @@ public class SignalService {
 		}
 
 		Topic topicUpdated = topicRepository.save(topic);
-		List<TopicProductAssignmentConfiguration> productsOfIngredients = productHierarchyService.findActLevelsByIngredient(getIngredientNames(topic));
-		if(!CollectionUtils.isEmpty(productsOfIngredients)){
-			topic.setProducts(productsOfIngredients);
+		if(topic.getRunInstanceId() == null){
+			List<TopicProductAssignmentConfiguration> productsOfIngredients = productHierarchyService.findActLevelsByIngredient(getIngredientNames(topic));
+			if(!CollectionUtils.isEmpty(productsOfIngredients)){
+				topic.setProducts(productsOfIngredients);
+			}
 		}
 		saveProductsAndConditions(topic, topicUpdated);
 		AssignmentConfiguration assignmentConfiguration = signalAssignmentService.convertToAssignmentConfiguration(topic);
