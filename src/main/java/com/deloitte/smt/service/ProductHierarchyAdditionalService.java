@@ -90,7 +90,7 @@ public class ProductHierarchyAdditionalService {
 			topicAssignmentProduct.setCategoryDesc(record.getActLevelThreeDesc());
 			topicAssignmentProduct.setCategoryName("THERAPEUTIC PHARMACOLOGICAL SUBGROUP");
 			recordValues.add(topicAssignmentProduct);
-		}
+		} 
 		if(record.getActLevelFourCode() != null){
 			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
 			recordKey.append("@#");
