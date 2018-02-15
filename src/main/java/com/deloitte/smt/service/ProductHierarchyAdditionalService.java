@@ -73,7 +73,7 @@ public class ProductHierarchyAdditionalService {
 		}
 		if(record.getActLevelTwoCode() != null){
 			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
-			recordKey.append("#");
+			recordKey.append("@#");
 			recordKey.append(record.getActLevelTwoCode());
 			topicAssignmentProduct.setCategory("ATC_LVL_2");
 			topicAssignmentProduct.setCategoryCode(record.getActLevelTwoCode());
@@ -83,7 +83,7 @@ public class ProductHierarchyAdditionalService {
 		}
 		if(record.getActLevelThreeCode() != null){
 			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
-			recordKey.append("#");
+			recordKey.append("@#");
 			recordKey.append(record.getActLevelThreeCode());
 			topicAssignmentProduct.setCategory("ATC_LVL_3");
 			topicAssignmentProduct.setCategoryCode(record.getActLevelThreeCode());
@@ -93,7 +93,7 @@ public class ProductHierarchyAdditionalService {
 		}
 		if(record.getActLevelFourCode() != null){
 			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
-			recordKey.append("#");
+			recordKey.append("@#");
 			recordKey.append(record.getActLevelFourCode());
 			topicAssignmentProduct.setCategory("ATC_LVL_4");
 			topicAssignmentProduct.setCategoryCode(record.getActLevelFourCode());
@@ -103,7 +103,7 @@ public class ProductHierarchyAdditionalService {
 		}
 		if(record.getActLevelFiveCode() != null){
 			TopicAssignmentProduct topicAssignmentProduct = new TopicAssignmentProduct();
-			recordKey.append("#");
+			recordKey.append("@#");
 			recordKey.append(record.getActLevelFiveCode());
 			topicAssignmentProduct.setCategory("ATC_LVL_5");
 			topicAssignmentProduct.setCategoryCode(record.getActLevelFiveCode());

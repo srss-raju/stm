@@ -126,7 +126,7 @@ public class SocHierarchyAdditionalService {
 			}
 			if(record.getHlgt_code() != null){
 				TopicAssignmentCondition topicAssignmentCondition = new TopicAssignmentCondition();
-				recordKey.append("#");
+				recordKey.append("@#");
 				topicAssignmentCondition.setCategory("HLGT_CODE");
 				topicAssignmentCondition.setCategoryCode(record.getHlgt_code());
 				topicAssignmentCondition.setCategoryDesc(record.getHlgt_desc());
@@ -136,7 +136,7 @@ public class SocHierarchyAdditionalService {
 			}
 			if(record.getHlt_code() != null){
 				TopicAssignmentCondition topicAssignmentCondition = new TopicAssignmentCondition();
-				recordKey.append("#");
+				recordKey.append("@#");
 				topicAssignmentCondition.setCategory("HLT_CODE");
 				topicAssignmentCondition.setCategoryCode(record.getHlt_code());
 				topicAssignmentCondition.setCategoryDesc(record.getHlt_desc());
@@ -146,7 +146,7 @@ public class SocHierarchyAdditionalService {
 			}
 			if(record.getPt_code() != null){
 				TopicAssignmentCondition topicAssignmentCondition = new TopicAssignmentCondition();
-				recordKey.append("#");
+				recordKey.append("@#");
 				topicAssignmentCondition.setCategory("PT_CODE");
 				topicAssignmentCondition.setCategoryCode(record.getPt_code());
 				topicAssignmentCondition.setCategoryDesc(record.getPt_desc());
