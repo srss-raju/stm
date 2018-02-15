@@ -67,6 +67,7 @@ public class ProductHierarchyAdditionalService {
 			topicAssignmentProduct.setCategory("ATC_LVL_1");
 			topicAssignmentProduct.setCategoryCode(record.getActLevelOneCode());
 			topicAssignmentProduct.setCategoryDesc(record.getActLevelOneDesc());
+			topicAssignmentProduct.setCategoryName("ANATOMICAL MAINGROUP");
 			recordKey.append(record.getActLevelOneCode());
 			recordValues.add(topicAssignmentProduct);
 		}
@@ -77,6 +78,7 @@ public class ProductHierarchyAdditionalService {
 			topicAssignmentProduct.setCategory("ATC_LVL_2");
 			topicAssignmentProduct.setCategoryCode(record.getActLevelTwoCode());
 			topicAssignmentProduct.setCategoryDesc(record.getActLevelTwoDesc());
+			topicAssignmentProduct.setCategoryName("THERAPEUTIC MAINGROUP");
 			recordValues.add(topicAssignmentProduct);
 		}
 		if(record.getActLevelThreeCode() != null){
@@ -86,6 +88,7 @@ public class ProductHierarchyAdditionalService {
 			topicAssignmentProduct.setCategory("ATC_LVL_3");
 			topicAssignmentProduct.setCategoryCode(record.getActLevelThreeCode());
 			topicAssignmentProduct.setCategoryDesc(record.getActLevelThreeDesc());
+			topicAssignmentProduct.setCategoryName("THERAPEUTIC PHARMACOLOGICAL SUBGROUP");
 			recordValues.add(topicAssignmentProduct);
 		}
 		if(record.getActLevelFourCode() != null){
@@ -95,6 +98,7 @@ public class ProductHierarchyAdditionalService {
 			topicAssignmentProduct.setCategory("ATC_LVL_4");
 			topicAssignmentProduct.setCategoryCode(record.getActLevelFourCode());
 			topicAssignmentProduct.setCategoryDesc(record.getActLevelFourDesc());
+			topicAssignmentProduct.setCategoryName("CHEMICAL THERAPEUTIC PHARMACOLOGICAL SUBGROUP");
 			recordValues.add(topicAssignmentProduct);
 		}
 		if(record.getActLevelFiveCode() != null){
@@ -104,6 +108,7 @@ public class ProductHierarchyAdditionalService {
 			topicAssignmentProduct.setCategory("ATC_LVL_5");
 			topicAssignmentProduct.setCategoryCode(record.getActLevelFiveCode());
 			topicAssignmentProduct.setCategoryDesc(record.getActLevelFiveDesc());
+			topicAssignmentProduct.setCategoryName("CHEMICAL SUBSTANCE");
 			recordValues.add(topicAssignmentProduct);
 		}
 	}
