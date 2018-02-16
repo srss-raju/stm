@@ -14,6 +14,7 @@ import com.deloitte.smt.dto.SocHierarchyDto;
 import com.deloitte.smt.dto.SocSearchDTO;
 import com.deloitte.smt.util.PtLltMapper;
 import com.deloitte.smt.util.SocHierarchyMapper;
+import com.deloitte.smt.util.SocHierarchyMapper2;
 import com.deloitte.smt.util.SocSearchMapper;
 
 @Service
@@ -115,7 +116,7 @@ public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {
 	public List<SocHierarchyDto> findActLevelsByPtDesc(String ptQueryBuilder) {
 		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT SOC_CODE,SOC_DESC,HLGT_CODE,HLGT_DESC,HLT_CODE,HLT_DESC,PT_CODE,PT_DESC,MEDDRA_VERSION_NUMBER,INTERNATIONAL_SOC_ORDER,PRIMARY_SOC_FLAG FROM SOC_MEDDRA_HIERARCHY WHERE ");
 		queryBuilder.append(ptQueryBuilder);
-		return jdbcTemplate.query(queryBuilder.toString(), new SocHierarchyMapper());
+		return jdbcTemplate.query(queryBuilder.toString(), new SocHierarchyMapper2());
 	}
 
 }
