@@ -46,6 +46,7 @@ import com.deloitte.smt.repository.RiskTaskTemplateProductsRepository;
 import com.deloitte.smt.repository.RiskTaskTemplateRepository;
 import com.deloitte.smt.repository.SignalURLRepository;
 import com.deloitte.smt.repository.TopicRiskPlanAssignmentAssigneesRepository;
+import com.deloitte.smt.util.AssignmentUtil;
 import com.deloitte.smt.util.JsonUtil;
 import com.deloitte.smt.util.SignalUtil;
 
@@ -650,16 +651,21 @@ public class RiskPlanService {
 	}
 
 	private void getTaskTemplates(List<RiskTaskTemplate> taskTemplates, Topic topicWithConditionsAndProducts) {
-		for(TopicProductAssignmentConfiguration recordKey : topicWithConditionsAndProducts.getProducts()){
-			RiskTaskTemplateProducts taskTemplateProducts = getTaskTemplateProduct(recordKey);
-			if(taskTemplateProducts != null){
-				Long taskTemplateId = riskTaskTemplateProductsRepository.findTemplateId(taskTemplateProducts.getId());
+		for(TopicProductAssignmentConfiguration record : topicWithConditionsAndProducts.getProducts()){
+			String recordKey = record.getRecordKey();
+			RiskTaskTemplateProducts taskTemplateProduct = getTaskTemplateProduct(recordKey);
+			while(recordKey != null && taskTemplateProduct == null){
+				recordKey = AssignmentUtil.getRecordKey(recordKey);
+				taskTemplateProduct = getTaskTemplateProduct(recordKey);
+			}
+			if(taskTemplateProduct != null){
+				Long taskTemplateId = riskTaskTemplateProductsRepository.findTemplateId(taskTemplateProduct.getId());
 				taskTemplates.add(riskTaskTemplateRepository.findOne(taskTemplateId));
 			}
 		}
 	}
 
-	private RiskTaskTemplateProducts getTaskTemplateProduct(TopicProductAssignmentConfiguration recordKey) {
-		return riskTaskTemplateProductsRepository.findByRecordKey(recordKey.getRecordKey());
+	private RiskTaskTemplateProducts getTaskTemplateProduct(String recordKey) {
+		return riskTaskTemplateProductsRepository.findByRecordKey(recordKey);
 	}
 }
