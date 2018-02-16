@@ -44,7 +44,7 @@ public class SocHierarchyAdditionalService {
 		List<TopicSocAssignmentConfiguration> conditions = new ArrayList<>();
 		StringBuilder ptBuilder = new StringBuilder();
 		if(!CollectionUtils.isEmpty(topic.getSocs())){
-			getDetectionCondition(topic, ptBuilder);
+			//getDetectionCondition(topic, ptBuilder);
 			for(Soc soc:topic.getSocs()){
 				if(!CollectionUtils.isEmpty(soc.getPts())){
 					getConditions(conditions, soc, ptBuilder);
@@ -110,7 +110,14 @@ public class SocHierarchyAdditionalService {
 	}
 
 	private void getRecordValues(List<TopicSocAssignmentConfiguration> conditions, List<SocHierarchyDto> ptList) {
-			SocHierarchyDto record = ptList.get(0);
+			SocHierarchyDto record = null;
+			for(SocHierarchyDto dto:ptList){
+				if("Y".equalsIgnoreCase(dto.getPrimary_soc_flag())){
+					record = dto;
+				}else{
+					record = ptList.get(0);
+				}
+			}
 			TopicSocAssignmentConfiguration topicProductAssignmentConfiguration = new TopicSocAssignmentConfiguration();
 			List<TopicAssignmentCondition> recordValues = new ArrayList<>();
 			StringBuilder recordKey = new StringBuilder();

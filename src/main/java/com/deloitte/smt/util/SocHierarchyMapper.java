@@ -22,8 +22,10 @@ public class SocHierarchyMapper implements RowMapper<SocHierarchyDto> {
 		socHierarchyDto.setHlt_code(rs.getString("hlt_code"));
 		socHierarchyDto.setHlt_desc(rs.getString("hlt_desc").trim());
 		
-		socHierarchyDto.setLlt_code(rs.getString("llt_code"));
-		socHierarchyDto.setLlt_desc(rs.getString("llt_desc").trim());
+		if(rs.getString("llt_code") != null){
+			socHierarchyDto.setLlt_code(rs.getString("llt_code"));
+			socHierarchyDto.setLlt_desc(rs.getString("llt_desc").trim());
+		}
 		
 		socHierarchyDto.setPt_code(rs.getString("pt_code"));
 		socHierarchyDto.setPt_desc(rs.getString("pt_desc").trim());

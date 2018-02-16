@@ -113,7 +113,7 @@ public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {
 	
 	@Override
 	public List<SocHierarchyDto> findActLevelsByPtDesc(String ptQueryBuilder) {
-		StringBuilder queryBuilder = new StringBuilder("SELECT SOC_CODE,SOC_DESC,HLGT_CODE,HLGT_DESC,HLT_CODE,HLT_DESC,LLT_CODE,LLT_DESC,PT_CODE,PT_DESC,MEDDRA_VERSION_NUMBER,INTERNATIONAL_SOC_ORDER,PRIMARY_SOC_FLAG FROM SOC_MEDDRA_HIERARCHY WHERE ");
+		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT SOC_CODE,SOC_DESC,HLGT_CODE,HLGT_DESC,HLT_CODE,HLT_DESC,PT_CODE,PT_DESC,MEDDRA_VERSION_NUMBER,INTERNATIONAL_SOC_ORDER,PRIMARY_SOC_FLAG FROM SOC_MEDDRA_HIERARCHY WHERE ");
 		queryBuilder.append(ptQueryBuilder);
 		return jdbcTemplate.query(queryBuilder.toString(), new SocHierarchyMapper());
 	}
