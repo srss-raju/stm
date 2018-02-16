@@ -266,7 +266,7 @@ public class SignalMatchService {
 			createdTopic.setSignalStatus(final95Signal.getSignalStatus());
 			createdTopic.setCohortPercentage(final95Signal.getCohortPercentage());
 			createdTopic.setCasesCount(final95Signal.getCasesCount());
-			createdTopic.setCaselistId(final95Signal.getCaselistId());
+			//createdTopic.setCaselistId(final95Signal.getCaselistId());
 			createdTopic.setDueDate(final95Signal.getDueDate());
 			createdTopic.setSourceName(final95Signal.getSourceName());
 			createdTopic.setSourceUrl(final95Signal.getSourceUrl());
