@@ -143,7 +143,7 @@ public class DetectionRunService {
     }
 
     public List<DetectionRun> findByDetectionId(Long detectionId) {
-        return detectionRunRepository.findByDetectionId(detectionId, new Sort(Sort.Direction.DESC, "createdDate"));
+        return detectionRunRepository.findByDetectionIdOrderByRunDateDesc(detectionId, new Sort(Sort.Direction.DESC, "createdDate"));
     }
 
 	public void delete(Long detectionRunId) throws ApplicationException {
