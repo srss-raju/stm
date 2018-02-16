@@ -122,6 +122,8 @@ public class Topic implements Serializable{
     @JoinColumn(name = "topicId")
 	private List<Ingredient> ingredients;
 	
+	private String signalType;
+	
     
     public Topic(Long id, String name, String description, String sourceName,
 			String signalConfirmation, String signalStatus, Date createdDate) {
