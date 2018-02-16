@@ -17,13 +17,17 @@ public class DetectionRunResponseDTO  implements Serializable{
 	
 	private Date createdDate;
 	
+	private Long runInstanceId;
+	
+	private Date runDate;
+	
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
-	private Long runInstanceId;
+	
 
 	public Long getRunInstanceId() {
 		return runInstanceId;
@@ -43,10 +47,19 @@ public class DetectionRunResponseDTO  implements Serializable{
 	public void setJobStatus(String jobStatus) {
 		this.jobStatus = jobStatus;
 	}
+	
+	public Date getRunDate() {
+		return runDate;
+	}
+	public void setRunDate(Date runDate) {
+		this.runDate = runDate;
+	}
 	@Override
 	public String toString() {
-		return "DetectionRunResponseDTO [jobId=" + jobId + ", jobStatus=" + jobStatus + ", createdDate=" + createdDate
-				+ ", runInstanceId=" + runInstanceId + "]";
+		return "DetectionRunResponseDTO [jobId=" + jobId + ", jobStatus="
+				+ jobStatus + ", createdDate=" + createdDate
+				+ ", runInstanceId=" + runInstanceId + ", runDate=" + runDate
+				+ "]";
 	}
 	
 }

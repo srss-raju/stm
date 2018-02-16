@@ -119,6 +119,7 @@ public class DetectionRunService {
 		}
     	response.setRunInstanceId(detectionRunUpdated.getId());
     	response.setCreatedDate(detectionRunUpdated.getCreatedDate());
+    	response.setRunDate(detectionRunUpdated.getRunDate());
         return response;
     }
     
