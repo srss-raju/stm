@@ -180,8 +180,6 @@ public class ProductHierarchyService {
 				break;
 
 			default:
-				productSearchDtoList = searchByLevelOneName(medraBrowserDto);
-				break;
 			}
 		}
 		return productSearchDtoList;
@@ -200,7 +198,7 @@ public class ProductHierarchyService {
 		return productSearchDTOList;
 	}
 
-	private String getProductByKeyName(String keyName) {
+	String getProductByKeyName(String keyName) {
 		ProductLevels prl= productLevelRepository.findByKey(keyName);
 		if(prl!=null)
 			return prl.getValue();
