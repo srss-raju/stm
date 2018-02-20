@@ -23,7 +23,6 @@ import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
-import com.deloitte.smt.entity.RiskPlanAssignees;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.TaskTemplateProducts;
@@ -198,14 +197,6 @@ public class RiskPlanService {
 		}
 	}
 	
-	List<RiskPlanAssignees> associateRiskPlanAssignmentAssignees(List<RiskPlan> riskPlanList){
-		List<RiskPlanAssignees> topicRiskPlanAssignmentAssigneesList=new ArrayList<>();
-		for(RiskPlan riskPlan :riskPlanList){
-			topicRiskPlanAssignmentAssigneesList =	topicRiskPlanAssignmentAssigneesRepository.findByRiskId(riskPlan.getId());
-		}
-		return topicRiskPlanAssignmentAssigneesList;
-	}
-
 
 	/**
 	 * 

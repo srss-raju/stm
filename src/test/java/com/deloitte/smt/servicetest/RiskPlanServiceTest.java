@@ -2,6 +2,11 @@ package com.deloitte.smt.servicetest;
 
 import static org.mockito.BDDMockito.given;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -16,13 +21,26 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.dto.ConditionProductDTO;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.AssignmentConfiguration;
 import com.deloitte.smt.entity.RiskPlan;
+import com.deloitte.smt.entity.Task;
+import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicCondition;
+import com.deloitte.smt.entity.TopicConditionValues;
+import com.deloitte.smt.entity.TopicProduct;
+import com.deloitte.smt.entity.TopicProductValues;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
+import com.deloitte.smt.repository.TaskRepository;
+import com.deloitte.smt.service.AssessmentPlanService;
 import com.deloitte.smt.service.RiskPlanService;
+import com.deloitte.smt.service.SignalAssignmentService;
+import com.deloitte.smt.service.SignalService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SignalManagementApplication.class)
@@ -33,6 +51,18 @@ public class RiskPlanServiceTest {
 	
 	@Autowired
 	private RiskPlanService riskPlanService;
+	
+	@MockBean
+	private TaskRepository taskRepository;
+	
+	@Autowired
+	private SignalAssignmentService signalAssignmentService;
+	
+	@MockBean
+	private SignalService signalService;
+	
+	@MockBean
+	private AssessmentPlanService assessmentPlanService;
 	
 	@MockBean
 	MeetingRepository meetingRepository;
@@ -52,6 +82,152 @@ public class RiskPlanServiceTest {
 
 	@MockBean
 	AssignmentConfigurationRepository assignmentConfigurationRepository;
+	
+	@Test
+	public void testInsert() {
+		try{
+			List<TopicCondition> conditions = new ArrayList<>();
+			TopicCondition topicCondition = new TopicCondition();
+			List<TopicConditionValues> topicConditionValues = new ArrayList<>();
+			TopicConditionValues topicConditionValue = new TopicConditionValues();
+			topicConditionValues.add(topicConditionValue);
+			topicCondition.setRecordValues(topicConditionValues);
+			conditions.add(topicCondition);
+			List<TopicProduct> products = new ArrayList<>();
+			TopicProduct topicProduct = new TopicProduct();
+			List<TopicProductValues> topicProductValues = new ArrayList<>(); 
+			TopicProductValues topicProductValue = new TopicProductValues();
+			topicProductValues.add(topicProductValue);
+			topicProduct.setRecordValues(topicProductValues);
+			products.add(topicProduct);
+			Topic topicUpdated = new Topic();
+			topicUpdated.setId(1l);
+			topicUpdated.setProducts(products);
+			topicUpdated.setConditions(conditions);
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setId(1l);
+			Set<Topic> topics = new HashSet<>();
+			topics.add(topicUpdated);
+			assessmentPlan.setTopics(topics);
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setName("Test Plan");
+			riskPlan.setAssessmentPlan(assessmentPlan);
+			
+			ConditionProductDTO conditionProductDTO = new ConditionProductDTO();
+			AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
+			assignmentConfiguration.setRiskOwner("R");
+			
+			given(this.assessmentPlanService.findById(1l)).willReturn(assessmentPlan);
+			given(this.riskPlanRepository.countByNameIgnoreCase(riskPlan.getName())).willReturn(0l);
+			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
+			given(this.signalService.findById(1l)).willReturn(topicUpdated);
+			given(this.signalAssignmentService.getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO)).willReturn(assignmentConfiguration);
+			
+			riskPlanService.insert(riskPlan, null);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testInsertWithAssignmentNull() {
+		try{
+			List<TopicCondition> conditions = new ArrayList<>();
+			TopicCondition topicCondition = new TopicCondition();
+			List<TopicConditionValues> topicConditionValues = new ArrayList<>();
+			TopicConditionValues topicConditionValue = new TopicConditionValues();
+			topicConditionValues.add(topicConditionValue);
+			topicCondition.setRecordValues(topicConditionValues);
+			conditions.add(topicCondition);
+			List<TopicProduct> products = new ArrayList<>();
+			TopicProduct topicProduct = new TopicProduct();
+			List<TopicProductValues> topicProductValues = new ArrayList<>(); 
+			TopicProductValues topicProductValue = new TopicProductValues();
+			topicProductValues.add(topicProductValue);
+			topicProduct.setRecordValues(topicProductValues);
+			products.add(topicProduct);
+			Topic topicUpdated = new Topic();
+			topicUpdated.setId(1l);
+			topicUpdated.setProducts(products);
+			topicUpdated.setConditions(conditions);
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setId(1l);
+			Set<Topic> topics = new HashSet<>();
+			topics.add(topicUpdated);
+			assessmentPlan.setTopics(topics);
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setName("Test Plan");
+			riskPlan.setAssessmentPlan(assessmentPlan);
+			
+			given(this.assessmentPlanService.findById(1l)).willReturn(assessmentPlan);
+			given(this.riskPlanRepository.countByNameIgnoreCase(riskPlan.getName())).willReturn(0l);
+			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
+			given(this.signalService.findById(1l)).willReturn(topicUpdated);
+			
+			riskPlanService.insert(riskPlan, null);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testInsertWithAssessment() {
+		try{
+			List<TopicCondition> conditions = new ArrayList<>();
+			TopicCondition topicCondition = new TopicCondition();
+			List<TopicConditionValues> topicConditionValues = new ArrayList<>();
+			TopicConditionValues topicConditionValue = new TopicConditionValues();
+			topicConditionValues.add(topicConditionValue);
+			topicCondition.setRecordValues(topicConditionValues);
+			conditions.add(topicCondition);
+			List<TopicProduct> products = new ArrayList<>();
+			TopicProduct topicProduct = new TopicProduct();
+			List<TopicProductValues> topicProductValues = new ArrayList<>(); 
+			TopicProductValues topicProductValue = new TopicProductValues();
+			topicProductValues.add(topicProductValue);
+			topicProduct.setRecordValues(topicProductValues);
+			products.add(topicProduct);
+			Topic topicUpdated = new Topic();
+			topicUpdated.setId(1l);
+			topicUpdated.setProducts(products);
+			topicUpdated.setConditions(conditions);
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setId(1l);
+			Set<Topic> topics = new HashSet<>();
+			topics.add(topicUpdated);
+			assessmentPlan.setTopics(topics);
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setName("Test Plan");
+			riskPlan.setAssessmentPlan(assessmentPlan);
+			
+			given(this.assessmentPlanRepository.findOne(1l)).willReturn(assessmentPlan);
+			given(this.assessmentPlanService.findById(1l)).willReturn(assessmentPlan);
+			given(this.riskPlanRepository.countByNameIgnoreCase(riskPlan.getName())).willReturn(0l);
+			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
+			given(this.signalService.findById(1l)).willReturn(topicUpdated);
+			
+			riskPlanService.insert(riskPlan, 1l);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testCreateRiskTask() {
+		try{
+			Task riskTask = new Task();
+			riskTask.setId(1l);
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setName("Test Plan");
+			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlan);
+			given(this.taskRepository.countByNameIgnoreCaseAndRiskId("Task1",1l)).willReturn(0l);
+			given(this.taskRepository.save(riskTask)).willReturn(riskTask);
+			
+			riskPlanService.delete(1l);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
 	
 	@Test
 	public void testDelete() {
