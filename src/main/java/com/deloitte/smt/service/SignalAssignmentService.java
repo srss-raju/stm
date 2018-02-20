@@ -197,9 +197,7 @@ public class SignalAssignmentService {
 				assignmentConfigurationFromDB = assignmentConfigurationRepository.findByIsDefault(true);
 			}else{
 				
-				assignmentConfigurationFromDB = getResult(
-						assignmentConfigurationFromDB, noSocFlag,
-						noProductFlag, records);
+				assignmentConfigurationFromDB = getResult(assignmentConfigurationFromDB, noSocFlag, noProductFlag, records);
 			}
 		}else{
 			boolean emptyFlag = false;
@@ -217,25 +215,17 @@ public class SignalAssignmentService {
 				
 			}
 			
-			assignmentConfigurationFromDB = configWithProducts(
-					assignmentConfiguration, conditionProductDTO,
-					assignmentConfigurationFromDB, noSocFlag, emptyFlag);
+			assignmentConfigurationFromDB = configWithProducts(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDB, noSocFlag, emptyFlag);
 			
 			//if records not available for product and condition 
-			assignmentConfigurationFromDB = configWithNoConditionNoProduct(
-					assignmentConfiguration, conditionProductDTO,
-					assignmentConfigurationFromDB, noSocFlag, noProductFlag);
+			assignmentConfigurationFromDB = configWithNoConditionNoProduct(assignmentConfiguration, conditionProductDTO, assignmentConfigurationFromDB, noSocFlag, noProductFlag);
 			assignmentConfigurationFromDB = defaultConfiguration(assignmentConfigurationFromDB);
 			
 		}
 		return assignmentConfigurationFromDB;
 	}
 
-	private AssignmentConfiguration configWithProducts(
-			AssignmentConfiguration assignmentConfiguration,
-			ConditionProductDTO conditionProductDTO,
-			AssignmentConfiguration assignmentConfigurationFromDB,
-			boolean noSocFlag, boolean emptyFlag) throws ApplicationException {
+	private AssignmentConfiguration configWithProducts(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB, boolean noSocFlag, boolean emptyFlag) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
 		boolean emptyFlagx = emptyFlag;
 		if(!noSocFlag){
@@ -252,10 +242,7 @@ public class SignalAssignmentService {
 		return assignmentConfigurationFromDBx;
 	}
 
-	private AssignmentConfiguration getResult(
-			AssignmentConfiguration assignmentConfigurationFromDB,
-			boolean noSocFlag, boolean noProductFlag, List<Object> records)
-			throws ApplicationException {
+	private AssignmentConfiguration getResult(AssignmentConfiguration assignmentConfigurationFromDB, boolean noSocFlag, boolean noProductFlag, List<Object> records) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
 		BigInteger id = (BigInteger) records.get(0);
 		AssignmentConfiguration assignmentConfig = assignmentConfigurationRepository.findOne(id.longValue());
@@ -271,8 +258,7 @@ public class SignalAssignmentService {
 		return assignmentConfigurationFromDBx;
 	}
 
-	private AssignmentConfiguration defaultConfiguration(
-			AssignmentConfiguration assignmentConfigurationFromDB) {
+	private AssignmentConfiguration defaultConfiguration(AssignmentConfiguration assignmentConfigurationFromDB) {
 		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
 		if(assignmentConfigurationFromDBx == null){
 			assignmentConfigurationFromDBx = assignmentConfigurationRepository.findByIsDefault(true);
@@ -280,12 +266,7 @@ public class SignalAssignmentService {
 		return assignmentConfigurationFromDBx;
 	}
 
-	private AssignmentConfiguration configWithNoConditionNoProduct(
-			AssignmentConfiguration assignmentConfiguration,
-			ConditionProductDTO conditionProductDTO,
-			AssignmentConfiguration assignmentConfigurationFromDB,
-			boolean noSocFlag, boolean noProductFlag)
-			throws ApplicationException {
+	private AssignmentConfiguration configWithNoConditionNoProduct(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB, boolean noSocFlag, boolean noProductFlag) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
 		if(noSocFlag && noProductFlag){
 			if(!assignmentConfiguration.isRepeatProductFlag()){
@@ -305,10 +286,7 @@ public class SignalAssignmentService {
 		return assignmentConfigurationFromDBx;
 	}
 
-	private boolean buildQueryWithProducts(
-			AssignmentConfiguration assignmentConfiguration,
-			StringBuilder queryBuilder, StringBuilder productBuilder,
-			boolean noSocFlag, boolean noProductFlag) {
+	private boolean buildQueryWithProducts(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder, StringBuilder productBuilder, boolean noSocFlag, boolean noProductFlag) {
 		boolean noProductFlagx = noProductFlag;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
 			for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
@@ -328,10 +306,7 @@ public class SignalAssignmentService {
 		return noProductFlagx;
 	}
 
-	private boolean buildQueryWithConditions(
-			AssignmentConfiguration assignmentConfiguration,
-			StringBuilder queryBuilder, StringBuilder socBuilder,
-			boolean noSocFlag) {
+	private boolean buildQueryWithConditions(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder, StringBuilder socBuilder, boolean noSocFlag) {
 		boolean noSocFlagx = noSocFlag;
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
 			for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
@@ -347,9 +322,7 @@ public class SignalAssignmentService {
 		return noSocFlagx;
 	}
 
-	private void buildQueryWithKey(
-			AssignmentConfiguration assignmentConfiguration,
-			StringBuilder queryBuilder) {
+	private void buildQueryWithKey(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder) {
 		if(assignmentConfiguration.isConditionFlag()){
 			queryBuilder.append(" and c.record_key is null");
 		}
@@ -358,8 +331,7 @@ public class SignalAssignmentService {
 		}
 	}
 
-	private void buildQuery(AssignmentConfiguration assignmentConfiguration,
-			StringBuilder queryBuilder) {
+	private void buildQuery(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder) {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()) ){
 			queryBuilder.append(" INNER JOIN sm_assignment_condition c ON a.id = c.assignment_configuration_id ");
 		}
@@ -389,11 +361,7 @@ public class SignalAssignmentService {
 		return emptyFlagx;
 	}
 
-	private AssignmentConfiguration setRepeatProductFlag(
-			AssignmentConfiguration assignmentConfiguration,
-			ConditionProductDTO conditionProductDTO,
-			AssignmentConfiguration assignmentConfigurationFromDB)
-			throws ApplicationException {
+	private AssignmentConfiguration setRepeatProductFlag(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
 		for(AssignmentProduct productConfig : assignmentConfiguration.getProducts()){
 			String recordKey = productConfig.getRecordKey();
@@ -411,12 +379,7 @@ public class SignalAssignmentService {
 		return assignmentConfigurationFromDBx;
 	}
 
-	private AssignmentConfiguration setRProductFlag(
-			AssignmentConfiguration assignmentConfiguration,
-			ConditionProductDTO conditionProductDTO,
-			AssignmentConfiguration assignmentConfigurationFromDBx,
-			AssignmentProduct productConfig, String recordKey)
-			throws ApplicationException {
+	private AssignmentConfiguration setRProductFlag(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDBx, AssignmentProduct productConfig, String recordKey) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDBxx = assignmentConfigurationFromDBx;
 		if(recordKey != null){
 			productConfig.setRecordKey(recordKey);
@@ -427,11 +390,7 @@ public class SignalAssignmentService {
 		return assignmentConfigurationFromDBxx;
 	}
 
-	private AssignmentConfiguration setRepeatSocFlag(
-			AssignmentConfiguration assignmentConfiguration,
-			ConditionProductDTO conditionProductDTO,
-			AssignmentConfiguration assignmentConfigurationFromDB)
-			throws ApplicationException {
+	private AssignmentConfiguration setRepeatSocFlag(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDB) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
 		for(AssignmentCondition socConfig : assignmentConfiguration.getConditions()){
 			String recordKey = socConfig.getRecordKey();
@@ -448,12 +407,7 @@ public class SignalAssignmentService {
 		return assignmentConfigurationFromDBx;
 	}
 
-	private AssignmentConfiguration setRSocFlag(
-			AssignmentConfiguration assignmentConfiguration,
-			ConditionProductDTO conditionProductDTO,
-			AssignmentConfiguration assignmentConfigurationFromDBx,
-			AssignmentCondition socConfig, String recordKey)
-			throws ApplicationException {
+	private AssignmentConfiguration setRSocFlag(AssignmentConfiguration assignmentConfiguration, ConditionProductDTO conditionProductDTO, AssignmentConfiguration assignmentConfigurationFromDBx, AssignmentCondition socConfig, String recordKey) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDBxx = assignmentConfigurationFromDBx;
 		if(recordKey != null){
 			socConfig.setRecordKey(recordKey);

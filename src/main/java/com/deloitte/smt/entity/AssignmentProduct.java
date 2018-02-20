@@ -37,6 +37,7 @@ public class AssignmentProduct implements Serializable {
     private String createdBy;
     private Date lastModifiedDate;
 	private String lastModifiedBy;
+	private Long assignmentConfigurationId;
         
     @OneToMany
     private List<AssignmentProductValues> recordValues;
