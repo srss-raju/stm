@@ -217,13 +217,117 @@ public class RiskPlanServiceTest {
 		try{
 			Task riskTask = new Task();
 			riskTask.setId(1l);
+			riskTask.setRiskId(1l);
 			RiskPlan riskPlan = new RiskPlan();
 			riskPlan.setName("Test Plan");
 			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlan);
 			given(this.taskRepository.countByNameIgnoreCaseAndRiskId("Task1",1l)).willReturn(0l);
 			given(this.taskRepository.save(riskTask)).willReturn(riskTask);
 			
-			riskPlanService.delete(1l);
+			riskPlanService.createRiskTask(riskTask);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testCreateRiskTemplateTask() {
+		try{
+			Task riskTask = new Task();
+			riskTask.setId(1l);
+			riskTask.setRiskId(1l);
+			given(this.taskRepository.findByNameIgnoreCaseAndTemplateId("Task1",1l)).willReturn(null);
+			riskPlanService.createRiskTemplateTask(riskTask);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testCreateRiskTemplateTaskDuplicate() {
+		try{
+			Task riskTask = new Task();
+			riskTask.setId(1l);
+			riskTask.setRiskId(1l);
+			given(this.taskRepository.findByNameIgnoreCaseAndTemplateId("Task1",1l)).willReturn(riskTask);
+			riskPlanService.createRiskTemplateTask(riskTask);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindById() {
+		try{
+			Task riskTask = new Task();
+			riskTask.setId(1l);
+			riskTask.setStatus("New");
+			given(this.taskRepository.findOne(1l)).willReturn(riskTask);
+			given(this.taskRepository.save(riskTask)).willReturn(riskTask);
+			riskPlanService.findById(1l);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindAllByRiskId() {
+		try{
+			List<Task> list = new ArrayList<>();
+			given(this.taskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc(1l,"New")).willReturn(list);
+			riskPlanService.findAllByRiskId(1l,"New");
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindAllByRiskIdWithNull() {
+		try{
+			List<Task> list = new ArrayList<>();
+			given(this.taskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc(1l,null)).willReturn(list);
+			riskPlanService.findAllByRiskId(1l,null);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testUpdateRiskTask() {
+		try{
+			Task riskTask = new Task();
+			riskTask.setId(1l);
+			riskTask.setTemplateId(1l);
+			Task riskTaskExists = new Task();
+			riskTaskExists.setId(11l);
+			given(this. taskRepository.findByNameIgnoreCaseAndTemplateId("A",1l)).willReturn(riskTaskExists);
+			riskPlanService.updateRiskTask(riskTask);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskTaskExists() {
+		try{
+			Task riskTask = new Task();
+			riskTask.setId(1l);
+			riskTask.setTemplateId(1l);
+			Task riskTaskExists = new Task();
+			riskTaskExists.setId(1l);
+			given(this. taskRepository.findByNameIgnoreCaseAndTemplateId("A",1l)).willReturn(riskTaskExists);
+			riskPlanService.updateRiskTask(riskTask);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskTaskWithNull() {
+		try{
+			Task riskTask = new Task();
+			riskPlanService.updateRiskTask(riskTask);
 		}catch(Exception ex){
 			logger.info(ex);
 		}

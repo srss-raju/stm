@@ -91,16 +91,16 @@ public class AssignmentService {
 
 	private void updateQueryBuilder(AssignmentConfiguration assignmentConfiguration, StringBuilder queryBuilder) {
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getConditions()) ){
-			queryBuilder.append(" INNER JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
+			queryBuilder.append(" INNER JOIN sm_assignment_condition c ON a.id = c.assignment_configuration_id ");
 		}
 		if(assignmentConfiguration.isConditionEmptyFlag()){
-			queryBuilder.append(" LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id ");
+			queryBuilder.append(" LEFT JOIN sm_assignment_condition c ON a.id = c.assignment_configuration_id ");
 		}
 		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts())){
-			queryBuilder.append(" INNER JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
+			queryBuilder.append(" INNER JOIN sm_assignment_product p ON a.id = p.assignment_configuration_id  ");
 		}
 		if(assignmentConfiguration.isProductEmptyFlag()){
-			queryBuilder.append(" LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id  ");
+			queryBuilder.append(" LEFT JOIN sm_assignment_product p ON a.id = p.assignment_configuration_id  ");
 		}
 	}
 	
