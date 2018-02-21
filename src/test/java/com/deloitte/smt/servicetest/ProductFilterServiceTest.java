@@ -19,36 +19,36 @@ import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.dto.FilterDTO;
 import com.deloitte.smt.entity.ConditionLevels;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
-import com.deloitte.smt.repository.AssignmentConditionValuesRepository;
-import com.deloitte.smt.repository.ConditionLevelRepository;
+import com.deloitte.smt.repository.AssignmentProductValuesRepository;
+import com.deloitte.smt.repository.ProductLevelRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
 import com.deloitte.smt.repository.TopicRepository;
-import com.deloitte.smt.service.impl.ConditionFilterServiceImpl;
+import com.deloitte.smt.service.impl.ProductFilterServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SignalManagementApplication.class)
 @TestPropertySource(locations = {"classpath:test.properties"})
-public class ConditionFilterServiceTest {
-
+public class ProductFilterServiceTest {
+	
 	@Autowired
-	ConditionFilterServiceImpl conditionFilterServiceImpl;
+	ProductFilterServiceImpl productFilterServiceImpl;
 	
 	@MockBean
-	private ConditionLevelRepository conditionLevelRepository;
-
+	private ProductLevelRepository productLevelRepository;
+	
+	@MockBean
+	private AssignmentProductValuesRepository assignmentProductValuesRepository;
+	
 	@MockBean
 	private TopicRepository topicRepository;
-
-	@MockBean
-	private AssignmentConditionValuesRepository assignmentConditionValuesRepository;
-
+	
 	@MockBean
 	private SignalDetectionRepository signalDetectionRepository;
-
+	
 	@MockBean
 	private RiskPlanRepository riskPlanRepository;
-
+	
 	@MockBean
 	private AssessmentPlanRepository assessmentPlanRepository;
 	
@@ -63,7 +63,7 @@ public class ConditionFilterServiceTest {
 			
 			conFillVals.add("1@#2");
 			given(this.topicRepository.getConditionFilterValues()).willReturn(conFillVals);
-			conditionFilterServiceImpl.conditionLevelFilter(filterList, "signal");
+			productFilterServiceImpl.productLevelFilter(filterList, "signal");
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -80,7 +80,7 @@ public class ConditionFilterServiceTest {
 			
 			conFillVals.add("1@#2");
 			given(this.signalDetectionRepository.getConditionFilterValues()).willReturn(conFillVals);
-			conditionFilterServiceImpl.conditionLevelFilter(filterList, "detection");
+			productFilterServiceImpl.productLevelFilter(filterList, "detection");
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -99,7 +99,7 @@ public class ConditionFilterServiceTest {
 			conFillVals.add("1@#2");
 			given(this.riskPlanRepository.findAllSignalIds()).willReturn(ids);
 			given(this.topicRepository.getListOfConditionRecordKeys(ids)).willReturn(conFillVals);
-			conditionFilterServiceImpl.conditionLevelFilter(filterList, "risk");
+			productFilterServiceImpl.productLevelFilter(filterList, "risk");
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -118,9 +118,11 @@ public class ConditionFilterServiceTest {
 			ids.add(1l);
 			given(this.assessmentPlanRepository.findAllSignalIds()).willReturn(ids);
 			given(this.topicRepository.getListOfConditionRecordKeys(ids)).willReturn(conFillVals);
-			conditionFilterServiceImpl.conditionLevelFilter(filterList, "assessment");
+			productFilterServiceImpl.productLevelFilter(filterList, "assessment");
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
 	}
+	
+
 }
