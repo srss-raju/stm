@@ -22,22 +22,38 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.constant.SignalConfigurationType;
+import com.deloitte.smt.dto.ConditionProductDTO;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.AssignmentCondition;
+import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.entity.AssignmentProduct;
+import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.NonSignal;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.SignalConfidence;
 import com.deloitte.smt.entity.SignalStatistics;
+import com.deloitte.smt.entity.SignalStrength;
 import com.deloitte.smt.entity.SignalURL;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicCondition;
+import com.deloitte.smt.entity.TopicConditionValues;
+import com.deloitte.smt.entity.TopicProduct;
+import com.deloitte.smt.entity.TopicProductValues;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
+import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.NonSignalRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.SignalConfidenceRepository;
 import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.repository.TopicRepository;
+import com.deloitte.smt.service.AssignmentService;
+import com.deloitte.smt.service.SignalAssignmentService;
 import com.deloitte.smt.service.SignalMatchService;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.service.TaskService;
@@ -48,9 +64,21 @@ import com.deloitte.smt.service.TaskService;
 public class SignalServiceTest {
 
 	private final Logger logger = LogManager.getLogger(this.getClass());
-
+	
+	@MockBean
+	AssignmentService assignmentService;
+	
+	@MockBean
+	SignalAssignmentService signalAssignmentService;
+	
 	@Autowired
 	SignalService signalService;
+	
+	@MockBean
+	TaskRepository taskRepository;
+	
+	@MockBean
+	CommentsRepository commentsRepository;
 
 	@Autowired
 	TaskService taskService;
@@ -91,6 +119,8 @@ public class SignalServiceTest {
 	@Test
 	public void testCreateTopic() {
 		try {
+			AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
+			ConditionProductDTO conditionProductDTO = new ConditionProductDTO();
 			Topic topic = new Topic();
 			topic.setSignalStatus("New");
 			setSoc(topic);
@@ -108,9 +138,51 @@ public class SignalServiceTest {
 			SignalConfidence signalConfiguration = new SignalConfidence();
 			signalConfiguration.setCohortPercentage(95);
 			signalConfiguration.setConfidenceIndex(45);
+			assignmentConfiguration.setSignalOwner("A");
+			
+			List<AssignmentProduct> products = new ArrayList<>();
+			AssignmentProduct productConfig = new AssignmentProduct();
+			productConfig.setRecordKey("1@#2");
+			products.add(productConfig);
+			
+			List<AssignmentCondition> conditions = new ArrayList<>();
+			AssignmentCondition socConfig = new AssignmentCondition();
+			conditions.add(socConfig);
+			
+			assignmentConfiguration.setProducts(products);
+			assignmentConfiguration.setConditions(conditions);
+			
+			List<SignalStrength> signalStrengthList = new ArrayList<>();
+			SignalStrength signalStrength = new SignalStrength();
+			signalStrengthList.add(signalStrength);
+			topic.setSignalStrengthAtrributes(signalStrengthList);
+			
+			List<TopicCondition> updatedConditionList = new ArrayList<>();
+			TopicCondition topicCondition = new TopicCondition();
+			List<TopicConditionValues> clist = new ArrayList<>();
+			TopicConditionValues record = new TopicConditionValues();
+			clist.add(record);
+			topicCondition.setRecordValues(clist);
+			updatedConditionList.add(topicCondition);
+			
+			List<TopicProduct> updatedProductList = new ArrayList<>();
+			TopicProduct topicProduct= new TopicProduct();
+			List<TopicProductValues> plist = new ArrayList<>();
+			TopicProductValues precord = new TopicProductValues();
+			plist.add(precord);
+			topicProduct.setRecordValues(plist);
+			updatedProductList.add(topicProduct);
+			
+			topic.setProducts(updatedProductList);
+			topic.setConditions(updatedConditionList);
+			
 			given(this.signalConfigurationRepository.findByConfigName(SignalConfigurationType.DEFAULT_CONFIG.name())).willReturn(signalConfiguration);
+			given(this.assignmentService.getAssignmentConfiguration(assignmentConfiguration,conditionProductDTO)).willReturn(assignmentConfiguration);
 			given(this.topicRepository.save(topic)).willReturn(topic);
-
+			given(this.signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration,topic)).willReturn(topic);
+			given(this.signalAssignmentService.convertToAssignmentConfiguration(topic)).willReturn(assignmentConfiguration);
+			given(this.signalAssignmentService.saveSignalAssignmentAssignees(assignmentConfiguration, topic)).willReturn(topic);
+			
 			signalService.createTopic(topic);
 		} catch (Exception ex) {
 			logger.info(ex);
@@ -150,6 +222,7 @@ public class SignalServiceTest {
 	public void testUpdateTopic() {
 		try {
 			Topic topic = new Topic();
+			topic.setId(2l);
 			topic.setSignalStatus("New");
 			setSoc(topic);
 			topic.setSourceName("Test Source");
@@ -163,6 +236,22 @@ public class SignalServiceTest {
 			signalStatistics.setScore(1);
 			stats.add(signalStatistics);
 			topic.setSignalStatistics(stats);
+			given(this.topicRepository.findOne(1l)).willReturn(topic);
+			given(this.topicRepository.save(topic)).willReturn(topic);
+			signalService.updateTopic(topic);
+		} catch (Exception ex) {
+			logger.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testUpdateTopicOwnerCheck() {
+		try {
+			Topic topic = new Topic();
+			topic.setId(2l);
+			topic.setOwner("A");
+			given(this.topicRepository.findOne(2l)).willReturn(topic);
 			given(this.topicRepository.save(topic)).willReturn(topic);
 			signalService.updateTopic(topic);
 		} catch (Exception ex) {
@@ -170,17 +259,20 @@ public class SignalServiceTest {
 		}
 	}
 
+	
 	@Test
-	public void testUpdateTopicWithNull() {
+	public void testUpdateComments() {
 		try {
+			List<Comments> list = new ArrayList<>();
+			Comments comments = new Comments();
+			list.add(comments);
 			Topic topic = new Topic();
-			signalService.updateTopic(topic);
+			topic.setComments(list);
+			signalService.updateComments(topic);
 		} catch (Exception ex) {
 			logger.info(ex);
 		}
 	}
-	
-	
 	
 	@Test
 	public void testValidateAndPrioritizeNull() {
@@ -190,6 +282,52 @@ public class SignalServiceTest {
 			logger.info(ex);
 		}
 	}
+	
+	@Test
+	public void testValidateAndPrioritize() {
+		try{
+			ConditionProductDTO conditionProductDTO = new ConditionProductDTO();
+			AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
+			Topic topic = new Topic();
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assignmentConfiguration.setAssessmentOwner("A");
+			given(this.topicRepository.findOne(1l)).willReturn(topic);
+			given(this.signalAssignmentService.convertToAssignmentConfiguration(topic)).willReturn(assignmentConfiguration);
+			given(this.signalAssignmentService.getAssignmentConfiguration(assignmentConfiguration, conditionProductDTO)).willReturn(assignmentConfiguration);
+			given(this.assessmentPlanRepository.countByAssessmentNameIgnoreCase("A")).willReturn(0l);
+			signalService.validateAndPrioritize(1l, assessmentPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testAssociateTemplateTasks() {
+		try{
+			List<Task> actions = new ArrayList<>();
+			Task task = new Task();
+			task.setStatus("Completed");
+			task.setInDays(5);
+			actions.add(task);
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			given(this. taskRepository.findAllByTemplateId(1l)).willReturn(actions);
+			signalService.associateTemplateTasks(assessmentPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testUpdateTopicWithNull() {
+		try{
+			Topic topic = new Topic();
+			signalService.updateTopic(topic);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
 	
 	@Test
 	public void testFindNonSignalsByRunInstanceId() {

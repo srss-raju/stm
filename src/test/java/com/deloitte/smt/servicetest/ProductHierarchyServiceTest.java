@@ -59,7 +59,7 @@ public class ProductHierarchyServiceTest {
     		socHierarchyList.add(productHierarchyDto);
     		medraBrowserDto.setScrollCount(10);
     		medraBrowserDto.setScrollOffset(0);
-    		medraBrowserDto.setSearchValue("10022891");
+    		medraBrowserDto.setSearchValue("A");
     		medraBrowserDto.setSelectLevel("SOC_CODE");
     		List<ProductLevels> levels = new ArrayList<>();
     		ProductLevels l1 = new ProductLevels();
@@ -97,6 +97,33 @@ public class ProductHierarchyServiceTest {
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("ALL");
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
+	
+	public void testResponseMapper() {
+    	try{
+    		List<ProductHierarchyDto> socHierarchyList = new ArrayList<>();
+    		ProductHierarchyDto productHierarchyDto=new ProductHierarchyDto();
+    		productHierarchyDto.setActLevelOneCode("ATC_LVL_1");
+    		productHierarchyDto.setActLevelOneDesc("ATC_LVL_1_DESC");
+    		
+    		productHierarchyDto.setActLevelTwoCode("ATC_LVL_2");
+    		productHierarchyDto.setActLevelTwoDesc("ATC_LVL_2_DEC");
+    		
+    		productHierarchyDto.setActLevelThreeCode("ATC_LVL_3");
+    		productHierarchyDto.setActLevelThreeDesc("ATC_LVL_3_DESC");
+    		
+    		productHierarchyDto.setActLevelFourCode("ATC_LVL_4");
+    		productHierarchyDto.setActLevelFourDesc("ATC_LVL_4_DESC");
+    		
+    		productHierarchyDto.setActLevelFiveCode("ATC_LVL_5");
+    		productHierarchyDto.setActLevelFiveDesc("ATC_LVL_5_DESC");
+    		
+    		socHierarchyList.add(productHierarchyDto);
+    		
+    		productHierarchyService.responseMapper(socHierarchyList);
     	}catch(Exception e){
     		e.printStackTrace();
     	}

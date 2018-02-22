@@ -48,7 +48,7 @@ public class ProductHierarchyService {
 		return responseMapper(productHierarchyList);
 	}
 
-	private List<ProductSearchDTO> responseMapper(List<ProductHierarchyDto> productHierarchyList) {
+	public List<ProductSearchDTO> responseMapper(List<ProductHierarchyDto> productHierarchyList) {
 		List<ProductSearchDTO> productDtoList = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(productHierarchyList)) {
 			List<ProductLevels> prl= productLevelRepository.findAll();

@@ -63,7 +63,7 @@ public class SignalMatchService {
 		boolean noProductFlag = false;
 		
 		StringBuilder queryBuilder = new StringBuilder(
-				"select DISTINCT a.* from sm_topic a LEFT JOIN sm_topic_product_assignment_configuration p ON a.id = p.topic_id LEFT JOIN sm_topic_soc_assignment_configuration c ON a.id = c.topic_id  where a.created_date < ? ");
+				"select DISTINCT a.* from sm_topic a LEFT JOIN sm_topic_product p ON a.id = p.topic_id LEFT JOIN sm_topic_condition c ON a.id = c.topic_id  where a.created_date < ? ");
 
 		if(!CollectionUtils.isEmpty(topic.getConditions())){
 			for(TopicCondition socConfig : topic.getConditions()){

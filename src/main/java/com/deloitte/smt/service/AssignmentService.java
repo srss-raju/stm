@@ -62,7 +62,9 @@ public class AssignmentService {
 			assignmentConfiguration.setConditionEmptyFlag(true);
 		}
 		updateQueryBuilder(assignmentConfiguration, queryBuilder);
-		queryBuilder.append(" where ");
+		if(!CollectionUtils.isEmpty(assignmentConfiguration.getProducts()) || !CollectionUtils.isEmpty(assignmentConfiguration.getConditions())){
+			queryBuilder.append(" where ");
+		}
 		boolean socsPresentFlag = updateQueryBuilderWithSocs(assignmentConfiguration, queryBuilder, socBuilder);
 		updateQueryBuilderWithProducts(assignmentConfiguration, queryBuilder, productBuilder, socsPresentFlag);
 		updateQueryBuilderWithFlags(assignmentConfiguration, queryBuilder);
