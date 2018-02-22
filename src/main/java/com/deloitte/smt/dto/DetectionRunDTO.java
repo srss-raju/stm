@@ -25,6 +25,8 @@ public class DetectionRunDTO  implements Serializable{
 	private String secondaryProductActLevel;
 	private String primaryEventLevel;
 	private String secondaryEventLevel;
+	private Long minCases;
+	
 	
 	public List<Query> getQueries() {
 		return queries;
@@ -105,6 +107,12 @@ public class DetectionRunDTO  implements Serializable{
 	}
 	public void setSecondaryEventLevel(String secondaryEventLevel) {
 		this.secondaryEventLevel = secondaryEventLevel;
+	}
+	public Long getMinCases() {
+		return minCases;
+	}
+	public void setMinCases(Long minCases) {
+		this.minCases = minCases;
 	}
 	
 }
