@@ -26,6 +26,7 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.NonSignal;
+import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.ProductAssignmentConfiguration;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.SignalAction;
@@ -449,11 +450,27 @@ public class SignalService {
 		List<Attachment> attchmentList = attachmentService.addAttachments(topic.getId(), attachments, AttachmentType.TOPIC_ATTACHMENT,
 				topic.getDeletedAttachmentIds(), topic.getFileMetadata(), topic.getCreatedBy());
 		String topicOriginal = JsonUtil.converToJson(findById(topic.getId()));
-		
+		setIngredients(topic);
 		Topic topicUpdated = topicRepository.save(topic);
 		saveSignalUrl(topic);
+		
+		
+		
 		signalAuditService.saveOrUpdateSignalAudit(topicUpdated, topicOriginal, attchmentList, SmtConstant.UPDATE.getDescription());
 		return "Update Success";
+	}
+
+	private void setIngredients(Topic topic) {
+		if (!CollectionUtils.isEmpty(topic.getIngredients())) {
+			for(Ingredient ingredient:topic.getIngredients()){
+				if (!CollectionUtils.isEmpty(ingredient.getProducts())) {
+					for(Product product:ingredient.getProducts()){
+						product.setIngredient(ingredient);
+					}
+				}
+				ingredient.setTopic(topic);
+			}
+		}
 	}
 
 	private void ownerCheck(Topic topic) throws ApplicationException {

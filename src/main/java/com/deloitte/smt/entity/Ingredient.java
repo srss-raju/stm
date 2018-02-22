@@ -39,6 +39,12 @@ public class Ingredient  implements Serializable{
 	private Topic topic;
 	
 	
+	public Topic getTopic() {
+		return topic;
+	}
+	public void setTopic(Topic topic) {
+		this.topic = topic;
+	}
 	public Long getId() {
 		return id;
 	}
