@@ -1,5 +1,6 @@
 package com.deloitte.smt.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,8 +27,8 @@ public class Product  implements Serializable{
     private Long id;
 	private String productName;
 	private String productKey;
-	
-	@Transient
+	@ManyToOne(cascade= CascadeType.ALL)
+    @JoinColumn(name = "ingredientId")
 	@JsonIgnore
 	private Ingredient ingredient;
 	

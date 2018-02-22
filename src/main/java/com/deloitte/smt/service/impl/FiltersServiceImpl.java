@@ -53,6 +53,16 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private static final String RISK = "risk";
 	private static final String SIGNAL = "signal";
 	private static final String DETECTION = "detection";
+	private static final String STATUSES = "statuses";
+	private static final String ASSESSMENTTASKSTATUS = "assessmenttaskstatus";
+	private static final String RISKPLANACTIONSTATUS = "riskplanactionstatus";
+	private static final String FREQUENCY = "frequency";
+	private static final String ASSIGNEES = "assignees";
+	private static final String SMPRODUCTS ="smProducts";
+	private static final String INGREDIENTS	="ingredients";
+	private static final String SIGNALCONFIRMATION="signalconfirmation";		
+	private static final String SIGNALSOURCE="signalsource";
+	private static final String FINALDISPOSITIONS="finaldispositions";
 	
 	@Autowired
 	private FilterRepository filterRepository;
@@ -120,13 +130,12 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	}
 
 	private void getFiltersList(List<FilterDTO> filterList, Filters filter, FilterDTO dto, String key, String type) {
-		List<?> data = null;
 		LOGGER.info("KEY...." + key);
 		switch (key) {
-		case "statuses":
-		case "assessmenttaskstatus":
-		case "riskplanactionstatus":
-		case "frequency":
+		case STATUSES:
+		case ASSESSMENTTASKSTATUS:
+		case RISKPLANACTIONSTATUS:
+		case FREQUENCY:
 			filterList.add(getFiltersType(filter));
 			break;
 		case "products":
@@ -136,59 +145,30 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			conditionFilterServiceImpl.conditionLevelFilter(filterList, type);
 			break;
 		case "owners":
-			switch (type) {
-			case SIGNAL:
-				data = topicRepository.findDistinctOwnerNames();
-				break;
-			case RISK:
-				data = riskPlanRepository.findOwnersOnRiskPlan();
-				break;
-			case ASSESSMENT:
-				data = assessmentPlanRepository.findOwnersOnAssessmentPlan();
-				break;
-			case DETECTION:
-				data = signalDetectionRepository.findDistinctOwnerOnDetection();
-				break;
-			default:
-				break;
-			}
-			
+			filterOwners(filterList, dto, type);
+			break;
+		case ASSIGNEES:
+			filterAssignees(filterList, dto, type);
+			break;
+		case SMPRODUCTS:
+			filterSMProducts(filterList, dto, type);
+			break;	
+		case INGREDIENTS:
+			filterSMIngredients(filterList, dto, type);
+			break;	
+		case SIGNALCONFIRMATION:
+			List<?> data = topicRepository.findDistinctSignalConfirmationNames();
 			dto.setFilterValues(data == null ? new ArrayList<>() : data);
 			filterList.add(dto);
 			break;
-		case "assignees":
-			switch (type) {
-			case SIGNAL:
-				data = topicSignalValidationAssignmentAssigneesRepository.getSignalAssignedUsers();
-				break;
-			case RISK:
-				data = topicRiskPlanAssignmentAssigneesRepository.getRiskAssignedUsers();
-				break;
-			case ASSESSMENT:
-				data = topicAssessmentAssignmentAssigneesRepository.getAssessmentAssignedUsers();
-				break;
-			case DETECTION:
-				data = topicSignalDetectionAssignmentAssigneesRepository.getDetectionAssignedUsers();
-				break;
-			default:
-				break;
-			}
-			dto.setFilterValues(data == null ? new ArrayList<>() : data);
+		case SIGNALSOURCE:
+			List<?> data1 = topicRepository.getSourceNames();
+			dto.setFilterValues(data1 == null ? new ArrayList<>() : data1);
 			filterList.add(dto);
 			break;
-		case "signalconfirmation":
-			data = topicRepository.findDistinctSignalConfirmationNames();
-			dto.setFilterValues(data == null ? new ArrayList<>() : data);
-			filterList.add(dto);
-			break;
-		case "signalsource":
-			data = topicRepository.getSourceNames();
-			dto.setFilterValues(data == null ? new ArrayList<>() : data);
-			filterList.add(dto);
-			break;
-		case "finaldispositions":
-			data = assessmentPlanRepository.getAssessmentRiskStatus();
-			dto.setFilterValues(data == null ? new ArrayList<>() : data);
+		case FINALDISPOSITIONS:
+			List<?> data2 = assessmentPlanRepository.getAssessmentRiskStatus();
+			dto.setFilterValues(data2 == null ? new ArrayList<>() : data2);
 			filterList.add(dto);
 			break;
 		case "detectedDates":
@@ -202,6 +182,89 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		default:
 			break;
 		}
+	}
+
+	private void filterSMProducts(List<FilterDTO> filterList, FilterDTO dto, String type) {
+		List<?> data=null;
+		switch (type) {
+		case SIGNAL:
+			data = topicRepository.findDistinctProductNames();
+			break;
+		case RISK:
+			LOGGER.info(" $$$$$$$$$$$$$$$$$$ RISK FILTER $$$$$$$$$$$$$$$$$$$ ");
+			data = riskPlanRepository.findDistinctProductNames();
+			break;
+		case ASSESSMENT:
+			data = assessmentPlanRepository.findDistinctProductNames();
+			break;	
+		default:
+			break;
+		}
+		dto.setFilterValues(data == null ? new ArrayList<>() : data);
+		filterList.add(dto);
+	}
+	private void filterSMIngredients(List<FilterDTO> filterList, FilterDTO dto, String type) {
+		List<?> data=null;
+		switch (type) {
+		case SIGNAL:
+			data = topicRepository.findDistinctIngredientNames();
+			break;
+		case RISK:
+			data = riskPlanRepository.findDistinctIngredientNames();
+			break;
+		case ASSESSMENT:
+			data = assessmentPlanRepository.findDistinctIngredientNames();
+			break;
+		default:
+			break;
+		}
+		dto.setFilterValues(data == null ? new ArrayList<>() : data);
+		filterList.add(dto);
+	}
+
+
+	private void filterOwners(List<FilterDTO> filterList, FilterDTO dto, String type) {
+		 List<?> data =null;
+		switch (type) {
+		case SIGNAL:
+			data = topicRepository.findDistinctOwnerNames();
+			break;
+		case RISK:
+			data = riskPlanRepository.findOwnersOnRiskPlan();
+			break;
+		case ASSESSMENT:
+			data = assessmentPlanRepository.findOwnersOnAssessmentPlan();
+			break;
+		case DETECTION:
+			data = signalDetectionRepository.findDistinctOwnerOnDetection();
+			break;
+		default:
+			break;
+		}
+		dto.setFilterValues(data == null ? new ArrayList<>() : data);
+		filterList.add(dto);
+	}
+
+	private void filterAssignees(List<FilterDTO> filterList, FilterDTO dto, String type) {
+		List<?> data =null;
+		switch (type) {
+		case SIGNAL:
+			data = topicSignalValidationAssignmentAssigneesRepository.getSignalAssignedUsers();
+			break;
+		case RISK:
+			data = topicRiskPlanAssignmentAssigneesRepository.getRiskAssignedUsers();
+			break;
+		case ASSESSMENT:
+			data = topicAssessmentAssignmentAssigneesRepository.getAssessmentAssignedUsers();
+			break;
+		case DETECTION:
+			data = topicSignalDetectionAssignmentAssigneesRepository.getDetectionAssignedUsers();
+			break;
+		default:
+			break;
+		}
+		dto.setFilterValues(data == null ? new ArrayList<>() : data);
+		filterList.add(dto);
 	}
 
 	private void getEmptyFilterValues(Filters filter, List<FilterDTO> filterList) {
@@ -243,6 +306,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		StringBuilder queryBuilder = new StringBuilder();
 		List<String> entitiesList = null;
 		List<String> conditionsList = null;
+		boolean assigneesExists =false;
 		Map<String,Object> parameterMap = new LinkedHashMap<>();
 		try {
 			entitiesList = new ArrayList<>();
@@ -251,145 +315,33 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			if (!CollectionUtils.isEmpty(filters)) {
 				filMap = new LinkedHashMap<>();
 				filTypeMap = new HashMap<>();
-				switch (type) {
-				case SIGNAL:
-					entitiesList.add("select distinct root from Topic root ");
-					break;
-				case RISK:
-					entitiesList.add("select  distinct root from RiskPlan root ");
-					break;
-				case ASSESSMENT:
-					entitiesList.add("select  distinct root from AssessmentPlan root ");
-					break;
-				case DETECTION:
-					entitiesList.add("select  distinct root from SignalDetection root ");
-					break;
-				default:
-					break;
-				}
-				
+				createResultQuery(type, entitiesList);
 				for (FilterDTO dto : filters) {
 					filMap.put(dto.getFilterKey(), dto.getFilterValues());
 					filTypeMap.put(dto.getFilterType(), dto.getFilterValues());
 				}
-				boolean assigneesExists =false;
-				boolean productExists =false;
-				boolean conditionExists =false;
-				if(filMap.containsKey("assignees"))
+				
+				if(filMap.containsKey(ASSIGNEES))
 				{
-					List<?> l = (ArrayList<?>) filMap.get("assignees");
-					if(l.size()>0)
+					List<?> l = (ArrayList<?>) filMap.get(ASSIGNEES);
+					if(!l.isEmpty())
 						assigneesExists = true;
 				}
-				if(filTypeMap.containsKey("product"))
+				if(assigneesExists)
 				{
-					productExists=true;
-				}
-				if(filTypeMap.containsKey("condition"))
-				{
-					conditionExists=true;
+					addJoinAssigneesExists(type, entitiesList);
 				}
 				
+				checksmProductsAndingredientsInFilterList(type, filMap, entitiesList);
+				
+				checkProductAndConditionsInFilterList(type, filTypeMap, entitiesList);
 				
 				if(assigneesExists)
 				{
-					switch (type) {
-					case SIGNAL:
-						entitiesList.add(",TopicSignalValidationAssignmentAssignees joinAss "); 
-							break;
-					case RISK:
-						entitiesList.add(",TopicRiskPlanAssignmentAssignees joinAss ");
-						break;
-					case ASSESSMENT:
-						entitiesList.add(",TopicAssessmentAssignmentAssignees joinAss ");
-						break;
-					case DETECTION:
-						entitiesList.add(",TopicSignalDetectionAssignmentAssignees joinAss ");
-						break;
-					default:
-						break;
-					}
+					assigneesQuery(type, conditionsList);
 				}
 				
-				if(productExists && conditionExists)
-				{
-					switch (type) {
-					case SIGNAL:
-					case DETECTION:
-							entitiesList.add(",TopicSocAssignmentConfiguration condition,TopicProductAssignmentConfiguration product ");
-							break;
-					case RISK:
-						queryBuilder.append(",TopicSocAssignmentConfiguration condition,TopicProductAssignmentConfiguration product,AssessmentPlan ass, Topic topic ");
-						break;
-					case ASSESSMENT:
-						queryBuilder.append(",TopicSocAssignmentConfiguration condition,TopicProductAssignmentConfiguration product,Topic topic ");
-						break;
-					default:
-						break;
-					}
-					/*entitiesList.add(",TopicSocAssignmentConfiguration condition ");
-					entitiesList.add(",TopicProductAssignmentConfiguration product ");*/
-				}
-				else
-				{
-					if(productExists)
-					{
-						switch (type) {
-						case SIGNAL:
-						case DETECTION:
-								entitiesList.add(",TopicProductAssignmentConfiguration product ");
-								break;
-						case RISK:
-							queryBuilder.append(",TopicProductAssignmentConfiguration product,AssessmentPlan ass, Topic topic ");
-							break;
-						case ASSESSMENT:
-							queryBuilder.append(",TopicProductAssignmentConfiguration product,Topic topic ");
-							break;
-						default:
-							break;
-						}
-					}
-					if(conditionExists)
-					{
-						switch (type) {
-						case SIGNAL:
-						case DETECTION:
-								entitiesList.add(",TopicSocAssignmentConfiguration condition ");
-								break;
-						case RISK:
-							queryBuilder.append(",TopicSocAssignmentConfiguration condition,AssessmentPlan ass, Topic topic ");
-							break;
-						case ASSESSMENT:
-							queryBuilder.append(",TopicSocAssignmentConfiguration condition,Topic topic ");
-							break;
-						default:
-							break;
-						}
-					}
-				}
-				
-				
-				if(assigneesExists)
-				{
-					switch (type) {
-					case SIGNAL:
-							conditionsList.add(" root.id=joinAss.topicId ");
-						break;
-					case RISK:
-						conditionsList.add("  root.id=joinAss.riskId  ");
-						break;
-					case ASSESSMENT:
-						conditionsList.add(" root.id = joinAss.assessmentId ");
-						break;
-					case DETECTION:
-						conditionsList.add(" root.id=joinAss.detectionId ");
-						break;
-					default:
-						break;
-					}
-				}
-				
-				buildProductAndConditionPredicate(filters,queryBuilder,type,parameterMap,conditionsList);
+				buildProductAndConditionPredicate(filters,type,parameterMap,conditionsList);
 				
 				
 				LOGGER.info("filMap.........." + filMap);
@@ -406,7 +358,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				for (String entry : entitiesList) {
 					queryBuilder.append(entry);
 				}
-				if(conditionsList.size()>0)
+				if(!conditionsList.isEmpty())
 					queryBuilder.append(" where ");
 				for (String wherecondition : conditionsList) {
 					queryBuilder.append(wherecondition).append("and");
@@ -415,22 +367,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				LOGGER.info("BUILD PREDICATE QUERY-------" +queryBuilder);
 			} else {
 				LOGGER.info("FILTER SIZE = 0.....");
-				switch (type) {
-				case SIGNAL:
-					queryBuilder.append("from Topic root");
-					break;
-				case RISK:
-					queryBuilder.append("from RiskPlan root");
-					break;
-				case ASSESSMENT:
-					queryBuilder.append("from AssessmentPlan root");
-					break;
-				case DETECTION:
-					queryBuilder.append("from SignalDetection root");
-					break;
-				default:
-					break;
-				}
+				emptyFilterList(type, queryBuilder);
 			}
 			queryBuilder.append(" order by root.").append(searchCriteria.getSortBy()).append(" ").append(searchCriteria.getOrderBy().toUpperCase());
 			String queryStr = queryBuilder.toString();
@@ -462,8 +399,252 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		return response;
 	}
 
+	private void checksmProductsAndingredientsInFilterList(String type, Map<String, Object> filMap,
+			List<String> entitiesList) {
+		boolean ingredientsExists=false;
+		boolean smProductsExists=false;
+		if(filMap.containsKey(SMPRODUCTS))
+		{
+			List<?> l = (ArrayList<?>) filMap.get(SMPRODUCTS);
+			if(!l.isEmpty())
+				smProductsExists = true;
+		}
+		if(filMap.containsKey(INGREDIENTS))
+		{
+			List<?> l = (ArrayList<?>) filMap.get(INGREDIENTS);
+			if(!l.isEmpty())
+				ingredientsExists = true;
+		}
+		
+		if(smProductsExists && ingredientsExists)
+		{
+			smProductsAndIngredientsExists(type,  entitiesList);
+		}
+		else
+		{
+			if(smProductsExists)
+			{
+				smProductsExists(type,  entitiesList);
+			}
+			if(ingredientsExists)
+			{
+				ingredientsExists(type,  entitiesList);
+			}
+		}
+		
+		
+	}
+
+	private void ingredientsExists(String type, List<String> entitiesList) {
+		switch (type) {
+		case SIGNAL:
+			entitiesList.add(",Ingredient ingredient ");
+				break;
+		case RISK:
+			entitiesList.add(",Ingredient ingredient, AssessmentPlan ass,Topic topic  ");
+				break;	
+		case ASSESSMENT:
+			entitiesList.add(",Ingredient ingredient,Topic topic  ");
+				break;			
+		default:
+			break;
+		}
+	}
+
+	private void smProductsExists(String type, List<String> entitiesList) {
+		switch (type) {
+		case SIGNAL:
+			entitiesList.add(",Product smp,Ingredient ingredient ");
+				break;
+		case RISK:
+			entitiesList.add(",Product smp,Ingredient ingredient ,AssessmentPlan ass, Topic topic ");
+				break;	
+		case ASSESSMENT:
+			entitiesList.add(",Product smp,Ingredient ingredient ,Topic topic ");
+				break;		
+				
+		default:
+			break;
+		}
+	}
+
+	private void smProductsAndIngredientsExists(String type, List<String> entitiesList) {
+		switch (type) {
+		case SIGNAL:
+				entitiesList.add(",Product smp,Ingredient ingredient ");
+				break;
+		case RISK:
+			entitiesList.add(",Product smp,Ingredient ingredient ,AssessmentPlan ass, Topic topic ");
+				break;	
+		case ASSESSMENT:
+			entitiesList.add(",Product smp,Ingredient ingredient ,Topic topic ");
+				break;	
+		default:
+			break;
+		}
+		
+	}
+
+	private void checkProductAndConditionsInFilterList(String type, Map<String, Object> filTypeMap,
+			 List<String> entitiesList) {
+		boolean productExists =false;
+		boolean conditionExists =false;
+		
+		if(filTypeMap.containsKey("product"))
+		{
+			productExists=true;
+		}
+		if(filTypeMap.containsKey("condition"))
+		{
+			conditionExists=true;
+		}
+		
+		if(productExists && conditionExists)
+		{
+			productAndConditionExists(type, entitiesList);
+		}
+		else
+		{
+			if(productExists)
+			{
+				productExists(type, entitiesList);
+			}
+			if(conditionExists)
+			{
+				conditionExists(type, entitiesList);
+			}
+		}
+	}
+
+	private void emptyFilterList(String type, StringBuilder queryBuilder) {
+		switch (type) {
+		case SIGNAL:
+			queryBuilder.append("from Topic root");
+			break;
+		case RISK:
+			queryBuilder.append("from RiskPlan root");
+			break;
+		case ASSESSMENT:
+			queryBuilder.append("from AssessmentPlan root");
+			break;
+		case DETECTION:
+			queryBuilder.append("from SignalDetection root");
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void createResultQuery(String type, List<String> entitiesList) {
+		switch (type) {
+		case SIGNAL:
+			entitiesList.add("select distinct root from Topic root ");
+			break;
+		case RISK:
+			entitiesList.add("select  distinct root from RiskPlan root ");
+			break;
+		case ASSESSMENT:
+			entitiesList.add("select  distinct root from AssessmentPlan root ");
+			break;
+		case DETECTION:
+			entitiesList.add("select  distinct root from SignalDetection root ");
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void assigneesQuery(String type, List<String> conditionsList) {
+		switch (type) {
+		case SIGNAL:
+				conditionsList.add(" root.id=joinAss.topicId ");
+			break;
+		case RISK:
+			conditionsList.add("  root.id=joinAss.riskId  ");
+			break;
+		case ASSESSMENT:
+			conditionsList.add(" root.id = joinAss.assessmentId ");
+			break;
+		case DETECTION:
+			conditionsList.add(" root.id=joinAss.detectionId ");
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void addJoinAssigneesExists(String type, List<String> entitiesList) {
+		switch (type) {
+		case SIGNAL:
+			entitiesList.add(",TopicSignalValidationAssignmentAssignees joinAss "); 
+				break;
+		case RISK:
+			entitiesList.add(",TopicRiskPlanAssignmentAssignees joinAss ");
+			break;
+		case ASSESSMENT:
+			entitiesList.add(",TopicAssessmentAssignmentAssignees joinAss ");
+			break;
+		case DETECTION:
+			entitiesList.add(",TopicSignalDetectionAssignmentAssignees joinAss ");
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void conditionExists(String type, List<String> entitiesList) {
+		switch (type) {
+		case SIGNAL:
+		case DETECTION:
+				entitiesList.add(",TopicSocAssignmentConfiguration condition ");
+				break;
+		case RISK:
+			entitiesList.add(",TopicSocAssignmentConfiguration condition,AssessmentPlan ass, Topic topic ");
+			break;
+		case ASSESSMENT:
+			entitiesList.add(",TopicSocAssignmentConfiguration condition,Topic topic ");
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void productExists(String type, List<String> entitiesList) {
+		switch (type) {
+		case SIGNAL:
+		case DETECTION:
+			entitiesList.add(",TopicProductAssignmentConfiguration product ");
+				break;
+		case RISK:
+			entitiesList.add(",TopicProductAssignmentConfiguration product,AssessmentPlan ass, Topic topic ");
+			break;
+		case ASSESSMENT:
+			entitiesList.add(",TopicProductAssignmentConfiguration product,Topic topic ");
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void productAndConditionExists(String type, List<String> entitiesList) {
+		switch (type) {
+		case SIGNAL:
+		case DETECTION:
+			entitiesList.add(",TopicSocAssignmentConfiguration condition,TopicProductAssignmentConfiguration product ");
+				break;
+		case RISK:
+			entitiesList.add(",TopicSocAssignmentConfiguration condition,TopicProductAssignmentConfiguration product,AssessmentPlan ass, Topic topic ");
+			break;
+		case ASSESSMENT:
+			entitiesList.add(",TopicSocAssignmentConfiguration condition,TopicProductAssignmentConfiguration product,Topic topic ");
+			break;
+		default:
+			break;
+		}
+	}
+
 	
-	private boolean buildProductAndConditionPredicate(List<FilterDTO> filters, StringBuilder queryBuilder, String type, Map<String, Object> parameterMap, List<String> conditionsList) {
+	private boolean buildProductAndConditionPredicate(List<FilterDTO> filters, String type, Map<String, Object> parameterMap, List<String> conditionsList) {
 		Set<String> productSet = new HashSet<>();
 		Set<String> conditionSet = new HashSet<>();
 		for (FilterDTO filter : filters) {
@@ -529,7 +710,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		StringBuilder group = null;
 		try {
 			Object ownerMap = filMap.get("owners");
-			Object assigneesMap = filMap.get("assignees");
+			Object assigneesMap = filMap.get(ASSIGNEES);
 			if (null != ownerMap) {
 				ownerSet = prepareFieldValuesSet(ownerMap);
 				owner = new StringBuilder();
@@ -622,17 +803,23 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		}
 
 	}
-
+	
 	private void buildPredicates(Entry<String, Object> me, String key, String type, Map<String, Object> parameterMap, List<String> conditionsList) {
 		LOGGER.info("key...."+key);
 		switch (key) {
-		case "statuses":
+		case STATUSES:
 			addStatuses(me.getValue(), type,parameterMap,conditionsList);
 			break;
-		case "signalsource":
+		case SMPRODUCTS:
+			addSmProductPredicate(me.getValue(), type,parameterMap,conditionsList);
+			break;	
+		case INGREDIENTS:
+			addIngredientsPredicate(me.getValue(), type,parameterMap,conditionsList);
+			break;		
+		case SIGNALSOURCE:
 			addSourceNames(me.getValue(), parameterMap,conditionsList);
 			break;
-		case "signalconfirmation":
+		case SIGNALCONFIRMATION:
 			addSignalConfirmations(me.getValue(), parameterMap,conditionsList);
 			break;
 		case "dueDates":
@@ -640,18 +827,18 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			break;
 		case "createdDates":
 		case "detectedDates":
-			addCreatedDate(me.getValue(), type,parameterMap,conditionsList);
+			addCreatedDate(me.getValue(),parameterMap,conditionsList);
 			break;
-		case "assessmenttaskstatus":
+		case ASSESSMENTTASKSTATUS:
 			addAssessmentTaskStatus(me.getValue(), parameterMap,conditionsList);
 			break;
-		case "finaldispositions":
+		case FINALDISPOSITIONS:
 			addFinalDispositions(me.getValue(), parameterMap,conditionsList);
 			break;
-		case "riskplanactionstatus":
+		case RISKPLANACTIONSTATUS:
 			addRiskPlanActionStatus(me.getValue(), parameterMap,conditionsList);
 			break;
-		case "frequency":
+		case FREQUENCY:
 			addFrequency(me.getValue(), parameterMap,conditionsList);
 			break;
 		case "lastRunDates":
@@ -665,7 +852,52 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		}
 	}
 
-	private void addCreatedDate(Object value, String type,Map<String, Object> parameterMap, List<String> conditionsList) {
+	
+
+	private void addIngredientsPredicate(Object value, String type, Map<String, Object> parameterMap,
+			List<String> conditionsList) {
+		Set<Object> smIngredientList = prepareFieldValuesSet(value);
+		if (!CollectionUtils.isEmpty(smIngredientList)) {
+			switch (type) {
+			case SIGNAL:
+				conditionsList.add(" root.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
+				break;
+			case RISK:
+				conditionsList.add(" root.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
+				break;
+			case ASSESSMENT:
+				conditionsList.add(" topic.assessmentPlan.id = root.id and topic.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
+				break;
+			default:
+				break;	
+			}
+			parameterMap.put("smIngredients", smIngredientList);
+		}
+	}
+
+	private void addSmProductPredicate(Object value, String type, Map<String, Object> parameterMap,
+			List<String> conditionsList) {
+		Set<Object> smProductList = prepareFieldValuesSet(value);
+		if (!CollectionUtils.isEmpty(smProductList)) {
+			switch (type) {
+			case SIGNAL:
+				conditionsList.add(" root.id=ingredient.topic.id and ingredient.id=smp.ingredient.id and smp.productName in :smProducts ");
+				break;
+			case RISK:
+				conditionsList.add(" topic.id=ingredient.topic.id and ingredient.id=smp.ingredient.id and smp.productName in :smProducts ");
+				break;
+			case ASSESSMENT:
+				conditionsList.add(" topic.assessmentPlan.id = root.id and topic.id=ingredient.topic.id and ingredient.id=smp.ingredient.id and smp.productName in :smProducts ");
+				break;
+			default:
+				break;
+			}
+			parameterMap.put("smProducts", smProductList);
+		}
+		
+	}
+
+	private void addCreatedDate(Object value,Map<String, Object> parameterMap, List<String> conditionsList) {
 		Set<Object> emptyDates = prepareFieldValuesSet(value);
 		String dateType =" root.createdDate ";
 		if (!"".equalsIgnoreCase(emptyDates.iterator().next().toString())) {

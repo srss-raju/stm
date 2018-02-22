@@ -10,8 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "sm_ingredient")
@@ -29,6 +32,12 @@ public class Ingredient  implements Serializable{
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredientId")
 	private List<Product> products;
+	
+	@ManyToOne(cascade= CascadeType.ALL)
+    @JoinColumn(name = "topicId")
+	@JsonIgnore
+	private Topic topic;
+	
 	
 	public Long getId() {
 		return id;

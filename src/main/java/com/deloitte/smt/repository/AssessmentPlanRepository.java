@@ -45,4 +45,11 @@ public interface AssessmentPlanRepository extends JpaRepository<AssessmentPlan, 
 	@Query(value = "SELECT t FROM AssessmentPlan o inner join o.topics t  WHERE o.id= :id order by t.id desc")
 	Set<Topic> findAllSignals(@Param(value="id") Long id);
 	
+	@Query(value="SELECT distinct p.productName from Product p, Ingredient i, AssessmentPlan o inner join o.topics t where  i.topic.id= t.id and i.id=p.ingredient.id ", nativeQuery=false)
+	List<String> findDistinctProductNames();
+	
+	@Query(value="SELECT distinct i.ingredientName from Ingredient i, AssessmentPlan o inner join o.topics t where t.id=i.topic.id", nativeQuery=false)
+	List<String> findDistinctIngredientNames();
+	
+	
 }

@@ -47,5 +47,14 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	@Query(value="select NEW com.deloitte.smt.dto.TopicDTO(t.id,i.ingredientName,t.name,t.signalStatus) from Topic  t , Ingredient  i order by i.ingredientName", nativeQuery=false)
 	List<TopicDTO> findByIngredientName();
 	
+	
+	@Query(value="SELECT distinct p.product_name from sm_product p, sm_ingredient i, sm_topic t where t.id=i.topic_id and i.id=p.ingredient_id ", nativeQuery=true)
+	List<String> findDistinctProductNames();
+	
+	@Query(value="SELECT distinct i.ingredient_name from sm_ingredient i, sm_topic t where t.id=i.topic_id", nativeQuery=true)
+	List<String> findDistinctIngredientNames();
+	
+	
+	
 }
 

@@ -46,4 +46,11 @@ public interface RiskPlanRepository extends JpaRepository<RiskPlan, Long> {
 	List<String> findByRiskName(@Param(value = "name") String name,@Param(value = "id") Long id);
 	
 	RiskPlan findByAssessmentId(Long assessmentId);
+	
+	@Query(value="SELECT distinct p.productName from Product p, Ingredient i, RiskPlan o inner join o.assessmentPlan a inner join a.topics t where t.id=i.topic.id and i.id=p.ingredient.id ", nativeQuery=false)
+	List<String> findDistinctProductNames();
+	
+	@Query(value="SELECT distinct i.ingredientName from Ingredient i, RiskPlan o inner join o.assessmentPlan a inner join a.topics t where t.id=i.topic.id", nativeQuery=false)
+	List<String> findDistinctIngredientNames();
+	
 }
