@@ -202,6 +202,7 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_1.getDescription());
 				searchDto.setCategoryName(prlValue);
+				break;
 			}
 		}
 		return productSearchDTOList;
@@ -223,6 +224,7 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_2.getDescription());
 				searchDto.setCategoryName(prlValue);
+				break;
 			}
 		}
 		return productSearchDTOList;
@@ -236,6 +238,7 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_3.getDescription());
 				searchDto.setCategoryName(prlValue);
+				break;
 			}
 		}
 		return productSearchDTOList;
@@ -249,6 +252,7 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_4.getDescription());
 				searchDto.setCategoryName(prlValue);
+				break;
 			}
 		}
 		return productSearchDTOList;
@@ -262,6 +266,7 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_5.getDescription());
 				searchDto.setCategoryName(prlValue);
+				break;
 			}
 		}
 		return productSearchDTOList;
