@@ -3,8 +3,10 @@ package com.deloitte.smt.servicetest;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -17,7 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.dto.FilterDTO;
-import com.deloitte.smt.entity.ConditionLevels;
+import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
 import com.deloitte.smt.repository.AssignmentProductValuesRepository;
 import com.deloitte.smt.repository.ProductLevelRepository;
@@ -53,16 +55,27 @@ public class ProductFilterServiceTest {
 	private AssessmentPlanRepository assessmentPlanRepository;
 	
 	@Test
-	public void testGetSignalFilters() {
+	public void testGetSignalFiltersSignal() {
 		try{
 			List<FilterDTO> filterList = new ArrayList<>();
-			List<String> conFillVals = new ArrayList<>();
-			List<ConditionLevels> conditionLevels = new ArrayList<>();
-			ConditionLevels conditionLevel = new ConditionLevels();
-			conditionLevels.add(conditionLevel);
-			
-			conFillVals.add("1@#2");
-			given(this.topicRepository.getConditionFilterValues()).willReturn(conFillVals);
+			FilterDTO filterDTO = new FilterDTO();
+			filterList.add(filterDTO);
+			List<ProductLevels> productLevels = new ArrayList<>();
+			ProductLevels productLevel = new ProductLevels();
+			productLevel.setVersions("2.1");
+			productLevels.add(productLevel);
+			List<String> prodFillVals = new ArrayList<>();
+			prodFillVals.add("A@#B");
+			Set<String> recValues = new HashSet<>();
+			List<Object[]> list = new ArrayList<>();
+			Object[] array = new Object[3];
+			array[0] = "A";
+			array[1] = "B";
+			array[2] = "C";
+			list.add(array);
+			given(this.productLevelRepository.findAllByOrderByIdAsc()).willReturn(productLevels);
+			given(this.assignmentProductValuesRepository.findDistinctByCategoryCodeIn(recValues)).willReturn(list);
+			given(this.topicRepository.getProductFilterValues()).willReturn(prodFillVals);
 			productFilterServiceImpl.productLevelFilter(filterList, "signal");
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -70,16 +83,27 @@ public class ProductFilterServiceTest {
 	}
 	
 	@Test
-	public void testGetDetectionFilters() {
+	public void testGetSignalFiltersDetection() {
 		try{
 			List<FilterDTO> filterList = new ArrayList<>();
-			List<String> conFillVals = new ArrayList<>();
-			List<ConditionLevels> conditionLevels = new ArrayList<>();
-			ConditionLevels conditionLevel = new ConditionLevels();
-			conditionLevels.add(conditionLevel);
-			
-			conFillVals.add("1@#2");
-			given(this.signalDetectionRepository.getConditionFilterValues()).willReturn(conFillVals);
+			FilterDTO filterDTO = new FilterDTO();
+			filterList.add(filterDTO);
+			List<ProductLevels> productLevels = new ArrayList<>();
+			ProductLevels productLevel = new ProductLevels();
+			productLevel.setVersions("2.1");
+			productLevels.add(productLevel);
+			List<String> prodFillVals = new ArrayList<>();
+			prodFillVals.add("A@#B");
+			Set<String> recValues = new HashSet<>();
+			List<Object[]> list = new ArrayList<>();
+			Object[] array = new Object[3];
+			array[0] = "A";
+			array[1] = "B";
+			array[2] = "C";
+			list.add(array);
+			given(this.productLevelRepository.findAllByOrderByIdAsc()).willReturn(productLevels);
+			given(this.assignmentProductValuesRepository.findDistinctByCategoryCodeIn(recValues)).willReturn(list);
+			given(this.topicRepository.getProductFilterValues()).willReturn(prodFillVals);
 			productFilterServiceImpl.productLevelFilter(filterList, "detection");
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -87,18 +111,27 @@ public class ProductFilterServiceTest {
 	}
 	
 	@Test
-	public void testGetRiskFilters() {
+	public void testGetSignalFiltersRisk() {
 		try{
 			List<FilterDTO> filterList = new ArrayList<>();
-			List<String> conFillVals = new ArrayList<>();
-			List<ConditionLevels> conditionLevels = new ArrayList<>();
-			ConditionLevels conditionLevel = new ConditionLevels();
-			conditionLevels.add(conditionLevel);
-			Set<Long> ids = new HashSet<>();
-			ids.add(1l);
-			conFillVals.add("1@#2");
-			given(this.riskPlanRepository.findAllSignalIds()).willReturn(ids);
-			given(this.topicRepository.getListOfConditionRecordKeys(ids)).willReturn(conFillVals);
+			FilterDTO filterDTO = new FilterDTO();
+			filterList.add(filterDTO);
+			List<ProductLevels> productLevels = new ArrayList<>();
+			ProductLevels productLevel = new ProductLevels();
+			productLevel.setVersions("2.1");
+			productLevels.add(productLevel);
+			List<String> prodFillVals = new ArrayList<>();
+			prodFillVals.add("A@#B");
+			Set<String> recValues = new HashSet<>();
+			List<Object[]> list = new ArrayList<>();
+			Object[] array = new Object[3];
+			array[0] = "A";
+			array[1] = "B";
+			array[2] = "C";
+			list.add(array);
+			given(this.productLevelRepository.findAllByOrderByIdAsc()).willReturn(productLevels);
+			given(this.assignmentProductValuesRepository.findDistinctByCategoryCodeIn(recValues)).willReturn(list);
+			given(this.topicRepository.getProductFilterValues()).willReturn(prodFillVals);
 			productFilterServiceImpl.productLevelFilter(filterList, "risk");
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -106,23 +139,101 @@ public class ProductFilterServiceTest {
 	}
 	
 	@Test
-	public void testGetAssessmentFilters() {
+	public void testGetSignalFiltersAssessment() {
 		try{
 			List<FilterDTO> filterList = new ArrayList<>();
-			List<String> conFillVals = new ArrayList<>();
-			List<ConditionLevels> conditionLevels = new ArrayList<>();
-			ConditionLevels conditionLevel = new ConditionLevels();
-			conditionLevels.add(conditionLevel);
-			conFillVals.add("1@#2");
-			Set<Long> ids = new HashSet<>();
-			ids.add(1l);
-			given(this.assessmentPlanRepository.findAllSignalIds()).willReturn(ids);
-			given(this.topicRepository.getListOfConditionRecordKeys(ids)).willReturn(conFillVals);
+			FilterDTO filterDTO = new FilterDTO();
+			filterList.add(filterDTO);
+			List<ProductLevels> productLevels = new ArrayList<>();
+			ProductLevels productLevel = new ProductLevels();
+			productLevel.setVersions("2.1");
+			productLevels.add(productLevel);
+			List<String> prodFillVals = new ArrayList<>();
+			prodFillVals.add("A@#B");
+			Set<String> recValues = new HashSet<>();
+			List<Object[]> list = new ArrayList<>();
+			Object[] array = new Object[3];
+			array[0] = "A";
+			array[1] = "B";
+			array[2] = "C";
+			list.add(array);
+			given(this.productLevelRepository.findAllByOrderByIdAsc()).willReturn(productLevels);
+			given(this.assignmentProductValuesRepository.findDistinctByCategoryCodeIn(recValues)).willReturn(list);
+			given(this.topicRepository.getProductFilterValues()).willReturn(prodFillVals);
 			productFilterServiceImpl.productLevelFilter(filterList, "assessment");
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
 	}
 	
+	
+	@Test
+	public void testConstructProductPredicateSignal() {
+		try{
+			List<String> prodFillVals = new ArrayList<>();
+			prodFillVals.add("A@#B");
+			Set<String> productSet = new HashSet<>();
+			productSet.add("A@#B");
+			StringBuilder queryBuilder = new StringBuilder();;
+			String type = "signal";
+			Map<String, Object> parameterMap = new HashMap<>();
+			given(this.topicRepository.getProductFilterValues()).willReturn(prodFillVals);
+			productFilterServiceImpl.constructProductPredicate(productSet, queryBuilder, type, parameterMap);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testConstructProductPredicateDetection() {
+		try{
+			List<String> prodFillVals = new ArrayList<>();
+			prodFillVals.add("A@#B");
+			Set<String> productSet = new HashSet<>();
+			productSet.add("A@#B");
+			StringBuilder queryBuilder = new StringBuilder();;
+			String type = "detection";
+			Map<String, Object> parameterMap = new HashMap<>();
+			given(this.topicRepository.getProductFilterValues()).willReturn(prodFillVals);
+			productFilterServiceImpl.constructProductPredicate(productSet, queryBuilder, type, parameterMap);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+
+	@Test
+	public void testConstructProductPredicateRisk() {
+		try{
+			List<String> prodFillVals = new ArrayList<>();
+			prodFillVals.add("A@#B");
+			Set<String> productSet = new HashSet<>();
+			productSet.add("A@#B");
+			StringBuilder queryBuilder = new StringBuilder();;
+			String type = "risk";
+			Map<String, Object> parameterMap = new HashMap<>();
+			given(this.topicRepository.getProductFilterValues()).willReturn(prodFillVals);
+			productFilterServiceImpl.constructProductPredicate(productSet, queryBuilder, type, parameterMap);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testConstructProductPredicateAssessment() {
+		try{
+			List<String> prodFillVals = new ArrayList<>();
+			prodFillVals.add("A@#B");
+			Set<String> productSet = new HashSet<>();
+			productSet.add("A@#B");
+			StringBuilder queryBuilder = new StringBuilder();;
+			String type = "assessment";
+			Map<String, Object> parameterMap = new HashMap<>();
+			given(this.topicRepository.getProductFilterValues()).willReturn(prodFillVals);
+			productFilterServiceImpl.constructProductPredicate(productSet, queryBuilder, type, parameterMap);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
 
 }
