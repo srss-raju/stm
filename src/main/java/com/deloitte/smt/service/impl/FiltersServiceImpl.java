@@ -863,7 +863,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				conditionsList.add(" root.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
 				break;
 			case RISK:
-				conditionsList.add(" root.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
+				conditionsList.add(" root.id=ass.riskPlan.id and topic.assessmentPlan.id = ass.id and topic.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
 				break;
 			case ASSESSMENT:
 				conditionsList.add(" topic.assessmentPlan.id = root.id and topic.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
@@ -884,7 +884,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				conditionsList.add(" root.id=ingredient.topic.id and ingredient.id=smp.ingredient.id and smp.productName in :smProducts ");
 				break;
 			case RISK:
-				conditionsList.add(" topic.id=ingredient.topic.id and ingredient.id=smp.ingredient.id and smp.productName in :smProducts ");
+				conditionsList.add(" root.id=ass.riskPlan.id and topic.assessmentPlan.id = ass.id and topic.id=ingredient.topic.id and ingredient.id=smp.ingredient.id and smp.productName in :smProducts ");
 				break;
 			case ASSESSMENT:
 				conditionsList.add(" topic.assessmentPlan.id = root.id and topic.id=ingredient.topic.id and ingredient.id=smp.ingredient.id and smp.productName in :smProducts ");
