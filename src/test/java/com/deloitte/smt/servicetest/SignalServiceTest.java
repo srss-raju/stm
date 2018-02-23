@@ -304,12 +304,15 @@ public class SignalServiceTest {
 	@Test
 	public void testAssociateTemplateTasks() {
 		try{
+			List<Long> templateIds = new ArrayList<>();
+			templateIds.add(1l);
 			List<Task> actions = new ArrayList<>();
 			Task task = new Task();
 			task.setStatus("Completed");
 			task.setInDays(5);
 			actions.add(task);
 			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setTemplateIds(templateIds);
 			given(this. taskRepository.findAllByTemplateId(1l)).willReturn(actions);
 			signalService.associateTemplateTasks(assessmentPlan);
 		}catch(Exception ex){

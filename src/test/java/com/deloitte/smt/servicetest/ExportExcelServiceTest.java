@@ -52,6 +52,7 @@ public class ExportExcelServiceTest {
 			signalAlgorithmDTO.setFamilyDescription("XYZ");
 			signalAlgorithmDTO.setAlgorithmRRRUB(3);
 			signalAlgorithmDTO.setAlgorithmRRRScore(4);
+			signalDTOList.add(signalAlgorithmDTO);
 			exportExcelService.writeExcel(signalDTOList, "/src");
 		}catch(Exception e){
 			e.printStackTrace();

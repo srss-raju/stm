@@ -25,13 +25,23 @@ import com.deloitte.smt.entity.IncludeAE;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
 import com.deloitte.smt.entity.SignalDetection;
+import com.deloitte.smt.entity.Smq;
 import com.deloitte.smt.entity.Soc;
+import com.deloitte.smt.entity.TopicCondition;
+import com.deloitte.smt.entity.TopicConditionValues;
+import com.deloitte.smt.entity.TopicProduct;
+import com.deloitte.smt.entity.TopicProductValues;
 import com.deloitte.smt.repository.DenominatorForPoissionRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.PtRepository;
 import com.deloitte.smt.repository.SignalDetectionRepository;
+import com.deloitte.smt.repository.SmqRepository;
 import com.deloitte.smt.repository.SocRepository;
+import com.deloitte.smt.repository.TopicConditionRepository;
+import com.deloitte.smt.repository.TopicConditionValuesRepository;
+import com.deloitte.smt.repository.TopicProductRepository;
+import com.deloitte.smt.repository.TopicProductValuesRepository;
 import com.deloitte.smt.service.SignalDetectionService;
 import com.deloitte.smt.util.SmtResponse;
 
@@ -50,6 +60,9 @@ public class SignalDetectionServiceTest {
 
 	@MockBean
 	private SocRepository socRepository;
+	
+	@MockBean
+	SmqRepository smqRepository;
 
 	@MockBean
 	private PtRepository ptRepository;
@@ -62,6 +75,17 @@ public class SignalDetectionServiceTest {
 
 	@MockBean
 	private IncludeAERepository includeAERepository;
+	
+	@MockBean
+	TopicConditionRepository topicSocAssignmentConfigurationRepository;
+	@MockBean
+	TopicProductRepository topicProductAssignmentConfigurationRepository;
+	
+	@MockBean
+	TopicConditionValuesRepository topicAssignmentConditionRepository;
+	
+	@MockBean
+	TopicProductValuesRepository topicAssignmentProductRepository;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -118,8 +142,12 @@ public class SignalDetectionServiceTest {
 			setOthers(signalDetection);
 			given(this.signalDetectionRepository.findOne(1l)).willReturn(signalDetection);
 			given(this.socRepository.findByDetectionId(1l)).willReturn(signalDetection.getSocs());
-			
+			given(this.smqRepository.save(signalDetection.getSmqs())).willReturn(signalDetection.getSmqs());
 			given(this.includeAERepository.findByDetectionId(1l)).willReturn(signalDetection.getIncludeAEs());
+			given(this.topicSocAssignmentConfigurationRepository.findByDetectionId(1l)).willReturn(signalDetection.getConditions());
+			given(this.topicProductAssignmentConfigurationRepository.findByDetectionId(1l)).willReturn(signalDetection.getProducts());
+			given(this.topicAssignmentConditionRepository.findByTopicSocAssignmentConfigurationId(1l)).willReturn(signalDetection.getConditions().get(0).getRecordValues());
+			given(this.topicAssignmentProductRepository.findByTopicProductAssignmentConfigurationId(1l)).willReturn(signalDetection.getProducts().get(0).getRecordValues());
 			
 			signalDetectionService.findById(1l);
 		}catch(Exception ex){
@@ -240,6 +268,33 @@ public class SignalDetectionServiceTest {
 		signalDetection.setQueryBuilder(queryBuilders);
 		signalDetection.setRunFrequency("Daily");
 		signalDetection.setCreatedDate(new Date());
+		
+		List<TopicCondition> conditions = new ArrayList<>();
+		TopicCondition socConfig = new TopicCondition();
+		List<TopicConditionValues> topicConditionValues = new ArrayList<>();
+		TopicConditionValues topicConditionValue = new TopicConditionValues();
+		topicConditionValues.add(topicConditionValue);
+		socConfig.setRecordValues(topicConditionValues);
+		socConfig.setRecordKey("A@#B");
+		conditions.add(socConfig);
+		List<TopicProduct> products = new ArrayList<>();
+		TopicProduct productConfig = new TopicProduct();
+		List<TopicProductValues> topicProductValues = new ArrayList<>();
+		TopicProductValues topicProductValue = new TopicProductValues();
+		topicProductValues.add(topicProductValue);
+		productConfig.setRecordKey("A@#B");
+		productConfig.setRecordValues(topicProductValues);
+		products.add(productConfig);
+		signalDetection.setConditions(conditions);
+		signalDetection.setProducts(products);
+		
+		List<Smq> smqs = new ArrayList<>();
+		Smq smq = new Smq();
+		List<Pt> pts = new ArrayList<>();
+		Pt pt = new Pt();
+		pts.add(pt);
+		smq.setPts(pts);
+		smqs.add(smq);
 	}
 
 
