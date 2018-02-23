@@ -866,9 +866,9 @@ public class FiltersServiceImpl<E> implements FiltersService {
 				conditionsList.add(" root.id=ass.riskPlan.id and topic.assessmentPlan.id = ass.id and topic.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
 				break;
 			case ASSESSMENT:
-				conditionsList.add(" topic.assessmentPlan.id = root.id and topic.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
+				conditionsList.add("  topic.assessmentPlan.id = root.id and topic.id=ingredient.topic.id and ingredient.ingredientName in :smIngredients ");
 				break;
-			default:
+			default:  
 				break;	
 			}
 			parameterMap.put("smIngredients", smIngredientList);
