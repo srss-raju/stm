@@ -3,8 +3,10 @@ package com.deloitte.smt.servicetest;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -123,4 +125,73 @@ public class ConditionFilterServiceTest {
 			ex.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testConstructConditionPredicateSignal() {
+		try{
+			List<String> conFillVals = new ArrayList<>();
+			conFillVals.add("A@#B");
+			Set<String> conditionSet = new HashSet<>();
+			conditionSet.add("A@#B");
+			StringBuilder queryBuilder = new StringBuilder();;
+			String type = "assessment";
+			Map<String, Object> parameterMap = new HashMap<>();
+			given(this.topicRepository.getProductFilterValues()).willReturn(conFillVals);
+			conditionFilterServiceImpl.constructConditionPredicate(conditionSet, queryBuilder, type, parameterMap);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testConstructConditionPredicateDetection() {
+		try{
+			List<String> conFillVals = new ArrayList<>();
+			conFillVals.add("A@#B");
+			Set<String> conditionSet = new HashSet<>();
+			conditionSet.add("A@#B");
+			StringBuilder queryBuilder = new StringBuilder();;
+			String type = "detection";
+			Map<String, Object> parameterMap = new HashMap<>();
+			given(this.topicRepository.getProductFilterValues()).willReturn(conFillVals);
+			conditionFilterServiceImpl.constructConditionPredicate(conditionSet, queryBuilder, type, parameterMap);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testConstructConditionPredicateAssessment() {
+		try{
+			List<String> conFillVals = new ArrayList<>();
+			conFillVals.add("A@#B");
+			Set<String> conditionSet = new HashSet<>();
+			conditionSet.add("A@#B");
+			StringBuilder queryBuilder = new StringBuilder();;
+			String type = "assessment";
+			Map<String, Object> parameterMap = new HashMap<>();
+			given(this.topicRepository.getProductFilterValues()).willReturn(conFillVals);
+			conditionFilterServiceImpl.constructConditionPredicate(conditionSet, queryBuilder, type, parameterMap);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testConstructConditionPredicateRisk() {
+		try{
+			List<String> conFillVals = new ArrayList<>();
+			conFillVals.add("A@#B");
+			Set<String> conditionSet = new HashSet<>();
+			conditionSet.add("A@#B");
+			StringBuilder queryBuilder = new StringBuilder();;
+			String type = "risk";
+			Map<String, Object> parameterMap = new HashMap<>();
+			given(this.topicRepository.getProductFilterValues()).willReturn(conFillVals);
+			conditionFilterServiceImpl.constructConditionPredicate(conditionSet, queryBuilder, type, parameterMap);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
 }
