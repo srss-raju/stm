@@ -24,8 +24,11 @@ import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.dto.ConditionProductDTO;
 import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.Task;
+import com.deloitte.smt.entity.TaskTemplate;
+import com.deloitte.smt.entity.TaskTemplateProducts;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicCondition;
 import com.deloitte.smt.entity.TopicConditionValues;
@@ -37,6 +40,8 @@ import com.deloitte.smt.repository.CommentsRepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.RiskPlanRepository;
 import com.deloitte.smt.repository.TaskRepository;
+import com.deloitte.smt.repository.TaskTemplateProductsRepository;
+import com.deloitte.smt.repository.TaskTemplateRepository;
 import com.deloitte.smt.service.AssessmentPlanService;
 import com.deloitte.smt.service.RiskPlanService;
 import com.deloitte.smt.service.SignalAssignmentService;
@@ -82,6 +87,12 @@ public class RiskPlanServiceTest {
 
 	@MockBean
 	AssignmentConfigurationRepository assignmentConfigurationRepository;
+	
+	@MockBean
+	TaskTemplateProductsRepository riskTaskTemplateProductsRepository;
+	
+	@MockBean
+    TaskTemplateRepository riskTaskTemplateRepository;
 	
 	@Test
 	public void testInsert() {
@@ -367,6 +378,160 @@ public class RiskPlanServiceTest {
 		}
 	}
 	
+	@Test
+	public void testRiskPlanSummaryIdNull() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setStatus("New");
+			riskPlanService.riskPlanSummary(riskPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
 	
+	@Test
+	public void testRiskPlanSummary() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setStatus("New");
+			riskPlanService.riskPlanSummary(riskPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskPlanIdNull() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setStatus("New");
+			riskPlanService.updateRiskPlan(riskPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testUpdateRiskPlanOwnerSame() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			RiskPlan riskPlanDB = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setStatus("New");
+			riskPlan.setOwner("A");
+			riskPlanDB.setOwner("A");
+			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlanDB);
+			riskPlanService.updateRiskPlan(riskPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskPlanSummary() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			RiskPlan riskPlanDB = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setStatus("Completed");
+			riskPlan.setOwner("A");
+			riskPlanDB.setOwner("B");
+			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlanDB);
+			riskPlanService.updateRiskPlan(riskPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskPlan() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			RiskPlan riskPlanDB = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setStatus("New");
+			riskPlan.setOwner("A");
+			riskPlanDB.setOwner("B");
+			List<Task> riskTaskStatues = new ArrayList<>();
+			Task task = new Task();
+			riskTaskStatues.add(task);
+			task.setStatus("New");
+			List<Comments> list = new ArrayList<>();
+			Comments comment = new Comments();
+			list.add(comment);
+			riskPlan.setComments(list);
+			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlanDB);
+			given(this.taskRepository.findAllByRiskIdOrderByCreatedDateDesc(1l)).willReturn(riskTaskStatues);
+			riskPlanService.updateRiskPlan(riskPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskNameDuplicate() {
+		try{
+			List<RiskPlan> list = new ArrayList<>();
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setName("A");
+			riskPlan.setId(1l);
+			riskPlan.setStatus("New");
+			riskPlan.setOwner("A");
+			list.add(riskPlan);
+			given(this.riskPlanRepository.findAll()).willReturn(list);
+			riskPlanService.updateRiskName(1l,"A");
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskName() {
+		try{
+			List<RiskPlan> list = new ArrayList<>();
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setName("B");
+			riskPlan.setId(1l);
+			riskPlan.setStatus("New");
+			riskPlan.setOwner("A");
+			list.add(riskPlan);
+			given(this.riskPlanRepository.findAll()).willReturn(list);
+			riskPlanService.updateRiskName(1l,"A");
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testGetTaskTamplatesOfRiskProducts() {
+		try{
+			TaskTemplateProducts taskTemplateProduct = new TaskTemplateProducts ();
+			TaskTemplate taskTemplate = new TaskTemplate();
+			List<TopicProduct> products = new ArrayList<>();
+			TopicProduct topicProduct = new TopicProduct();
+			topicProduct.setRecordKey("A@#B");
+			products.add(topicProduct);
+			AssessmentPlan assessmentPlan = new AssessmentPlan(); 
+			Set<Topic> topics = new HashSet<>();
+			Topic topic = new Topic();
+			topic.setName("S1");
+			topics.add(topic);
+			assessmentPlan.setTopics(topics);
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setStatus("In Progress");
+			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlan);
+			given(this.assessmentPlanService.findById(1l)).willReturn(assessmentPlan);
+			given(this.signalService.findById(1l)).willReturn(topic);
+			given(this.riskTaskTemplateProductsRepository.findTemplateId(1l)).willReturn(1l);
+			given(this.riskTaskTemplateRepository.findOne(1l)).willReturn(taskTemplate);
+			given(this.riskTaskTemplateProductsRepository.findByRecordKey("A@#B")).willReturn(taskTemplateProduct);
+			riskPlanService.getTaskTamplatesOfRiskProducts(1l);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
 	
 }
