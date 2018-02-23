@@ -123,6 +123,37 @@ public class ProductHierarchyServiceTest {
     		
     		socHierarchyList.add(productHierarchyDto);
     		
+    		List<ProductLevels> prl = new ArrayList<>();
+    		ProductLevels productLevel1 = new ProductLevels();
+    		productLevel1.setKey("ATC_LVL_1");
+    		productLevel1.setValue("A");
+    		prl.add(productLevel1);
+    		
+    		ProductLevels productLevel2 = new ProductLevels();
+    		productLevel2.setKey("ATC_LVL_2");
+    		productLevel2.setValue("A");
+    		prl.add(productLevel2);
+    		
+    		ProductLevels productLevel3 = new ProductLevels();
+    		productLevel3.setKey("ATC_LVL_3");
+    		productLevel3.setValue("A");
+    		prl.add(productLevel3);
+    		
+    		ProductLevels productLevel4 = new ProductLevels();
+    		productLevel4.setKey("ATC_LVL_4");
+    		productLevel4.setValue("A");
+    		prl.add(productLevel4);
+    		
+    		ProductLevels productLevel5 = new ProductLevels();
+    		productLevel5.setKey("ATC_LVL_5");
+    		productLevel5.setValue("A");
+    		prl.add(productLevel5);
+    		
+    		ProductLevels rxNorm = new ProductLevels();
+    		rxNorm.setKey("RXNORM");
+    		rxNorm.setValue("A");
+    		prl.add(rxNorm);
+    		given(this.productLevelRepository.findAll()).willReturn(prl);
     		productHierarchyService.responseMapper(socHierarchyList);
     	}catch(Exception e){
     		e.printStackTrace();

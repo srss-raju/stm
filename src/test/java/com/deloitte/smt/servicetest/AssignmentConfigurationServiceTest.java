@@ -2,6 +2,9 @@ package com.deloitte.smt.servicetest;
 
 import static org.mockito.BDDMockito.given;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -13,7 +16,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.entity.AssignmentCondition;
 import com.deloitte.smt.entity.AssignmentConfiguration;
+import com.deloitte.smt.entity.AssignmentProduct;
 import com.deloitte.smt.repository.AssignmentConfigurationRepository;
 import com.deloitte.smt.service.AssignmentConfigurationService;
 
@@ -109,6 +114,25 @@ public class AssignmentConfigurationServiceTest {
 	@Test
 	public void testFindAll() throws Exception{
 		assignmentConfigurationService.findAll();
+	}
+	
+	@Test
+	public void testGetProductsAndConditions() {
+		try{
+			AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
+			List<AssignmentProduct> products = new ArrayList<>();
+			AssignmentProduct  product = new AssignmentProduct ();
+			product.setRecordKey("A@#2");
+			products.add(product);
+			List<AssignmentCondition> conditions = new ArrayList<>();
+			AssignmentCondition socConfig = new AssignmentCondition();
+			socConfig.setRecordKey("A@#2");
+			conditions.add(socConfig);
+			assignmentConfigurationService.getProductsAndConditions(assignmentConfiguration);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+		
 	}
 	
 }
