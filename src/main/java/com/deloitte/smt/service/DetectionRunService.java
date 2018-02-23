@@ -100,6 +100,7 @@ public class DetectionRunService {
     		dto.setRunInstanceId(detectionRunUpdated.getId());
     		dto.setQueries(signalDetection.getQueries());
     		dto.setStratifications(signalDetection.getStratifications());
+    		dto.setMinCases(signalDetection.getMinCases());
     		
     		ObjectMapper mapper = new ObjectMapper();
     		String jsonInString = null;
