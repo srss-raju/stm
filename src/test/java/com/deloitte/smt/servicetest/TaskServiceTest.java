@@ -15,6 +15,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.exception.ExceptionBuilder;
 import com.deloitte.smt.repository.AssessmentPlanRepository;
@@ -41,15 +42,30 @@ public class TaskServiceTest {
     @MockBean
     AssessmentPlanRepository assessmentPlanRepository;
 	
+    
+    @Test
+	public void testCreateTaskDuplicate() {
+		try{
+			Task task = new Task();
+			given(this.taskRepository.countByNameIgnoreCaseAndAssessmentPlanId("A", 1l)).willReturn(1l);
+			taskService.createTask(task);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+    
+    
 	@Test
 	public void testCreateTask() {
 		try{
 			List<Task> actions = new ArrayList<>();
 			Task task = new Task();
 			task.setStatus("New");
+			task.setAssessmentPlanId(3l);
 			actions.add(task);
 			given(this.taskRepository.countByNameIgnoreCaseAndAssessmentPlanId("A", 1l)).willReturn(0l);
 			given(this.taskRepository.save(task)).willReturn(task);
+			given(this.taskRepository.findAllByAssessmentPlanId(3l)).willReturn(actions);
 			taskService.createTask(task);
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -70,16 +86,7 @@ public class TaskServiceTest {
 		}
 	}
 	
-	@Test
-	public void testCreateTaskDuplicate() {
-		try{
-			Task task = new Task();
-			given(this.taskRepository.countByNameIgnoreCaseAndAssessmentPlanId("A", 1l)).willReturn(1l);
-			taskService.createTask(task);
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-	}
+	
 	
 	@Test
 	public void testUpdateAssessmentActionWithNull() {
@@ -97,12 +104,68 @@ public class TaskServiceTest {
 		try{
 			List<Task> actions = new ArrayList<>();
 			Task task = new Task();
-			task.setId(2l);
+			task.setId(1l);
 			task.setStatus("Completed");
 			Task actionsExist = new Task();
 			actions.add(task);
 			given(this.taskRepository.findByNameIgnoreCaseAndAssessmentPlanId("A", 1l)).willReturn(actionsExist);
 			given(this.taskRepository.save(task)).willReturn(task);
+			taskService.updateAssessmentAction(task);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testUpdateAssessmentActionExistsNoTemplate() {
+		try{
+			Task task = new Task();
+			task.setId(1l);
+			task.setStatus("Completed");
+			Task actionsExist = new Task();
+			given(this.taskRepository.findByNameIgnoreCaseAndAssessmentPlanId("A", 1l)).willReturn(actionsExist);
+			given(this.taskRepository.save(task)).willReturn(task);
+			taskService.updateAssessmentAction(task);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testUpdateAssessmentActionExistsWithTemplate() {
+		try{
+			AssessmentPlan assessmentPlan  = new AssessmentPlan();
+			List<Task> tasks = new ArrayList<>();
+			Task task = new Task();
+			task.setId(1l);
+			task.setTemplateId(2l);
+			task.setStatus("Completed");
+			task.setAssessmentPlanId(3l);
+			tasks.add(task);
+			Task actionsExist = new Task();
+			given(this.taskRepository.findByNameIgnoreCaseAndTemplateId("A", 1l)).willReturn(actionsExist);
+			given(this.taskRepository.save(task)).willReturn(task);
+			given(this.taskRepository.findAllByAssessmentPlanId(3l)).willReturn(tasks);
+			given(this.assessmentPlanRepository.findOne(3l)).willReturn(assessmentPlan);
+			taskService.updateAssessmentAction(task);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testUpdateAssessmentActionExistsWithTemplateStatusNew() {
+		try{
+			List<Task> tasks = new ArrayList<>();
+			Task task = new Task();
+			task.setId(1l);
+			task.setTemplateId(2l);
+			task.setStatus("New");
+			tasks.add(task);
+			Task actionsExist = new Task();
+			given(this.taskRepository.findByNameIgnoreCaseAndTemplateId("A", 1l)).willReturn(actionsExist);
+			given(this.taskRepository.save(task)).willReturn(task);
+			given(this.taskRepository.findAllByAssessmentPlanId(3l)).willReturn(tasks);
 			taskService.updateAssessmentAction(task);
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -198,6 +261,15 @@ public class TaskServiceTest {
 	public void testFindAllRiskplan() {
 		try{
 			taskService.findAll("riskplan",1l);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testFindAll() {
+		try{
+			taskService.findAll("siganl",1l);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
