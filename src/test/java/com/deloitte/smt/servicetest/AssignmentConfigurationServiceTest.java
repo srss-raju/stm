@@ -49,11 +49,93 @@ public class AssignmentConfigurationServiceTest {
 	}
 	
 	@Test
+	public void testInsertDuplicateConfig() {
+		try{
+			AssignmentConfiguration config = new AssignmentConfiguration();
+			AssignmentConfiguration configDB = new AssignmentConfiguration();
+			config.setAssessmentOwner("Test User");
+			config.setSignalSource("test");
+			config.setName("A");
+			configDB.setName("A");
+			given(this.assignmentConfigurationRepository.findByNameIgnoreCase("A")).willReturn(configDB);
+			
+			assignmentConfigurationService.insert(config);
+		}catch(Exception ex){
+			
+		}
+	}
+	
+	@Test
+	public void testInsertDuplicateCheck() {
+		try{
+			AssignmentConfiguration config = new AssignmentConfiguration();
+			AssignmentConfiguration configDB = new AssignmentConfiguration();
+			config.setAssessmentOwner("Test User");
+			config.setSignalSource("test");
+			config.setName("A");
+			configDB.setName("B");
+			
+			List<AssignmentCondition> conditions = new ArrayList<>();
+			AssignmentCondition condition = new AssignmentCondition();
+			condition.setRecordKey("A@#B");
+			condition.setId(1l);
+			conditions.add(condition);
+			
+			List<AssignmentProduct> products = new ArrayList<>();
+			AssignmentProduct product = new AssignmentProduct();
+			product.setRecordKey("A@#B");
+			product.setId(1l);
+			products.add(product);
+			
+			given(this.assignmentConfigurationRepository.findByNameIgnoreCase("A")).willReturn(configDB);
+			assignmentConfigurationService.insert(config);
+		}catch(Exception ex){
+			
+		}
+	}
+	
+	@Test
 	public void testUpdateWithNull() {
 		try{
 			AssignmentConfiguration config = new AssignmentConfiguration();
 			config.setAssessmentOwner("Test User");
 			config.setSignalSource("Test Source");
+			assignmentConfigurationService.update(config);
+		}catch(Exception ex){
+			
+		}
+	}
+	
+	@Test
+	public void testUpdateDuplicate() {
+		try{
+			AssignmentConfiguration config = new AssignmentConfiguration();
+			AssignmentConfiguration configDB = new AssignmentConfiguration();
+			config.setId(1l);
+			config.setAssessmentOwner("Test User");
+			config.setSignalSource("test");
+			config.setName("A");
+			configDB.setName("A");
+			
+			given(this.assignmentConfigurationRepository.findByNameIgnoreCase("A")).willReturn(configDB);
+			assignmentConfigurationService.update(config);
+		}catch(Exception ex){
+			
+		}
+	}
+	
+	@Test
+	public void testUpdate() {
+		try{
+			AssignmentConfiguration config = new AssignmentConfiguration();
+			AssignmentConfiguration configDB = new AssignmentConfiguration();
+			config.setId(1l);
+			config.setAssessmentOwner("Test User");
+			config.setSignalSource("test");
+			config.setName("A");
+			configDB.setName("B");
+			
+			given(this.assignmentConfigurationRepository.findByNameIgnoreCase("A")).willReturn(configDB);
 			assignmentConfigurationService.update(config);
 		}catch(Exception ex){
 			
@@ -123,10 +205,12 @@ public class AssignmentConfigurationServiceTest {
 			List<AssignmentProduct> products = new ArrayList<>();
 			AssignmentProduct  product = new AssignmentProduct ();
 			product.setRecordKey("A@#2");
+			product.setId(1l);
 			products.add(product);
 			List<AssignmentCondition> conditions = new ArrayList<>();
 			AssignmentCondition socConfig = new AssignmentCondition();
 			socConfig.setRecordKey("A@#2");
+			socConfig.setId(1l);
 			conditions.add(socConfig);
 			assignmentConfigurationService.getProductsAndConditions(assignmentConfiguration);
 		}catch(Exception ex){

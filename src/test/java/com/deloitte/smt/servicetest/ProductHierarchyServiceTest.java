@@ -102,9 +102,10 @@ public class ProductHierarchyServiceTest {
     	}
     }
 	
+	@Test
 	public void testResponseMapper() {
     	try{
-    		List<ProductHierarchyDto> socHierarchyList = new ArrayList<>();
+    		List<ProductHierarchyDto> productHierarchyList = new ArrayList<>();
     		ProductHierarchyDto productHierarchyDto=new ProductHierarchyDto();
     		productHierarchyDto.setActLevelOneCode("ATC_LVL_1");
     		productHierarchyDto.setActLevelOneDesc("ATC_LVL_1_DESC");
@@ -121,7 +122,7 @@ public class ProductHierarchyServiceTest {
     		productHierarchyDto.setActLevelFiveCode("ATC_LVL_5");
     		productHierarchyDto.setActLevelFiveDesc("ATC_LVL_5_DESC");
     		
-    		socHierarchyList.add(productHierarchyDto);
+    		productHierarchyList.add(productHierarchyDto);
     		
     		List<ProductLevels> prl = new ArrayList<>();
     		ProductLevels productLevel1 = new ProductLevels();
@@ -154,7 +155,7 @@ public class ProductHierarchyServiceTest {
     		rxNorm.setValue("A");
     		prl.add(rxNorm);
     		given(this.productLevelRepository.findAll()).willReturn(prl);
-    		productHierarchyService.responseMapper(socHierarchyList);
+    		productHierarchyService.responseMapper(productHierarchyList);
     	}catch(Exception e){
     		e.printStackTrace();
     	}
