@@ -57,6 +57,7 @@ import com.deloitte.smt.repository.TopicProductRepository;
 import com.deloitte.smt.repository.TopicProductValuesRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.AssignmentService;
+import com.deloitte.smt.service.DashboardCountService;
 import com.deloitte.smt.service.SignalAssignmentService;
 import com.deloitte.smt.service.SignalMatchService;
 import com.deloitte.smt.service.SignalService;
@@ -71,6 +72,9 @@ public class SignalServiceTest {
 	
 	@MockBean
 	AssignmentService assignmentService;
+	
+	@MockBean
+	DashboardCountService dashboardCountService;
 	
 	@MockBean
 	TopicConditionRepository topicSocAssignmentConfigurationRepository;
@@ -505,6 +509,69 @@ public class SignalServiceTest {
 	public void testGetTopicComments() {
 		try {
 			signalService.getTopicComments(1l);
+		} catch (Exception ex) {
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testDeleteTopicComments() {
+		try {
+			Comments comments = new Comments();
+			given(this.commentsRepository.findOne(1l)).willReturn(comments);
+			signalService.deleteTopicComments(1l);
+		} catch (Exception ex) {
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testDeleteTopicCommentsNull() {
+		try {
+			given(this.commentsRepository.findOne(1l)).willReturn(null);
+			signalService.deleteTopicComments(1l);
+		} catch (Exception ex) {
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testGetValidateAndPrioritizeCount() {
+		try {
+			List<Long> userKeys = new ArrayList<>();
+			userKeys.add(1l);
+			List<Long> userGroupKeys = new ArrayList<>();
+			userGroupKeys.add(1l);
+			given(this.dashboardCountService.getValidateAndPrioritizeCount("A",userKeys,userGroupKeys)).willReturn(2l);
+			signalService.getValidateAndPrioritizeCount("A",userKeys,userGroupKeys);
+		} catch (Exception ex) {
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testGetAssessmentCount() {
+		try {
+			List<Long> userKeys = new ArrayList<>();
+			userKeys.add(1l);
+			List<Long> userGroupKeys = new ArrayList<>();
+			userGroupKeys.add(1l);
+			given(this.dashboardCountService.getAssessmentCount("A",userKeys,userGroupKeys)).willReturn(2l);
+			signalService.getAssessmentCount("A",userKeys,userGroupKeys);
+		} catch (Exception ex) {
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testGetRiskCount() {
+		try {
+			List<Long> userKeys = new ArrayList<>();
+			userKeys.add(1l);
+			List<Long> userGroupKeys = new ArrayList<>();
+			userGroupKeys.add(1l);
+			given(this.dashboardCountService.getRiskCount("A",userKeys,userGroupKeys)).willReturn(2l);
+			signalService.getRiskCount("A",userKeys,userGroupKeys);
 		} catch (Exception ex) {
 			logger.info(ex);
 		}

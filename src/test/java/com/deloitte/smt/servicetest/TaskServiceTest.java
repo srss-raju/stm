@@ -47,6 +47,7 @@ public class TaskServiceTest {
 	public void testCreateTaskDuplicate() {
 		try{
 			Task task = new Task();
+			task.setName("A");
 			given(this.taskRepository.countByNameIgnoreCaseAndAssessmentPlanId("A", 1l)).willReturn(1l);
 			taskService.createTask(task);
 		}catch(Exception ex){
@@ -78,15 +79,16 @@ public class TaskServiceTest {
 			List<Task> actions = new ArrayList<>();
 			Task task = new Task();
 			task.setStatus("Completed");
+			task.setAssessmentPlanId(3l);
 			actions.add(task);
 			given(this.taskRepository.countByNameIgnoreCaseAndAssessmentPlanId("A", 1l)).willReturn(0l);
+			given(this.taskRepository.save(task)).willReturn(task);
+			given(this.taskRepository.findAllByAssessmentPlanId(3l)).willReturn(actions);
 			taskService.createTask(task);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
 	}
-	
-	
 	
 	@Test
 	public void testUpdateAssessmentActionWithNull() {
@@ -176,8 +178,10 @@ public class TaskServiceTest {
 	public void testFindById() {
 		try{
 			Task task = new Task();
+			task.setId(1l);
 			task.setStatus("New");
 			given(this.taskRepository.findOne(1l)).willReturn(task);
+			given(this.taskRepository.save(task)).willReturn(task);
 			taskService.updateAssessmentAction(task);
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -229,6 +233,7 @@ public class TaskServiceTest {
 		try{
 			Task task = new Task();
 			task.setStatus("New");
+			task.setName("A");
 			given(this.taskRepository.findByNameIgnoreCaseAndTemplateId("A",1l)).willReturn(task);
 			taskService.createTemplateTask(task);
 		}catch(Exception ex){
