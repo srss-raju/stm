@@ -61,6 +61,7 @@ public class ConditionFilterServiceTest {
 			List<String> conFillVals = new ArrayList<>();
 			List<ConditionLevels> conditionLevels = new ArrayList<>();
 			ConditionLevels conditionLevel = new ConditionLevels();
+			conditionLevel.setValue("SOC");
 			conditionLevels.add(conditionLevel);
 			
 			conFillVals.add("A@#B");
@@ -135,7 +136,7 @@ public class ConditionFilterServiceTest {
 			Set<String> conditionSet = new HashSet<>();
 			conditionSet.add("A");
 			StringBuilder queryBuilder = new StringBuilder();;
-			String type = "assessment";
+			String type = "signal";
 			Map<String, Object> parameterMap = new HashMap<>();
 			given(this.topicRepository.getConditionFilterValues()).willReturn(conFillVals);
 			conditionFilterServiceImpl.constructConditionPredicate(conditionSet, queryBuilder, type, parameterMap);

@@ -140,6 +140,8 @@ public class SignalDetectionServiceTest {
 			pts.add(pt);
 			smq.setPts(pts);
 			
+			given(this.topicSocAssignmentConfigurationRepository.findByDetectionId(1l)).willReturn(signalDetection.getConditions());
+			given(this.topicProductAssignmentConfigurationRepository.findByDetectionId(1l)).willReturn(signalDetection.getProducts());
 			given(this.topicProductAssignmentConfigurationRepository.save(signalDetection.getProducts())).willReturn(signalDetection.getProducts());
 			given(this.topicSocAssignmentConfigurationRepository.save(signalDetection.getConditions())).willReturn(signalDetection.getConditions());
 			given(this.topicAssignmentConditionRepository.save(socConfig.getRecordValues())).willReturn(socConfig.getRecordValues());
@@ -226,8 +228,10 @@ public class SignalDetectionServiceTest {
 			SignalDetection signalDetection = new SignalDetection();
 			setSoc(signalDetection);
 			setOthers(signalDetection);
+			signalDetection.setId(1l);
 			given(this.signalDetectionRepository.findOne(1l)).willReturn(signalDetection);
 			given(this.socRepository.findByDetectionId(1l)).willReturn(signalDetection.getSocs());
+			given(this.smqRepository.findByDetectionId(1l)).willReturn(signalDetection.getSmqs());
 			given(this.smqRepository.save(signalDetection.getSmqs())).willReturn(signalDetection.getSmqs());
 			given(this.includeAERepository.findByDetectionId(1l)).willReturn(signalDetection.getIncludeAEs());
 			given(this.topicSocAssignmentConfigurationRepository.findByDetectionId(1l)).willReturn(signalDetection.getConditions());
@@ -381,13 +385,16 @@ public class SignalDetectionServiceTest {
 		Pt pt = new Pt();
 		pts.add(pt);
 		smq.setPts(pts);
+		smq.setDetectionId(1l);
 		smqs.add(smq);
+		signalDetection.setSmqs(smqs);
 	}
 
 
 	private List<Soc> setSoc(SignalDetection signalDetection) {
 		List<Soc> socs = new ArrayList<>();
 		Soc soc = new Soc();
+		soc.setDetectionId(1l);
 		soc.setSocName("Test Soc");
 		List<Pt> pts = new ArrayList<>();
 		Pt pt = new Pt();
