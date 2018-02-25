@@ -353,7 +353,37 @@ public class RiskPlanServiceTest {
 		}
 	}
 	
+	@Test
+	public void testDeleteId() {
+		try{
+			List<Task> list = new ArrayList<>();
+			Task riskTask = new Task();
+			riskTask.setStatus("New");
+			list.add(riskTask);
+			given(this. taskRepository.findOne(1l)).willReturn(riskTask);
+			given(this. taskRepository.findAllByRiskIdOrderByCreatedDateDesc(1l)).willReturn(list);
+			given(this. taskRepository.findAllByRiskIdOrderByCreatedDateDesc(1l)).willReturn(list);
+			riskPlanService.delete(1l);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
 	
+	@Test
+	public void testDeleteIdWithStatus() {
+		try{
+			List<Task> list = new ArrayList<>();
+			Task riskTask = new Task();
+			riskTask.setStatus("Completed");
+			list.add(riskTask);
+			given(this. taskRepository.findOne(1l)).willReturn(riskTask);
+			given(this. taskRepository.findAllByRiskIdOrderByCreatedDateDesc(1l)).willReturn(list);
+			given(this. taskRepository.findAllByRiskIdOrderByCreatedDateDesc(1l)).willReturn(list);
+			riskPlanService.delete(1l);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
 	
 	@Test
 	public void testFindByRiskId() {
