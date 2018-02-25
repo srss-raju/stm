@@ -609,7 +609,56 @@ public class RiskPlanServiceTest {
 		}
 	}
 	
-	
+	@Test
+	public void testGetTaskTamplatesOfRiskProductsStatusNew() {
+		try{
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setId(2l);
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setStatus("New");
+			List<Comments> comments = new ArrayList<>();
+			Comments comment = new Comments();
+			comment.setUserComments("AA");
+			comments.add(comment);
+			riskPlan.setComments(comments);
+			List<Task> tasks = new ArrayList<>();
+			Task task = new Task();
+			task.setStatus("New");
+			tasks.add(task);
+			Set<Topic> topics = new HashSet<>();
+			Topic topic = new Topic();
+			List<TopicProduct> products = new ArrayList<>();
+			TopicProduct topicProduct = new TopicProduct();
+			topicProduct.setRecordKey("A@#B");
+			products.add(topicProduct);
+			topic.setProducts(products);
+			topic.setName("S1");
+			topic.setId(1l);
+			topics.add(topic);
+			assessmentPlan.setTopics(topics);
+			riskPlan.setAssessmentPlan(assessmentPlan);
+			
+			TaskTemplateProducts taskTemplateProduct = new TaskTemplateProducts ();
+			taskTemplateProduct.setId(1l);
+			TaskTemplate taskTemplate = new TaskTemplate();
+			
+			
+			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlan);
+			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
+			given(this.commentsRepository.findByRiskPlanId(1l)).willReturn(comments);
+			given(this.assessmentPlanService.findById(2l)).willReturn(assessmentPlan);
+			given(this.signalService.findById(1l)).willReturn(topic);
+			given(this.riskTaskTemplateProductsRepository.findTemplateId(1l)).willReturn(1l);
+			given(this.riskTaskTemplateRepository.findOne(1l)).willReturn(taskTemplate);
+			given(this.riskTaskTemplateProductsRepository.findByRecordKey("A@#B")).willReturn(taskTemplateProduct);
+			given(this.taskRepository.findAllByRiskIdOrderByCreatedDateDesc(1l)).willReturn(tasks);
+			
+			riskPlanService.getTaskTamplatesOfRiskProducts(1l);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
 	
 	
 }

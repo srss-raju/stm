@@ -198,7 +198,7 @@ public class DashboardServiceTest {
 		List<Topic> list=new ArrayList<>();
 		given(this.signalMatchService.getMatchingSignals(topic)).willReturn(list);
 		Set<Long> set=new HashSet<>();
-		
+		set.add(1l);
 		List<SignalStatistics> statList = stats.stream().collect(Collectors.toList());
 		
 		given(this.signalStatisticsRepository.findStatisticsByTopicsIds(set)).willReturn(statList);
