@@ -63,8 +63,9 @@ public class ConditionFilterServiceTest {
 			ConditionLevels conditionLevel = new ConditionLevels();
 			conditionLevels.add(conditionLevel);
 			
-			conFillVals.add("1@#2");
+			conFillVals.add("A@#B");
 			given(this.topicRepository.getConditionFilterValues()).willReturn(conFillVals);
+			given(this.conditionLevelRepository.findAllByOrderByIdAsc()).willReturn(conditionLevels);
 			conditionFilterServiceImpl.conditionLevelFilter(filterList, "signal");
 		}catch(Exception ex){
 			ex.printStackTrace();
