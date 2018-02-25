@@ -137,7 +137,7 @@ public class ConditionFilterServiceTest {
 			StringBuilder queryBuilder = new StringBuilder();;
 			String type = "assessment";
 			Map<String, Object> parameterMap = new HashMap<>();
-			given(this.topicRepository.getProductFilterValues()).willReturn(conFillVals);
+			given(this.topicRepository.getConditionFilterValues()).willReturn(conFillVals);
 			conditionFilterServiceImpl.constructConditionPredicate(conditionSet, queryBuilder, type, parameterMap);
 		}catch(Exception ex){
 			ex.printStackTrace();
