@@ -73,9 +73,10 @@ public class ProductFilterServiceTest {
 			array[1] = "B";
 			array[2] = "C";
 			list.add(array);
-			given(this.productLevelRepository.findAllByOrderByIdAsc()).willReturn(productLevels);
+			
 			given(this.assignmentProductValuesRepository.findDistinctByCategoryCodeIn(recValues)).willReturn(list);
 			given(this.topicRepository.getProductFilterValues()).willReturn(prodFillVals);
+			given(this.productLevelRepository.findAllByOrderByIdAsc()).willReturn(productLevels);
 			productFilterServiceImpl.productLevelFilter(filterList, "signal");
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -91,6 +92,7 @@ public class ProductFilterServiceTest {
 			List<ProductLevels> productLevels = new ArrayList<>();
 			ProductLevels productLevel = new ProductLevels();
 			productLevel.setVersions("2.1");
+			productLevel.setValue("A,B");
 			productLevels.add(productLevel);
 			List<String> prodFillVals = new ArrayList<>();
 			prodFillVals.add("A@#B");
@@ -173,7 +175,7 @@ public class ProductFilterServiceTest {
 			List<String> prodFillVals = new ArrayList<>();
 			prodFillVals.add("A@#B");
 			Set<String> productSet = new HashSet<>();
-			productSet.add("A@#B");
+			productSet.add("A");
 			StringBuilder queryBuilder = new StringBuilder();;
 			String type = "signal";
 			Map<String, Object> parameterMap = new HashMap<>();

@@ -133,7 +133,7 @@ public class ConditionFilterServiceTest {
 			List<String> conFillVals = new ArrayList<>();
 			conFillVals.add("A@#B");
 			Set<String> conditionSet = new HashSet<>();
-			conditionSet.add("A@#B");
+			conditionSet.add("A");
 			StringBuilder queryBuilder = new StringBuilder();;
 			String type = "assessment";
 			Map<String, Object> parameterMap = new HashMap<>();

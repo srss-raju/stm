@@ -62,6 +62,25 @@ public class TaskTemplateServiceTest {
 	}
 	
 	@Test
+	public void testCreateTaskTemplateDuplicateRecord() {
+		try{
+			logger.info("testCreateTaskTemplate");
+			TaskTemplate taskTemplate = new TaskTemplate();
+			taskTemplate.setId(1l);
+			taskTemplate.setName("A");
+			List<TaskTemplateProducts> products = new ArrayList<>();
+			TaskTemplateProducts product = new TaskTemplateProducts();
+			product.setId(1l);
+			products.add(product);
+			taskTemplate.setProducts(products);
+			given(this.taskTemplateRepository.countTaskTemplateByNameIgnoreCaseAndType("B","A")).willReturn(0l);
+			taskTemplateService.createTaskTemplate(taskTemplate);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
 	public void testCreateTaskTemplate() {
 		try{
 			logger.info("testCreateTaskTemplate");
@@ -88,6 +107,20 @@ public class TaskTemplateServiceTest {
 			TaskTemplate taskTemplate = new TaskTemplate();
 			taskTemplate.setId(1l);
 			given(this.taskTemplateRepository.save(taskTemplate)).willReturn(taskTemplate);
+			taskTemplateService.updateTaskTemplate(taskTemplate);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void testUpdateTaskTemplateDuplicate() {
+		try{
+			logger.info("testCreateTaskTemplate");
+			TaskTemplate taskTemplate = new TaskTemplate();
+			taskTemplate.setId(1l);
+			given(this.taskTemplateRepository.findByNameIgnoreCase("A")).willReturn(taskTemplate);
 			taskTemplateService.updateTaskTemplate(taskTemplate);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -192,6 +225,40 @@ public class TaskTemplateServiceTest {
 	}
 	
 	@Test
+	public void testUpdateTaskTemplateNameDuplicateCheck() {
+		try{
+			TaskTemplate taskTemplate = new TaskTemplate();
+			taskTemplate.setId(1l);
+			List<TaskTemplate> listTasks = new ArrayList<>();
+			List<String> taskTemplateNames=new ArrayList<>();
+			taskTemplateNames.add("A");
+			listTasks.add(taskTemplate);
+			given(this.taskTemplateRepository.findAll()).willReturn(listTasks);
+			given(this.taskTemplateRepository.findByName("A",1l)).willReturn(taskTemplateNames);
+			taskTemplateService.updateTaskTemplateName(1l,"A");
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateTaskTemplateNameNoDuplicateCheck() {
+		try{
+			TaskTemplate taskTemplate = new TaskTemplate();
+			taskTemplate.setId(1l);
+			List<TaskTemplate> listTasks = new ArrayList<>();
+			List<String> taskTemplateNames=new ArrayList<>();
+			taskTemplateNames.add("A");
+			listTasks.add(taskTemplate);
+			given(this.taskTemplateRepository.findAll()).willReturn(listTasks);
+			given(this.taskTemplateRepository.findByName("A",2l)).willReturn(taskTemplateNames);
+			taskTemplateService.updateTaskTemplateName(1l,"B");
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
 	public void testFindAllByTemplateId() {
 		try{
 			taskTemplateService.findAllByTemplateId(1l);
@@ -210,8 +277,8 @@ public class TaskTemplateServiceTest {
 			taskTemplateNames.add("B");
 			listTasks.add(taskTemplate);
 			given(this.taskTemplateRepository.findAll()).willReturn(listTasks);
-			given(this.taskTemplateRepository.findByName("A",1l)).willReturn(taskTemplateNames);
-			taskTemplateService.updateRiskTaskName(1l,"A");
+			given(this.taskTemplateRepository.findByName("A",4l)).willReturn(taskTemplateNames);
+			taskTemplateService.updateRiskTaskName(1l,"C");
 		}catch(Exception ex){
 			logger.info(ex);
 		}

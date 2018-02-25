@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.DenominatorForPoission;
+import com.deloitte.smt.entity.DetectionAssignees;
 import com.deloitte.smt.entity.IncludeAE;
 import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.QueryBuilder;
@@ -32,6 +33,7 @@ import com.deloitte.smt.entity.TopicConditionValues;
 import com.deloitte.smt.entity.TopicProduct;
 import com.deloitte.smt.entity.TopicProductValues;
 import com.deloitte.smt.repository.DenominatorForPoissionRepository;
+import com.deloitte.smt.repository.DetectionAssigneesRepository;
 import com.deloitte.smt.repository.IncludeAERepository;
 import com.deloitte.smt.repository.MeetingRepository;
 import com.deloitte.smt.repository.PtRepository;
@@ -57,6 +59,9 @@ public class SignalDetectionServiceTest {
 	
 	@MockBean
 	MeetingRepository meetingRepository;
+	
+	@MockBean
+	DetectionAssigneesRepository  detectionAssigneesRepository;
 
 	@MockBean
 	private SocRepository socRepository;
@@ -91,11 +96,12 @@ public class SignalDetectionServiceTest {
 	private EntityManager entityManager;
 	
 	@Test
-	public void testCreateOrUpdateSignalDetection() {
+	public void testCreateOrUpdateSignalDetectionIdNull() {
 		try{
 			SignalDetection signalDetection = new SignalDetection();
 			List<Soc> socs = setSoc(signalDetection);
 			setOthers(signalDetection);
+			given(this.signalDetectionRepository.countByNameIgnoreCase("A")).willReturn(1l);
 			given(this.signalDetectionRepository.save(signalDetection)).willReturn(signalDetection);
 			given(this.socRepository.save(socs)).willReturn(socs);
 			signalDetectionService.createOrUpdateSignalDetection(signalDetection);
@@ -103,6 +109,42 @@ public class SignalDetectionServiceTest {
 			logger.info(ex);
 		}
 	}
+	
+	@Test
+	public void testCreateOrUpdateSignalDetection() {
+		try{
+			SignalDetection signalDetection = new SignalDetection();
+			signalDetection.setId(1l);
+			List<Soc> socs = setSoc(signalDetection);
+			setOthers(signalDetection);
+			given(this.topicProductAssignmentConfigurationRepository.save(signalDetection.getProducts())).willReturn(signalDetection.getProducts());
+			given(this.topicSocAssignmentConfigurationRepository.save(signalDetection.getConditions())).willReturn(signalDetection.getConditions());
+			given(this.topicAssignmentConditionRepository.save(signalDetection.getConditions().get(0).getRecordValues())).willReturn(signalDetection.getConditions().get(0).getRecordValues());
+			given(this.topicAssignmentProductRepository.save(signalDetection.getProducts().get(0).getRecordValues())).willReturn(signalDetection.getProducts().get(0).getRecordValues());
+			given(this.signalDetectionRepository.save(signalDetection)).willReturn(signalDetection);
+			given(this.socRepository.save(socs)).willReturn(socs);
+			given(this.smqRepository.save(signalDetection.getSmqs())).willReturn(signalDetection.getSmqs());
+			given(this.ptRepository.save(signalDetection.getSmqs().get(0).getPts())).willReturn(signalDetection.getSmqs().get(0).getPts());
+			signalDetectionService.createOrUpdateSignalDetection(signalDetection);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testCreateOrUpdateSignalDetectionDuplicate() {
+		try{
+			SignalDetection signalDetection = new SignalDetection();
+			List<Soc> socs = setSoc(signalDetection);
+			setOthers(signalDetection);
+			given(this.signalDetectionRepository.countByNameIgnoreCase("A")).willReturn(1l);
+			given(this.socRepository.save(socs)).willReturn(socs);
+			signalDetectionService.createOrUpdateSignalDetection(signalDetection);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
 
 	@Test
 	public void testCreateOrUpdateSignalDetectionWithNull() {
@@ -124,6 +166,27 @@ public class SignalDetectionServiceTest {
 			logger.info(ex);
 		}
 	}
+	
+	@Test
+	public void testDeleteByAssigneeId() {
+		try{
+			DetectionAssignees assignee = new DetectionAssignees("","");
+			given(this.detectionAssigneesRepository.findOne(1l)).willReturn(assignee);
+			signalDetectionService.deleteByAssigneeId(1l);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testDeleteByAssigneeIdNull() {
+		try{
+			signalDetectionService.deleteByAssigneeId(1l);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
 	
 	@Test
 	public void testDeleteWithNull() {
