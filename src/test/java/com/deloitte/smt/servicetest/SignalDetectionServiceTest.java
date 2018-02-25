@@ -99,6 +99,7 @@ public class SignalDetectionServiceTest {
 	public void testCreateOrUpdateSignalDetectionIdNull() {
 		try{
 			SignalDetection signalDetection = new SignalDetection();
+			signalDetection.setId(1l);
 			List<Soc> socs = setSoc(signalDetection);
 			setOthers(signalDetection);
 			given(this.signalDetectionRepository.countByNameIgnoreCase("A")).willReturn(1l);
@@ -117,14 +118,36 @@ public class SignalDetectionServiceTest {
 			signalDetection.setId(1l);
 			List<Soc> socs = setSoc(signalDetection);
 			setOthers(signalDetection);
+			
+			TopicCondition socConfig = new TopicCondition();
+			TopicProduct productConfig = new TopicProduct();
+			
+			List<TopicConditionValues> topicConditionValues = new ArrayList<>();
+			TopicConditionValues topicConditionValue = new TopicConditionValues();
+			topicConditionValues.add(topicConditionValue);
+			socConfig.setRecordValues(topicConditionValues);
+
+
+			List<TopicProductValues> topicProductValues = new ArrayList<>();
+			TopicProductValues topicProductValue = new TopicProductValues();
+			topicProductValues.add(topicProductValue);
+			productConfig.setRecordKey("A@#B");
+			productConfig.setRecordValues(topicProductValues);
+
+			Smq smq = new Smq();
+			List<Pt> pts = new ArrayList<>();
+			Pt pt = new Pt();
+			pts.add(pt);
+			smq.setPts(pts);
+			
 			given(this.topicProductAssignmentConfigurationRepository.save(signalDetection.getProducts())).willReturn(signalDetection.getProducts());
 			given(this.topicSocAssignmentConfigurationRepository.save(signalDetection.getConditions())).willReturn(signalDetection.getConditions());
-			given(this.topicAssignmentConditionRepository.save(signalDetection.getConditions().get(0).getRecordValues())).willReturn(signalDetection.getConditions().get(0).getRecordValues());
-			given(this.topicAssignmentProductRepository.save(signalDetection.getProducts().get(0).getRecordValues())).willReturn(signalDetection.getProducts().get(0).getRecordValues());
+			given(this.topicAssignmentConditionRepository.save(socConfig.getRecordValues())).willReturn(socConfig.getRecordValues());
+			given(this.topicAssignmentProductRepository.save(productConfig.getRecordValues())).willReturn(productConfig.getRecordValues());
 			given(this.signalDetectionRepository.save(signalDetection)).willReturn(signalDetection);
 			given(this.socRepository.save(socs)).willReturn(socs);
 			given(this.smqRepository.save(signalDetection.getSmqs())).willReturn(signalDetection.getSmqs());
-			given(this.ptRepository.save(signalDetection.getSmqs().get(0).getPts())).willReturn(signalDetection.getSmqs().get(0).getPts());
+			given(this.ptRepository.save(smq.getPts())).willReturn(smq.getPts());
 			signalDetectionService.createOrUpdateSignalDetection(signalDetection);
 		}catch(Exception ex){
 			logger.info(ex);
@@ -331,7 +354,8 @@ public class SignalDetectionServiceTest {
 		signalDetection.setQueryBuilder(queryBuilders);
 		signalDetection.setRunFrequency("Daily");
 		signalDetection.setCreatedDate(new Date());
-		
+		signalDetection.setRunFrequency("Daily");
+		signalDetection.setCreatedDate(new Date());
 		List<TopicCondition> conditions = new ArrayList<>();
 		TopicCondition socConfig = new TopicCondition();
 		List<TopicConditionValues> topicConditionValues = new ArrayList<>();
