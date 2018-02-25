@@ -33,6 +33,51 @@ public class MeetingServiceTest {
 
 	
 	@Test
+	public void testInsert() {
+		try{
+			Meeting meeting = new Meeting();
+			meeting.setId(1l);
+			meetingService.insert(meeting);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testInsertIdNull() {
+		try{
+			Meeting meeting = new Meeting();
+			meetingService.insert(meeting);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdate() {
+		try{
+			Meeting meeting = new Meeting();
+			meeting.setId(1l);
+			meetingService.update(meeting);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	
+	@Test
+	public void testUpdateIdNull() {
+		try{
+			Meeting meeting = new Meeting();
+			meetingService.update(meeting);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	
+	@Test
 	public void testDelete() throws Exception{
 		Meeting meeting = new Meeting();
 		given(this.meetingRepository.findOne(1l)).willReturn(meeting);
