@@ -476,6 +476,30 @@ public class RiskPlanServiceTest {
 	}
 	
 	@Test
+	public void testUpdateRiskPlanAll() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setOwner("A");
+			riskPlan.setId(1l);
+			List<Task> tasks = new ArrayList<>();
+			Task riskTask = new Task();
+			riskTask.setStatus("Completed");
+			tasks.add(riskTask);
+			List<Comments> comments = new ArrayList<>();
+			Comments comment = new Comments();
+			comment.setUserComments("AAA");
+			comments.add(comment);
+			riskPlan.setComments(comments);
+			given(this.riskPlanRepository.findOne(1l)).willReturn(null);
+			given(this.taskRepository.findAllByRiskIdOrderByCreatedDateDesc(1l)).willReturn(tasks);
+			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
+			riskPlanService.updateRiskPlan(riskPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
 	public void testUpdateRiskPlan() {
 		try{
 			RiskPlan riskPlan = new RiskPlan();
@@ -537,31 +561,55 @@ public class RiskPlanServiceTest {
 	@Test
 	public void testGetTaskTamplatesOfRiskProducts() {
 		try{
-			TaskTemplateProducts taskTemplateProduct = new TaskTemplateProducts ();
-			TaskTemplate taskTemplate = new TaskTemplate();
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setId(2l);
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setStatus("New");
+			List<Comments> comments = new ArrayList<>();
+			Comments comment = new Comments();
+			comment.setUserComments("AA");
+			comments.add(comment);
+			riskPlan.setComments(comments);
+			List<Task> tasks = new ArrayList<>();
+			Task task = new Task();
+			task.setStatus("Completed");
+			tasks.add(task);
+			Set<Topic> topics = new HashSet<>();
+			Topic topic = new Topic();
 			List<TopicProduct> products = new ArrayList<>();
 			TopicProduct topicProduct = new TopicProduct();
 			topicProduct.setRecordKey("A@#B");
 			products.add(topicProduct);
-			AssessmentPlan assessmentPlan = new AssessmentPlan(); 
-			Set<Topic> topics = new HashSet<>();
-			Topic topic = new Topic();
+			topic.setProducts(products);
 			topic.setName("S1");
+			topic.setId(1l);
 			topics.add(topic);
 			assessmentPlan.setTopics(topics);
-			RiskPlan riskPlan = new RiskPlan();
-			riskPlan.setId(1l);
-			riskPlan.setStatus("In Progress");
+			riskPlan.setAssessmentPlan(assessmentPlan);
+			
+			TaskTemplateProducts taskTemplateProduct = new TaskTemplateProducts ();
+			taskTemplateProduct.setId(1l);
+			TaskTemplate taskTemplate = new TaskTemplate();
+			
+			
 			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlan);
-			given(this.assessmentPlanService.findById(1l)).willReturn(assessmentPlan);
+			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
+			given(this.commentsRepository.findByRiskPlanId(1l)).willReturn(comments);
+			given(this.assessmentPlanService.findById(2l)).willReturn(assessmentPlan);
 			given(this.signalService.findById(1l)).willReturn(topic);
 			given(this.riskTaskTemplateProductsRepository.findTemplateId(1l)).willReturn(1l);
 			given(this.riskTaskTemplateRepository.findOne(1l)).willReturn(taskTemplate);
 			given(this.riskTaskTemplateProductsRepository.findByRecordKey("A@#B")).willReturn(taskTemplateProduct);
+			given(this.taskRepository.findAllByRiskIdOrderByCreatedDateDesc(1l)).willReturn(tasks);
+			
 			riskPlanService.getTaskTamplatesOfRiskProducts(1l);
 		}catch(Exception ex){
 			logger.info(ex);
 		}
 	}
+	
+	
+	
 	
 }
