@@ -51,6 +51,10 @@ import com.deloitte.smt.repository.SignalConfidenceRepository;
 import com.deloitte.smt.repository.SocRepository;
 import com.deloitte.smt.repository.TaskRepository;
 import com.deloitte.smt.repository.TaskTemplateRepository;
+import com.deloitte.smt.repository.TopicConditionRepository;
+import com.deloitte.smt.repository.TopicConditionValuesRepository;
+import com.deloitte.smt.repository.TopicProductRepository;
+import com.deloitte.smt.repository.TopicProductValuesRepository;
 import com.deloitte.smt.repository.TopicRepository;
 import com.deloitte.smt.service.AssignmentService;
 import com.deloitte.smt.service.SignalAssignmentService;
@@ -67,6 +71,18 @@ public class SignalServiceTest {
 	
 	@MockBean
 	AssignmentService assignmentService;
+	
+	@MockBean
+	TopicConditionRepository topicSocAssignmentConfigurationRepository;
+	@MockBean
+	TopicProductRepository topicProductAssignmentConfigurationRepository;
+	
+	@MockBean
+	TopicConditionValuesRepository topicAssignmentConditionRepository;
+	
+	@MockBean
+	TopicProductValuesRepository topicAssignmentProductRepository;
+	
 	
 	@MockBean
 	SignalAssignmentService signalAssignmentService;
@@ -116,6 +132,17 @@ public class SignalServiceTest {
 	@MockBean
 	private AssignmentConfigurationRepository assignmentConfigurationRepository;
 
+	@Test
+	public void testCreateTopicIdNotNull() {
+		try {
+			Topic topic = new Topic();
+			topic.setId(1l);
+			signalService.createTopic(topic);
+		} catch (Exception ex) {
+			logger.info(ex);
+		}
+	}
+	
 	@Test
 	public void testCreateTopic() {
 		try {
@@ -310,16 +337,42 @@ public class SignalServiceTest {
 			Task task = new Task();
 			task.setStatus("Completed");
 			task.setInDays(5);
+			task.setId(1l);
 			actions.add(task);
 			AssessmentPlan assessmentPlan = new AssessmentPlan();
 			assessmentPlan.setTemplateIds(templateIds);
+			assessmentPlan.setId(1l);
 			given(this. taskRepository.findAllByTemplateId(1l)).willReturn(actions);
+			given(this. taskRepository.findAllByAssessmentPlanId(1l)).willReturn(actions);
+			
 			signalService.associateTemplateTasks(assessmentPlan);
 		}catch(Exception ex){
 			logger.info(ex);
 		}
 	}
 	
+	@Test
+	public void testAssociateTemplateTasksStatusNew() {
+		try{
+			List<Long> templateIds = new ArrayList<>();
+			templateIds.add(1l);
+			List<Task> actions = new ArrayList<>();
+			Task task = new Task();
+			task.setStatus("New");
+			task.setInDays(5);
+			task.setId(1l);
+			actions.add(task);
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setTemplateIds(templateIds);
+			assessmentPlan.setId(1l);
+			given(this. taskRepository.findAllByTemplateId(1l)).willReturn(actions);
+			given(this. taskRepository.findAllByAssessmentPlanId(1l)).willReturn(actions);
+			
+			signalService.associateTemplateTasks(assessmentPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
 	
 	@Test
 	public void testUpdateTopicWithNull() {
@@ -395,6 +448,36 @@ public class SignalServiceTest {
 			logger.info(ex);
 		}
 	}
+	
+	@Test
+	public void testFindByIdWithProducts() {
+		try {
+			Topic topic = new Topic();
+			topic.setId(1l);
+			topic.setSignalStatus("New");
+			setSoc(topic);
+
+			List<TopicCondition> conditions = new ArrayList<>();
+			TopicCondition condition = new TopicCondition(); 
+			conditions.add(condition);
+			
+			List<TopicProduct> products = new ArrayList<>();
+			TopicProduct product = new TopicProduct();
+			products.add(product);
+			
+			given(this.topicRepository.findOne(1l)).willReturn(topic);
+			given(this.topicRepository.save(topic)).willReturn(topic);
+			given(this.topicSocAssignmentConfigurationRepository.findByTopicId(1l)).willReturn(conditions);
+			given(this.topicProductAssignmentConfigurationRepository.findByTopicId(1l)).willReturn(products);
+			
+			given(this.topicAssignmentProductRepository.findByTopicProductAssignmentConfigurationId(1l)).willReturn(null);
+			given(this.topicAssignmentConditionRepository.findByTopicSocAssignmentConfigurationId(1l)).willReturn(null);
+			
+			signalService.findById(1l);
+		} catch (Exception ex) {
+			logger.info(ex);
+		}
+	}
 
 	@Test
 	public void testFindByIdWithNull() {
@@ -417,5 +500,14 @@ public class SignalServiceTest {
 		socs.add(soc);
 		return socs;
 	} 
+	
+	@Test
+	public void testGetTopicComments() {
+		try {
+			signalService.getTopicComments(1l);
+		} catch (Exception ex) {
+			logger.info(ex);
+		}
+	}
 
 }

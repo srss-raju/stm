@@ -17,6 +17,7 @@ import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.dao.ProductMedraHierarchyDAO;
 import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
+import com.deloitte.smt.dto.ProductSearchDTO;
 import com.deloitte.smt.entity.ProductLevels;
 import com.deloitte.smt.repository.ProductLevelRepository;
 import com.deloitte.smt.service.ProductHierarchyService;
@@ -91,16 +92,7 @@ public class ProductHierarchyServiceTest {
     	}
     }
 	
-	@Test
-	public void testGetDetailsBySearchTextAll() {
-    	try{
-    		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
-    		medraBrowserDto.setSearchLevel("ALL");
-    		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
-    	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-    }
+	
 	
 	@Test
 	public void testResponseMapper() {
@@ -162,10 +154,40 @@ public class ProductHierarchyServiceTest {
     }
 	
 	@Test
-	public void testGetDetailsBySearchTextSoc() {
+	public void testGetDetailsBySearchTextAll() {
     	try{
+    		List<ProductSearchDTO> productSearchDTOList = new ArrayList<>();
+    		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
+    		productSearchDTOList.add(productSearchDTO);
+    		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+    		medraBrowserDto.setSearchLevel("ALL");
+    		
+    		ProductLevels prl= new ProductLevels();
+    		prl.setKey("ALL");
+    		given(this.productMedraHierarchyDAO.findByActLvelOne(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productLevelRepository.findByKey("ALL")).willReturn(prl);
+    		
+    		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
+	
+	
+	@Test
+	public void testGetDetailsBySearchTextL1() {
+    	try{
+    		List<ProductSearchDTO> productSearchDTOList = new ArrayList<>();
+    		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
+    		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("ATC_LVL_1");
+    		
+    		ProductLevels prl= new ProductLevels();
+    		prl.setKey("ATC_LVL_1");
+    		given(this.productMedraHierarchyDAO.findByActLvelOne(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productLevelRepository.findByKey("ATC_LVL_1")).willReturn(prl);
+    		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
@@ -173,10 +195,19 @@ public class ProductHierarchyServiceTest {
     }
 	
 	@Test
-	public void testGetDetailsBySearchTextHlgt() {
+	public void testGetDetailsBySearchTextL2() {
     	try{
+    		List<ProductSearchDTO> productSearchDTOList = new ArrayList<>();
+    		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
+    		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("ATC_LVL_2");
+    		
+    		ProductLevels prl= new ProductLevels();
+    		prl.setKey("ATC_LVL_2");
+    		given(this.productMedraHierarchyDAO.findByActLvelTwo(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productLevelRepository.findByKey("ATC_LVL_2")).willReturn(prl);
+    		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
@@ -184,10 +215,19 @@ public class ProductHierarchyServiceTest {
     }
 	
 	@Test
-	public void testGetDetailsBySearchTextHlt() {
+	public void testGetDetailsBySearchTextL3() {
     	try{
+    		List<ProductSearchDTO> productSearchDTOList = new ArrayList<>();
+    		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
+    		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("ATC_LVL_3");
+    		
+    		ProductLevels prl= new ProductLevels();
+    		prl.setKey("ATC_LVL_3");
+    		given(this.productMedraHierarchyDAO.findByActLvelThree(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productLevelRepository.findByKey("ATC_LVL_3")).willReturn(prl);
+    		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
@@ -195,10 +235,19 @@ public class ProductHierarchyServiceTest {
     }
 	
 	@Test
-	public void testGetDetailsBySearchTextPt() {
+	public void testGetDetailsBySearchTextL4() {
     	try{
+    		List<ProductSearchDTO> productSearchDTOList = new ArrayList<>();
+    		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
+    		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("ATC_LVL_4");
+    		
+    		ProductLevels prl= new ProductLevels();
+    		prl.setKey("ATC_LVL_4");
+    		given(this.productMedraHierarchyDAO.findByActLvelFour(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productLevelRepository.findByKey("ATC_LVL_4")).willReturn(prl);
+    		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
@@ -206,10 +255,19 @@ public class ProductHierarchyServiceTest {
     }
 	
 	@Test
-	public void testGetDetailsBySearchTextllt() {
+	public void testGetDetailsBySearchTextL5() {
     	try{
+    		List<ProductSearchDTO> productSearchDTOList = new ArrayList<>();
+    		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
+    		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("ATC_LVL_5");
+    		
+    		ProductLevels prl= new ProductLevels();
+    		prl.setKey("ATC_LVL_5");
+    		given(this.productMedraHierarchyDAO.findByActLvelFive(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productLevelRepository.findByKey("ATC_LVL_5")).willReturn(prl);
+    		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
