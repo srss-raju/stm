@@ -86,7 +86,8 @@ public class AssignmentConfigurationServiceTest {
 			product.setRecordKey("A@#B");
 			product.setId(1l);
 			products.add(product);
-			
+			config.setConditions(conditions);
+			config.setProducts(products);
 			given(this.assignmentConfigurationRepository.findByNameIgnoreCase("A")).willReturn(configDB);
 			assignmentConfigurationService.insert(config);
 		}catch(Exception ex){

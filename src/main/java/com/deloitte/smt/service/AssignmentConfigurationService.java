@@ -118,7 +118,7 @@ public class AssignmentConfigurationService {
     
 	@SuppressWarnings("unchecked")
 	public boolean getProductsAndConditions(AssignmentConfiguration assignmentConfiguration) {
-		StringBuilder queryBuilder = new StringBuilder("select a.id, a.name, c.id as cid,c.record_key as crecordkey,p.id as pid,p.record_key as precordkey from sm_assignment_configuration a LEFT JOIN sm_soc_assignment_configuration c ON a.id = c.assignment_configuration_id LEFT JOIN sm_product_assignment_configuration p ON a.id = p.assignment_configuration_id where ");
+		StringBuilder queryBuilder = new StringBuilder("select a.id, a.name, c.id as cid,c.record_key as crecordkey,p.id as pid,p.record_key as precordkey from sm_assignment_configuration a LEFT JOIN sm_assignment_condition c ON a.id = c.assignment_configuration_id LEFT JOIN sm_assignment_product p ON a.id = p.assignment_configuration_id where ");
 		StringBuilder socBuilder = new StringBuilder();
 		StringBuilder productBuilder = new StringBuilder();
 		boolean noSocFlag;
