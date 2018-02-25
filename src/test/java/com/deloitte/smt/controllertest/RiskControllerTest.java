@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,7 +29,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.RiskPlan;
 import com.deloitte.smt.entity.Task;
+import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.service.RiskPlanService;
+import com.deloitte.smt.util.TestUtil;
 
 /**
  * 
@@ -56,12 +59,122 @@ public class RiskControllerTest {
 	}
 	
 	@Test
+	public void testCreateRiskPlan() throws Exception{
+		
+		RiskPlan riskPlan=new RiskPlan();
+		
+		when(riskPlanServiceMock.insert(riskPlan,null)).thenReturn(riskPlan);
+
+		this.mockMvc
+				.perform(post("/camunda/api/signal/risk")
+						.param("data",TestUtil.convertObjectToJsonString(riskPlan))
+						.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(status().isOk());
+
+	}
+	
+	@Test
+	public void testCreateRiskAction() throws Exception{
+		try{
+			Task riskTask=new Task();
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/task/create")
+							.param("data",TestUtil.convertObjectToJsonString(riskTask))
+							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+					.andExpect(status().isOk());
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void testCreateRiskActionWithTemplateId() throws Exception{
+		try{
+			Task riskTask=new Task();
+			riskTask.setTemplateId(1l);
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/task/create")
+							.param("data",TestUtil.convertObjectToJsonString(riskTask))
+							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+					.andExpect(status().isOk());
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void testUpdateRiskTask() throws Exception{
+		try{
+			Task riskTask=new Task();
+			riskTask.setTemplateId(1l);
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/task/updateRiskTask")
+							.param("data",TestUtil.convertObjectToJsonString(riskTask))
+							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+					.andExpect(status().isOk());
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void testUpdateRiskPlan() throws Exception{
+		try{
+			RiskPlan riskPlan=new RiskPlan();
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/updateRiskPlan")
+							.param("data",TestUtil.convertObjectToJsonString(riskPlan))
+							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+					.andExpect(status().isOk());
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void testRriskPlanSummary() throws Exception{
+		try{
+			RiskPlan riskPlan=new RiskPlan();
+			this.mockMvc
+					.perform(post("/camunda/api/signal/risk/riskPlanSummary")
+							.param("data",TestUtil.convertObjectToJsonString(riskPlan))
+							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+					.andExpect(status().isOk());
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	@Test
 	public void testGetAssessmentActionById() throws Exception{
 		Task riskTask=new Task();
 		when(riskPlanServiceMock.findById(anyLong())).thenReturn(riskTask);
 		
 		this.mockMvc
 		.perform(get("/camunda/api/signal/risk/task/{riskTaskId}",1)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		
+	}
+	
+	@Test
+	public void testGetTaskTamplatesOfRiskProducts() throws Exception{
+		List<TaskTemplate> list = new ArrayList<>();
+		when(riskPlanServiceMock.getTaskTamplatesOfRiskProducts(anyLong())).thenReturn(list);
+		
+		this.mockMvc
+		.perform(get("/camunda/api/signal/risk/getTemplates/{riskPlanId}",1)
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		

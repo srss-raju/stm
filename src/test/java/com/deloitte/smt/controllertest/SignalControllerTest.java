@@ -4,8 +4,13 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +26,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.Comments;
+import com.deloitte.smt.entity.NonSignal;
+import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.service.SignalService;
+import com.deloitte.smt.util.TestUtil;
 
 /**
  * 
@@ -49,6 +59,67 @@ public class SignalControllerTest {
 		signalServiceMock1 = mock(SignalService.class);
 	}
 	
+	@Test
+	public void testCreateTopic() throws Exception{
+		
+		Topic topic=new Topic();
+		
+		when(signalServiceMock.createTopic(topic)).thenReturn(topic);
+
+		this.mockMvc
+				.perform(post("/camunda/api/signal/createTopic")
+						.param("data",TestUtil.convertObjectToJsonString(topic))
+						.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(status().isOk());
+
+	}
+	
+	@Test
+	public void testUpdateTopic() throws Exception{
+		
+		Topic topic=new Topic();
+		
+
+		this.mockMvc
+				.perform(post("/camunda/api/signal/updateTopic")
+						.param("data",TestUtil.convertObjectToJsonString(topic))
+						.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+				.andExpect(status().isOk());
+
+	}
+	
+	@Test
+	public void testValidateAndPrioritizeTopic() throws Exception{
+		try{
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+
+			when(signalServiceMock.validateAndPrioritize(1l,assessmentPlan)).thenReturn(assessmentPlan);
+			this.mockMvc
+					.perform(put("/camunda/api/signal/{id}/validateAndPrioritize",1)
+							.param("data",TestUtil.convertObjectToJsonString(assessmentPlan))
+							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+					.andExpect(status().isOk());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testAssociateTemplateTasks() throws Exception{
+		try{
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			List<Task> tasks =new ArrayList<>();
+			when(signalServiceMock.associateTemplateTasks(assessmentPlan)).thenReturn(tasks);
+			this.mockMvc
+					.perform(post("/camunda/api/signal/template/associateTemplateTasks")
+							.param("data",TestUtil.convertObjectToJsonString(assessmentPlan))
+							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+					.andExpect(status().isOk());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 
 	@Test
 	public void testGetTopicById()  {
@@ -57,6 +128,64 @@ public class SignalControllerTest {
 			when(signalServiceMock.findById(anyLong())).thenReturn(topic);
 			this.mockMvc
 					.perform(get("/camunda/api/signal/{signalId}", 1)
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testFindTopicsByRunInstanceId()  {
+		try{
+			List<Topic> signals= new ArrayList<>();
+			List<NonSignal> nonSignals= new ArrayList<>();
+			when(signalServiceMock.findTopicsByRunInstanceId(anyLong())).thenReturn(signals);
+			when(signalServiceMock.findNonSignalsByRunInstanceId(anyLong())).thenReturn(nonSignals);
+			this.mockMvc
+					.perform(get("/camunda/api/signal/run/{runInstanceId}", 1)
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateComments() throws Exception{
+		try{
+			Topic topic = new Topic();
+			List<Comments> comments =new ArrayList<>();
+			when(signalServiceMock.updateComments(topic)).thenReturn(comments);
+			this.mockMvc
+					.perform(post("/camunda/api/signal/updateComments")
+							.param("data",TestUtil.convertObjectToJsonString(topic))
+							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+					.andExpect(status().isOk());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetTopicComments()  {
+		try{
+			List<Comments> comments= new ArrayList<>();
+			when(signalServiceMock.getTopicComments(anyLong())).thenReturn(comments);
+			this.mockMvc
+					.perform(get("/camunda/api/signal/getTopicComments/{topicId}", 1)
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testDeleteTopicComments()  {
+		try{
+			this.mockMvc
+					.perform(get("/camunda/api/signal/comments/{commentsId}", 1)
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		}catch(Exception ex){
