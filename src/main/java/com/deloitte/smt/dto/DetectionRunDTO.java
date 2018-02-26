@@ -27,6 +27,7 @@ public class DetectionRunDTO  implements Serializable{
 	private String primaryEventLevel;
 	private String secondaryEventLevel;
 	private Long minCases;
+	@JsonProperty("thresholds_table")
 	private List<Algorithm> algorithms;
 	
 	public List<Query> getQueries() {

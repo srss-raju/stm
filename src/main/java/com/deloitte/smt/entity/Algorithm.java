@@ -1,17 +1,15 @@
 package com.deloitte.smt.entity;
 
 import java.io.Serializable;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
@@ -24,12 +22,14 @@ public class Algorithm  implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@JsonIgnore
 	private int id;
 	
-	private String thresholdName;
+	@JsonProperty("THRESHOLD_KEY")
+	private String thresholdKey;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "algorithmId")
-    private Set<AlgorithmStatistics> thresholdValues;
+	@JsonProperty("THRESHOLD_VALUE")
+	private int thresholdValue;
+	
 	
 }
