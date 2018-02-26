@@ -3,6 +3,7 @@ package com.deloitte.smt.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.deloitte.smt.entity.Algorithm;
 import com.deloitte.smt.entity.Query;
 import com.deloitte.smt.entity.Stratification;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,7 +27,7 @@ public class DetectionRunDTO  implements Serializable{
 	private String primaryEventLevel;
 	private String secondaryEventLevel;
 	private Long minCases;
-	
+	private List<Algorithm> algorithms;
 	
 	public List<Query> getQueries() {
 		return queries;
@@ -113,6 +114,12 @@ public class DetectionRunDTO  implements Serializable{
 	}
 	public void setMinCases(Long minCases) {
 		this.minCases = minCases;
+	}
+	public List<Algorithm> getAlgorithms() {
+		return algorithms;
+	}
+	public void setAlgorithms(List<Algorithm> algorithms) {
+		this.algorithms = algorithms;
 	}
 	
 }

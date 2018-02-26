@@ -48,6 +48,9 @@ public class DetectionRunService {
     @Autowired
     SocHierarchyService socHierarchyService;
     
+    @Autowired
+    AlgorithmService algorithmService;
+    
     public DetectionRunResponseDTO insert(DetectionRun detectionRun) {
     	DetectionRunResponseDTO response = null;
     	DetectionRunDTO dto = new DetectionRunDTO();
@@ -101,7 +104,7 @@ public class DetectionRunService {
     		dto.setQueries(signalDetection.getQueries());
     		dto.setStratifications(signalDetection.getStratifications());
     		dto.setMinCases(signalDetection.getMinCases());
-    		
+    		dto.setAlgorithms(algorithmService.findAll());
     		ObjectMapper mapper = new ObjectMapper();
     		String jsonInString = null;
 			try {
