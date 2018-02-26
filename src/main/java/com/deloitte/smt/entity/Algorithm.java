@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -27,7 +28,8 @@ public class Algorithm  implements Serializable{
 	
 	private String thresholdName;
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy="algorithm", cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "algorithmId")
     private Set<AlgorithmStatistics> thresholdValues;
 	
 }

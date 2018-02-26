@@ -6,12 +6,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Transient;
 
 import lombok.Data;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
@@ -27,8 +29,10 @@ public class AlgorithmStatistics  implements Serializable{
 	private double lb;
 	private double ub;
 	
+	@Transient
 	@JsonIgnore
 	@ManyToOne
+	@JoinColumn(name = "algorithmId")
 	private Algorithm algorithm;
 	
 }
