@@ -1,6 +1,7 @@
 package com.deloitte.smt.servicetest;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -14,12 +15,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -49,8 +51,11 @@ public class DashboardServiceTest {
 	@Autowired
 	private DashboardService dashboardService;
 	
-	@PersistenceContext
+	@Mock
 	private EntityManager entityManager;
+	
+	@Mock
+	private Query query;
 	
 	@MockBean
 	TopicRepository topicRepository;
@@ -93,6 +98,10 @@ public class DashboardServiceTest {
 	@Test
 	public void testGenerateDataForValidateOutcomesChart() {
 		try{
+			String aQuery = "select count(*) from sm_assessment_plan";
+			BigInteger value = BigInteger.valueOf(2l);
+			when(entityManager.createNativeQuery(aQuery)).thenReturn(query);
+			when(query.getSingleResult()).thenReturn(value);
 			dashboardService.generateDataForValidateOutcomesChart();
 		}catch(Exception ex){
 			logger.info("ex");
