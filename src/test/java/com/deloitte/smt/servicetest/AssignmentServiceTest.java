@@ -1,13 +1,17 @@
 package com.deloitte.smt.servicetest;
 
+import static org.mockito.BDDMockito.given;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,8 +36,11 @@ import com.deloitte.smt.service.AssignmentService;
 @TestPropertySource(locations = { "classpath:test.properties" })
 public class AssignmentServiceTest {
 	
-	@PersistenceContext
+	@Mock
 	private EntityManager entityManager;
+	
+	@Mock
+	private Query query;
 	
 	@MockBean
     AssignmentConfigurationRepository assignmentConfigurationRepository;
@@ -80,6 +87,11 @@ public class AssignmentServiceTest {
 	    		
 	    		conditionProductDTO.setProducts(products);
 	    		
+	    		List<BigInteger> records = new ArrayList<>();
+	    		BigInteger value = BigInteger.valueOf(2l);
+	    		records.add(value);
+	    		given(this.entityManager.createNativeQuery("")).willReturn(query);
+	    		given(this.query.getResultList()).willReturn(records);
 	    		assignmentService.getAssignmentConfiguration(assignmentConfiguration,conditionProductDTO);
 	    	}catch(Exception e){
 	    		e.printStackTrace();

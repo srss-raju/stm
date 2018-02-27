@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,10 +25,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.entity.AssessmentPlan;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.NonSignal;
-import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.util.TestUtil;
@@ -88,37 +85,6 @@ public class SignalControllerTest {
 
 	}
 	
-	@Test
-	public void testValidateAndPrioritizeTopic() throws Exception{
-		try{
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-
-			when(signalServiceMock.validateAndPrioritize(1l,assessmentPlan)).thenReturn(assessmentPlan);
-			this.mockMvc
-					.perform(put("/camunda/api/signal/{id}/validateAndPrioritize",1)
-							.param("data",TestUtil.convertObjectToJsonString(assessmentPlan))
-							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
-					.andExpect(status().isOk());
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
-	public void testAssociateTemplateTasks() throws Exception{
-		try{
-			AssessmentPlan assessmentPlan = new AssessmentPlan();
-			List<Task> tasks =new ArrayList<>();
-			when(signalServiceMock.associateTemplateTasks(assessmentPlan)).thenReturn(tasks);
-			this.mockMvc
-					.perform(post("/camunda/api/signal/template/associateTemplateTasks")
-							.param("data",TestUtil.convertObjectToJsonString(assessmentPlan))
-							.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
-					.andExpect(status().isOk());
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
 	
 
 	@Test
@@ -174,18 +140,6 @@ public class SignalControllerTest {
 			when(signalServiceMock.getTopicComments(anyLong())).thenReturn(comments);
 			this.mockMvc
 					.perform(get("/camunda/api/signal/getTopicComments/{topicId}", 1)
-							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-		}catch(Exception ex){
-			logger.info(ex);
-		}
-	}
-	
-	@Test
-	public void testDeleteTopicComments()  {
-		try{
-			this.mockMvc
-					.perform(get("/camunda/api/signal/comments/{commentsId}", 1)
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		}catch(Exception ex){

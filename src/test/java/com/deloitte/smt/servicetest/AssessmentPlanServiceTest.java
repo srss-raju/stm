@@ -132,6 +132,33 @@ public class AssessmentPlanServiceTest {
 	}
 	
 	@Test
+	public void testUpdateAssessmentSummary() {
+		try{
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setAssessmentPlanStatus("Completed");
+			assessmentPlan.setAssessmentName("Test Case 1");
+			assessmentPlan.setFinalAssessmentSummary("Final");
+			assessmentPlan.setId(121l);
+			 List<Task> signalActionsStatus=new ArrayList<>();
+			 Task task = new Task();
+			 task.setStatus("new");
+			 signalActionsStatus.add(task);
+			 
+			 List<Comments> comments = new ArrayList<>();
+			 Comments comment = new Comments();
+			 comments.add(comment);
+			 assessmentPlan.setComments(comments);
+			given(this.assessmentPlanRepository.findOne(121l)).willReturn(null);
+			given(this.taskRepository.findAllByAssessmentPlanId(121l)).willReturn(signalActionsStatus);
+			given(this.assessmentPlanRepository.save(assessmentPlan)).willReturn(assessmentPlan);
+			assessmentPlanService.updateAssessment(assessmentPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+		
+	}
+	
+	@Test
 	public void testFinalAssessmentNull() {
 		try{
 			AssessmentPlan assessmentPlan = new AssessmentPlan();
@@ -165,7 +192,7 @@ public class AssessmentPlanServiceTest {
 			list.add(assessmentPlan);
 			given(this.assessmentPlanRepository.findAll()).willReturn(list);
 			given(this.assessmentPlanRepository.findByAssessmentName("A",2l)).willReturn(assessmentNames);
-			assessmentPlanService.updateAssessmentName(1l,"A");
+			assessmentPlanService.updateAssessmentName(2l,"A");
 		}catch(Exception ex){
 			logger.info(ex);
 		}
@@ -284,5 +311,48 @@ public class AssessmentPlanServiceTest {
 		}
 	}
 	
+	
+	@Test
+	public void testGetTaskTamplatesOfAssessmentProductsNull() {
+		try{
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			Set<Topic> topics = new HashSet<>();
+			Topic topic = new Topic();
+			TaskTemplate taskTemplate = new TaskTemplate();
+			taskTemplate.setId(1l);
+			
+			topic.setName("S1");
+			topic.setId(1l);
+			topics.add(topic);
+			assessmentPlan.setTopics(topics);
+			assessmentPlan.setId(121l);
+			assessmentPlan.setAssessmentPlanStatus("Completed");
+			
+			List<TopicProduct> products = new ArrayList<>();
+			TopicProduct topicProduct = new TopicProduct();
+			topicProduct.setRecordKey("A@#B");
+			List<TopicProductValues> topicProductValues = new ArrayList<>(); 
+			TopicProductValues topicProductValue = new TopicProductValues();
+			topicProductValues.add(topicProductValue);
+			topicProduct.setRecordValues(topicProductValues);
+			products.add(topicProduct);
+			topic.setProducts(products);
+			
+			TaskTemplateProducts taskTemplateProduct = new TaskTemplateProducts ();
+			taskTemplateProduct.setId(1l);
+			
+			given(this.signalService.findById(1l)).willReturn(topic);
+			given(this.assessmentPlanRepository.findOne(121l)).willReturn(assessmentPlan);
+			given(this.assessmentPlanRepository.save(assessmentPlan)).willReturn(assessmentPlan);
+			
+			given(this.taskTemplateRepository.findOne(1l)).willReturn(taskTemplate);
+			given(this.taskTemplateProductsRepository.findByRecordKey("1@#2")).willReturn(taskTemplateProduct);
+			given(this.taskTemplateProductsRepository.findTemplateId(1l)).willReturn(1l);
+			
+			assessmentPlanService.getTaskTamplatesOfAssessmentProducts(121l);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
 	
 }

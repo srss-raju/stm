@@ -8,11 +8,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
@@ -29,8 +32,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.AssessmentPlan;
+import com.deloitte.smt.entity.TaskTemplate;
 import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.service.AssessmentPlanService;
+import com.deloitte.smt.util.TestUtil;
 
 /**
  * 
@@ -60,12 +65,9 @@ public class AssessmentControllerTest {
 	public void testGetAssessmentPlanById() throws Exception {
 		AssessmentPlan assessmentPlan = new AssessmentPlan();
 		when(assessmentPlanServiceMock.findById(anyLong())).thenReturn(assessmentPlan);
-
-		this.mockMvc
-				.perform(get("/camunda/api/signal/assessmentPlan/{id}", 1)
+		this.mockMvc.perform(get("/camunda/api/signal/assessmentPlan/{id}", 1)
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-
 	}
 
 	@Test
@@ -98,5 +100,34 @@ public class AssessmentControllerTest {
 				.andExpect(status().isOk());
 
 	}
+	
+	@Test
+	public void testUpdateAssessment() throws Exception{
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		this.mockMvc.perform(post("/camunda/api/signal/updateAssessment")
+						.param("data",TestUtil.convertObjectToJsonString(assessmentPlan))
+						.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))).andExpect(status().isOk());
+
+	}
+	
+	@Test
+	public void testFinalAssessment() throws Exception{
+		AssessmentPlan assessmentPlan = new AssessmentPlan();
+		this.mockMvc.perform(post("/camunda/api/signal/finalAssessment")
+						.param("data",TestUtil.convertObjectToJsonString(assessmentPlan))
+						.accept(MediaType.parseMediaType("application/json;charset=UTF-8"))).andExpect(status().isOk());
+
+	}
+	
+	@Test
+	public void testGetTaskTamplatesOfAssessmentProducts() throws Exception {
+		List<TaskTemplate> list = new ArrayList<>();
+		when(assessmentPlanServiceMock.getTaskTamplatesOfAssessmentProducts(anyLong())).thenReturn(list);
+		this.mockMvc.perform(get("/camunda/api/signal/assessmentPlan/getTemplates/{assessmentId}", 1)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+	}
+	
+	
 
 }

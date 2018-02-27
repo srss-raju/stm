@@ -2,6 +2,7 @@ package com.deloitte.smt.servicetest;
 
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -189,6 +190,29 @@ public class SignalAssignmentServiceTest {
     		conditionProductDTO.setProducts(products);
     		
     		signalAssignmentService.getAssignmentConfiguration(assignmentConfiguration,conditionProductDTO);
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
+    
+    @Test
+	public void testGetResult() {
+    	try{
+    		boolean noSocFlag = false;
+    		boolean noProductFlag = false;
+        	AssignmentConfiguration assignmentConfiguration = new AssignmentConfiguration();
+        	List<AssignmentCondition> conditions = new ArrayList<>();
+    		AssignmentCondition assignmentCondition = new AssignmentCondition();
+    		conditions.add(assignmentCondition);
+    		assignmentConfiguration.setConditions(conditions);
+    		List<AssignmentProduct> products = new ArrayList<>();
+    		AssignmentProduct assignmentProduct = new AssignmentProduct();
+    		products.add(assignmentProduct);
+    		assignmentConfiguration.setProducts(products);
+        	List<Object> records = new ArrayList<>();
+        	records.add(BigInteger.valueOf(1l));
+        	given(this.assignmentConfigurationRepository.findOne(1l)).willReturn(assignmentConfiguration);
+        	signalAssignmentService.getResult(assignmentConfiguration, noSocFlag, noProductFlag, records);
     	}catch(Exception e){
     		e.printStackTrace();
     	}

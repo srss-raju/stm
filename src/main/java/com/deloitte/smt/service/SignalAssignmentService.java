@@ -242,7 +242,7 @@ public class SignalAssignmentService {
 		return assignmentConfigurationFromDBx;
 	}
 
-	private AssignmentConfiguration getResult(AssignmentConfiguration assignmentConfigurationFromDB, boolean noSocFlag, boolean noProductFlag, List<Object> records) throws ApplicationException {
+	public AssignmentConfiguration getResult(AssignmentConfiguration assignmentConfigurationFromDB, boolean noSocFlag, boolean noProductFlag, List<Object> records) throws ApplicationException {
 		AssignmentConfiguration assignmentConfigurationFromDBx = assignmentConfigurationFromDB;
 		BigInteger id = (BigInteger) records.get(0);
 		AssignmentConfiguration assignmentConfig = assignmentConfigurationRepository.findOne(id.longValue());
