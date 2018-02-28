@@ -1,5 +1,6 @@
 package com.deloitte.smt.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import com.deloitte.smt.dto.DetectionRunDTO;
 import com.deloitte.smt.dto.DetectionRunResponseDTO;
 import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.entity.SignalDetection;
+import com.deloitte.smt.entity.Stratification;
 import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.exception.ApplicationException;
@@ -102,7 +104,14 @@ public class DetectionRunService {
     		}
     		dto.setRunInstanceId(detectionRunUpdated.getId());
     		dto.setQueries(signalDetection.getQueries());
-    		dto.setStratifications(signalDetection.getStratifications());
+    		if(!CollectionUtils.isEmpty(signalDetection.getStratifications())){
+    			List<String> stratifications = new ArrayList<>();
+    			for(Stratification stratification : signalDetection.getStratifications()){
+    				stratifications.add(stratification.getStratificationName());
+    			}
+    			dto.setStratifications(stratifications);
+    		}
+    		
     		dto.setMinCases(signalDetection.getMinCases());
     		dto.setAlgorithms(algorithmService.findAll());
     		ObjectMapper mapper = new ObjectMapper();

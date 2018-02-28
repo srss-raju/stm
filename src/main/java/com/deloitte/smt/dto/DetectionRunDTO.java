@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.deloitte.smt.entity.Algorithm;
 import com.deloitte.smt.entity.Query;
-import com.deloitte.smt.entity.Stratification;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DetectionRunDTO  implements Serializable{
@@ -13,7 +12,7 @@ public class DetectionRunDTO  implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private List<Query> queries;
-	private List<Stratification> stratifications;
+	private List<String> stratifications;
 	@JsonProperty("run_instance_id")
 	private Long runInstanceId;
 	private List<String> primaryProductKey;
@@ -36,10 +35,10 @@ public class DetectionRunDTO  implements Serializable{
 	public void setQueries(List<Query> queries) {
 		this.queries = queries;
 	}
-	public List<Stratification> getStratifications() {
+	public List<String> getStratifications() {
 		return stratifications;
 	}
-	public void setStratifications(List<Stratification> stratifications) {
+	public void setStratifications(List<String> stratifications) {
 		this.stratifications = stratifications;
 	}
 	public Long getRunInstanceId() {
