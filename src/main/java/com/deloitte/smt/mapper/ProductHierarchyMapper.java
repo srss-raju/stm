@@ -13,23 +13,23 @@ public class ProductHierarchyMapper implements RowMapper<ProductHierarchyDto> {
 	public ProductHierarchyDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 		
 		ProductHierarchyDto productHierarchyDto = new ProductHierarchyDto();
-		productHierarchyDto.setActLevelOneCode(rs.getString("ATC_LVL_1").trim());
-		productHierarchyDto.setActLevelOneDesc(rs.getString("ATC_LVL_1_DESC").trim());
+		productHierarchyDto.setActLevelOneCode(rs.getString("ATC_LVL_1"));
+		productHierarchyDto.setActLevelOneDesc(rs.getString("ATC_LVL_1_DESC"));
 		
-		productHierarchyDto.setActLevelTwoCode(rs.getString("ATC_LVL_2").trim());
-		productHierarchyDto.setActLevelTwoDesc(rs.getString("ATC_LVL_2_DESC").trim());
+		productHierarchyDto.setActLevelTwoCode(rs.getString("ATC_LVL_2"));
+		productHierarchyDto.setActLevelTwoDesc(rs.getString("ATC_LVL_2_DESC"));
 		
-		productHierarchyDto.setActLevelThreeCode(rs.getString("ATC_LVL_3").trim());
-		productHierarchyDto.setActLevelThreeDesc(rs.getString("ATC_LVL_3_DESC").trim());
+		productHierarchyDto.setActLevelThreeCode(rs.getString("ATC_LVL_3"));
+		productHierarchyDto.setActLevelThreeDesc(rs.getString("ATC_LVL_3_DESC"));
 		
-		productHierarchyDto.setActLevelFourCode(rs.getString("ATC_LVL_4").trim());
-		productHierarchyDto.setActLevelFourDesc(rs.getString("ATC_LVL_4_DESC").trim());
+		productHierarchyDto.setActLevelFourCode(rs.getString("ATC_LVL_4"));
+		productHierarchyDto.setActLevelFourDesc(rs.getString("ATC_LVL_4_DESC"));
 		
-		productHierarchyDto.setActLevelFiveCode(rs.getString("ATC_LVL_5").trim());
-		productHierarchyDto.setActLevelFiveDesc(rs.getString("ATC_LVL_5_DESC").trim());
+		productHierarchyDto.setActLevelFiveCode(rs.getString("ATC_LVL_5"));
+		productHierarchyDto.setActLevelFiveDesc(rs.getString("ATC_LVL_5_DESC"));
 		
-		productHierarchyDto.setActRxNormCode(rs.getString("RXNORM").trim());
-		productHierarchyDto.setRxNormDesc(rs.getString("RXNORM_DESC").trim());
+		productHierarchyDto.setActRxNormCode(rs.getString("RXNORM"));
+		productHierarchyDto.setRxNormDesc(rs.getString("RXNORM_DESC"));
 		
 		return productHierarchyDto;
 	}
