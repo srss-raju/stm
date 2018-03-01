@@ -1,6 +1,5 @@
 package com.deloitte.smt.util;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -20,9 +18,6 @@ import com.deloitte.smt.dto.LevelsDTO;
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class ProductUtilTest {
 
-	@MockBean
-	ResultSet rs;
-	
 	@Test
 	public void testCreateProductValues() {
 		ProductUtil productUtil = new ProductUtil();

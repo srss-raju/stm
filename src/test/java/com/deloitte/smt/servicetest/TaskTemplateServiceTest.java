@@ -271,13 +271,13 @@ public class TaskTemplateServiceTest {
 	public void testUpdateRiskTaskName() {
 		try{
 			TaskTemplate taskTemplate = new TaskTemplate();
-			taskTemplate.setId(2l);
+			taskTemplate.setId(1l);
 			List<TaskTemplate> listTasks = new ArrayList<>();
 			List<String> taskTemplateNames=new ArrayList<>();
 			taskTemplateNames.add("B");
 			listTasks.add(taskTemplate);
 			given(this.taskTemplateRepository.findAll()).willReturn(listTasks);
-			given(this.taskTemplateRepository.findByName("A",4l)).willReturn(taskTemplateNames);
+			given(this.taskTemplateRepository.findByName("A",1l)).willReturn(taskTemplateNames);
 			taskTemplateService.updateRiskTaskName(1l,"C");
 		}catch(Exception ex){
 			logger.info(ex);
