@@ -17,6 +17,7 @@ import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.dao.SocMedraHierarchyDAO;
 import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.SocHierarchyDto;
+import com.deloitte.smt.dto.SocSearchDTO;
 import com.deloitte.smt.entity.ConditionLevels;
 import com.deloitte.smt.repository.ConditionLevelRepository;
 import com.deloitte.smt.service.SocHierarchyService;
@@ -108,8 +109,17 @@ public class SocHierarchyServiceTest {
 	@Test
 	public void testGetDetailsBySearchTextSoc() {
     	try{
+    		List<SocSearchDTO> conditionSearchDTOList = new ArrayList<>();
+    		SocSearchDTO socSearchDTO = new SocSearchDTO();
+    		conditionSearchDTOList.add(socSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("SOC_CODE");
+    		medraBrowserDto.setSearchValue("E");
+    		medraBrowserDto.setScrollCount(10);
+    		ConditionLevels prl= new ConditionLevels();
+    		prl.setKey("SOC_CODE");
+    		given(this.socMedraHierarchyDAO.findByMatchingSocName("E",0,10)).willReturn(conditionSearchDTOList);
+    		given(this.conditionLevelRepository.findByKey("SOC_CODE")).willReturn(prl);
     		socHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
@@ -118,9 +128,18 @@ public class SocHierarchyServiceTest {
 	
 	@Test
 	public void testGetDetailsBySearchTextHlgt() {
-    	try{
+		try{
+    		List<SocSearchDTO> conditionSearchDTOList = new ArrayList<>();
+    		SocSearchDTO socSearchDTO = new SocSearchDTO();
+    		conditionSearchDTOList.add(socSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("HLGT_CODE");
+    		medraBrowserDto.setSearchValue("E");
+    		medraBrowserDto.setScrollCount(10);
+    		ConditionLevels prl= new ConditionLevels();
+    		prl.setKey("HLGT_CODE");
+    		given(this.socMedraHierarchyDAO.findByHlgtName("E",0,10)).willReturn(conditionSearchDTOList);
+    		given(this.conditionLevelRepository.findByKey("HLGT_CODE")).willReturn(prl);
     		socHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
@@ -129,9 +148,18 @@ public class SocHierarchyServiceTest {
 	
 	@Test
 	public void testGetDetailsBySearchTextHlt() {
-    	try{
+		try{
+    		List<SocSearchDTO> conditionSearchDTOList = new ArrayList<>();
+    		SocSearchDTO socSearchDTO = new SocSearchDTO();
+    		conditionSearchDTOList.add(socSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("HLT_CODE");
+    		medraBrowserDto.setSearchValue("E");
+    		medraBrowserDto.setScrollCount(10);
+    		ConditionLevels prl= new ConditionLevels();
+    		prl.setKey("HLT_CODE");
+    		given(this.socMedraHierarchyDAO.findByHltName("E",0,10)).willReturn(conditionSearchDTOList);
+    		given(this.conditionLevelRepository.findByKey("HLT_CODE")).willReturn(prl);
     		socHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
@@ -140,9 +168,18 @@ public class SocHierarchyServiceTest {
 	
 	@Test
 	public void testGetDetailsBySearchTextPt() {
-    	try{
+		try{
+    		List<SocSearchDTO> conditionSearchDTOList = new ArrayList<>();
+    		SocSearchDTO socSearchDTO = new SocSearchDTO();
+    		conditionSearchDTOList.add(socSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("PT_CODE");
+    		medraBrowserDto.setSearchValue("E");
+    		medraBrowserDto.setScrollCount(10);
+    		ConditionLevels prl= new ConditionLevels();
+    		prl.setKey("PT_CODE");
+    		given(this.socMedraHierarchyDAO.findByPtName("E",0,10)).willReturn(conditionSearchDTOList);
+    		given(this.conditionLevelRepository.findByKey("PT_CODE")).willReturn(prl);
     		socHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
@@ -151,9 +188,18 @@ public class SocHierarchyServiceTest {
 	
 	@Test
 	public void testGetDetailsBySearchTextllt() {
-    	try{
+		try{
+    		List<SocSearchDTO> conditionSearchDTOList = new ArrayList<>();
+    		SocSearchDTO socSearchDTO = new SocSearchDTO();
+    		conditionSearchDTOList.add(socSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("LLT_CODE");
+    		medraBrowserDto.setSearchValue("E");
+    		medraBrowserDto.setScrollCount(10);
+    		ConditionLevels prl= new ConditionLevels();
+    		prl.setKey("LLT_CODE");
+    		given(this.socMedraHierarchyDAO.findByLltName("E",0,10)).willReturn(conditionSearchDTOList);
+    		given(this.conditionLevelRepository.findByKey("LLT_CODE")).willReturn(prl);
     		socHierarchyService.getDetailsBySearchText(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();

@@ -39,6 +39,9 @@ public class ProductHierarchyServiceTest {
 	@Test
 	public void testGetHierarchyByCode() {
     	try{
+    		List<ProductSearchDTO> productSearchDTOList = new ArrayList<>();
+    		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
+    		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		List<ProductHierarchyDto> socHierarchyList = new ArrayList<>();
     		ProductHierarchyDto productHierarchyDto=new ProductHierarchyDto();
@@ -86,6 +89,7 @@ public class ProductHierarchyServiceTest {
     		
     		given(this.productLevelRepository.findAll()).willReturn(levels);
     		given(this.productMedraHierarchyDAO.findAllByActLvel("A","ATC_LVL_1",0,10)).willReturn(socHierarchyList);
+    		given(this.productMedraHierarchyDAO.findByActLvelOne("A",0,10)).willReturn(productSearchDTOList);
     		productHierarchyService.getHierarchyByCode(medraBrowserDto);
     	}catch(Exception e){
     		e.printStackTrace();
@@ -161,6 +165,9 @@ public class ProductHierarchyServiceTest {
     		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
     		medraBrowserDto.setSearchLevel("ALL");
+    		medraBrowserDto.setSearchValue("ALL");
+    		medraBrowserDto.setScrollOffset(0);
+    		medraBrowserDto.setScrollCount(10);
     		
     		ProductLevels prl= new ProductLevels();
     		prl.setKey("ALL");
@@ -181,11 +188,14 @@ public class ProductHierarchyServiceTest {
     		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
     		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+    		medraBrowserDto.setSearchValue("A");
     		medraBrowserDto.setSearchLevel("ATC_LVL_1");
+    		medraBrowserDto.setScrollOffset(0);
+    		medraBrowserDto.setScrollCount(10);
     		
     		ProductLevels prl= new ProductLevels();
     		prl.setKey("ATC_LVL_1");
-    		given(this.productMedraHierarchyDAO.findByActLvelOne(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productMedraHierarchyDAO.findByActLvelOne("A",0,10)).willReturn(productSearchDTOList);
     		given(this.productLevelRepository.findByKey("ATC_LVL_1")).willReturn(prl);
     		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
@@ -201,11 +211,14 @@ public class ProductHierarchyServiceTest {
     		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
     		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+    		medraBrowserDto.setSearchValue("B");
     		medraBrowserDto.setSearchLevel("ATC_LVL_2");
+    		medraBrowserDto.setScrollOffset(0);
+    		medraBrowserDto.setScrollCount(10);
     		
     		ProductLevels prl= new ProductLevels();
     		prl.setKey("ATC_LVL_2");
-    		given(this.productMedraHierarchyDAO.findByActLvelTwo(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productMedraHierarchyDAO.findByActLvelTwo("B",0,10)).willReturn(productSearchDTOList);
     		given(this.productLevelRepository.findByKey("ATC_LVL_2")).willReturn(prl);
     		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
@@ -221,11 +234,14 @@ public class ProductHierarchyServiceTest {
     		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
     		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+    		medraBrowserDto.setSearchValue("C");
     		medraBrowserDto.setSearchLevel("ATC_LVL_3");
+    		medraBrowserDto.setScrollOffset(0);
+    		medraBrowserDto.setScrollCount(10);
     		
     		ProductLevels prl= new ProductLevels();
     		prl.setKey("ATC_LVL_3");
-    		given(this.productMedraHierarchyDAO.findByActLvelThree(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productMedraHierarchyDAO.findByActLvelThree("C",0,10)).willReturn(productSearchDTOList);
     		given(this.productLevelRepository.findByKey("ATC_LVL_3")).willReturn(prl);
     		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
@@ -241,11 +257,14 @@ public class ProductHierarchyServiceTest {
     		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
     		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+    		medraBrowserDto.setSearchValue("D");
     		medraBrowserDto.setSearchLevel("ATC_LVL_4");
+    		medraBrowserDto.setScrollOffset(0);
+    		medraBrowserDto.setScrollCount(10);
     		
     		ProductLevels prl= new ProductLevels();
     		prl.setKey("ATC_LVL_4");
-    		given(this.productMedraHierarchyDAO.findByActLvelFour(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productMedraHierarchyDAO.findByActLvelFour("D",0,10)).willReturn(productSearchDTOList);
     		given(this.productLevelRepository.findByKey("ATC_LVL_4")).willReturn(prl);
     		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
@@ -261,11 +280,14 @@ public class ProductHierarchyServiceTest {
     		ProductSearchDTO productSearchDTO = new ProductSearchDTO();
     		productSearchDTOList.add(productSearchDTO);
     		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+    		medraBrowserDto.setSearchValue("E");
     		medraBrowserDto.setSearchLevel("ATC_LVL_5");
+    		medraBrowserDto.setScrollOffset(0);
+    		medraBrowserDto.setScrollCount(10);
     		
     		ProductLevels prl= new ProductLevels();
     		prl.setKey("ATC_LVL_5");
-    		given(this.productMedraHierarchyDAO.findByActLvelFive(medraBrowserDto.getSearchValue(),0,10)).willReturn(productSearchDTOList);
+    		given(this.productMedraHierarchyDAO.findByActLvelFive("E",0,10)).willReturn(productSearchDTOList);
     		given(this.productLevelRepository.findByKey("ATC_LVL_5")).willReturn(prl);
     		
     		productHierarchyService.getDetailsBySearchText(medraBrowserDto);
@@ -273,5 +295,7 @@ public class ProductHierarchyServiceTest {
     		e.printStackTrace();
     	}
     }
+	
+	
 
 }
