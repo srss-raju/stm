@@ -63,5 +63,35 @@ public class DetectionRunServiceTest {
 	public void testFindByDetectionId() throws Exception {
 		detectionRunService.findByDetectionId(1l);
 	}
+	
+	@Test
+	public void testUpdate() throws Exception {
+		logger.info("testUpdate");
+		DetectionRun detectionRun = new DetectionRun();
+		detectionRun.setId(1l);
+		detectionRunService.update(detectionRun);
+	}
+	
+	@Test
+	public void testUpdateNull() throws Exception {
+		logger.info("testUpdate");
+		DetectionRun detectionRun = new DetectionRun();
+		detectionRunService.update(detectionRun);
+	}
+	
+	@Test
+	public void testDelete() throws Exception {
+		logger.info("testDelete");
+		DetectionRun detectionRun = new DetectionRun();
+		detectionRun.setId(1l);
+		given(this.detectionRunRepository.findOne(1l)).willReturn(detectionRun);
+		detectionRunService.delete(1l);
+	}
+	
+	@Test
+	public void testDeleteNull() throws Exception {
+		given(this.detectionRunRepository.findOne(1l)).willReturn(null);
+		detectionRunService.delete(1l);
+	}
 
 }
