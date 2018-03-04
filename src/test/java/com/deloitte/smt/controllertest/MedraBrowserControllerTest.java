@@ -1,6 +1,5 @@
 package com.deloitte.smt.controllertest;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -11,7 +10,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,6 @@ import com.deloitte.smt.dto.SocSearchDTO;
 import com.deloitte.smt.service.ConditonService;
 import com.deloitte.smt.service.ProductHierarchyService;
 import com.deloitte.smt.service.ProductService;
-import com.deloitte.smt.service.SignalService;
 import com.deloitte.smt.service.SocHierarchyService;
 import com.deloitte.smt.util.TestUtil;
 
@@ -56,11 +53,6 @@ public class MedraBrowserControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	SignalService signalServiceMock;
-	
-	SignalService signalServiceMock1;
-	
-	@MockBean
 	SocHierarchyService socHierarchyService;
 	@MockBean
 	ConditonService condtionService;
@@ -69,10 +61,6 @@ public class MedraBrowserControllerTest {
 	@MockBean
 	ProductService productService;
 	
-	@Before
-	public void setUp() {
-		signalServiceMock1 = mock(SignalService.class);
-	}
 	
 	@Test
 	public void testGetAllbySocName() throws Exception{
