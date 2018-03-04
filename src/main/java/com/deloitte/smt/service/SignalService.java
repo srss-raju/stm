@@ -353,16 +353,14 @@ public class SignalService {
 		}
 	}
 
-	public String updateTopic(Topic topic) throws ApplicationException {
+	public Topic updateTopic(Topic topic) throws ApplicationException {
 		if (topic.getId() == null) {
 			throw new ApplicationException("Update failed for Topic, since it does not have any valid Id field.");
 		}
 		ownerCheck(topic);
 		topic.setLastModifiedDate(new Date());
 		setTopicIdForSignalStatistics(topic);
-		
-		topicRepository.save(topic);
-		return "Update Success";
+		return topicRepository.save(topic);
 	}
 
 	private void ownerCheck(Topic topic) throws ApplicationException {
