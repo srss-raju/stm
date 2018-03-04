@@ -307,12 +307,37 @@ public class RiskPlanServiceTest {
 	@Test
 	public void testUpdateRiskTask() {
 		try{
+			List<Task> list = new ArrayList<>();
 			Task riskTask = new Task();
 			riskTask.setId(1l);
-			riskTask.setTemplateId(1l);
+			riskTask.setName("A");
+			riskTask.setStatus("New");
+			list.add(riskTask);
 			Task riskTaskExists = new Task();
-			riskTaskExists.setId(11l);
-			given(this. taskRepository.findByNameIgnoreCaseAndTemplateId("A",1l)).willReturn(riskTaskExists);
+			riskTaskExists.setId(2l);
+			riskTaskExists.setName("B");
+			given(this.taskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc(1l,"New")).willReturn(list);
+			given(this. taskRepository.findByNameIgnoreCaseAndRiskId("A",1l)).willReturn(riskTaskExists);
+			riskPlanService.updateRiskTask(riskTask);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskTaskCompleted() {
+		try{
+			List<Task> list = new ArrayList<>();
+			Task riskTask = new Task();
+			riskTask.setId(1l);
+			riskTask.setName("A");
+			riskTask.setStatus("Completed");
+			list.add(riskTask);
+			Task riskTaskExists = new Task();
+			riskTaskExists.setId(2l);
+			riskTaskExists.setName("B");
+			given(this.taskRepository.findAllByRiskIdAndStatusOrderByCreatedDateDesc(1l,"Completed")).willReturn(list);
+			given(this. taskRepository.findByNameIgnoreCaseAndRiskId("A",1l)).willReturn(riskTaskExists);
 			riskPlanService.updateRiskTask(riskTask);
 		}catch(Exception ex){
 			logger.info(ex);
@@ -328,6 +353,22 @@ public class RiskPlanServiceTest {
 			Task riskTaskExists = new Task();
 			riskTaskExists.setId(1l);
 			given(this. taskRepository.findByNameIgnoreCaseAndTemplateId("A",1l)).willReturn(riskTaskExists);
+			riskPlanService.updateRiskTask(riskTask);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskTaskNoTemplate() {
+		try{
+			Task riskTask = new Task();
+			riskTask.setId(1l);
+			riskTask.setName("A");
+			Task riskTaskExists = new Task();
+			riskTaskExists.setId(1l);
+			riskTaskExists.setName("A");
+			given(this. taskRepository.findByNameIgnoreCaseAndRiskId("A",1l)).willReturn(riskTaskExists);
 			riskPlanService.updateRiskTask(riskTask);
 		}catch(Exception ex){
 			logger.info(ex);

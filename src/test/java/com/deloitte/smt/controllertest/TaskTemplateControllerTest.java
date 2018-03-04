@@ -1,21 +1,16 @@
-/*package com.deloitte.smt.controllertest;
+package com.deloitte.smt.controllertest;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,104 +22,161 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.smt.SignalManagementApplication;
-import com.deloitte.smt.entity.TaskTemplate;
-import com.deloitte.smt.service.TaskTemplateService;
+import com.deloitte.smt.dto.ConditionResponse;
+import com.deloitte.smt.dto.MedraBrowserDTO;
+import com.deloitte.smt.dto.ProductResponse;
+import com.deloitte.smt.dto.ProductSearchDTO;
+import com.deloitte.smt.dto.SocSearchDTO;
+import com.deloitte.smt.service.ConditonService;
+import com.deloitte.smt.service.ProductHierarchyService;
+import com.deloitte.smt.service.ProductService;
+import com.deloitte.smt.service.SignalService;
+import com.deloitte.smt.service.SocHierarchyService;
 import com.deloitte.smt.util.TestUtil;
 
-*//**
+/**
  * 
  * @author RajeshKumar
  *
- *//*
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SignalManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {"classpath:test.properties"})
 public class TaskTemplateControllerTest {
 
+	private final Logger logger = LogManager.getLogger(this.getClass());
+	
 	@Autowired
 	private MockMvc mockMvc;
+
+	@MockBean
+	SignalService signalServiceMock;
+	
+	SignalService signalServiceMock1;
 	
 	@MockBean
-	TaskTemplateService taskTemplateServiceMock;
+	SocHierarchyService socHierarchyService;
+	@MockBean
+	ConditonService condtionService;
+	@MockBean
+	ProductHierarchyService productHierarchyService;
+	@MockBean
+	ProductService productService;
 	
-	TaskTemplateService taskTemplateServiceMock1;
-
 	@Before
-	public void setUp(){
-		taskTemplateServiceMock1=mock(TaskTemplateService.class);
+	public void setUp() {
+		signalServiceMock1 = mock(SignalService.class);
 	}
 	
 	@Test
-	public void testCreateTaskTemplate() throws Exception {
-		TaskTemplate taskTemplate = new TaskTemplate();
-		when(taskTemplateServiceMock.createTaskTemplate(taskTemplate)).thenReturn(taskTemplate);
-		this.mockMvc
-				.perform(post("/camunda/api/signal/template/createTaskTemplate")
-						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-						.param("data", TestUtil.convertObjectToJsonString(taskTemplate)))
-						
-				.andExpect(status().isOk());
+	public void testGetAllbySocName() throws Exception{
+		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+		medraBrowserDto.setSelectLevel("One");
+		List<SocSearchDTO> socList = new ArrayList<>();
+		when(socHierarchyService.getHierarchyByCode(medraBrowserDto)).thenReturn(socList);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/camunda/api/signal/condition")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(medraBrowserDto))
+				.contentType(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		logger.info(result);
 	}
 	
 	@Test
-	public void testUpdateTaskTemplate() throws Exception {
-		TaskTemplate taskTemplate = new TaskTemplate();
-		when(taskTemplateServiceMock.updateTaskTemplate(taskTemplate)).thenReturn(taskTemplate);
-		this.mockMvc
-				.perform(post("/camunda/api/signal/template/updateTaskTemplate")
-						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-						.param("data", TestUtil.convertObjectToJsonString(taskTemplate)))
-						
-				.andExpect(status().isOk());
+	public void testGetAllbySocNameNull() throws Exception{
+		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+		List<SocSearchDTO> socList = new ArrayList<>();
+		when(socHierarchyService.getHierarchyByCode(medraBrowserDto)).thenReturn(socList);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/camunda/api/signal/condition")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(medraBrowserDto))
+				.contentType(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		logger.info(result);
+	}
+	
+
+	@Test
+	public void testGetAllConditionsLevel()  {
+		try{
+			ConditionResponse conditionResponse = new ConditionResponse();
+			when(condtionService.getAllConditionLevels()).thenReturn(conditionResponse);
+			this.mockMvc
+					.perform(get("/camunda/api/signal/condition/product")
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		}catch(Exception ex){
+			logger.info(ex);
+		}
 	}
 	
 	@Test
-	public void testDeleteById() throws Exception {
-		
-		doNothing().when(taskTemplateServiceMock).delete(anyLong());
-		
-		this.mockMvc
-				.perform(delete("/camunda/api/signal/template/{taskId}",1)
-						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(status().isOk());
-
-		verify(taskTemplateServiceMock, times(1)).delete(anyLong());
-		verifyNoMoreInteractions(taskTemplateServiceMock);
-
+	public void testUpdateShowCodes() throws Exception{
+		ConditionResponse conditionResponse = new ConditionResponse();
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.put("/camunda/api/signal/condition/product")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(conditionResponse))
+				.contentType(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		logger.info(result);
 	}
 	
 	@Test
-	public void testFindAll() throws Exception {
-		List<TaskTemplate> taskTemplates = new ArrayList<>();
-
-		when(taskTemplateServiceMock.findAll()).thenReturn(taskTemplates);
-
-		this.mockMvc
-				.perform(get("/camunda/api/signal/template/all", 1)
-						.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(status().isOk()).andExpect(content().contentType("application/json;charset=UTF-8"));
-
-		verify(taskTemplateServiceMock, times(1)).findAll();
-		verifyNoMoreInteractions(taskTemplateServiceMock);
-
+	public void testGetAllProductsLevel()  {
+		try{
+			ProductResponse  productResponse  = new ProductResponse ();
+			when(productService.getAllProductsLevel()).thenReturn(productResponse);
+			this.mockMvc
+					.perform(get("/camunda/api/signal/product/product")
+							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		}catch(Exception ex){
+			logger.info(ex);
+		}
 	}
 	
 	@Test
-	public void testFindByTemplateId() throws Exception {
-		TaskTemplate taskTemplate = new TaskTemplate();
-
-		when(taskTemplateServiceMock.findById(anyLong())).thenReturn(taskTemplate);
-
-		this.mockMvc
-				.perform(get("/camunda/api/signal/template/{templateId}", 1)
-						.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(status().isOk()).andExpect(content().contentType("application/json;charset=UTF-8"));
-
-		verify(taskTemplateServiceMock, times(1)).findById(anyLong());
-		verifyNoMoreInteractions(taskTemplateServiceMock);
+	public void testUpdatePShowCodes() throws Exception{
+		ProductResponse  conditionResponse = new ProductResponse ();
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.put("/camunda/api/signal/product/product")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(conditionResponse))
+				.contentType(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		logger.info(result);
 	}
-
-}*/
+	
+	@Test
+	public void testGetAllbyProductName() throws Exception{
+		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+		medraBrowserDto.setSelectLevel("One");
+		List<ProductSearchDTO> socList = new ArrayList<>();
+		when(productHierarchyService.getHierarchyByCode(medraBrowserDto)).thenReturn(socList);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/camunda/api/signal/product")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(medraBrowserDto))
+				.contentType(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		logger.info(result);
+	}
+	
+	@Test
+	public void testGetAllbyProductNameNull() throws Exception{
+		MedraBrowserDTO medraBrowserDto = new MedraBrowserDTO();
+		List<ProductSearchDTO> socList = new ArrayList<>();
+		when(productHierarchyService.getHierarchyByCode(medraBrowserDto)).thenReturn(socList);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/camunda/api/signal/product")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(medraBrowserDto))
+				.contentType(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		logger.info(result);
+	}
+	
+}
