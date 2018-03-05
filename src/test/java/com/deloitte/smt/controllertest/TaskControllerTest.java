@@ -1,6 +1,5 @@
 package com.deloitte.smt.controllertest;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -11,7 +10,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +20,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.smt.SignalManagementApplication;
 import com.deloitte.smt.entity.Task;
 import com.deloitte.smt.service.TaskService;
+import com.deloitte.smt.util.TestUtil;
 
 /**
  * 
@@ -46,66 +48,51 @@ public class TaskControllerTest {
 	@MockBean
 	TaskService  taskServiceMock;
 	
-	TaskService  taskServiceMock1;
-	
-	@Before
-	public void setUp() {
-		taskServiceMock1 = mock(TaskService.class);
-	}
-	
-	/*@Test
-	public void testCreateTask() throws Exception{
-		
-		Task  task=new Task ();
-		
-		when(taskServiceMock.createTask(task)).thenReturn(task);
-
-		this.mockMvc
-				.perform(post("/camunda/api/signal/{type}/task","risk")
-						.param("data",TestUtil.convertObjectToJsonString(task))
-						.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(status().isOk());
-
-	}
 	
 	@Test
-	public void testCreateTaskTemplate() throws Exception{
-		
-		Task  task=new Task ();
+	public void testCreateTaskWithTemplate() throws Exception{
+		Task task = new Task();
 		task.setTemplateId(1l);
-		
-		when(taskServiceMock.createTask(task)).thenReturn(task);
-
-		this.mockMvc
-				.perform(post("/camunda/api/signal/{type}/task","risk")
-						.param("data",TestUtil.convertObjectToJsonString(task))
-						.accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
-				.andExpect(status().isOk());
-
+		when(taskServiceMock.createTemplateTask(task)).thenReturn(task);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/camunda/api/signal/{type}/task","Signal")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(task))
+				.contentType(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		logger.info(result);
 	}
 	
 	@Test
-	public void testUpdateTask() throws Exception{
-		
-		Task  task=new Task ();
-		
-		this.mockMvc
-		.perform(put("/camunda/api/signal/{type}/task","risk")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(TestUtil.convertObjectToJsonBytes(task)))
-				.andExpect(status().isOk())
-				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE));
-
-	}*/
+	public void testCreateTaskNoTemplate() throws Exception{
+		Task task = new Task();
+		when(taskServiceMock.createTask(task)).thenReturn(task);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/camunda/api/signal/{type}/task","Signal")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(task))
+				.contentType(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		logger.info(result);
+	}
 	
-
 	@Test
-	public void testFindAll()  {
+	public void testUpdate() throws Exception{
+		Task task = new Task();
+		when(taskServiceMock.updateAssessmentAction(task)).thenReturn(task);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.put("/camunda/api/signal/{type}/task","Signal")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(task))
+				.contentType(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		logger.info(result);
+	}
+	
+	@Test
+	public void testFindById()  {
 		try{
-			List<Task> tasks = new ArrayList<>();
-			when(taskServiceMock.findAll("risk",1l)).thenReturn(tasks);
+			Task task = new Task();
+			when(taskServiceMock.findById(1l)).thenReturn(task);
 			this.mockMvc
-					.perform(get("/camunda/api/signal/{type}/task/all/{id}", "risk",1)
+					.perform(get("/camunda/api/signal/{type}/task/{taskId}","Signal",1l)
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		}catch(Exception ex){
@@ -114,12 +101,12 @@ public class TaskControllerTest {
 	}
 	
 	@Test
-	public void testFfindByTemplateId()  {
+	public void testFindAll()  {
 		try{
-			Task  task=new Task ();
-			when(taskServiceMock.findById(1l)).thenReturn(task);
+			List<Task> tasks = new ArrayList<>();
+			when(taskServiceMock.findAll("Signal",1l)).thenReturn(tasks);
 			this.mockMvc
-					.perform(get("/camunda/api/signal/{type}/task/{id}", "risk",1)
+					.perform(get("/camunda/api/signal/{type}/task/{taskId}","Signal",1l)
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		}catch(Exception ex){
