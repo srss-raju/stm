@@ -15,11 +15,6 @@ public class ApplicationException extends Exception {
 		errorCode=null;
 	}
 	
-	public ApplicationException(String message,ApplicationException exception) {
-		super(message,exception);
-		errorCode=exception.getErrorCode();
-	}
-	
 	public ApplicationException(String message,Throwable exception) {
 		super(message,exception);
 		errorCode=null;
