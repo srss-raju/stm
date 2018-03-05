@@ -2,7 +2,6 @@ package com.deloitte.smt.controllertest;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -11,11 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,10 +23,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.dto.PtDTO;
+import com.deloitte.smt.dto.SearchDto;
+import com.deloitte.smt.dto.SmqDTO;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.service.SignalDetectionService;
+import com.deloitte.smt.service.SmqService;
 import com.deloitte.smt.util.TestUtil;
 
 /**
@@ -47,26 +52,30 @@ public class SignalDetectionControllerTest {
 	@MockBean
 	SignalDetectionService signalDetectionServiceMock;
 	
-	SignalDetectionService signalDetectionServiceMock1;
+	@MockBean
+	SmqService smqService;
 	
-	@Before
-	public void setUp() {
-		signalDetectionServiceMock1 = mock(SignalDetectionService.class);
+	
+	@Test
+	public void testCreateDetection() throws Exception{
+		SignalDetection signalDection = new SignalDetection();
+		when(signalDetectionServiceMock.createOrUpdateSignalDetection(signalDection)).thenReturn(signalDection);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/camunda/api/signal/detect/createSignalDetection")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(signalDection))
+				.contentType(MediaType.APPLICATION_JSON);
+		mockMvc.perform(requestBuilder).andReturn();
 	}
 	
-
 	@Test
-	public void testCreateSignalDetection() throws IOException, Exception {
+	public void testUpdateDetection() throws Exception{
 		SignalDetection signalDection = new SignalDetection();
-
-		when(signalDetectionServiceMock.createOrUpdateSignalDetection(Matchers.any(SignalDetection.class)))
-				.thenReturn(signalDection);
-
-		this.mockMvc
-				.perform(post("/camunda/api/signal/detect/createSignalDetection")
-						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).param("data",
-								TestUtil.convertObjectToJsonString(signalDection)))
-				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		when(signalDetectionServiceMock.createOrUpdateSignalDetection(signalDection)).thenReturn(signalDection);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.put("/camunda/api/signal/detect/createSignalDetection")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(signalDection))
+				.contentType(MediaType.APPLICATION_JSON);
+		mockMvc.perform(requestBuilder).andReturn();
 	}
 	
 	@Test
@@ -82,29 +91,51 @@ public class SignalDetectionControllerTest {
 
 	}
 
-	@Test
-	public void testUpdateTopic() throws IOException, Exception {
-		SignalDetection signalDection = new SignalDetection();
-
-		when(signalDetectionServiceMock.createOrUpdateSignalDetection(Matchers.any(SignalDetection.class)))
-				.thenReturn(signalDection);
-
-		this.mockMvc
-				.perform(post("/camunda/api/signal/detect/updateSignalDetection")
-						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).param("data",
-								TestUtil.convertObjectToJsonString(signalDection)))
-				.andExpect(status().isOk());
-	}
-	
 	
 	@Test
 	public void testDeleteById() throws Exception{
 
-		doNothing().when(signalDetectionServiceMock1).delete(anyLong());
+		doNothing().when(signalDetectionServiceMock).delete(anyLong());
 
 		this.mockMvc
 				.perform(delete("/camunda/api/signal/detect/{signalDetectionId}", 1)
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testDleteByAssigneeId() throws Exception{
+
+		doNothing().when(signalDetectionServiceMock).deleteByAssigneeId(anyLong());
+
+		this.mockMvc
+				.perform(delete("/camunda/api/signal/detect/detectionassignee/{assigneeId}", 1)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testFindAllSmqs() throws IOException, Exception {
+		List<SmqDTO> list = new ArrayList<>();
+
+		when(smqService.findAllSmqs()).thenReturn(list);
+
+		this.mockMvc
+				.perform(get("/camunda/api/signal/detect/allsmqs")
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+
+	}
+	
+	@Test
+	public void testFindPtsBySmqId() throws IOException, Exception {
+		SearchDto searchDto = new SearchDto();
+		List<PtDTO> list = new ArrayList<>();
+		when(smqService.findPtsBySmqId(searchDto.getSmqIds())).thenReturn(list);
+
+		this.mockMvc
+				.perform(post("/camunda/api/signal/detect/allptsbysmqids")
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(TestUtil.convertObjectToJsonString(searchDto)))
 				.andExpect(status().isOk());
 	}
 	
