@@ -1,7 +1,9 @@
 package com.deloitte.smt.controllertest;
 
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -97,6 +99,17 @@ public class DetectionRunControllerTest {
 		.perform(get("/camunda/api/signal/detectionrun/detection/{detectionId}",1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		
+	}
+	
+	@Test
+	public void testDeleteDetectionRun() throws Exception{
+
+		doNothing().when(detectionRunServiceMock).delete(anyLong());
+
+		this.mockMvc
+				.perform(delete("/camunda/api/signal/detectionrun/{detectionRunId}",1)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(status().isOk());
 	}
 	
 	@Test

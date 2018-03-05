@@ -104,7 +104,7 @@ public class SignalDetectionControllerTest {
 	}
 	
 	@Test
-	public void testDleteByAssigneeId() throws Exception{
+	public void testDeleteByAssigneeId() throws Exception{
 
 		doNothing().when(signalDetectionServiceMock).deleteByAssigneeId(anyLong());
 
