@@ -1,6 +1,9 @@
 package com.deloitte.smt.controllertest;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -112,6 +115,17 @@ public class TaskControllerTest {
 		}catch(Exception ex){
 			logger.info(ex);
 		}
+	}
+	
+	@Test
+	public void testDleteByAssigneeId() throws Exception{
+
+		doNothing().when(taskServiceMock).delete(anyLong());
+
+		this.mockMvc
+				.perform(delete("/camunda/api/signal/{type}/task/{taskId}","Signal",1l)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(status().isOk());
 	}
 	
 }
