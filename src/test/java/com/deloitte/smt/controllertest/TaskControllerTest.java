@@ -68,6 +68,7 @@ public class TaskControllerTest {
 	@Test
 	public void testCreateTaskNoTemplate() throws Exception{
 		Task task = new Task();
+		task.setTemplateId(0l);
 		when(taskServiceMock.createTask(task)).thenReturn(task);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post("/camunda/api/signal/{type}/task","Signal")
@@ -104,12 +105,12 @@ public class TaskControllerTest {
 	}
 	
 	@Test
-	public void testFindAll()  {
+	public void testGetAll()  {
 		try{
 			List<Task> tasks = new ArrayList<>();
 			when(taskServiceMock.findAll("Signal",1l)).thenReturn(tasks);
 			this.mockMvc
-					.perform(get("/camunda/api/signal/{type}/task/{taskId}","Signal",1l)
+			.perform(get("/camunda/api/signal/{type}/task/all/{taskId}","Signal",1l)
 							.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
 		}catch(Exception ex){
