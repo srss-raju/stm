@@ -223,6 +223,90 @@ public class RiskPlanServiceTest {
 		}
 	}
 	
+	
+	@Test
+	public void testInsertWithAssessmentException() {
+		try{
+			List<TopicCondition> conditions = new ArrayList<>();
+			TopicCondition topicCondition = new TopicCondition();
+			List<TopicConditionValues> topicConditionValues = new ArrayList<>();
+			TopicConditionValues topicConditionValue = new TopicConditionValues();
+			topicConditionValues.add(topicConditionValue);
+			topicCondition.setRecordValues(topicConditionValues);
+			conditions.add(topicCondition);
+			List<TopicProduct> products = new ArrayList<>();
+			TopicProduct topicProduct = new TopicProduct();
+			List<TopicProductValues> topicProductValues = new ArrayList<>(); 
+			TopicProductValues topicProductValue = new TopicProductValues();
+			topicProductValues.add(topicProductValue);
+			topicProduct.setRecordValues(topicProductValues);
+			products.add(topicProduct);
+			Topic topicUpdated = new Topic();
+			topicUpdated.setId(1l);
+			topicUpdated.setProducts(products);
+			topicUpdated.setConditions(conditions);
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setId(1l);
+			Set<Topic> topics = new HashSet<>();
+			topics.add(topicUpdated);
+			assessmentPlan.setTopics(topics);
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setName("Test Plan");
+			riskPlan.setAssessmentPlan(assessmentPlan);
+			
+			given(this.assessmentPlanService.findById(1l)).willReturn(assessmentPlan);
+			given(this.riskPlanRepository.countByNameIgnoreCase(riskPlan.getName())).willReturn(0l);
+			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
+			given(this.signalService.findById(1l)).willReturn(topicUpdated);
+			
+			riskPlanService.insert(riskPlan, 1l);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testInsertDuplicateRisk() {
+		try{
+			List<TopicCondition> conditions = new ArrayList<>();
+			TopicCondition topicCondition = new TopicCondition();
+			List<TopicConditionValues> topicConditionValues = new ArrayList<>();
+			TopicConditionValues topicConditionValue = new TopicConditionValues();
+			topicConditionValues.add(topicConditionValue);
+			topicCondition.setRecordValues(topicConditionValues);
+			conditions.add(topicCondition);
+			List<TopicProduct> products = new ArrayList<>();
+			TopicProduct topicProduct = new TopicProduct();
+			List<TopicProductValues> topicProductValues = new ArrayList<>(); 
+			TopicProductValues topicProductValue = new TopicProductValues();
+			topicProductValues.add(topicProductValue);
+			topicProduct.setRecordValues(topicProductValues);
+			products.add(topicProduct);
+			Topic topicUpdated = new Topic();
+			topicUpdated.setId(1l);
+			topicUpdated.setProducts(products);
+			topicUpdated.setConditions(conditions);
+			AssessmentPlan assessmentPlan = new AssessmentPlan();
+			assessmentPlan.setId(1l);
+			Set<Topic> topics = new HashSet<>();
+			topics.add(topicUpdated);
+			assessmentPlan.setTopics(topics);
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setName("Test Plan");
+			riskPlan.setAssessmentPlan(assessmentPlan);
+			
+			given(this.assessmentPlanRepository.findOne(1l)).willReturn(assessmentPlan);
+			given(this.assessmentPlanService.findById(1l)).willReturn(assessmentPlan);
+			given(this.riskPlanRepository.countByNameIgnoreCase(riskPlan.getName())).willReturn(1l);
+			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
+			given(this.signalService.findById(1l)).willReturn(topicUpdated);
+			
+			riskPlanService.insert(riskPlan, null);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	@Test
 	public void testCreateRiskTask() {
 		try{
@@ -233,6 +317,25 @@ public class RiskPlanServiceTest {
 			riskPlan.setName("Test Plan");
 			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlan);
 			given(this.taskRepository.countByNameIgnoreCaseAndRiskId("Task1",1l)).willReturn(0l);
+			given(this.taskRepository.save(riskTask)).willReturn(riskTask);
+			
+			riskPlanService.createRiskTask(riskTask);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testCreateRiskTaskDuplicate() {
+		try{
+			Task riskTask = new Task();
+			riskTask.setId(1l);
+			riskTask.setRiskId(1l);
+			riskTask.setName("Task1");
+			RiskPlan riskPlan = new RiskPlan();
+			riskPlan.setName("Test Plan");
+			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlan);
+			given(this.taskRepository.countByNameIgnoreCaseAndRiskId("Task1",1l)).willReturn(1l);
 			given(this.taskRepository.save(riskTask)).willReturn(riskTask);
 			
 			riskPlanService.createRiskTask(riskTask);
@@ -394,6 +497,8 @@ public class RiskPlanServiceTest {
 		}
 	}
 	
+	
+	
 	@Test
 	public void testDeleteId() {
 		try{
@@ -502,6 +607,41 @@ public class RiskPlanServiceTest {
 	
 	@Test
 	public void testUpdateRiskPlanSummary() {
+		try{
+			RiskPlan riskPlan = new RiskPlan();
+			RiskPlan riskPlanDB = new RiskPlan();
+			riskPlan.setId(1l);
+			riskPlan.setStatus("Completed");
+			riskPlan.setOwner("A");
+			riskPlanDB.setOwner("A");
+			riskPlan.setSummary("A");
+			riskPlanDB.setStatus("Completed");
+			
+			List<Comments> comments = new ArrayList<>();
+			Comments comment = new Comments();
+			comment.setUserComments("AAA");
+			comments.add(comment);
+			riskPlan.setComments(comments);
+			riskPlan.setComments(comments);
+			riskPlanDB.setComments(comments);
+			
+			List<Task> riskTaskStatues=new ArrayList<>();
+			Task task = new Task();
+			task.setStatus("New");
+			riskTaskStatues.add(task);
+			
+			given(this.riskPlanRepository.findOne(1l)).willReturn(riskPlanDB);
+			given(this.riskPlanRepository.save(riskPlan)).willReturn(riskPlan);
+			
+			given(this.taskRepository.findAllByRiskIdOrderByCreatedDateDesc(1l)).willReturn(riskTaskStatues);
+			riskPlanService.updateRiskPlan(riskPlan);
+		}catch(Exception ex){
+			logger.info(ex);
+		}
+	}
+	
+	@Test
+	public void testUpdateRiskPlanWithoutSummary() {
 		try{
 			RiskPlan riskPlan = new RiskPlan();
 			RiskPlan riskPlanDB = new RiskPlan();
