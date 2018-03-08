@@ -54,7 +54,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	@Query(value="SELECT distinct i.ingredient_name from sm_ingredient i, sm_topic t where t.id=i.topic_id", nativeQuery=true)
 	List<String> findDistinctIngredientNames();
 	
-	
+	Topic findNameByRunInstanceIdAndNameIgnoreCaseContaining(Long runInstanceId, String name);
 	
 }
 

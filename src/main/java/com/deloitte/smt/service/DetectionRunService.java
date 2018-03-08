@@ -20,10 +20,12 @@ import com.deloitte.smt.dto.DetectionRunResponseDTO;
 import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.entity.Stratification;
+import com.deloitte.smt.entity.Topic;
 import com.deloitte.smt.entity.TopicProductAssignmentConfiguration;
 import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.repository.DetectionRunRepository;
+import com.deloitte.smt.repository.TopicRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -40,6 +42,9 @@ public class DetectionRunService {
 
     @Autowired
     DetectionRunRepository detectionRunRepository;
+    
+    @Autowired
+    TopicRepository topicRepository;
     
     @Autowired
     SignalDetectionService signalDetectionService;
@@ -167,5 +172,24 @@ public class DetectionRunService {
         	detectionRunRepository.delete(detectionRun);
         }
 		
+	}
+
+	public boolean isSignalExist(DetectionRunDTO dto) {
+		StringBuilder builder = new StringBuilder();
+		
+		if(dto.getDrug()!=null && dto.getCondition()!=null){
+			builder.append(dto.getDrug());
+			builder.append("_");
+			builder.append(dto.getCondition());
+		}else if(dto.getDrug()!=null) {
+			builder.append(dto.getDrug());
+		}else{
+			builder.append(dto.getCondition());
+		}
+		Topic topic = topicRepository.findNameByRunInstanceIdAndNameIgnoreCaseContaining(dto.getRunInstanceId(), builder.toString());
+		if(topic != null){
+			return true;
+		}
+		return false;
 	}
 }

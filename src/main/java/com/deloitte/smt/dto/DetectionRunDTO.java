@@ -25,6 +25,8 @@ public class DetectionRunDTO  implements Serializable{
 	private String secondaryProductActLevel;
 	private String primaryEventLevel;
 	private String secondaryEventLevel;
+	private String drug;
+	private String condition;
 	private Long minCases;
 	@JsonProperty("thresholds_table")
 	private List<Algorithm> algorithms;
@@ -120,6 +122,18 @@ public class DetectionRunDTO  implements Serializable{
 	}
 	public void setAlgorithms(List<Algorithm> algorithms) {
 		this.algorithms = algorithms;
+	}
+	public String getDrug() {
+		return drug;
+	}
+	public void setDrug(String drug) {
+		this.drug = drug;
+	}
+	public String getCondition() {
+		return condition;
+	}
+	public void setCondition(String condition) {
+		this.condition = condition;
 	}
 	
 }

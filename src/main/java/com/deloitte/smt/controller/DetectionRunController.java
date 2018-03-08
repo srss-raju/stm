@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deloitte.smt.dto.DetectionRunDTO;
 import com.deloitte.smt.dto.DetectionRunResponseDTO;
 import com.deloitte.smt.entity.DetectionRun;
 import com.deloitte.smt.exception.ApplicationException;
@@ -54,5 +55,10 @@ public class DetectionRunController {
     public ResponseEntity<Void> deleteDetectionRun(@PathVariable Long detectionRunId) throws ApplicationException {
     	detectionRunService.delete(detectionRunId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @PostMapping(value = "/getSignal")
+    public boolean findSignal(@RequestBody DetectionRunDTO dto) {
+        return detectionRunService.isSignalExist(dto);
     }
 }
