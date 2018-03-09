@@ -52,7 +52,7 @@ public class ProductHierarchyService {
 		LOGGER.info("getHierarchyByCode");
 		List<ProductHierarchyDto> productHierarchyList;
 		String atcDescColumnName = medraBrowserDto.getSelectLevel().concat("_desc");
-		String atcLevelDesc = productMedraHierarchyDAO.findAtcDescByAtcLevelCode(medraBrowserDto);
+		List<String> atcLevelDesc = productMedraHierarchyDAO.findAtcDescByAtcLevelCode(medraBrowserDto);
 		List<String> atcLvelValues = productMedraHierarchyDAO.findAtcCodesByAtcLevelDesc(atcLevelDesc, atcDescColumnName, medraBrowserDto.getSelectLevel());
 		productHierarchyList = productMedraHierarchyDAO.findAllByActLvel(atcLvelValues, medraBrowserDto.getSelectLevel(), medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
 		return responseMapper(productHierarchyList);

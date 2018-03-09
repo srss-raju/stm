@@ -30,8 +30,8 @@ public interface ProductMedraHierarchyDAO {
 
 	List<ProductHierarchyDto> findActLevelsByProductKey(String productKey);
 	
-	String findAtcDescByAtcLevelCode(MedraBrowserDTO medraBrowserDto);
+	List<String> findAtcDescByAtcLevelCode(MedraBrowserDTO medraBrowserDto);
 
-	List<String> findAtcCodesByAtcLevelDesc(String desc, String columnName, String codeColumnName);
+	List<String> findAtcCodesByAtcLevelDesc(List<String> desc, String columnName, String codeColumnName);
 
 }

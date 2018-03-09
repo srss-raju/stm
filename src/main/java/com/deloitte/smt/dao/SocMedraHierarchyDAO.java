@@ -30,9 +30,9 @@ public interface SocMedraHierarchyDAO {
 
 	List<SocHierarchyDto> findActLevelsByPtDesc(String ptQueryBuilder);
 
-	String findconditionDescByCode(MedraBrowserDTO medraBrowserDto);
+	List<String> findconditionDescByCode(MedraBrowserDTO medraBrowserDto);
 
-	List<String> findConditionCodesByConditionDesc(String conditionDesc, String conditionDescColumnName, String selectLevel);
+	List<String> findConditionCodesByConditionDesc(List<String> conditionDesc, String conditionDescColumnName, String selectLevel);
 	
 	
 	

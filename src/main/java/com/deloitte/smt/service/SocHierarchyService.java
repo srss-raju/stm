@@ -47,7 +47,7 @@ public class SocHierarchyService {
 	public List<SocSearchDTO> getHierarchyByCode(MedraBrowserDTO medraBrowserDto) {
 		List<SocHierarchyDto> socHierarchyList;
 		
-		String conditionDesc = socMedraHierarchyDAO.findconditionDescByCode(medraBrowserDto);
+		List<String> conditionDesc = socMedraHierarchyDAO.findconditionDescByCode(medraBrowserDto);
 		String conditionDescColumnName = medraBrowserDto.getSelectLevel().replace("CODE","DESC");
 		List<String> atcLvelValues = socMedraHierarchyDAO.findConditionCodesByConditionDesc(conditionDesc, conditionDescColumnName, medraBrowserDto.getSelectLevel());
 

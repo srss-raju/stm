@@ -121,22 +121,24 @@ public class SocMedraHierarchyDAOImpl implements SocMedraHierarchyDAO {
 	}
 
 	@Override
-	public String findconditionDescByCode(MedraBrowserDTO medraBrowserDto) {
+	public List<String> findconditionDescByCode(MedraBrowserDTO medraBrowserDto) {
 		String conditionColumnName = medraBrowserDto.getSelectLevel();
 		String conditionDescColumnName = conditionColumnName.replace("CODE","DESC");
 		StringBuilder atcDescQuery = new StringBuilder("SELECT distinct ");
 		atcDescQuery.append(conditionDescColumnName);
 		atcDescQuery.append(" FROM  SOC_MEDDRA_HIERARCHY WHERE ");
 		atcDescQuery.append(medraBrowserDto.getSelectLevel()).append("='").append(medraBrowserDto.getSearchValue()).append("'");
-		return jdbcTemplate.queryForObject(atcDescQuery.toString(), String.class);
+		return jdbcTemplate.queryForList(atcDescQuery.toString(), String.class);
 	}
 
 	@Override
-	public List<String> findConditionCodesByConditionDesc(String conditionDesc, String conditionDescColumnName, String codeColumnName) {
+	public List<String> findConditionCodesByConditionDesc(List<String> conditionDesc, String conditionDescColumnName, String codeColumnName) {
 		StringBuilder atcDescQuery = new StringBuilder("SELECT distinct ").append(codeColumnName);
 		atcDescQuery.append(" FROM  SOC_MEDDRA_HIERARCHY WHERE ");
-		atcDescQuery.append(conditionDescColumnName).append("='").append(conditionDesc).append("'");
-		return jdbcTemplate.queryForList(atcDescQuery.toString(), String.class);
+		atcDescQuery.append(conditionDescColumnName).append(" IN (:codes)");
+		Map<String, Object> params = new HashMap<>();
+		params.put("codes", conditionDesc);
+		return namedParameterJdbcTemplate.queryForList(atcDescQuery.toString(), params, String.class);
 	}
 
 }
