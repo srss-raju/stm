@@ -31,5 +31,7 @@ public class Algorithm  implements Serializable{
 	@JsonProperty("THRESHOLD_VALUE")
 	private int thresholdValue;
 	
+	@JsonProperty("THRESHOLD_NAME")
+	private String thresholdName;
 	
 }

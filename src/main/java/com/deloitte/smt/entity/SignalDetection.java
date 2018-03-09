@@ -54,6 +54,10 @@ public class SignalDetection implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "detectionId")
+	private List<DetectionAlgorithm> thresholdValues;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "detectionId")
 	private List<Query> queries;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
