@@ -2,12 +2,13 @@ package com.deloitte.smt.dao;
 
 import java.util.List;
 
+import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
 import com.deloitte.smt.dto.ProductSearchDTO;
 
 public interface ProductMedraHierarchyDAO {
 	
-	List<ProductHierarchyDto> findAllByActLvel(String code,String columnName,int scrollOffset,int scrollCount);
+	List<ProductHierarchyDto> findAllByActLvel(List<String> codes,String columnName,int scrollOffset,int scrollCount);
 	
 	List<ProductSearchDTO> findByActLvelOne(String searchText,int scrollOffset,int scrollCount);
 	
@@ -28,5 +29,9 @@ public interface ProductMedraHierarchyDAO {
 	List<String> getProductKey(String query);
 
 	List<ProductHierarchyDto> findActLevelsByProductKey(String productKey);
+	
+	String findAtcDescByAtcLevelCode(MedraBrowserDTO medraBrowserDto);
+
+	List<String> findAtcCodesByAtcLevelDesc(String desc, String columnName, String codeColumnName);
 
 }

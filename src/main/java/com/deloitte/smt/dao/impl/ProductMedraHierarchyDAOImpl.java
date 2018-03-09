@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.deloitte.smt.dao.ProductMedraHierarchyDAO;
+import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
 import com.deloitte.smt.dto.ProductSearchDTO;
 import com.deloitte.smt.util.ProductHierarchyMapper;
@@ -34,12 +35,12 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 	}
 
 	@Override
-	public List<ProductHierarchyDto> findAllByActLvel(String code,String columnName,int scrollOffset,int scrollCount) {
+	public List<ProductHierarchyDto> findAllByActLvel(List<String> codes,String columnName,int scrollOffset,int scrollCount) {
 		
-			query = "SELECT ATC_LVL_1,ATC_LVL_1_DESC,ATC_LVL_2,ATC_LVL_2_DESC,ATC_LVL_3,ATC_LVL_3_DESC,ATC_LVL_4,ATC_LVL_4_DESC,ATC_LVL_5,ATC_LVL_5_DESC, 'A' as FAMILY_DESC "
-					+ "FROM product_meddra_hierarchy WHERE "+ columnName+" =:code" +" limit "+ scrollCount+ OFFSET +scrollOffset;
+			query = "SELECT distinct ATC_LVL_1,ATC_LVL_1_DESC,ATC_LVL_2,ATC_LVL_2_DESC,ATC_LVL_3,ATC_LVL_3_DESC,ATC_LVL_4,ATC_LVL_4_DESC,ATC_LVL_5,ATC_LVL_5_DESC, 'A' as FAMILY_DESC "
+					+ "FROM product_meddra_hierarchy WHERE "+ columnName+" IN (:codes)" +" limit "+ scrollCount+ OFFSET +scrollOffset;
 		Map<String, Object> params = new HashMap<>();
-		params.put("code", code);
+		params.put("codes", codes);
 		return namedParameterJdbcTemplate.query(query, params, new ProductHierarchyMapper());
 	}
 
@@ -122,6 +123,24 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 		StringBuilder queryBuilder = new StringBuilder("SELECT ATC_LVL_1,ATC_LVL_1_DESC,ATC_LVL_2,ATC_LVL_2_DESC,ATC_LVL_3,ATC_LVL_3_DESC,ATC_LVL_4,ATC_LVL_4_DESC,ATC_LVL_5,ATC_LVL_5_DESC,RXNORM,RXNORM_DESC,FAMILY_DESC FROM VW_ATC_PROD_DIM WHERE PRODUCT_KEY=") ;
 		queryBuilder.append("'").append(productKey).append("'");
 		return jdbcTemplate.query(queryBuilder.toString(), new ProductHierarchyMapper());
+	}
+
+	@Override
+	public String findAtcDescByAtcLevelCode(MedraBrowserDTO medraBrowserDto) {
+		String atcDescColumnName = medraBrowserDto.getSelectLevel().concat("_desc");
+		StringBuilder atcDescQuery = new StringBuilder("SELECT distinct ");
+		atcDescQuery.append(atcDescColumnName);
+		atcDescQuery.append(" FROM  product_meddra_hierarchy WHERE ");
+		atcDescQuery.append(medraBrowserDto.getSelectLevel()).append("='").append(medraBrowserDto.getSearchValue()).append("'");
+		return jdbcTemplate.queryForObject(atcDescQuery.toString(), String.class);
+	}
+	
+	@Override
+	public List<String> findAtcCodesByAtcLevelDesc(String desc, String descColumnName, String codeColumnName) {
+		StringBuilder atcDescQuery = new StringBuilder("SELECT distinct ").append(codeColumnName);
+		atcDescQuery.append(" FROM  product_meddra_hierarchy WHERE ");
+		atcDescQuery.append(descColumnName).append("='").append(desc).append("'");
+		return jdbcTemplate.queryForList(atcDescQuery.toString(), String.class);
 	}
 	
 }

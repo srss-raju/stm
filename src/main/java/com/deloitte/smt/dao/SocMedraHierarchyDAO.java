@@ -2,12 +2,13 @@ package com.deloitte.smt.dao;
 
 import java.util.List;
 
+import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.SocHierarchyDto;
 import com.deloitte.smt.dto.SocSearchDTO;
 
 public interface SocMedraHierarchyDAO {
 	
-	List<SocHierarchyDto> findAllByConditionName(String code,String columnName,int scrollOffset,int scrollCount);
+	List<SocHierarchyDto> findAllByConditionName(List<String> codes,String columnName,int scrollOffset,int scrollCount);
 	
 	List<SocSearchDTO> findByMatchingSocName(String searchText,int scrollOffset,int scrollCount);
 	
@@ -28,6 +29,10 @@ public interface SocMedraHierarchyDAO {
 	List<String> getLlts(String query);
 
 	List<SocHierarchyDto> findActLevelsByPtDesc(String ptQueryBuilder);
+
+	String findconditionDescByCode(MedraBrowserDTO medraBrowserDto);
+
+	List<String> findConditionCodesByConditionDesc(String conditionDesc, String conditionDescColumnName, String selectLevel);
 	
 	
 	

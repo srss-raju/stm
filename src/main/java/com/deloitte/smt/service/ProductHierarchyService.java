@@ -51,7 +51,10 @@ public class ProductHierarchyService {
 	public List<ProductSearchDTO> getHierarchyByCode(MedraBrowserDTO medraBrowserDto) {
 		LOGGER.info("getHierarchyByCode");
 		List<ProductHierarchyDto> productHierarchyList;
-		productHierarchyList = productMedraHierarchyDAO.findAllByActLvel(medraBrowserDto.getSearchValue(), medraBrowserDto.getSelectLevel(), medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
+		String atcDescColumnName = medraBrowserDto.getSelectLevel().concat("_desc");
+		String atcLevelDesc = productMedraHierarchyDAO.findAtcDescByAtcLevelCode(medraBrowserDto);
+		List<String> atcLvelValues = productMedraHierarchyDAO.findAtcCodesByAtcLevelDesc(atcLevelDesc, atcDescColumnName, medraBrowserDto.getSelectLevel());
+		productHierarchyList = productMedraHierarchyDAO.findAllByActLvel(atcLvelValues, medraBrowserDto.getSelectLevel(), medraBrowserDto.getScrollOffset(), medraBrowserDto.getScrollCount());
 		return responseMapper(productHierarchyList);
 	}
 
@@ -202,7 +205,6 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_1.getDescription());
 				searchDto.setCategoryName(prlValue);
-				break;
 			}
 		}
 		return productSearchDTOList;
@@ -224,7 +226,6 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_2.getDescription());
 				searchDto.setCategoryName(prlValue);
-				break;
 			}
 		}
 		return productSearchDTOList;
@@ -238,7 +239,6 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_3.getDescription());
 				searchDto.setCategoryName(prlValue);
-				break;
 			}
 		}
 		return productSearchDTOList;
@@ -252,7 +252,6 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_4.getDescription());
 				searchDto.setCategoryName(prlValue);
-				break;
 			}
 		}
 		return productSearchDTOList;
@@ -266,7 +265,6 @@ public class ProductHierarchyService {
 			for (ProductSearchDTO searchDto : productSearchDTOList) {
 				searchDto.setCategory(SmtConstant.ATC_LVL_5.getDescription());
 				searchDto.setCategoryName(prlValue);
-				break;
 			}
 		}
 		return productSearchDTOList;
