@@ -12,20 +12,21 @@ INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES 
 INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (12,'generic','owners','Owner','Owner',TRUE);
 INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (13,'generic','assignees','Assigned To','Assigned To',TRUE);
 INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (14,'signal','signalconfirmation','Signal Confirmation','Signal Confirmation',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (15,'signal','signalsource','Signal Source','Signal Source',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (16,'assessment','assessmenttaskstatus','Assessment Task Status','Assessment Task Status',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (17,'assessment','finaldispositions','Final Disposition','Final Disposition',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (18,'risk','riskplanactionstatus','Risk Plan Action Status','Risk Plan Action Status',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (19,'detection','frequency','Frequency','Frequency',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (20,'signal','detectedDates','Detected Date','Detected Date',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (21,'assessment','detectedDates','Detected Date','Detected Date',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (22,'risk','detectedDates','Detected Date','Detected Date',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (23,'signal','dueDates','Due Date','Due Date',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (24,'assessment','dueDates','Due Date','Due Date',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (25,'risk','dueDates','Due Date','Due Date',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (26,'detection','createdDates','Created Date','Created Date',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (27,'detection','lastRunDates','Last Run Date','Last Run Date',TRUE);
-INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (28,'detection','nextRunDates','Next Run Date','Next Run Date',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (15,'signal','sourceLabel','Signal Method','Signal Method',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (16,'signal','signalsource','Signal Source','Signal Source',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (17,'assessment','assessmenttaskstatus','Assessment Task Status','Assessment Task Status',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (18,'assessment','finaldispositions','Final Disposition','Final Disposition',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (19,'risk','riskplanactionstatus','Risk Plan Action Status','Risk Plan Action Status',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (20,'detection','frequency','Frequency','Frequency',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (21,'signal','detectedDates','Detected Date','Detected Date',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (22,'assessment','detectedDates','Detected Date','Detected Date',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (23,'risk','detectedDates','Detected Date','Detected Date',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (24,'signal','dueDates','Due Date','Due Date',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (25,'assessment','dueDates','Due Date','Due Date',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (26,'risk','dueDates','Due Date','Due Date',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (27,'detection','createdDates','Created Date','Created Date',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (28,'detection','lastRunDates','Last Run Date','Last Run Date',TRUE);
+INSERT INTO sm_filters(filter_id, type, key, name, description, visible) VALUES (29,'detection','nextRunDates','Next Run Date','Next Run Date',TRUE);
 
 
 
@@ -51,3 +52,6 @@ INSERT INTO sm_filter_status(id, key, name, description, visible,filter_id) VALU
 INSERT INTO sm_filter_status(id, key, name, description, visible,filter_id) VALUES (19, 'Monthly', 'Monthly', 'Monthly', TRUE,13);
 INSERT INTO sm_filter_status(id, key, name, description, visible,filter_id) VALUES (20, 'Quarterly', 'Quarterly', 'Quarterly', TRUE,13);
 INSERT INTO sm_filter_status(id, key, name, description, visible,filter_id) VALUES (21, 'Yearly', 'Yearly', 'Yearly', TRUE,13);	
+INSERT INTO sm_filter_status(id, key, name, description, visible,filter_id) VALUES (22, 'Manual', 'Manual', 'Manual', TRUE,15);
+INSERT INTO sm_filter_status(id, key, name, description, visible,filter_id) VALUES (23, 'Automated', 'Automated', 'Automated', TRUE,15);
+   

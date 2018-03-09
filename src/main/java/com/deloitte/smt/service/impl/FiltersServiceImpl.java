@@ -54,6 +54,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 	private static final String SIGNAL = "signal";
 	private static final String DETECTION = "detection";
 	private static final String STATUSES = "statuses";
+	private static final String SOURCELABEL="sourceLabel";
 	private static final String ASSESSMENTTASKSTATUS = "assessmenttaskstatus";
 	private static final String RISKPLANACTIONSTATUS = "riskplanactionstatus";
 	private static final String FREQUENCY = "frequency";
@@ -136,6 +137,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		case ASSESSMENTTASKSTATUS:
 		case RISKPLANACTIONSTATUS:
 		case FREQUENCY:
+		case SOURCELABEL:
 			filterList.add(getFiltersType(filter));
 			break;
 		case "products":
@@ -819,6 +821,9 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		case SIGNALSOURCE:
 			addSourceNames(me.getValue(), parameterMap,conditionsList);
 			break;
+		case SOURCELABEL:
+			addSourceLabels(me.getValue(), parameterMap,conditionsList);
+			break;
 		case SIGNALCONFIRMATION:
 			addSignalConfirmations(me.getValue(), parameterMap,conditionsList);
 			break;
@@ -1095,6 +1100,13 @@ public class FiltersServiceImpl<E> implements FiltersService {
 		if (!CollectionUtils.isEmpty(statusList)) {
 			conditionsList.add(" root.sourceName in :signalsource ");
 			parameterMap.put("signalsource", statusList);
+		}
+	}
+	private void addSourceLabels(Object statusValue,  Map<String, Object> parameterMap, List<String> conditionsList) {
+		Set<Object> statusList = prepareFieldValuesSet(statusValue);
+		if (!CollectionUtils.isEmpty(statusList)) {
+			conditionsList.add(" root.sourceLabel in :sourceLabel ");
+			parameterMap.put("sourceLabel", statusList);
 		}
 	}
 	private void addStatuses(Object statusValue, String type, Map<String, Object> parameterMap, List<String> conditionsList) {
