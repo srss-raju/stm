@@ -123,6 +123,7 @@ public class Topic implements Serializable{
 	private List<Ingredient> ingredients;
 	
 	private String signalType;
+	private String validationSummary;
 	
     
     public Topic(Long id, String name, String description, String sourceName,
