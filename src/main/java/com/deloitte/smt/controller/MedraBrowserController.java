@@ -26,6 +26,7 @@ import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.service.ConditonService;
 import com.deloitte.smt.service.ProductHierarchyService;
 import com.deloitte.smt.service.ProductService;
+import com.deloitte.smt.service.SmtService;
 import com.deloitte.smt.service.SocHierarchyService;
 
 /**
@@ -47,6 +48,8 @@ public class MedraBrowserController {
 	ProductHierarchyService productHierarchyService;
 	@Autowired
 	ProductService productService;
+	@Autowired
+	SmtService smtService;
 
 	
 	/**
@@ -133,6 +136,12 @@ public class MedraBrowserController {
 	@PostMapping(value = "/getProductsByAtcLevels")
 	public List<ProductFieldsDTO> findProductByAtcLevels(@RequestBody List<ProductSearchDTO> atcLevels) {
 		return productHierarchyService.findProductByAtcLevels(atcLevels);
+
+	}
+	
+	@GetMapping(value = "/cleanupData")
+	public String cleanupData() {
+		return smtService.cleanupData();
 
 	}
 
