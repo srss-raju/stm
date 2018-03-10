@@ -17,6 +17,7 @@ import com.deloitte.smt.dao.ProductMedraHierarchyDAO;
 import com.deloitte.smt.dto.DetectionRunDTO;
 import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.ProductEventDTO;
+import com.deloitte.smt.dto.ProductFieldsDTO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
 import com.deloitte.smt.dto.ProductSearchDTO;
 import com.deloitte.smt.entity.ProductLevels;
@@ -452,8 +453,8 @@ public class ProductHierarchyService {
 		return list;
 	}
 
-	public List<String> findProductByAtcLevels(List<ProductSearchDTO> atcLevels) {
-		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT d_product_name_display FROM vw_atc_prod_dim WHERE ");
+	public List<ProductFieldsDTO> findProductByAtcLevels(List<ProductSearchDTO> atcLevels) {
+		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT d_product_name_display, product_key, family_desc FROM vw_atc_prod_dim WHERE ");
 		if(!CollectionUtils.isEmpty(atcLevels)){
 			for(ProductSearchDTO level : atcLevels){
 				queryBuilder.append(level.getCategory()).append("='").append(level.getCategoryCode()).append("'");

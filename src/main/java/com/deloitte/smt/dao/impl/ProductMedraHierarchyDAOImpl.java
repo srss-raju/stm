@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.deloitte.smt.dao.ProductMedraHierarchyDAO;
 import com.deloitte.smt.dto.MedraBrowserDTO;
+import com.deloitte.smt.dto.ProductFieldsDTO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
 import com.deloitte.smt.dto.ProductSearchDTO;
+import com.deloitte.smt.util.ProductFieldsMapper;
 import com.deloitte.smt.util.ProductHierarchyMapper;
 import com.deloitte.smt.util.ProductSearchMapper;
 
@@ -147,8 +149,8 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 	}
 
 	@Override
-	public List<String> findProductByAtcLevels(String query) {
-		return jdbcTemplate.queryForList(query, String.class);
+	public List<ProductFieldsDTO> findProductByAtcLevels(String query) {
+		return jdbcTemplate.query(query, new ProductFieldsMapper());
 	}
 	
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deloitte.smt.dto.ConditionResponse;
 import com.deloitte.smt.dto.MedraBrowserDTO;
 import com.deloitte.smt.dto.ProductEventDTO;
+import com.deloitte.smt.dto.ProductFieldsDTO;
 import com.deloitte.smt.dto.ProductResponse;
 import com.deloitte.smt.dto.ProductSearchDTO;
 import com.deloitte.smt.dto.PtLltDTO;
@@ -130,7 +131,7 @@ public class MedraBrowserController {
 	}
 	
 	@PostMapping(value = "/getProductsByAtcLevels")
-	public List<String> findProductByAtcLevels(@RequestBody List<ProductSearchDTO> atcLevels) {
+	public List<ProductFieldsDTO> findProductByAtcLevels(@RequestBody List<ProductSearchDTO> atcLevels) {
 		return productHierarchyService.findProductByAtcLevels(atcLevels);
 
 	}

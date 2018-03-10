@@ -3,6 +3,7 @@ package com.deloitte.smt.dao;
 import java.util.List;
 
 import com.deloitte.smt.dto.MedraBrowserDTO;
+import com.deloitte.smt.dto.ProductFieldsDTO;
 import com.deloitte.smt.dto.ProductHierarchyDto;
 import com.deloitte.smt.dto.ProductSearchDTO;
 
@@ -34,6 +35,6 @@ public interface ProductMedraHierarchyDAO {
 
 	List<String> findAtcCodesByAtcLevelDesc(List<String> desc, String columnName, String codeColumnName);
 
-	List<String> findProductByAtcLevels(String query);
+	List<ProductFieldsDTO> findProductByAtcLevels(String query);
 
 }
