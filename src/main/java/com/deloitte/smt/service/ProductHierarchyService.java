@@ -451,5 +451,17 @@ public class ProductHierarchyService {
 		}
 		return list;
 	}
+
+	public List<String> findProductByAtcLevels(List<ProductSearchDTO> atcLevels) {
+		StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT d_product_name_display FROM vw_atc_prod_dim WHERE ");
+		if(!CollectionUtils.isEmpty(atcLevels)){
+			for(ProductSearchDTO level : atcLevels){
+				queryBuilder.append(level.getCategory()).append("='").append(level.getCategoryCode()).append("'");
+				queryBuilder.append(" AND ");
+			}
+		}
+		String query = queryBuilder.toString().substring(0, queryBuilder.lastIndexOf("AND"));
+		return productMedraHierarchyDAO.findProductByAtcLevels(query);
+	}
 	
 }

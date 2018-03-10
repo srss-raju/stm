@@ -128,5 +128,11 @@ public class MedraBrowserController {
 	public PtLltDTO findPtsAndLlts(@RequestBody List<TopicSocAssignmentConfiguration> conditions) {
 		return socHierarchyService.findPtsAndLlts(conditions);
 	}
+	
+	@PostMapping(value = "/getProductsByAtcLevels")
+	public List<String> findProductByAtcLevels(@RequestBody List<ProductSearchDTO> atcLevels) {
+		return productHierarchyService.findProductByAtcLevels(atcLevels);
+
+	}
 
 }

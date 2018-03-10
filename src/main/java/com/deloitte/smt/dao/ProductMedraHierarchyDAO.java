@@ -34,4 +34,6 @@ public interface ProductMedraHierarchyDAO {
 
 	List<String> findAtcCodesByAtcLevelDesc(List<String> desc, String columnName, String codeColumnName);
 
+	List<String> findProductByAtcLevels(String query);
+
 }

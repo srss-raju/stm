@@ -145,5 +145,10 @@ public class ProductMedraHierarchyDAOImpl implements ProductMedraHierarchyDAO {
 		params.put("codes", desc);
 		return namedParameterJdbcTemplate.queryForList(atcDescQuery.toString(), params, String.class);
 	}
+
+	@Override
+	public List<String> findProductByAtcLevels(String query) {
+		return jdbcTemplate.queryForList(query, String.class);
+	}
 	
 }
