@@ -45,6 +45,8 @@ public class SignalAdditionalService {
 					nonSignal.setName(nameBuilder.toString());
 					nonSignal.setRunInstanceId(Long.parseLong(dto.getRunInstanceId()));
 					nonSignal.setCases(dto.getNumDrugPt());
+					nonSignal.setProductKey(String.valueOf(dto.getProductKey()));
+					nonSignal.setPtDesc(dto.getPtDesc());
 					signalService.createOrupdateNonSignal(nonSignal);
 				}
 				
