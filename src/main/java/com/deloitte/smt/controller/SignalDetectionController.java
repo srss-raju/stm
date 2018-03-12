@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deloitte.smt.dto.DetectionTopicDTO;
 import com.deloitte.smt.dto.PtDTO;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.dto.SmqDTO;
 import com.deloitte.smt.entity.SignalDetection;
 import com.deloitte.smt.exception.ApplicationException;
+import com.deloitte.smt.service.SignalAdditionalService;
 import com.deloitte.smt.service.SignalDetectionService;
 import com.deloitte.smt.service.SmqService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +35,9 @@ public class SignalDetectionController {
 	
 	@Autowired
 	SignalDetectionService signalDetectionService;
+	
+	@Autowired
+	SignalAdditionalService signalAdditionalService;
 	
 	@Autowired
 	SmqService smqService;
@@ -90,5 +95,10 @@ public class SignalDetectionController {
     public List<PtDTO> findPtsBySmqId(@RequestBody(required=false) SearchDto searchDto) {
         return smqService.findPtsBySmqId(searchDto.getSmqIds());
     }
+	
+	@PostMapping(value = "/createTopic")
+	public void createSignalDetection(@RequestBody List<DetectionTopicDTO> detectionTopicDTOs) throws ApplicationException {
+		signalAdditionalService.saveSignalsAndNonSignals(detectionTopicDTOs);
+	}
 	
 }
