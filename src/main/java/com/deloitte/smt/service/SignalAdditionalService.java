@@ -98,6 +98,12 @@ public class SignalAdditionalService {
 		}else{
 			signalStatistics.setUb(0.0);
 		}
+		if(dto.getPrrStDev() != null){
+			signalStatistics.setSe(Double.parseDouble(dto.getPrrStDev()));
+		}else{
+			signalStatistics.setSe(0.0);
+		}
+		
 		statistics.add(signalStatistics);
 	}
 
@@ -120,6 +126,11 @@ public class SignalAdditionalService {
 		}else{
 			signalStatistics.setUb(0.0);
 		}
+		if(dto.getRorStDev() != null){
+			signalStatistics.setSe(Double.parseDouble(dto.getRorStDev()));
+		}else{
+			signalStatistics.setSe(0.0);
+		}
 		statistics.add(signalStatistics);
 	}
 
@@ -141,6 +152,11 @@ public class SignalAdditionalService {
 			signalStatistics.setUb(Double.parseDouble(dto.getRrrCi95Ub()));
 		}else{
 			signalStatistics.setUb(0.0);
+		}
+		if(dto.getRrrStDev() != null){
+			signalStatistics.setSe(Double.parseDouble(dto.getRrrStDev()));
+		}else{
+			signalStatistics.setSe(0.0);
 		}
 		statistics.add(signalStatistics);
 	}
