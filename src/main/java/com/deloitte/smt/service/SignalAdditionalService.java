@@ -41,7 +41,7 @@ public class SignalAdditionalService {
 					signalService.createTopic(topic, null);
 				}else{
 					NonSignal nonSignal = new NonSignal();
-					StringBuilder nameBuilder = new StringBuilder(dto.getProductName()).append("_").append(dto.getPtDesc());
+					StringBuilder nameBuilder = new StringBuilder(dto.getProductName()).append("_").append(dto.getPtDesc()).append("_").append(DateUtil.convertDateToString(new Date()));
 					nonSignal.setName(nameBuilder.toString());
 					nonSignal.setRunInstanceId(Long.parseLong(dto.getRunInstanceId()));
 					nonSignal.setCases(dto.getNumDrugPt());
