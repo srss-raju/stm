@@ -163,7 +163,8 @@ public class SignalService {
 		}
 
 		nonSignal.setLastModifiedDate(c.getTime());
-		List<NonSignal> nonSignals = nonSignalRepository.findAll();
+		return nonSignalRepository.save(nonSignal);
+		/*List<NonSignal> nonSignals = nonSignalRepository.findAll();
 		boolean isNonSignalMatched = nonSignals.stream()
 				.anyMatch(ns -> ns.getProductKey().equals(nonSignal.getProductKey())
 						&& ns.getPtDesc().equals(nonSignal.getPtDesc()) && ns.getName().equals(nonSignal.getName()));
@@ -171,8 +172,8 @@ public class SignalService {
 		if (isNonSignalMatched) {
 			return null;
 		} else {
-			return nonSignalRepository.save(nonSignal);
-		}
+			
+		}*/
 
 	}
 
