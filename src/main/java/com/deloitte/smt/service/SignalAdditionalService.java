@@ -33,6 +33,7 @@ public class SignalAdditionalService {
 					StringBuilder nameBuilder = new StringBuilder(dto.getProductName()).append("_").append(dto.getPtDesc()).append("_").append(DateUtil.convertDateToString(new Date()));
 					topic.setName(nameBuilder.toString());
 					topic.setSourceName("Case");
+					topic.setSourceLabel("Automated");
 					topic.setRunInstanceId(Long.parseLong(dto.getRunInstanceId()));
 					topic.setProductKey(String.valueOf(dto.getProductKey()));
 					topic.setCases(dto.getNumDrugPt());
