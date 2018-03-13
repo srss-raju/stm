@@ -71,7 +71,9 @@ public class Topic implements Serializable {
 	@JoinColumn(name = "topicId")
 	private List<SignalStrength> signalStrengthAtrributes;
 
-	@OneToMany
+	private String productKey;
+	
+	@OneToMany(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "topicId")
 	private List<Comments> comments;
 
@@ -79,6 +81,8 @@ public class Topic implements Serializable {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "topic", cascade = CascadeType.ALL)
 	private Set<SignalStatistics> signalStatistics;
 
+    @Transient
+    private List<Soc> socs;
 	@ManyToOne(fetch = FetchType.EAGER)
 	private AssessmentPlan assessmentPlan;
 	
