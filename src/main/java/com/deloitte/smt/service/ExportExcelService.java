@@ -103,7 +103,7 @@ public class ExportExcelService {
 
 		Cell cell0 = header.createCell(0);
 		cell0.setCellStyle(style);
-		cell0.setCellValue("PRODUCT");
+		cell0.setCellValue("DRUG");
 		for (SignalAlgorithmDTO signalDTO : signalDTOList) {
 		
 		Cell cell1 = header.createCell(1);
@@ -118,7 +118,7 @@ public class ExportExcelService {
 
 		Cell cell2 = header.createCell(2);
 		cell2.setCellStyle(style);
-		cell2.setCellValue("PT");
+		cell2.setCellValue("CONDITION");
 
 		Cell cell3 = header.createCell(3);
 		cell3.setCellStyle(style);
