@@ -27,10 +27,12 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.smt.SignalManagementApplication;
+import com.deloitte.smt.dto.DetectionTopicDTO;
 import com.deloitte.smt.dto.PtDTO;
 import com.deloitte.smt.dto.SearchDto;
 import com.deloitte.smt.dto.SmqDTO;
 import com.deloitte.smt.entity.SignalDetection;
+import com.deloitte.smt.service.SignalAdditionalService;
 import com.deloitte.smt.service.SignalDetectionService;
 import com.deloitte.smt.service.SmqService;
 import com.deloitte.smt.util.TestUtil;
@@ -54,6 +56,9 @@ public class SignalDetectionControllerTest {
 	
 	@MockBean
 	SmqService smqService;
+	
+	@MockBean
+	SignalAdditionalService signalAdditionalService;
 	
 	
 	@Test
@@ -137,6 +142,17 @@ public class SignalDetectionControllerTest {
 				.perform(post("/camunda/api/signal/detect/allptsbysmqids")
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(TestUtil.convertObjectToJsonString(searchDto)))
 				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testCreateTopic() throws Exception{
+		List<DetectionTopicDTO> detectionTopicDTOs = new ArrayList<>();
+		doNothing().when(signalAdditionalService).saveSignalsAndNonSignals(detectionTopicDTOs);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/camunda/api/signal/detect/createTopic")
+				.accept(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonString(detectionTopicDTOs))
+				.contentType(MediaType.APPLICATION_JSON);
+		mockMvc.perform(requestBuilder).andReturn();
 	}
 	
 }

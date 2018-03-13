@@ -44,7 +44,7 @@ public class Topic implements Serializable {
 	private String signalConfirmation;
 	private String validationComments;
 	private String signalStatus;
-	private String signalStrength;  //TODO
+	private String signalStrength;  
 	private Date dueDate;
 	private Long runInstanceId;
 	private String cases;
