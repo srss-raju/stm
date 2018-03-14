@@ -160,15 +160,15 @@ INSERT INTO sm_filter_status(id, key, name, description, visible,filter_id) VALU
    
 
    
-INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (1, 'RRR_LB_CI', 'RRR LOWER BOUND', 0);
+INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (1, 'RRR_LB_CI', 'RRR LOWER BOUND', 2);
 INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (2, 'RRR_INFO_COMP', 'RRR INFO COMP', 0);
-INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (3, 'PRR_LB_CI', 'PRR LOWER BOUND', 0);
-INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (4, 'PRR_SCORE', 'PRR SCORE', 0);
-INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (5, 'PRR_CHI_SQ', 'PRR CHI SQ', 0);
-INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (6, 'ROR_LB_CI', 'ROR LOWER BOUND', 0);
-INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (7, 'ROR_SCORE', 'RRR SCORE', 0);
-INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (8, 'MGPS_LB', 'MGPS LOWER BOUND', 0);
-INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (9, 'BCPNN_LB', 'BCPNN LOWER BOUND', 0);
+INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (3, 'PRR_LB_CI', 'PRR LOWER BOUND', 2);
+INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (4, 'PRR_SCORE', 'PRR SCORE', 2);
+INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (5, 'PRR_CHI_SQ', 'PRR CHI SQ', 4);
+INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (6, 'ROR_LB_CI', 'ROR LOWER BOUND', 2);
+INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (7, 'ROR_SCORE', 'RRR SCORE', 2);
+INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (8, 'MGPS_LB', 'MGPS LOWER BOUND', 2);
+INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (9, 'BCPNN_LB', 'BCPNN LOWER BOUND', 2);
    
 INSERT INTO sm_task_template(id, created_by, created_date, name, is_default) VALUES (1, 'Hanatest', null, 'Default Template',true)
 INSERT INTO sm_risk_task_template(id, created_by, created_date, name, is_default) VALUES (1, 'Hanatest', null, 'Default Template',true)
