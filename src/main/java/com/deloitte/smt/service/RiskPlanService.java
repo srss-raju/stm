@@ -551,7 +551,7 @@ public class RiskPlanService {
 		if (null != assessmentPlan) {
 			assessmentPlan.setSignalUrls(signalURLRepository.findByTopicId(assessmentPlan.getId()));
 		}
-		checkRiskTaskStatus(riskPlan);
+		//checkRiskTaskStatus(riskPlan);
 		return riskPlan;
 	}
 
