@@ -986,6 +986,7 @@ public class FiltersServiceImpl<E> implements FiltersService {
 			res.setDenominatorForPoisson(detection.getDenominatorForPoisson());
 			res.setSignalDetected(detection.getSignalDetected());
 			res.setDescription(detection.getDescription());
+			res.setStatus(detection.getStatus());
 			fres.add(res);
 		}
 		return fres;
