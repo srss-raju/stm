@@ -316,13 +316,13 @@ public class ExportExcelService {
 			Cell cell = row.createCell(0);
 			cell.setCellValue(signalDTO.getFamilyDescription());
 
-			cell = row.createCell(1);
-			cell.setCellValue(signalDTO.getSocDescription());
+			/*cell = row.createCell(1);
+			cell.setCellValue(signalDTO.getSocDescription());*/
 
-			cell = row.createCell(2);
+			cell = row.createCell(1);
 			cell.setCellValue(signalDTO.getPtDescription());
 			
-			cell=row.createCell(3);
+			cell=row.createCell(2);
 			cell.setCellValue(signalDTO.getCases());
 			
 			/*cell=row.createCell(4);
@@ -343,52 +343,52 @@ public class ExportExcelService {
 			cell=row.createCell(9);
 			cell.setCellValue(signalDTO.getOutcomeOT());*/
 			
-			cell=row.createCell(4);
+			cell=row.createCell(3);
 			cell.setCellValue(signalDTO.getAlgorithmPRRScore());
 			
-			cell=row.createCell(5);
+			cell=row.createCell(4);
 			cell.setCellValue(signalDTO.getAlgorithmPRRLB());
 			
-			cell=row.createCell(6);
+			cell=row.createCell(5);
 			cell.setCellValue(signalDTO.getAlgorithmPRRUB());
 			
-			cell=row.createCell(7);
+			cell=row.createCell(6);
 			cell.setCellValue(signalDTO.getAlgorithmRORScore());
 			
-			cell=row.createCell(8);
+			cell=row.createCell(7);
 			cell.setCellValue(signalDTO.getAlgorithmRORLB());
 			
-			cell=row.createCell(9);
+			cell=row.createCell(8);
 			cell.setCellValue(signalDTO.getAlgorithmRORUB());
 			
-			cell=row.createCell(10);
+			cell=row.createCell(9);
 			cell.setCellValue(signalDTO.getAlgorithmRRRScore());
 			
-			cell=row.createCell(11);
+			cell=row.createCell(10);
 			cell.setCellValue(signalDTO.getAlgorithmRRRLB());
 			
-			cell=row.createCell(12);
+			cell=row.createCell(11);
 			cell.setCellValue(signalDTO.getAlgorithmRRRUB());
 			
-			cell=row.createCell(13);
+			cell=row.createCell(12);
 			cell.setCellValue(signalDTO.getAlgorithmEBScore());
 			
-			cell=row.createCell(14);
+			cell=row.createCell(13);
 			cell.setCellValue(signalDTO.getAlgorithmEBLB());
 			
-			cell=row.createCell(15);
+			cell=row.createCell(14);
 			cell.setCellValue(signalDTO.getAlgorithmEBUB());
 			
-			cell=row.createCell(16);
+			cell=row.createCell(15);
 			cell.setCellValue(signalDTO.getAlgorithmBCPNNScore());
 			
-			cell=row.createCell(17);
+			cell=row.createCell(16);
 			cell.setCellValue(signalDTO.getAlgorithmBCPNNLB());
 			
-			cell=row.createCell(18);
+			cell=row.createCell(17);
 			cell.setCellValue(signalDTO.getAlgorithmBCPNNUB());
 			
-			cell=row.createCell(19);
+			cell=row.createCell(18);
 			cell.setCellValue(signalDTO.getSignal());
 
 		}
