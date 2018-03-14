@@ -47,6 +47,7 @@ public class SignalDetection implements Serializable {
 	private String caselistId;
 	private Long casesCount;
 	private Long minCases;
+	private String status;
 	
 
 	@Transient
