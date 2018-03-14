@@ -23,7 +23,7 @@ delete from sm_detection_query;
 delete from sm_signal_detection;
 delete from sm_signal_audit;
 delete from sm_signal_attachment_audit;
-delete from sm_risk_task;
+delete from sm_risk_task where name <> 'Default Task';
 delete from sm_risk_plan;
 delete from sm_product;
 delete from sm_non_signal;
