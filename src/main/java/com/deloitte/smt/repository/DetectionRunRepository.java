@@ -9,6 +9,6 @@ import com.deloitte.smt.entity.DetectionRun;
 
 public interface DetectionRunRepository extends JpaRepository<DetectionRun, Long> {
 
-    List<DetectionRun> findByDetectionIdOrderByRunDateDesc(Long detectionId, Sort sort);
+    List<DetectionRun> findByDetectionIdAndMessageIsNullOrderByRunDateDesc(Long detectionId, Sort sort);
 
 }
