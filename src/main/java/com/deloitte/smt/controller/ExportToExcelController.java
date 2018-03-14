@@ -44,7 +44,7 @@ public class ExportToExcelController {
 		try {
 			HSSFWorkbook workbook = exportExcelService.writeExcel(
 					signalAlgorithmDtoList, EXPORT_EXCEL);
-			response.setContentType("application/vnd.ms-excel");
+			response.setContentType("application/octet-stream");
 
 			response.setHeader("Content-disposition", "attachment; filename="
 					+ EXPORT_EXCEL);
