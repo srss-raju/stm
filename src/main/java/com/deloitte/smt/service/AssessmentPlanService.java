@@ -265,6 +265,10 @@ public class AssessmentPlanService {
 				getTaskTemplates(taskTemplates, topicWithConditionsAndProducts);
 			}
 		}
+		
+		if(CollectionUtils.isEmpty(taskTemplates)){
+			taskTemplates.add(taskTemplateRepository.findByIsDefault(true));
+		}
 		//AssignmentUtil
 		return taskTemplates;
 	}

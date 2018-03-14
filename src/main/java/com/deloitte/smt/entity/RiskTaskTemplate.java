@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
@@ -35,6 +37,7 @@ public class RiskTaskTemplate {
     @JoinColumn(name = "riskTaskTemplateId")
 	private List<RiskTaskTemplateProducts> products;
 
-	
+	@JsonProperty
+    private boolean isDefault;
 	
 }

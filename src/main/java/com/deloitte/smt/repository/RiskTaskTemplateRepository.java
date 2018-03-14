@@ -22,5 +22,7 @@ public interface RiskTaskTemplateRepository  extends JpaRepository<RiskTaskTempl
 	List<String> findByName(@Param(value = "name") String name,@Param(value = "id") Long id);
 
 	RiskTaskTemplate findByNameIgnoreCase(String name);
+	
+	RiskTaskTemplate findByIsDefault(boolean isDefault);
 
 }

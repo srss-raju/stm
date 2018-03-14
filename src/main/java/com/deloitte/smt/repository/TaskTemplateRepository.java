@@ -22,4 +22,6 @@ public interface TaskTemplateRepository  extends JpaRepository<TaskTemplate, Lon
 	List<String> findByName(@Param(value = "name") String name,@Param(value = "id") Long id);
 
 	TaskTemplate findByNameIgnoreCase(String name);
+	
+	TaskTemplate findByIsDefault(boolean isDefault);
 }

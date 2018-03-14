@@ -170,3 +170,5 @@ INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_val
 INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (8, 'MGPS_LB', 'MGPS LOWER BOUND', 0);
 INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_value) VALUES (9, 'BCPNN_LB', 'BCPNN LOWER BOUND', 0);
    
+INSERT INTO sm_task_template(id, created_by, created_date, name, is_default) VALUES (1, 'Hanatest', null, 'Default Template',true)
+INSERT INTO sm_risk_task_template(id, created_by, created_date, name, is_default) VALUES (1, 'Hanatest', null, 'Default Template',true)

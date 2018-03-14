@@ -683,6 +683,9 @@ public class RiskPlanService {
 				getTaskTemplates(taskTemplates, topicWithConditionsAndProducts);
 			}
 		}
+		if(CollectionUtils.isEmpty(taskTemplates)){
+			taskTemplates.add(riskTaskTemplateRepository.findByIsDefault(true));
+		}
 		// AssignmentUtil
 		return taskTemplates;
 	}

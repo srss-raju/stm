@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
@@ -34,5 +36,8 @@ public class TaskTemplate {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "taskTemplateId")
 	private List<TaskTemplateProducts> products;
+	
+	@JsonProperty
+    private boolean isDefault;
 	
 }
