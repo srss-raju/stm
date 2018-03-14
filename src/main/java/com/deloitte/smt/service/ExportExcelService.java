@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,14 +21,18 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.deloitte.smt.constant.SmtConstant;
 import com.deloitte.smt.dto.SignalAlgorithmDTO;
+import com.deloitte.smt.entity.DectectionDataExport;
+import com.deloitte.smt.repository.DectectionDataExportRepository;
+import com.deloitte.smt.util.ServerResponseObject;
 
 @Service
 public class ExportExcelService {
-
+	private static final Logger LOG = Logger.getLogger(ExportExcelService.class);
 	/**
 	 * This method attempts to write the workbook to fileoutputstream
 	 * @param signalDTOList
@@ -35,6 +40,9 @@ public class ExportExcelService {
 	 * @return
 	 * @throws IOException
 	 */
+	@Autowired
+	private DectectionDataExportRepository dectectionDataExportRepository;
+	
 	public HSSFWorkbook writeExcel(List<SignalAlgorithmDTO> signalDTOList,
 			String excelFilePath) throws IOException {
 		HSSFWorkbook workbook = new HSSFWorkbook();
@@ -392,5 +400,25 @@ public class ExportExcelService {
 			cell.setCellValue(signalDTO.getSignal());
 
 		}
+	}
+
+	public ServerResponseObject uploadExcelData(String data) {
+		ServerResponseObject res=null;
+		try {
+			res = new ServerResponseObject();
+			DectectionDataExport d = new DectectionDataExport();
+			d.setData(data);
+			dectectionDataExportRepository.save(d);
+			res.setStatus("Success");
+			res.setResponse(d.getId());
+			
+		} catch (Exception e) {
+			LOG.error("Error in Storing data....");
+		}
+		return res;
+	}
+
+	public DectectionDataExport findById(Long reportid) {
+		return dectectionDataExportRepository.findOne(reportid);
 	}
 }

@@ -1,73 +1,74 @@
 package com.deloitte.smt.controller;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.smt.dto.SignalAlgorithmDTO;
+import com.deloitte.smt.entity.DectectionDataExport;
 import com.deloitte.smt.service.ExportExcelService;
+import com.deloitte.smt.util.ServerResponseObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/camunda/api/signal")
 public class ExportToExcelController {
-	private static final Logger LOG = Logger
-			.getLogger(ExportToExcelController.class);
+	private static final Logger LOG = Logger.getLogger(ExportToExcelController.class);
 
 	@Autowired
 	ExportExcelService exportExcelService;
 
-	private static final String EXPORT_EXCEL = "c:\\temp\\ExportDetectionDetails.xls";
+	private static final String EXPORT_EXCEL = "ExportDetectionDetails.xls";
 
 	@PostMapping(value = "/exportExcel")
-	public ResponseEntity<byte[]>  generateExcel(
-			@RequestParam(value = "data") String detectionDetails,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
-		
-		  HttpHeaders headers = new HttpHeaders();
-	        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-	        headers.add("Pragma", "no-cache");
-	        headers.add("Expires", "0");
-
-		List<SignalAlgorithmDTO> signalAlgorithmDtoList = new ObjectMapper()
-				.readValue(detectionDetails,
-						new TypeReference<List<SignalAlgorithmDTO>>() {
-						});
+	public ServerResponseObject uploadExcelData(@RequestBody String data, HttpServletRequest request,
+			HttpServletResponse response) {
 		try {
-			HSSFWorkbook workbook = exportExcelService.writeExcel(
-					signalAlgorithmDtoList, EXPORT_EXCEL);
-			response.setContentType("application/octet-stream");
-
-			response.setHeader("Content-disposition", "attachment; filename="
-					+ EXPORT_EXCEL);
-			
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			workbook.write(baos);
-	        return ResponseEntity.ok()
-	                .headers(headers)
-	                .contentType(MediaType.parseMediaType("application/octet-stream"))
-	                .body(baos.toByteArray());
-	       
-		} catch (IOException e) {
+			return exportExcelService.uploadExcelData(data);
+		} catch (Exception e) {
 			LOG.info("Exception occured while exporting excel sheet " + e);
 		}
 		return null;
+	}
+
+	@GetMapping(value = "/exportExcel/{reportid}")
+	public void generateExcel(@PathVariable Long reportid, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		try {
+			DectectionDataExport data = exportExcelService.findById(reportid);
+			if(data!=null)
+			{
+				List<SignalAlgorithmDTO> signalAlgorithmDtoList = new ObjectMapper()
+						.readValue(data.getData(),
+								new TypeReference<List<SignalAlgorithmDTO>>() {
+								});
+	
+				HSSFWorkbook workbook = exportExcelService.writeExcel(signalAlgorithmDtoList, EXPORT_EXCEL);
+				response.setContentType("application/vnd.ms-excel");
+				response.setHeader("Content-disposition", "attachment; filename=" + EXPORT_EXCEL);
+				ServletOutputStream out = response.getOutputStream();
+				workbook.write(out);
+				out.flush();
+				out.close();
+			}
+
+		} catch (IOException e) {
+			LOG.info("Exception occured while exporting excel sheet " + e);
+		}
 	}
 
 }
