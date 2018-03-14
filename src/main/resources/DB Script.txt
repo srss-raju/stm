@@ -172,3 +172,7 @@ INSERT INTO sm_signal_algorithm(id, threshold_key, threshold_name, threshold_val
    
 INSERT INTO sm_task_template(id, created_by, created_date, name, is_default) VALUES (1, 'Hanatest', null, 'Default Template',true)
 INSERT INTO sm_risk_task_template(id, created_by, created_date, name, is_default) VALUES (1, 'Hanatest', null, 'Default Template',true)
+
+INSERT INTO sm_risk_task(id, action_type, assign_to, case_instance_id, created_by, created_date, description, due_date, in_days, last_updated_by, last_updated_date, name, notes, owner, recipients, risk_id, status, task_id, template_id) VALUES (1, 'HCP Letter', null, null, null, null, null, null, null, null, null, 'Default Task', null, null, null, null, 'New', null, 1);
+INSERT INTO sm_assessment_action(id, action_description, action_name, action_notes, action_status, action_type, assessment_id, assign_to, case_instance_id, created_by, created_date, days_left, due_date, in_days, last_modified_date, modified_by, owner, recipients, report, task_id, template_id) VALUES (1, null, 'Default Task', null, 'New', 'Meeting', null, null, null, null, null, 1, null, 1, null, null, null, null, null, null, 1);
+
