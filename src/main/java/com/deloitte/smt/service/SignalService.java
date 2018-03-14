@@ -236,7 +236,9 @@ public class SignalService {
 		}
 		if(topic.getRunInstanceId() != null){
 			topic.setProducts(productHierarchyAdditionalService.getProducts(topic));
-			topic.setConditions(socHierarchyAdditionalService.getConditions(topic));
+			if(CollectionUtils.isEmpty(topic.getConditions())){
+				topic.setConditions(socHierarchyAdditionalService.getConditions(topic));
+			}
 		}
 		Calendar c = Calendar.getInstance();
 		topic.setCreatedDate(c.getTime());

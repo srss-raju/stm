@@ -16,6 +16,8 @@ import com.deloitte.smt.entity.Pt;
 import com.deloitte.smt.entity.SignalStatistics;
 import com.deloitte.smt.entity.Soc;
 import com.deloitte.smt.entity.Topic;
+import com.deloitte.smt.entity.TopicAssignmentCondition;
+import com.deloitte.smt.entity.TopicSocAssignmentConfiguration;
 import com.deloitte.smt.exception.ApplicationException;
 import com.deloitte.smt.util.DateUtil;
 
@@ -39,6 +41,9 @@ public class SignalAdditionalService {
 					topic.setCases(dto.getNumDrugPt());
 					setSocsAndPts(dto, topic);
 					setStatistics(dto, topic);
+					setConditions(dto, topic);
+					
+					
 					signalService.createTopic(topic, null);
 				}else{
 					NonSignal nonSignal = new NonSignal();
@@ -53,6 +58,57 @@ public class SignalAdditionalService {
 				
 			}
 		}
+	}
+
+	private void setConditions(DetectionTopicDTO dto, Topic topic) {
+		List<TopicSocAssignmentConfiguration> conditions = new ArrayList<>();
+		TopicSocAssignmentConfiguration condition = new TopicSocAssignmentConfiguration();
+		List<TopicAssignmentCondition> recordValues  = new ArrayList<>();
+		
+		StringBuilder recordKeyBuilder = new StringBuilder();
+		if(dto.getSocId()!=null){
+			TopicAssignmentCondition record = new TopicAssignmentCondition();
+			recordKeyBuilder.append(dto.getSocId());
+			record.setCategory("SOC_CODE");
+			record.setCategoryCode(dto.getSocId());
+			record.setCategoryDesc(dto.getSocDesc());
+			record.setCategoryName("SOC");
+			recordValues.add(record);
+		}
+		if(dto.getHlgtId()!=null){
+			TopicAssignmentCondition record = new TopicAssignmentCondition();
+			recordKeyBuilder.append("@#");
+			recordKeyBuilder.append(dto.getHlgtId());
+			record.setCategory("HLGT_CODE");
+			record.setCategoryCode(dto.getHlgtId());
+			record.setCategoryDesc(dto.getHlgtDesc());
+			record.setCategoryName("HLGT");
+			recordValues.add(record);
+		}
+		if(dto.getHltId()!=null){
+			TopicAssignmentCondition record = new TopicAssignmentCondition();
+			recordKeyBuilder.append("@#");
+			recordKeyBuilder.append(dto.getHltId());
+			record.setCategory("HLT_CODE");
+			record.setCategoryCode(dto.getHltId());
+			record.setCategoryDesc(dto.getHltDesc());
+			record.setCategoryName("HLT");
+			recordValues.add(record);
+		}
+		if(dto.getPtId()!=null){
+			TopicAssignmentCondition record = new TopicAssignmentCondition();
+			recordKeyBuilder.append("@#");
+			recordKeyBuilder.append(dto.getPtId());
+			record.setCategory("PT_CODE");
+			record.setCategoryCode(dto.getPtId());
+			record.setCategoryDesc(dto.getPtDesc());
+			record.setCategoryName("PT");
+			recordValues.add(record);
+		}
+		condition.setRecordKey(recordKeyBuilder.toString());
+		condition.setRecordValues(recordValues);
+		conditions.add(condition);
+		topic.setConditions(conditions);
 	}
 
 	private void setSocsAndPts(DetectionTopicDTO dto, Topic topic) {
