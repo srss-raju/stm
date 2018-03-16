@@ -32,7 +32,7 @@ public class ExportToExcelController {
 	@Autowired
 	ExportExcelService exportExcelService;
 
-	private static final String EXPORT_EXCEL = "ExportDetectionDetails.xls";
+	private static final String EXPORT_EXCEL = "export_detection_details.xls";
 
 	@PostMapping(value = "/exportExcel")
 	public ServerResponseObject uploadExcelData(@RequestBody String data, HttpServletRequest request,
@@ -70,5 +70,25 @@ public class ExportToExcelController {
 			LOG.info("Exception occured while exporting excel sheet " + e);
 		}
 	}
+	
+	@PostMapping(value = "/export")
+	public void exportExcel(@RequestBody String detectionDetails, HttpServletRequest request,
+			HttpServletResponse response) {
+		try {
+			List<SignalAlgorithmDTO> signalAlgorithmDtoList = new ObjectMapper()
+					.readValue(detectionDetails,
+							new TypeReference<List<SignalAlgorithmDTO>>() {
+							});
 
+			HSSFWorkbook workbook = exportExcelService.writeExcel(signalAlgorithmDtoList, EXPORT_EXCEL);
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Content-disposition", "attachment; filename=" + EXPORT_EXCEL);
+			ServletOutputStream out = response.getOutputStream();
+			workbook.write(out);
+			out.flush();
+			out.close();
+		} catch (Exception e) {
+			LOG.info("Exception occured while exporting excel sheet... " + e);
+		}
+	}
 }
